@@ -1,6 +1,6 @@
 # libp2p-difftest Design
 
-Status: draft v2 (post-review)
+Status: v3 (implemented; deviations from v2 recorded below)
 This document is the architectural contract for the rewrite. The implementation
 must match it; changes to it are design decisions and get their own commits.
 
@@ -186,9 +186,9 @@ tests, serializable into manifests later. Test suites are explicit:
 ```go
 package cases
 
-func All(chain runner.ChainConfig) []runner.Spec
-func ByID(chain runner.ChainConfig, id string) (runner.Spec, bool)
-func ByCategory(chain runner.ChainConfig, cat string) []runner.Spec
+func All() []runner.Spec
+func ByID(id string) (runner.Spec, bool)
+func ByCategory(cat string) []runner.Spec
 ```
 
 ### 5.3 Client
@@ -426,11 +426,16 @@ reqresp (port and harden from the previous repo):
 gossip:
 - gossip.block.malformed: publish garbage to beacon_block topic; verdict via
   Client.ObserveGossip.
-- gossip.block.oversize: payload above ChainConfig.GossipMaxSize.
+(gossip.block.oversize was dropped: go-libp2p-pubsub caps messages at
+1 MiB by default and does not expose the limit as an option, so publishing
+above the cap tests our own stack, not the target. It returns once the
+probe's gossipsub is configurable.)
 
 discovery:
-- discovery.enr.fields: parse each client's ENR, compare eth2/attnets fields
-  for consistency with the chain state.
+- discovery.fork_digest: compare each client's chain state fork digest
+  (ENR eth2 preferred, beacon-derived fallback); same-chain clients must
+  agree. (v2 planned raw ENR field comparison; needs a raw-ENR accessor on
+  the client surface.)
 
 transport:
 - transport.handshake.connect: plain noise/tcp connectability per client.
@@ -479,7 +484,26 @@ claimed as done.
   the previous repo where concepts are the same, so the known-divergences
   allowlist format survives.
 
-## 11. Open risks
+## 11. Implementation deviations from v2 (as built)
+
+- TestEnv carries Meta (the running spec's metadata) so cases can stamp
+  divergences without closing over spec variables.
+- runner.Client gained Health(ctx) as a cheap liveness check feeding the
+  ban/recovery logic; Snapshot covers resources but is not a liveness probe.
+- ConnectMode semantics: Connect(NoStatus) always builds a fresh unhandshaken
+  connection (the pre-Status case depends on this); Connect(WithStatus)
+  reuses the live connection when possible.
+- The runner panics-to-error conversion reports StatusError with the panic
+  captured, and a test that only skips is recorded with no elapsed time.
+- env/kurtosisenv: the kurtosis API wrapper is v1.20.0-specific; per-line
+  log timestamps do not exist in that API version, so Logs returns the full
+  stream and callers pre-position by collecting at test boundaries.
+- hive-sim: Config.SpecsFor and Config.ClientFactory are injection points
+  (fake-tested); production paths use the cases registry and client.New.
+- cases: outcome classes are accept / reject / other; 1-vs-1 verdict ties
+  report the rejecting side as the outlier.
+
+## 12. Open risks
 
 - The kurtosis Go API surface moves; the thin interface confines breakage to
   one file, and the provision path stays manual-verified until a live run.
