@@ -1,0 +1,14 @@
+# Binaries
+/difftest
+/hive-sim
+/dist/
+
+# Test and run artifacts
+/results/
+*.log
+.coverage
+
+# Editor
+.idea/
+.vscode/
+.DS_Store
