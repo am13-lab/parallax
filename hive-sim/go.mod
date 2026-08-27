@@ -1,6 +1,6 @@
 module libp2p-difftest/hive-sim
 
-go 1.25
+go 1.26.0
 
 require (
 	github.com/ethereum/hive v0.0.0-20260825141342-6eb5d742079e
