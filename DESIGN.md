@@ -1,8 +1,18 @@
 # libp2p-difftest Design
 
-Status: draft v1
+Status: draft v2 (post-review)
 This document is the architectural contract for the rewrite. The implementation
 must match it; changes to it are design decisions and get their own commits.
+
+Review history: v1 was reviewed and revised. Fixes incorporated in v2:
+gossip observation, no-Status connect and chain state added to the client
+surface; TestEnv carries the Environment; MinClients redefined as a floor;
+Sink replaced by an Options callback; report compatibility claim replaced by
+an explicit adapter plan; proxy handling specified; env moved into Phase 1;
+hive phase re-scoped with its true cost documented; KnowledgeIDs restored;
+identity-rotation claim scoped; kurtosis provision marked manual-verified;
+per-endpoint fingerprint fields; recovery cooldown added; chain config
+introduced.
 
 ## 1. Goals
 
@@ -23,8 +33,8 @@ must match it; changes to it are design decisions and get their own commits.
   ships a seed set (section 8); the rest are incremental ports.
 - State machine sequences, replay corpora, mutation and evolutionary loops.
   These build on the same Spec model later; they are not in v1.
-- LLM log oracles. Log collection is pluggable; rule-based or LLM analysis is
-  future work.
+- LLM log oracles. Log collection is available through the Environment; rule
+  or LLM based log analysis is future work and plugs in at the runner level.
 - Gossipsub/scoring-specific devnet configurations beyond what the seed cases
   need.
 
@@ -43,6 +53,9 @@ must match it; changes to it are design decisions and get their own commits.
 - Kurtosis-only log collection (shelling out to `kurtosis service logs`)
   leaked backend details into the core. Log access belongs to the environment
   abstraction.
+- Gossip verdicts require a second target-facing libp2p host that subscribes
+  and watches re-propagation; that capability is part of the client surface,
+  not a test-side ad hoc construct.
 
 ## 4. Package layout
 
@@ -50,14 +63,16 @@ must match it; changes to it are design decisions and get their own commits.
 cmd/difftest      CLI: list, run, analyze subcommands (stdlib flag only)
 wire              pure functions: varint, snappy framing, SSZ-snappy req/resp
                   build/parse, malformed payload builders, crc32c, fork digest
-probe             libp2p probe host: connect, identity rotation, req/resp
-                  send, status responder, gossip publish, gossip observe
+probe             libp2p probe host: connect (with/without Status handshake),
+                  identity rotation, req/resp send, status responder, gossip
+                  publish, gossip observe
 beacon            beacon API client: node identity, head/fork state, health,
                   metrics snapshot
-client            Client implementation gluing probe + beacon, proxy rotation
+client            Client implementation gluing probe + beacon + proxies
 runner            Spec model, scheduling, preflight, ban handling, divergence
-                  collection, report assembly
-report            report schema v1, JSON writer, JUnit writer, findings dedup
+                  collection, report assembly, chain config
+report            report schema v1, JSON writer, JUnit writer, findings dedup,
+                  allowlist suppression, legacy-shape adapter
 env               Endpoint, Environment, Provider interfaces
 env/staticenv     attach-only backend from YAML (previous config format)
 env/kurtosisenv   kurtosis Go API backend: provision via ethereum-package,
@@ -84,11 +99,15 @@ replace directive so the hivesim dependency never reaches the core module.
 package env
 
 type Endpoint struct {
-    Name       string // display name, e.g. "prysm-1"
-    ClientType string // normalized type, e.g. "prysm"
-    Multiaddr  string // libp2p reachable address with peer ID
-    BeaconAPI  string // http URL, may be empty
-    Service    string // backend-specific identifier, used for Logs()
+    Name       string   // display name, e.g. "prysm-1"
+    ClientType string   // normalized type, e.g. "prysm"
+    Multiaddr  string   // libp2p reachable address with peer ID
+    BeaconAPI  string   // http URL, may be empty
+    Service    string   // backend-specific identifier, used for Logs()
+    Proxies    []string // alternate multiaddrs (socat forwarders) for identity
+                        // rotation; empty means rotation reuses the direct addr
+    Image      string   // optional, backend-provided fingerprint data
+    Version    string   // optional, backend-provided fingerprint data
 }
 
 type Environment interface {
@@ -97,8 +116,9 @@ type Environment interface {
     // ErrLogsUnsupported when the backend cannot provide logs; the runner
     // treats that as a normal capability gap, never an error condition.
     Logs(ctx context.Context, ep Endpoint, since time.Time) (io.ReadCloser, error)
-    // Info describes the environment for the report fingerprint:
-    // provider name, client images and versions, fork digest, config path.
+    // Info describes the environment for the report fingerprint: provider
+    // name, config path, preset. Per-endpoint image/version data lives on
+    // the Endpoint, so one accessor covers both granularities.
     Info() map[string]string
     // Teardown releases the environment. staticenv does nothing.
     Teardown(ctx context.Context) error
@@ -128,16 +148,35 @@ type Spec struct {
 }
 
 type Metadata struct {
-    SpecRules  []string // consensus-spec rule anchors
-    RunClass   RunClass // standard | heavy | config
+    KnowledgeIDs []string // knowledge-base traceability
+    SpecRules    []string // consensus-spec rule anchors
+    RunClass     RunClass // standard | heavy | config
     LogSensitive bool
-    MinClients int      // default 2; 1 for single-client checks
+    // MinClients is a floor, not a target: the runner skips the test when
+    // fewer clients are usable and passes all usable clients otherwise.
+    MinClients int // default 2; 1 for single-client checks
 }
 
 type TestEnv struct {
-    Clients []Client // filtered to MinClients by the runner
+    Clients []Client // all usable clients, at least Metadata.MinClients
+    Env     env.Environment
+    Chain   ChainConfig
     RNG     *rand.Rand
     Log     *slog.Logger
+}
+
+// ChainConfig carries everything fork- and preset-dependent that cases and
+// the testnode need: preset name, fork digest, genesis validators root,
+// active fork version, GOSSIP_MAX_SIZE, MAX_CHUNK_SIZE. It is provided by
+// the CLI (--preset, default mainnet) or derived from the first client with
+// a Beacon API, and cases must not hardcode these values.
+type ChainConfig struct {
+    Preset               string
+    ForkDigest           [4]byte
+    GenesisForkVersion   [4]byte
+    GenesisValidatorsRoot [32]byte
+    GossipMaxSize        uint64
+    MaxChunkSize         uint64
 }
 ```
 
@@ -147,9 +186,9 @@ tests, serializable into manifests later. Test suites are explicit:
 ```go
 package cases
 
-func All() []runner.Spec
-func ByID(id string) (runner.Spec, bool)
-func ByCategory(cat string) []runner.Spec
+func All(chain runner.ChainConfig) []runner.Spec
+func ByID(chain runner.ChainConfig, id string) (runner.Spec, bool)
+func ByCategory(chain runner.ChainConfig, cat string) []runner.Spec
 ```
 
 ### 5.3 Client
@@ -157,18 +196,40 @@ func ByCategory(cat string) []runner.Spec
 ```go
 package runner
 
+type ConnectMode int
+
+const (
+    ConnectWithStatus ConnectMode = iota // handshake after connect (default)
+    ConnectNoStatus                      // connect only; for pre-Status cases
+)
+
 type Client interface {
     Name() string
     Type() string
+
     // ReqResp sends one request on a req/resp protocol and reads the full
     // response (all chunks) within the timeout.
     ReqResp(ctx context.Context, protocol string, body []byte, timeout time.Duration) (*ReqRespResult, error)
+
+    // PublishGossip publishes data on a gossip topic.
     PublishGossip(ctx context.Context, topic string, data []byte) error
-    // EnsureConnected re-establishes the libp2p connection when needed.
-    EnsureConnected(ctx context.Context) error
-    // RotateIdentity replaces the probe identity (new peer ID, fresh limiter
-    // and ban state on the target).
+
+    // ObserveGossip subscribes via a second target-facing libp2p host and
+    // waits for the published message to re-propagate, returning the local
+    // acceptance verdict (accept/reject/ignore/timeout).
+    ObserveGossip(ctx context.Context, topic string, wait time.Duration) (GossipVerdict, error)
+
+    // Connect (re-)establishes the libp2p connection in the given mode.
+    Connect(ctx context.Context, mode ConnectMode) error
+    // RotateIdentity replaces the probe identity. This yields a fresh
+    // peer-ID-keyed state on the target (req/resp limiters, bad-response
+    // scores); IP-keyed bans on some clients intentionally survive it.
     RotateIdentity(ctx context.Context) error
+
+    // State returns chain state fetched from the Beacon API: head slot and
+    // root, active fork, fork digest, finalized checkpoint. Cases use it for
+    // request bodies and context bytes. ErrNoBeaconAPI when unavailable.
+    State(ctx context.Context) (*NodeState, error)
     Snapshot(ctx context.Context) (*ResourceSnapshot, error)
     Close() error
 }
@@ -180,19 +241,24 @@ type Client interface {
 package runner
 
 type Options struct {
-    Seed           int64
-    TestIDs        []string // exact selection, bypasses run-class filtering
-    Categories     []string
-    IncludeHeavy   bool
-    IncludeConfig  bool
-    InterTestDelay time.Duration
-    MaxDuration    time.Duration // 0 = run the selection once
-    BanThreshold   int           // consecutive connect failures before exclusion
-    RotateEvery    int           // identity rotation cadence, 0 disables
-    PerTestTimeout time.Duration
+    Seed             int64
+    TestIDs          []string // exact selection, bypasses run-class filtering
+    Categories       []string
+    IncludeHeavy     bool
+    IncludeConfig    bool
+    InterTestDelay   time.Duration
+    MaxDuration      time.Duration // 0 = run the selection once
+    BanThreshold     int           // consecutive connect failures before exclusion
+    RecoveryCooldown time.Duration // banned clients are re-probed after this; 0 disables
+    RotateEvery      int           // identity rotation cadence, 0 disables
+    PerTestTimeout   time.Duration
+    // Progress is invoked after each test completes; nil is valid.
+    Progress func(TestResult)
 }
 
-func Run(ctx context.Context, specs []Spec, clients []Client, opts Options, sinks ...Sink) *Report
+// Run executes the selection sequentially and returns the assembled report.
+func Run(ctx context.Context, specs []Spec, clients []Client, env env.Environment,
+    chain ChainConfig, opts Options) *Report
 ```
 
 The runner is sequential by design: tests mutate target state (rate limit
@@ -200,28 +266,44 @@ buckets, peer scores, connection counts), so parallelism would create
 cross-test contamination. Determinism comes from the seed: selection order is
 a seeded shuffle of the filtered list.
 
-Report schema v1 (see report/schema.go):
+Ban handling: a client whose connection fails BanThreshold times consecutively
+is excluded from comparison for subsequent tests (recorded per result as
+ExcludedClients, mirroring the previous DivergenceReport field). After
+RecoveryCooldown the runner re-probes and reinstates on success.
+
+Report schema v1 (report/schema.go):
 
 ```go
 type Report struct {
     SchemaVersion int
     StartedAt, EndedAt time.Time
     Seed int64
-    Environment map[string]string
+    Environment map[string]string      // provider, preset, config path
+    Endpoints   []EndpointFingerprint  // name, image, version, client type
     Results []TestResult
     Summary Summary
 }
 type TestResult struct {
     TestID, Category string
     Status  Status // pass | divergent | skipped | error
+    SkipReason string // set when Status == skipped (preflight, min clients)
+    ExcludedClients []string
     Divergences []Divergence
     Elapsed time.Duration
 }
 ```
 
 Divergence and Finding types carry the previous repo's semantics (types,
-severity, outlier clients, allowlist suppression) with the same JSON field
-names so existing triage tooling keeps working.
+severity, outlier clients, allowlist suppression) with the same field
+semantics. The canonical output shape is new (Results-nested); triage
+compatibility is an explicit adapter: `analyze --legacy` re-emits the
+previous repo's top-level report shape ({timestamp, divergences[], findings[],
+run_summary}) from a saved v1 report. Porting triage scripts wholesale is not
+free and is not claimed to be.
+
+Allowlist suppression lives in the report package: findings matched by the
+known-divergences format (transition or test-pattern glob, client, optional
+spec-rule id) are marked Suppressed with a reason, not dropped.
 
 JUnit mapping: pass → testcase, divergent → failure (one per divergence,
 root cause in the message), skipped → skipped, error → failure with error
@@ -231,7 +313,8 @@ marker. A run maps to one testsuite per category.
 
 ### 6.1 staticenv
 
-Reads the previous repo's clients.yaml format unchanged:
+Reads the previous repo's clients.yaml format unchanged, including the
+optional proxy_addrs field (mapped to Endpoint.Proxies):
 
 ```yaml
 clients:
@@ -239,11 +322,14 @@ clients:
     client_type: prysm
     multiaddr: /ip4/127.0.0.1/tcp/46562/p2p/16Uiu2HAm...
     beacon_api: http://127.0.0.1:45554
+    proxy_addrs: []            # optional
 ```
 
 Setup validates that multiaddrs parse and pings BeaconAPI endpoints when
 present. Logs returns ErrLogsUnsupported. Teardown is a no-op. This preserves
-every existing genconfig artifact and PoC workflow.
+every existing genconfig artifact and PoC workflow. Note the stated
+limitation: with an empty BeaconAPI the client cannot supply chain state, so
+fork-digest-dependent cases preflight-skip; this is reported, never guessed.
 
 ### 6.2 kurtosisenv
 
@@ -251,12 +337,16 @@ Two modes selected by CLI flags, one backend:
 
 - provision: run ethereum-package through the kurtosis Go API
   (`kurtosis-context.RunPackage`) with the user's args file and enclave name.
+  This path is covered by interface fakes only and marked manual-verified; a
+  live kurtosis run is the acceptance step when one is available.
 - attach: connect to an existing enclave.
 
 Discovery replaces genconfig entirely: enumerate services via the API, map
 each CL service's port bindings (tcp discovery port, http port), fetch the
 peer ID from the service's Beacon API `/eth/v1/node/identity`, and emit
-Endpoints. Client type is derived from the service name.
+Endpoints. Client type is derived from the ethereum-package service name; the
+derivation rules are pinned in the fake tests so upstream naming changes fail
+a test instead of silently producing wrong client types.
 
 Logs use the API's service-log retrieval. The entire kurtosis API surface is
 hidden behind a narrow interface (`type apiClient interface`) so the mapping
@@ -264,21 +354,21 @@ logic is unit-tested against fakes without kurtosis installed.
 
 ### 6.3 hive-sim
 
-A separate module at ./hive-sim that imports the core. Mapping:
+A separate module at ./hive-sim that imports the core. V1 scope, stated
+honestly: the simulator module delivers suite construction and result
+mapping, tested against a fake hive API server (httptest) that implements the
+subset of the simulation API hivesim uses (suites, tests, node start, test
+end). The heavy lift of a production-ready simulator is genesis and bootnode
+provisioning in hive's HIVE_* conventions for six CL clients plus reachable
+container networking, and it depends on hive carrying CL client definitions
+(ethpandaops fork). That work is explicitly out of v1 and documented as its
+own plan; the fake-API tests pin the interaction patterns so the later
+provisioning work slots into a tested harness.
 
-- One hivesim test case per difftest category. Inside each test case the
-  simulator starts one node per configured CL client type with identical
-  genesis files and env (differential testing needs same-chain peers), waits
-  for them to become healthy, then calls runner.Run with the category's
-  specs.
-- Result mapping: divergent → hive test failure with per-divergence detail in
-  the details field; pass → pass. The full JSON report is attached to the
-  test details.
-- Client logs remain hive's responsibility (workspace logs). Log-sensitive
-  analysis happens post-run, outside the simulator, in v1.
-
-The simulator is validated against a fake hive API server (httptest) in unit
-tests; a real `./hive --sim` run is manual validation at the end.
+Mapping within scope: one hive test case per difftest category; inside it the
+simulator starts one node per configured CL client type, waits for health,
+runs runner.Run, and maps divergent → hive failure with per-divergence
+detail, pass → pass, and the full JSON report in the test details.
 
 ## 7. Test strategy (TDD)
 
@@ -289,23 +379,29 @@ not. The rule: no behavior merges without a failing test that it makes pass.
 - wire: table-driven tests plus spec-derived vectors. Round-trip properties
   (build then parse returns input) and negative cases (length bombs, trailing
   bytes, truncated frames). No libp2p involved.
-- probe: tested against testnode over real TCP within localhost. Cover
-  connect, req/resp success and stream-reset, identity rotation producing a
-  new peer ID, gossip publish delivery.
 - testnode: a scriptable fake CL node. A go-libp2p host serving the eth2
   req/resp protocols (configurable responses per protocol: success, error
   code, reset, timeout, garbage) plus a pubsub gossip topic sink, plus an
   httptest beacon API serving canned /eth/v1/node/identity, headers, fork,
-  metrics. Every higher layer's tests script this node instead of a devnet.
+  metrics, using mainnet-preset canned chain data. Every higher layer's tests
+  script this node instead of a devnet.
+- probe: tested against testnode over real TCP within localhost. Cover
+  connect with and without Status, req/resp success and stream-reset,
+  identity rotation producing a new peer ID, gossip publish delivery and
+  observation.
 - beacon: httptest-driven tests for state parsing and metric extraction.
-- client: probe + beacon glue, proxy rotation order, ban-counting behavior.
+- client: probe + beacon glue, proxy rotation order across Endpoint.Proxies,
+  ban-counting behavior.
 - runner: fake Spec and fake Client implementations. Cover selection and
-  seeded ordering (same seed, same order), preflight skipping, ban exclusion
-  and recovery, deadline stop, delay scheduling, report assembly.
-- report: golden-file JSON and JUnit output tests; dedup and allowlist tests.
-- env/staticenv: YAML load/validate tests.
+  seeded ordering (same seed, same order), preflight skipping, MinClients as
+  a floor, ban exclusion and cooldown recovery, deadline stop, delay
+  scheduling, Progress callback, report assembly.
+- report: golden-file JSON and JUnit output tests; dedup, allowlist
+  suppression, and legacy-adapter tests.
+- env/staticenv: YAML load/validate tests (including proxy_addrs mapping).
 - env/kurtosisenv: mapping tests against a fake apiClient (service list,
-  port bindings, peer ID fetch); no kurtosis binary needed.
+  port bindings, peer ID fetch, client-type derivation); no kurtosis binary
+  needed.
 - cmd: subcommand wiring tests, plus one end-to-end smoke: staticenv with two
   testnodes, run the seed suite, assert report shape and JUnit output.
 - hive-sim: suite construction and result mapping against a fake hive API.
@@ -318,18 +414,19 @@ reqresp (port and harden from the previous repo):
   divergence if verdicts differ.
 - reqresp.ping.extra_bytes: ping with trailing bytes.
 - reqresp.status.malformed: corrupted SSZ payload, expect rejection.
-- reqresp.status.pre_status: request before Status handshake; spec says
-  clients must not serve; known to differ, anchor the rule.
-- reqresp.blocks_by_root.length_bomb: claimed varint length far above actual.
+- reqresp.status.pre_status: request before Status handshake (ConnectNoStatus);
+  spec says clients must not serve; known to differ, anchor the rule.
+- reqresp.blocks_by_root.length_bomb: claimed varint length far above actual,
+  context bytes from Client.State.
 - reqresp.blocks_by_root.trailing_bytes: response chunk with trailing bytes.
 - reqresp.metadata.valid: valid Metadata request round-trip.
 - reqresp.goodbye.valid: goodbye with rationale code.
 - reqresp.unknown_protocol: request a protocol the client does not serve.
 
 gossip:
-- gossip.block.malformed: publish garbage to beacon_block topic; observe
-  verdict via gossipsub observer subscription.
-- gossip.block.oversize: payload above GOSSIP_MAX_SIZE.
+- gossip.block.malformed: publish garbage to beacon_block topic; verdict via
+  Client.ObserveGossip.
+- gossip.block.oversize: payload above ChainConfig.GossipMaxSize.
 
 discovery:
 - discovery.enr.fields: parse each client's ENR, compare eth2/attnets fields
@@ -341,22 +438,23 @@ transport:
 
 ## 9. Roadmap
 
-Phase 1, core engine: wire, testnode, probe, beacon, client, runner, report.
+Phase 1, core engine: env interfaces, wire, testnode, probe, beacon, client,
+runner, report.
 Verification: go test ./... green, fake-node end-to-end test produces a
 valid report from a three-spec mini suite.
 
-Phase 2, environments: env interfaces, staticenv, kurtosisenv.
-Verification: staticenv e2e against testnodes; kurtosisenv mapping tests
-green against fakes; manual kurtosis run deferred to a live check.
+Phase 2, kurtosis backend: env/kurtosisenv behind the fake-tested interface.
+Verification: mapping tests green; provision path marked manual-verified.
 
 Phase 3, CLI and cases: cmd/difftest list/run/analyze, seed case set.
 Verification: difftest list shows the seed set; difftest run against
 testnodes emits report.json and junit.xml; analyze re-processes a saved
-report.
+report and emits the legacy shape on demand.
 
-Phase 4, hive: hive-sim module with fake-API tests.
+Phase 4, hive harness: hive-sim module with fake-API tests.
 Verification: fake-API tests green; docker build of the simulator succeeds;
-live hive run is a documented manual step.
+live hive runs and genesis provisioning are documented as the next plan, not
+claimed as done.
 
 ## 10. Decisions and trade-offs
 
@@ -365,23 +463,29 @@ live hive run is a documented manual step.
 - Spec-as-struct over interface zoo: one obvious way to define a test;
   optional capabilities are nil function fields.
 - kurtosis Go API over CLI parsing: heavier dependency, isolated inside
-  env/kurtosisenv behind an interface; removes the most fragile code.
+  env/kurtosisenv behind an interface; removes the most fragile code. The
+  provision path is interface-tested only and marked manual-verified.
 - JUnit and JSON both written by default: JSON for triage tooling, JUnit so
   any CI lights up red without custom parsing.
-- Previous clients.yaml format kept: existing artifacts, PoCs and genconfig
-  output remain usable, migration cost is zero.
+- New canonical report shape with an explicit legacy adapter: compatibility
+  is provided by analyze --legacy, not by pretending the shapes are equal.
+- Previous clients.yaml format kept (including proxy_addrs): existing
+  artifacts, PoCs and genconfig output remain usable, migration cost is zero.
 - hive-sim as a separate Go module: keeps hivesim and its transitive
   dependencies out of the core module while sharing code through replace.
-- Report JSON field names match the previous repo where concepts are the
-  same, so triage scripts and the known-divergence allowlist format survive.
+- Chain config flows through ChainConfig, never hardcoded in cases: fork and
+  preset dependence is explicit and the testnode serves matching canned data.
+- Report JSON field semantics (types, severities, allowlist entries) match
+  the previous repo where concepts are the same, so the known-divergences
+  allowlist format survives.
 
 ## 11. Open risks
 
 - The kurtosis Go API surface moves; the thin interface confines breakage to
-  one file.
-- hivesim client-start semantics (per-test lifetime) may force one hive test
-  case per category rather than per difftest spec; the fake-API tests pin the
-  actual behavior before any live run.
+  one file, and the provision path stays manual-verified until a live run.
+- hivesim client-start semantics (per-test lifetime) are pinned by the
+  fake-API tests; production hive runs additionally need CL client
+  definitions and genesis provisioning, which are explicitly out of v1.
 - go-libp2p v0.47 behavior differences across the six clients are inherited
   from the previous stack and considered solved; any regression shows up in
   the probe tests against testnode first.
