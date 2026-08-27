@@ -13,9 +13,10 @@ import (
 )
 
 const (
-	pingProto   = "/eth2/beacon_chain/req/ping/1/ssz_snappy"
-	statusProto = "/eth2/beacon_chain/req/status/1/ssz_snappy"
-	goodbyeSpec = "/eth2/beacon_chain/req/goodbye/1/ssz_snappy"
+	pingProto    = "/eth2/beacon_chain/req/ping/1/ssz_snappy"
+	statusProto  = "/eth2/beacon_chain/req/status/1/ssz_snappy"
+	statusV2Spec = "/eth2/beacon_chain/req/status/2/ssz_snappy"
+	goodbyeSpec  = "/eth2/beacon_chain/req/goodbye/1/ssz_snappy"
 	testTopic   = "/eth2/aaaaaaaa/beacon_block/ssz_snappy"
 )
 
@@ -32,9 +33,10 @@ func startNode(t *testing.T, cfg *testnode.Config) *testnode.Node {
 func startDefaultNode(t *testing.T) *testnode.Node {
 	return startNode(t, &testnode.Config{
 		Protocols: map[string]*testnode.Script{
-			pingProto:   {Behavior: testnode.Success, Chunks: [][]byte{{0x01}}, ReadRequest: true},
-			statusProto: {Behavior: testnode.Success, Chunks: [][]byte{make([]byte, 84)}, ReadRequest: true},
-			goodbyeSpec: {Behavior: testnode.Success},
+			pingProto:    {Behavior: testnode.Success, Chunks: [][]byte{{0x01}}, ReadRequest: true},
+			statusProto:  {Behavior: testnode.Success, Chunks: [][]byte{make([]byte, 84)}, ReadRequest: true},
+			statusV2Spec: {Behavior: testnode.Success, Chunks: [][]byte{make([]byte, 92)}, ReadRequest: true},
+			goodbyeSpec:  {Behavior: testnode.Success},
 		},
 		Beacon: &testnode.BeaconConfig{ENR: testENR(t), HeadSlot: 64},
 	})
@@ -253,4 +255,36 @@ func TestObserveGossipAcceptAndReject(t *testing.T) {
 			t.Fatalf("want reject, got %v", verdict)
 		}
 	})
+}
+
+func TestConnectNoStatusFreshConnection(t *testing.T) {
+	n := startDefaultNode(t)
+	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
+	defer cancel()
+
+	c, err := client.New(ctx, &client.Config{
+		Name:       "n",
+		ClientType: "fake",
+		Multiaddr:  n.Multiaddr(),
+		BeaconAPI:  n.BeaconURL(),
+	})
+	if err != nil {
+		t.Fatalf("client.New: %v", err)
+	}
+	t.Cleanup(func() { c.Close() })
+
+	before := len(n.Requests(statusProto))
+	if err := c.Connect(ctx, client.ModeNoStatus); err != nil {
+		t.Fatalf("connect no status: %v", err)
+	}
+	if got := len(n.Requests(statusProto)); got != before {
+		t.Fatalf("NoStatus connect must not handshake: %d -> %d", before, got)
+	}
+
+	if err := c.Connect(ctx, client.ModeWithStatus); err != nil {
+		t.Fatalf("connect with status: %v", err)
+	}
+	if got := len(n.Requests(statusProto)); got != before+2 {
+		t.Fatalf("WithStatus connect must handshake v1+v2: %d -> %d", before, got)
+	}
 }

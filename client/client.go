@@ -244,18 +244,45 @@ func (c *Client) ensureObserver() (*probe.Observer, error) {
 	return obs, nil
 }
 
-// Connect (re-)establishes the connection in the given mode.
+// Connect (re-)establishes the connection in the given mode. WithStatus
+// reuses the existing connection when alive and performs the handshake;
+// NoStatus always builds a fresh connection without any handshake, for
+// pre-Status request tests.
 func (c *Client) Connect(ctx context.Context, mode runner.ConnectMode) error {
 	c.mode = mode
-	if err := c.probe.EnsureConnected(ctx); err == nil && mode == ModeNoStatus {
+	if mode == ModeNoStatus {
+		return c.freshConnect(ctx, false)
+	}
+	if err := c.probe.EnsureConnected(ctx); err == nil {
+		if c.hasState {
+			c.statusHandshake(ctx)
+		}
 		return nil
 	}
-	if err := c.probe.Connect(ctx, c.currentAddr()); err != nil {
+	return c.freshConnect(ctx, true)
+}
+
+func (c *Client) freshConnect(ctx context.Context, handshake bool) error {
+	c.mu.Lock()
+	if c.observer != nil {
+		c.observer.Close()
+		c.observer = nil
+	}
+	c.mu.Unlock()
+
+	newProbe, err := probe.New()
+	if err != nil {
 		return err
 	}
-	if mode == ModeWithStatus && c.hasState {
-		c.statusHandshake(ctx)
+	if c.hasState && handshake {
+		newProbe.InstallStatusHandlers(c.statusV1, c.statusV2)
 	}
+	if err := newProbe.Connect(ctx, c.currentAddr()); err != nil {
+		newProbe.Close()
+		return err
+	}
+	c.probe.Close()
+	c.probe = newProbe
 	return nil
 }
 
