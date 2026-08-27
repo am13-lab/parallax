@@ -186,7 +186,7 @@ func TestEnvironmentAttachAndLogs(t *testing.T) {
 
 func TestProviderProvisionFlow(t *testing.T) {
 	fake := &fakeAPI{services: []kurtosisenv.ServiceInfo{}}
-	p := kurtosisenv.NewProvider(fake)
+	p := kurtosisenv.Provider{API: fake}
 	if p.Name() != "kurtosis" {
 		t.Fatalf("provider name: %s", p.Name())
 	}
