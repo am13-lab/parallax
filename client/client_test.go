@@ -51,7 +51,7 @@ func testENR(t *testing.T) string {
 	}
 	eth2 := make([]byte, 16)
 	copy(eth2[0:4], []byte{0xab, 0xcd, 0xef, 0x01})
-	cachedENR = testutil.BuildTestENR(t, eth2, make([]byte, 8))
+	cachedENR = testutil.BuildTestENR(eth2, make([]byte, 8))
 	return cachedENR
 }
 
