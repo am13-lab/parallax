@@ -41,7 +41,13 @@ func parseReqRespChunks(data []byte, hasContext bool) []ResponseChunk {
 		// Error responses carry a UTF-8 message with its own varint prefix;
 		// chunk boundaries after an error are not recoverable.
 		if chunk.ResultCode != 0x00 {
-			chunk.Payload = data[offset:]
+			msgLen, n := binary.Uvarint(data[offset:])
+			if n > 0 && uint64(len(data)-offset) >= msgLen {
+				chunk.Payload = data[offset+n : offset+n+int(msgLen)]
+			} else {
+				chunk.Malformed = true
+				chunk.Payload = data[offset:]
+			}
 			chunks = append(chunks, chunk)
 			break
 		}

@@ -168,6 +168,7 @@ func TestParseResponseChunksErrorChunk(t *testing.T) {
 	msg := "Invalid request"
 	var buf bytes.Buffer
 	buf.WriteByte(0x01)
+	buf.Write(EncodeVarint(uint64(len(msg))))
 	buf.WriteString(msg)
 
 	chunks := ParseReqRespResponse(buf.Bytes())
@@ -179,6 +180,22 @@ func TestParseResponseChunksErrorChunk(t *testing.T) {
 	}
 	if string(chunks[0].Payload) != msg {
 		t.Fatalf("error message: got %q", chunks[0].Payload)
+	}
+	if chunks[0].Malformed {
+		t.Fatal("well-formed error chunk must not be malformed")
+	}
+}
+
+func TestParseResponseChunksErrorChunkBadVarint(t *testing.T) {
+	// A truncated varint prefix makes the message undecodable; the raw
+	// remainder is surfaced with Malformed set.
+	buf := append([]byte{0x02, 0xff, 0xff}, "short"...)
+	chunks := ParseReqRespResponse(buf)
+	if len(chunks) != 1 || !chunks[0].Malformed {
+		t.Fatalf("bad error varint must be malformed, got %+v", chunks)
+	}
+	if string(chunks[0].Payload) != string(buf[1:]) {
+		t.Fatalf("raw remainder expected, got %q", chunks[0].Payload)
 	}
 }
 
