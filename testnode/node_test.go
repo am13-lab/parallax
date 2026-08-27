@@ -17,6 +17,7 @@ import (
 	"github.com/libp2p/go-libp2p/core/peer"
 	"github.com/libp2p/go-libp2p/core/protocol"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
+	pubsubpb "github.com/libp2p/go-libp2p-pubsub/pb"
 	"github.com/libp2p/go-libp2p/p2p/muxer/yamux"
 	"github.com/libp2p/go-libp2p/p2p/security/noise"
 	"github.com/libp2p/go-libp2p/p2p/transport/tcp"
@@ -386,7 +387,13 @@ func TestNodeGossipRejectModeDropsMessage(t *testing.T) {
 // publishes a raw snappy block, the way the probe's gossip publisher does.
 func publishGossip(t *testing.T, h host.Host, maddr, topic string, payload []byte) error {
 	t.Helper()
-	ps, err := pubsub.NewGossipSub(context.Background(), h)
+	// The testnode router is StrictNoSign, so publishers must be too.
+	ps, err := pubsub.NewGossipSub(context.Background(), h,
+		pubsub.WithMessageSignaturePolicy(pubsub.StrictNoSign),
+		pubsub.WithMessageIdFn(func(pmsg *pubsubpb.Message) string {
+			return string(wire.GossipMessageID(pmsg.GetTopic(), pmsg.GetData()))
+		}),
+	)
 	if err != nil {
 		return fmt.Errorf("gossipsub: %w", err)
 	}

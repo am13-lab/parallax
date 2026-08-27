@@ -21,6 +21,7 @@ import (
 	"github.com/libp2p/go-libp2p/core/peer"
 	"github.com/libp2p/go-libp2p/core/protocol"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
+	pubsubpb "github.com/libp2p/go-libp2p-pubsub/pb"
 	"github.com/libp2p/go-libp2p/p2p/muxer/yamux"
 	"github.com/libp2p/go-libp2p/p2p/security/noise"
 	"github.com/libp2p/go-libp2p/p2p/transport/tcp"
@@ -135,7 +136,14 @@ func Start(cfg *Config) (*Node, error) {
 		})
 	}
 
-	ps, err := pubsub.NewGossipSub(ctx, h)
+	// CL clients exchange unsigned gossip with content-based message ids;
+	// mirror that so StrictNoSign publishers are accepted.
+	ps, err := pubsub.NewGossipSub(ctx, h,
+		pubsub.WithMessageSignaturePolicy(pubsub.StrictNoSign),
+		pubsub.WithMessageIdFn(func(pmsg *pubsubpb.Message) string {
+			return string(wire.GossipMessageID(pmsg.GetTopic(), pmsg.GetData()))
+		}),
+	)
 	if err != nil {
 		h.Close()
 		cancel()
@@ -177,6 +185,9 @@ func (n *Node) Multiaddr() string {
 
 // BeaconURL returns the canned beacon API base URL.
 func (n *Node) BeaconURL() string { return n.beaconURL }
+
+// TargetPeerID returns the node's own libp2p peer ID.
+func (n *Node) TargetPeerID() string { return n.host.ID().String() }
 
 // Requests returns the decoded SSZ bodies received per protocol.
 func (n *Node) Requests(protocol string) [][]byte {
