@@ -1,41 +1,13 @@
 package runner_test
 
 import (
-	"context"
 	"encoding/json"
 	"errors"
 	"strings"
 	"testing"
-	"time"
 
 	"libp2p-difftest/runner"
 )
-
-// fakeClient asserts the runner.Client interface remains implementable
-// outside the client package.
-type fakeClient struct{ name string }
-
-func (f *fakeClient) Name() string  { return f.name }
-func (f *fakeClient) Type() string  { return "fake" }
-func (f *fakeClient) ReqResp(ctx context.Context, protocol string, body []byte, timeout time.Duration) (*runner.ReqRespResult, error) {
-	return &runner.ReqRespResult{}, nil
-}
-func (f *fakeClient) PublishGossip(ctx context.Context, topic string, data []byte) error { return nil }
-func (f *fakeClient) ObserveGossip(ctx context.Context, topic string, data []byte, wait time.Duration) (runner.GossipVerdict, error) {
-	return runner.VerdictUnknown, nil
-}
-func (f *fakeClient) Connect(ctx context.Context, mode runner.ConnectMode) error { return nil }
-func (f *fakeClient) RotateIdentity(ctx context.Context) error                   { return nil }
-func (f *fakeClient) Health(ctx context.Context) error                           { return nil }
-func (f *fakeClient) State(ctx context.Context) (*runner.NodeState, error) {
-	return nil, runner.ErrNoBeaconAPI
-}
-func (f *fakeClient) Snapshot(ctx context.Context) (*runner.ResourceSnapshot, error) {
-	return &runner.ResourceSnapshot{}, nil
-}
-func (f *fakeClient) Close() error { return nil }
-
-var _ runner.Client = (*fakeClient)(nil)
 
 func TestErrNoBeaconAPISentinel(t *testing.T) {
 	if !errors.Is(runner.ErrNoBeaconAPI, runner.ErrNoBeaconAPI) {
