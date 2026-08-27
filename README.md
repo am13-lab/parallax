@@ -10,7 +10,9 @@ spec rule anchors and severity so they feed directly into triage.
 
 ## Architecture
 
-See DESIGN.md for the full contract. Summary:
+See DESIGN.md for the full contract and docs/METHODOLOGY.md for the testing
+playbook: the verdict model, how the seed cases were constructed, and a
+worked recipe for adding more tests. Summary:
 
 - one core engine: wire codecs, libp2p probe, beacon API client, client
   adapter, sequential runner, report writers (JSON plus JUnit)
@@ -41,6 +43,13 @@ go run ./cmd/difftest analyze --report results/report.json \
 
 Outputs: `results/report.json` (canonical v1 schema) and
 `results/junit.xml` (CI integration).
+
+No devnet available? Run the full seed set against scripted fake nodes to
+see the pipeline produce real artifacts:
+
+```bash
+go run ./cmd/simulation --out results/demo
+```
 
 ## Development
 
