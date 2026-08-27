@@ -117,7 +117,11 @@ func TestStateFromENRForkDigest(t *testing.T) {
 	if state.HeadSlot != 64 {
 		t.Fatalf("head slot: %d", state.HeadSlot)
 	}
-	if state.HeadRoot != [32]byte{0x22} {
+	var wantHead [32]byte
+	for i := range wantHead {
+		wantHead[i] = 0x22
+	}
+	if state.HeadRoot != wantHead {
 		t.Fatal("head root mismatch")
 	}
 	if state.FinalizedEpoch != 1 {
