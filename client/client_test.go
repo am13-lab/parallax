@@ -284,7 +284,9 @@ func TestConnectNoStatusFreshConnection(t *testing.T) {
 	if err := c.Connect(ctx, client.ModeWithStatus); err != nil {
 		t.Fatalf("connect with status: %v", err)
 	}
-	if got := len(n.Requests(statusProto)); got != before+2 {
-		t.Fatalf("WithStatus connect must handshake v1+v2: %d -> %d", before, got)
+	gotV1 := len(n.Requests(statusProto)) - before
+	gotV2 := len(n.Requests(statusV2Spec))
+	if gotV1 != 1 || gotV2 != 1 {
+		t.Fatalf("WithStatus connect must handshake v1+v2: v1 +%d, v2 %d", gotV1, gotV2)
 	}
 }
