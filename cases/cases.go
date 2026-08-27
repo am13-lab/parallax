@@ -133,6 +133,15 @@ func classOf(outcome string) string {
 	}
 }
 
+func sortedClientNames(m map[string]string) []string {
+	names := make([]string, 0, len(m))
+	for name := range m {
+		names = append(names, name)
+	}
+	sort.Strings(names)
+	return names
+}
+
 func sortedKeys(m map[string][]string) []string {
 	keys := make([]string, 0, len(m))
 	for k := range m {

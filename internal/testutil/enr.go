@@ -4,7 +4,6 @@ package testutil
 
 import (
 	"encoding/base64"
-	"testing"
 )
 
 // EncodeRLPItem encodes one RLP item (string or single byte), independent of
@@ -53,8 +52,7 @@ func minimalBE(v uint64) []byte {
 // BuildTestENR constructs a syntactically valid ENR string the way a client
 // would: [signature(64) seq k1 v1 ...] base64url with enr: prefix. The
 // signature is fake; decoders under test do not verify signatures.
-func BuildTestENR(t *testing.T, eth2 []byte, attnets []byte) string {
-	t.Helper()
+func BuildTestENR(eth2 []byte, attnets []byte) string {
 	sig := make([]byte, 64)
 	for i := range sig {
 		sig[i] = 0xAA

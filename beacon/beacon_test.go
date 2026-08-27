@@ -92,7 +92,7 @@ func TestStateFromENRForkDigest(t *testing.T) {
 	eth2 := make([]byte, 16)
 	copy(eth2[0:4], []byte{0xde, 0xad, 0xbe, 0xef})
 	binary.LittleEndian.PutUint64(eth2[8:16], 269568)
-	enrStr := testutil.BuildTestENR(t, eth2, make([]byte, 8))
+	enrStr := testutil.BuildTestENR(eth2, make([]byte, 8))
 
 	srv := beaconServer(t, enrStr, "0x01000000")
 	c := beacon.New(srv.URL)

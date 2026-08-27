@@ -18,7 +18,7 @@ func TestDecodeENRFields(t *testing.T) {
 	binary.LittleEndian.PutUint64(eth2[8:16], 7)    // next fork epoch
 	attnets := []byte{0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}
 
-	enrStr := testutil.BuildTestENR(t, eth2, attnets)
+	enrStr := testutil.BuildTestENR(eth2, attnets)
 	rec, err := enr.DecodeENR(enrStr)
 	if err != nil {
 		t.Fatalf("decode: %v", err)

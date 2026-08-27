@@ -98,7 +98,7 @@ func enrFor(t *testing.T, enrs [][]byte, i int) string {
 	if i >= len(enrs) {
 		return ""
 	}
-	return testutil.BuildTestENR(t, enrs[i], make([]byte, 8))
+	return testutil.BuildTestENR(enrs[i], make([]byte, 8))
 }
 
 func fmtName(i int) string {

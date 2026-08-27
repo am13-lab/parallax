@@ -68,21 +68,35 @@ func discoverySpecs() []runner.Spec {
 					results[c.Name()] = "digest:" + fmt.Sprintf("%x", state.ForkDigest)
 				}
 				// Same chain: all clients must report the same fork digest.
-				classes := map[string]bool{}
-				for _, v := range results {
-					classes[v] = true
+				byDigest := map[string][]string{}
+				for _, name := range sortedClientNames(results) {
+					byDigest[results[name]] = append(byDigest[results[name]], name)
 				}
-				if len(classes) <= 1 {
+				if len(byDigest) <= 1 {
 					return nil
 				}
+				// Outliers: everyone not in the largest digest group.
+				majorityLen := 0
+				for _, ns := range byDigest {
+					if len(ns) > majorityLen {
+						majorityLen = len(ns)
+					}
+				}
+				var outliers []string
+				for _, ns := range byDigest {
+					if len(ns) < majorityLen {
+						outliers = append(outliers, ns...)
+					}
+				}
 				return []runner.Divergence{{
-					TestID:        "discovery.fork_digest",
-					Category:      "discovery",
-					SpecRuleIDs:   te.Meta.SpecRules,
-					Type:          runner.DivConsensusValue,
-					Severity:      runner.SeverityHigh,
-					Description:   "discovery.fork_digest: clients report different fork digests on the same chain",
-					ClientResults: results,
+					TestID:         "discovery.fork_digest",
+					Category:       "discovery",
+					SpecRuleIDs:    te.Meta.SpecRules,
+					Type:           runner.DivConsensusValue,
+					Severity:       runner.SeverityHigh,
+					Description:    "discovery.fork_digest: clients report different fork digests on the same chain",
+					ClientResults:  results,
+					OutlierClients: outliers,
 				}}
 			},
 		},
