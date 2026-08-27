@@ -1,6 +1,6 @@
 # Binaries
 /difftest
-/hive-sim
+/hive-sim/hive-sim
 /dist/
 
 # Test and run artifacts
