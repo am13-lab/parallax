@@ -1,30 +1,59 @@
 # libp2p-difftest
 
-Differential testing of Ethereum consensus layer libp2p networking across client
-implementations (Prysm, Lighthouse, Teku, Nimbus, Lodestar, Grandine).
+Differential testing of Ethereum consensus layer libp2p networking across
+client implementations (Prysm, Lighthouse, Teku, Nimbus, Lodestar, Grandine).
 
-The tool compares how CL clients behave on the same P2P protocol inputs and reports
-divergences: accept vs reject mismatches, error code differences, resource anomalies,
-and spec violations. Findings anchor to consensus-spec rules for triage.
+The tool sends the same protocol inputs to all clients on a shared chain and
+reports divergences: accept versus reject mismatches, error code differences,
+resource anomalies, and chain-value inconsistencies. Findings carry consensus
+spec rule anchors and severity so they feed directly into triage.
 
-## Status
+## Architecture
 
-Design phase. See DESIGN.md for the architecture and roadmap.
+See DESIGN.md for the full contract. Summary:
 
-## Modes
+- one core engine: wire codecs, libp2p probe, beacon API client, client
+  adapter, sequential runner, report writers (JSON plus JUnit)
+- three interchangeable environments: static endpoint list, kurtosis
+  (ethereum-package), and an ethereum/hive simulator
+- every layer is tested without a live devnet through an in-process fake
+  beacon node (testnode) and fake backend servers
 
-- static: attach to already-running beacon nodes via a YAML endpoint list.
-- kurtosis: deploy a devnet with ethpandaops/ethereum-package, then test it.
-- hive: run as an ethereum/hive simulator.
-
-## Usage (planned)
+## Commands
 
 ```bash
+# show the case registry
 go run ./cmd/difftest list
-go run ./cmd/difftest run --env static --config clients.yaml --category reqresp
-go run ./cmd/difftest run --env kurtosis --eth-package configs/net.yaml --suite smoke
+
+# attach to running nodes (previous tool's clients.yaml format)
+go run ./cmd/difftest run --env static --config clients.yaml \
+    --category reqresp --seed 42 --out results/
+
+# provision a devnet via ethereum-package, then test it
+go run ./cmd/difftest run --env kurtosis --enclave p2p-test \
+    --args-file configs/net.yaml
+
+# analyze a saved report, apply the known-divergence allowlist,
+# and emit the previous tool's report shape for existing triage scripts
+go run ./cmd/difftest analyze --report results/report.json \
+    --allowlist known_divergences.json --legacy
 ```
 
-## License
+Outputs: `results/report.json` (canonical v1 schema) and
+`results/junit.xml` (CI integration).
 
-See LICENSE (to be added).
+## Development
+
+```bash
+go test ./...          # full suite; no docker or devnet required
+```
+
+The hive simulator is a separate Go module (hive-sim/); its tests spin a
+fake hive API server, so they also run without docker:
+
+```bash
+cd hive-sim && go test ./...
+```
+
+A live `./hive --sim` run and a kurtosis provisioning run are manual
+verification steps, as recorded in DESIGN.md section 9.
