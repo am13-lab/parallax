@@ -273,19 +273,20 @@ func TestConnectNoStatusFreshConnection(t *testing.T) {
 	}
 	t.Cleanup(func() { c.Close() })
 
-	before := len(n.Requests(statusProto))
+	beforeV1 := len(n.Requests(statusProto))
+	beforeV2 := len(n.Requests(statusV2Spec))
 	if err := c.Connect(ctx, client.ModeNoStatus); err != nil {
 		t.Fatalf("connect no status: %v", err)
 	}
-	if got := len(n.Requests(statusProto)); got != before {
-		t.Fatalf("NoStatus connect must not handshake: %d -> %d", before, got)
+	if len(n.Requests(statusProto)) != beforeV1 || len(n.Requests(statusV2Spec)) != beforeV2 {
+		t.Fatalf("NoStatus connect must not handshake")
 	}
 
 	if err := c.Connect(ctx, client.ModeWithStatus); err != nil {
 		t.Fatalf("connect with status: %v", err)
 	}
-	gotV1 := len(n.Requests(statusProto)) - before
-	gotV2 := len(n.Requests(statusV2Spec))
+	gotV1 := len(n.Requests(statusProto)) - beforeV1
+	gotV2 := len(n.Requests(statusV2Spec)) - beforeV2
 	if gotV1 != 1 || gotV2 != 1 {
 		t.Fatalf("WithStatus connect must handshake v1+v2: v1 +%d, v2 %d", gotV1, gotV2)
 	}
