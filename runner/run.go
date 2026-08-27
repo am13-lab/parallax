@@ -300,6 +300,7 @@ func Run(ctx context.Context, specs []Spec, clients []Client, environment env.En
 				Clients: usable,
 				Env:     environment,
 				Chain:   chain,
+				Meta:    s.Metadata,
 				RNG:     rand.New(rand.NewSource(opts.Seed + int64(i))),
 				Log:     slog.Default(),
 			}

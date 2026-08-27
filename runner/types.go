@@ -135,6 +135,7 @@ type TestEnv struct {
 	Clients []Client
 	Env     env.Environment
 	Chain   ChainConfig
+	Meta    Metadata // the running spec's metadata
 	RNG     *rand.Rand
 	Log     *slog.Logger
 }
