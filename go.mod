@@ -1,6 +1,6 @@
 module libp2p-difftest
 
-go 1.26.0
+go 1.25
 
 require (
 	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.4.0
