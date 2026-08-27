@@ -143,11 +143,9 @@ func (e *Environment) Teardown(ctx context.Context) error {
 
 // Provider implements env.Provider for kurtosis.
 type Provider struct {
-	api APIClient
+	// API is the kurtosis API client; inject a fake in tests.
+	API APIClient
 }
-
-// NewProvider builds a provider from an API client.
-func NewProvider(api APIClient) *Provider { return &Provider{api: api} }
 
 // Name returns the provider name.
 func (p *Provider) Name() string { return "kurtosis" }
@@ -159,9 +157,9 @@ func (p *Provider) Setup(ctx context.Context, cfg any) (env.Environment, error) 
 		return nil, fmt.Errorf("kurtosis provider expects kurtosisenv.Config, got %T", cfg)
 	}
 	if !kcfg.Attach {
-		if err := p.api.Provision(ctx, kcfg.Enclave, kcfg.ArgsFile); err != nil {
+		if err := p.API.Provision(ctx, kcfg.Enclave, kcfg.ArgsFile); err != nil {
 			return nil, fmt.Errorf("provision enclave %s: %w", kcfg.Enclave, err)
 		}
 	}
-	return Attach(ctx, p.api, kcfg.Enclave)
+	return Attach(ctx, p.API, kcfg.Enclave)
 }
