@@ -6,8 +6,8 @@ import (
 	"strings"
 	"testing"
 
-	"libp2p-difftest/runner"
 	"libp2p-difftest/report"
+	"libp2p-difftest/runner"
 )
 
 func sampleReport() *runner.Report {
@@ -22,7 +22,7 @@ func sampleReport() *runner.Report {
 				Divergences: []runner.Divergence{
 					{TestID: "t.div", Category: "reqresp", Type: runner.DivAcceptReject,
 						Severity: runner.SeverityHigh, Description: "a accepted, b rejected",
-						ClientResults: map[string]string{"a": "accept", "b": "reject"},
+						ClientResults:  map[string]string{"a": "accept", "b": "reject"},
 						OutlierClients: []string{"b"}},
 				}},
 			{TestID: "t.skip", Category: "gossip", Status: runner.StatusSkipped, SkipReason: "insufficient clients"},

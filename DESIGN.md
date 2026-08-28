@@ -406,7 +406,17 @@ not. The rule: no behavior merges without a failing test that it makes pass.
   testnodes, run the seed suite, assert report shape and JUnit output.
 - hive-sim: suite construction and result mapping against a fake hive API.
 
-## 8. Seed test set (v1 scope)
+## 8. Test set
+
+The v1 seed set was 14 cases. Batch 1 of the migration added the status
+family (4 boundary variants plus finalized and fork mismatch, with a
+still-connected ping check) and 19 discovery cases (ENR structure and
+sequence properties, cross-client ENR consistency, and beacon-metadata
+cross-checks), for 39 registered cases. The old repo's
+discovery.enr.fork_digest_valid and discovery.consistency.fork_digest are
+covered by the existing discovery.fork_digest case rather than ported
+twice. Old-case knowledge IDs (SHERLOCK-*, PROSE-*) carry into
+Metadata.KnowledgeIDs.
 
 reqresp (port and harden from the previous repo):
 - reqresp.status.valid: valid Status request returns success chunk.

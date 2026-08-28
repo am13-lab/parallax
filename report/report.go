@@ -16,15 +16,15 @@ import (
 
 // Finding groups divergences that share the same root cause.
 type Finding struct {
-	ID             string             `json:"id"`
-	RootCause      string             `json:"root_cause"`
-	OutlierClients []string           `json:"outlier_clients"`
+	ID             string                `json:"id"`
+	RootCause      string                `json:"root_cause"`
+	OutlierClients []string              `json:"outlier_clients"`
 	Type           runner.DivergenceType `json:"type"`
-	Severity       runner.Severity    `json:"severity"`
-	EvidenceCount  int                `json:"evidence_count"`
-	Evidence       []runner.Divergence `json:"evidence"`
-	Suppressed     bool               `json:"suppressed,omitempty"`
-	SuppressReason string             `json:"suppress_reason,omitempty"`
+	Severity       runner.Severity       `json:"severity"`
+	EvidenceCount  int                   `json:"evidence_count"`
+	Evidence       []runner.Divergence   `json:"evidence"`
+	Suppressed     bool                  `json:"suppressed,omitempty"`
+	SuppressReason string                `json:"suppress_reason,omitempty"`
 }
 
 const maxEvidencePerFinding = 5
@@ -43,16 +43,16 @@ func WriteJSON(rep *runner.Report) ([]byte, error) {
 // ---- JUnit ----
 
 type junitSuites struct {
-	XMLName xml.Name      `xml:"testsuites"`
-	Suites  []junitSuite  `xml:"testsuite"`
+	XMLName xml.Name     `xml:"testsuites"`
+	Suites  []junitSuite `xml:"testsuite"`
 }
 
 type junitSuite struct {
-	Name     string       `xml:"name,attr"`
-	Tests    int          `xml:"tests,attr"`
-	Failures int          `xml:"failures,attr"`
-	Skipped  int          `xml:"skipped,attr"`
-	Cases    []junitCase  `xml:"testcase"`
+	Name     string      `xml:"name,attr"`
+	Tests    int         `xml:"tests,attr"`
+	Failures int         `xml:"failures,attr"`
+	Skipped  int         `xml:"skipped,attr"`
+	Cases    []junitCase `xml:"testcase"`
 }
 
 type junitCase struct {
@@ -262,10 +262,10 @@ func entryMatches(e AllowlistEntry, f *Finding) bool {
 
 // legacyRunSummary mirrors the previous tool's run_summary object.
 type legacyRunSummary struct {
-	Seed        int64  `json:"seed"`
-	StopReason  string `json:"stop_reason,omitempty"`
-	ExecutedTests int  `json:"executed_tests"`
-	TotalTests  int    `json:"total_tests"`
+	Seed          int64  `json:"seed"`
+	StopReason    string `json:"stop_reason,omitempty"`
+	ExecutedTests int    `json:"executed_tests"`
+	TotalTests    int    `json:"total_tests"`
 }
 
 // LegacyShape renders a v1 report in the previous tool's top-level shape

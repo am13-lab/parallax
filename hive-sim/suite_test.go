@@ -210,7 +210,7 @@ func TestHiveSuiteFailureMapping(t *testing.T) {
 			return &fakeRunnerClient{name: ep.Name}, nil
 		},
 		HTTPPort: func(string) int { return 3500 },
-		P2PPort:     9000,
+		P2PPort:  9000,
 		SpecsFor: func(category string) []runner.Spec {
 			return []runner.Spec{{
 				ID:       "reqresp.divergent",

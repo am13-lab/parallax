@@ -17,12 +17,12 @@ func TestErrNoBeaconAPISentinel(t *testing.T) {
 
 func TestDivergenceJSONFieldNames(t *testing.T) {
 	d := runner.Divergence{
-		TestID:        "reqresp.ping.empty_body",
-		Category:      "reqresp",
-		Type:          runner.DivAcceptReject,
-		Severity:      runner.SeverityHigh,
-		Description:   "d",
-		ClientResults: map[string]string{"a": "accept", "b": "reject"},
+		TestID:         "reqresp.ping.empty_body",
+		Category:       "reqresp",
+		Type:           runner.DivAcceptReject,
+		Severity:       runner.SeverityHigh,
+		Description:    "d",
+		ClientResults:  map[string]string{"a": "accept", "b": "reject"},
 		OutlierClients: []string{"b"},
 	}
 	b, err := json.Marshal(d)

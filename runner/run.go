@@ -37,12 +37,12 @@ type TestResult struct {
 
 // Summary aggregates a run.
 type Summary struct {
-	Total     int    `json:"total"`
-	Passed    int    `json:"passed"`
-	Divergent int    `json:"divergent"`
-	Skipped   int    `json:"skipped"`
-	Errors    int    `json:"errors"`
-	Executed  int    `json:"executed"`
+	Total      int    `json:"total"`
+	Passed     int    `json:"passed"`
+	Divergent  int    `json:"divergent"`
+	Skipped    int    `json:"skipped"`
+	Errors     int    `json:"errors"`
+	Executed   int    `json:"executed"`
 	StopReason string `json:"stop_reason,omitempty"`
 }
 
@@ -57,16 +57,16 @@ type EndpointFingerprint struct {
 
 // Report is the full result of one run. Schema version 1.
 type Report struct {
-	SchemaVersion int                    `json:"schema_version"`
-	StartedAt     time.Time              `json:"started_at"`
-	EndedAt       time.Time              `json:"ended_at"`
-	Seed          int64                  `json:"seed"`
-	Environment   map[string]string      `json:"environment"`
-	Endpoints     []EndpointFingerprint  `json:"endpoints"`
-	Chain         ChainConfig            `json:"-"`
-	ChainPreset   string                 `json:"chain_preset,omitempty"`
-	Results       []TestResult           `json:"results"`
-	Summary       Summary                `json:"summary"`
+	SchemaVersion int                   `json:"schema_version"`
+	StartedAt     time.Time             `json:"started_at"`
+	EndedAt       time.Time             `json:"ended_at"`
+	Seed          int64                 `json:"seed"`
+	Environment   map[string]string     `json:"environment"`
+	Endpoints     []EndpointFingerprint `json:"endpoints"`
+	Chain         ChainConfig           `json:"-"`
+	ChainPreset   string                `json:"chain_preset,omitempty"`
+	Results       []TestResult          `json:"results"`
+	Summary       Summary               `json:"summary"`
 }
 
 // Options configures a run.

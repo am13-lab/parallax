@@ -5,8 +5,8 @@ package runner
 import (
 	"context"
 	"fmt"
-	"math/rand"
 	"log/slog"
+	"math/rand"
 	"time"
 
 	"libp2p-difftest/beacon"

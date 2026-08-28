@@ -15,13 +15,13 @@ import (
 
 	"github.com/libp2p/go-libp2p"
 	mplex "github.com/libp2p/go-libp2p-mplex"
+	pubsub "github.com/libp2p/go-libp2p-pubsub"
+	pubsubpb "github.com/libp2p/go-libp2p-pubsub/pb"
 	"github.com/libp2p/go-libp2p/core/crypto"
 	"github.com/libp2p/go-libp2p/core/host"
 	"github.com/libp2p/go-libp2p/core/network"
 	"github.com/libp2p/go-libp2p/core/peer"
 	"github.com/libp2p/go-libp2p/core/protocol"
-	pubsub "github.com/libp2p/go-libp2p-pubsub"
-	pubsubpb "github.com/libp2p/go-libp2p-pubsub/pb"
 	"github.com/libp2p/go-libp2p/p2p/muxer/yamux"
 	"github.com/libp2p/go-libp2p/p2p/security/noise"
 	"github.com/libp2p/go-libp2p/p2p/transport/tcp"
@@ -33,11 +33,11 @@ import (
 type Behavior int
 
 const (
-	Success Behavior = iota // respond with configured chunks
-	ErrorCode               // respond with a result code plus message
-	Reset                   // reset the stream
-	Hang                    // never respond
-	Garbage                 // write raw bytes then close
+	Success   Behavior = iota // respond with configured chunks
+	ErrorCode                 // respond with a result code plus message
+	Reset                     // reset the stream
+	Hang                      // never respond
+	Garbage                   // write raw bytes then close
 )
 
 // Script configures one protocol's behavior.

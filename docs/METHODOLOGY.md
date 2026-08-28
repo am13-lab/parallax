@@ -96,7 +96,7 @@ Rules the model enforces:
 
 ## 5. How the seed set was generated
 
-Each of the 14 seed cases follows the same construction loop:
+Each seed case follows the same construction loop:
 
 1. Pick a spec rule with differential potential: rules that clients could
    plausibly interpret differently (framing strictness, pre-handshake
@@ -115,7 +115,17 @@ The two-directional testnode validation is the core stability trick: a case
 that cannot produce a divergence against a scripted deviant node is broken,
 and so is a case that reports divergence against identical nodes.
 
-## 6. How to add a test
+## 6. Migration status
+
+Batch 1 (done) ported the status family and the discovery ENR families
+(25 cases) with two capability additions: NodeState now carries the raw
+ENR string, and clients expose beacon node metadata. Batch 2 will
+parameterize the reqresp malformed/boundary families across protocols;
+batch 3 covers cases needing payload builders or scoring profiles; the
+generative subsystems (statemachine, cryptomsg, semantic_valid) stay out
+until the hand-written suites are over.
+
+## 6a. How to add a test
 
 Worked recipe, using a hypothetical req/resp boundary case:
 
