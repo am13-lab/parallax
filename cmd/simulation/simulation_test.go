@@ -15,7 +15,7 @@ func TestRunSimulationProducesDivergences(t *testing.T) {
 		t.Fatalf("simulation: %v", err)
 	}
 
-	if rep.Summary.Total != 14 {
+	if rep.Summary.Total != 39 {
 		t.Fatalf("seed set size: %d", rep.Summary.Total)
 	}
 	// The deviant node rejects all pings (the script cannot branch on the

@@ -10,8 +10,8 @@ import (
 	"strings"
 	"time"
 
-	"libp2p-difftest/client"
 	"libp2p-difftest/cases"
+	"libp2p-difftest/client"
 	"libp2p-difftest/env"
 	"libp2p-difftest/env/kurtosisenv"
 	"libp2p-difftest/env/staticenv"
@@ -153,7 +153,7 @@ func setupEnv(ctx context.Context, cfg RunConfig) (env.Environment, []env.Endpoi
 // that exposes a valid fork digest.
 func deriveChain(ctx context.Context, clients []runner.Client, preset string) runner.ChainConfig {
 	chain := runner.ChainConfig{
-		Preset:       preset,
+		Preset:        preset,
 		GossipMaxSize: 10485760, // mainnet defaults; refined by state below
 		MaxChunkSize:  1048576,
 	}

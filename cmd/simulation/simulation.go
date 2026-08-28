@@ -131,7 +131,7 @@ func runSimulation(cfg SimConfig) (*runner.Report, error) {
 		clients = append(clients, ln.cl)
 	}
 
-	chain := runner.ChainConfig{Preset: "mainnet", ForkDigest: [4]byte{0xde, 0xad, 0xbe, 0xef}}
+	chain := runner.ChainConfig{Preset: "mainnet", ForkDigest: [4]byte{0xde, 0xad, 0xbe, 0xef}, CustodyRequirement: 4}
 	rep := runner.Run(ctx, cases.All(), clients, envr, chain, runner.Options{
 		Seed:           42,
 		PerTestTimeout: 2 * time.Minute,

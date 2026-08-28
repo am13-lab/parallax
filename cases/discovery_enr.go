@@ -16,8 +16,10 @@ const farFutureEpoch = ^uint64(0)
 // enrOf parses a client's advertised ENR, mapping failures to outcome-class
 // strings ("other:...").
 func enrOf(ctx context.Context, c runner.Client) (*enr.ENRRecord, string) {
+	// Only the raw ENR matters here; valid chain state is not required
+	// (a node with a bad fork digest still has an inspectable ENR).
 	state, err := c.State(ctx)
-	if err != nil || state == nil || !state.Valid {
+	if err != nil || state == nil {
 		return nil, "other:no state"
 	}
 	if strings.TrimSpace(state.ENR) == "" {

@@ -34,6 +34,18 @@ type harness struct {
 // (index beyond the slice means the node does not serve the protocol).
 func start(t *testing.T, nodeCount int, scripts map[string][]*testnode.Script, relay []bool, enrs [][]byte) *harness {
 	t.Helper()
+	beacons := make([]*testnode.BeaconConfig, nodeCount)
+	for i := range beacons {
+		beacons[i] = &testnode.BeaconConfig{ENR: enrFor(t, enrs, i), HeadSlot: 32}
+	}
+	return startBeacons(t, nodeCount, scripts, relay, beacons)
+}
+
+// startBeacons is start() with full control over each node's beacon config
+// (ENR contents, node metadata).
+func startBeacons(t *testing.T, nodeCount int, scripts map[string][]*testnode.Script,
+	relay []bool, beacons []*testnode.BeaconConfig) *harness {
+	t.Helper()
 	h := &harness{chain: runner.ChainConfig{
 		Preset:        "mainnet",
 		ForkDigest:    [4]byte{0xde, 0xad, 0xbe, 0xef},
@@ -50,16 +62,13 @@ func start(t *testing.T, nodeCount int, scripts map[string][]*testnode.Script, r
 				protos[proto] = behaviors[i]
 			}
 		}
-		var topics []string
-		if i < len(relay) {
-			// The gossip case topic carries the harness fork digest; the
-			// node subscribes regardless of its own name.
-			topics = []string{gossipTopic}
-		}
 		cfg := &testnode.Config{
 			Protocols: protos,
-			Topics:    topics,
-			Beacon:    &testnode.BeaconConfig{ENR: enrFor(t, enrs, i), HeadSlot: 32},
+			Topics:    []string{gossipTopic},
+			Beacon:    beacons[i],
+		}
+		if beacons[i] == nil {
+			cfg.Beacon = &testnode.BeaconConfig{HeadSlot: 32}
 		}
 		if i < len(relay) && !relay[i] {
 			off := false
