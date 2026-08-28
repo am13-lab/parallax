@@ -23,7 +23,12 @@ func gossipSpecs() []runner.Spec {
 			},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				topic := gossipTopic(te.Chain)
-				payload := wire.GossipSnappyEncode([]byte("not a signed beacon block at all"))
+				// Unique per run: real block payloads are unique, and a
+				// nonce keeps content-id dedup in earlier gossip cases
+				// from suppressing this message.
+				nonce := make([]byte, 16)
+				te.RNG.Read(nonce)
+				payload := wire.GossipSnappyEncode(append([]byte("malformed block "), nonce...))
 
 				results := map[string]string{}
 				for _, c := range te.Clients {

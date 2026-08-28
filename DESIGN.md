@@ -421,7 +421,21 @@ families (boundary, malformed, trailing bytes, length bombs) as
 table-driven constructors, 38 more cases, for 77 registered cases total.
 Duplicates with the seed set (status random-bytes malformation,
 blocks_by_root trailing bytes and length bomb) were skipped, not double
-ported.
+ported. Batch 3 ported the transporttest family (corrupted frames, stalled
+handshakes, identify abuse; 9 cases, heavy class where inputs degrade
+target state), the exhaustion family (4 heavy cases via SendSlowly and
+SendOnly), 15 gossip cases (malformed payloads, subnet OOB topics,
+attestation staleness, replay, unknown topic, plus a config-class
+post-Fulu topic split and a heavy invalid flood), the Gloas execution
+payload boundary family (6 config cases, preflighted on the fork), data
+column validation (2), rate-limit bursts (2 heavy), and custody derivation
+(1) — with honest skips documented for discv5-dependent discovery cases,
+peer-score introspection, and proxy colocation. Batch 4 ported the
+generative subsystems as deterministic generators: a cryptomsg sweep
+(81 cases: malformation x protocol x size plus varint claims), 30 seeded
+statemachine sequences over a request-step alphabet, and 8 single-client
+semantic conformance checks. The registry holds 237 cases (215 standard,
+15 heavy, 7 config); the simulation runs the standard selection.
 
 reqresp (port and harden from the previous repo):
 - reqresp.status.valid: valid Status request returns success chunk.

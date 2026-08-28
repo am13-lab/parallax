@@ -121,10 +121,17 @@ Batch 1 (done) ported the status family and the discovery ENR families
 (25 cases) with two capability additions: NodeState now carries the raw
 ENR string, and clients expose beacon node metadata. Batch 2 (done)
 parameterized the reqresp boundary/malformed/trailing/length-bomb
-families across protocols as table-driven constructors (38 cases). Batch
-3 covers cases needing payload builders or scoring profiles; the
-generative subsystems (statemachine, cryptomsg, semantic_valid) stay out
-until the hand-written suites are over.
+families across protocols as table-driven constructors (38 cases).
+Batch 3 (done) ported the transporttest, exhaustion, gossip and Gloas
+protocol families (40 cases, heavy and config classes marked honestly;
+discv5-dependent and peer-score introspection cases are documented
+skips). Batch 4 (done) ported the generative subsystems as deterministic
+generators producing Spec values: a cryptomsg sweep (81), seeded
+statemachine sequences (30), and semantic conformance checks (8). The
+registry now holds 237 cases. Remaining known gaps, deferred with
+reasons: discv5 raw UDP discovery cases, peer-score introspection, proxy
+colocation floods, and the old statemachine engine's full profile
+system (the trimmed sequence generator covers the concept).
 
 ## 6a. How to add a test
 

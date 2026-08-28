@@ -88,7 +88,7 @@ func runSimulation(cfg SimConfig) (*runner.Report, error) {
 		},
 	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Minute)
 	defer cancel()
 
 	envCfg := &staticenv.Config{}

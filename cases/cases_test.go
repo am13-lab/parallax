@@ -156,7 +156,8 @@ func TestRegistryStable(t *testing.T) {
 	if _, ok := cases.ByID("reqresp.ping.empty_body"); !ok {
 		t.Fatal("ByID must find registered cases")
 	}
-	if got := cases.ByCategory("transport"); len(got) != 2 {
+	// Seed 2 + ported transporttest family 9.
+	if got := cases.ByCategory("transport"); len(got) != 11 {
 		t.Fatalf("transport category: %d", len(got))
 	}
 }
@@ -301,4 +302,13 @@ func TestStatusPreStatusRestoresConnection(t *testing.T) {
 			t.Fatalf("reconnect %s: %v", c.Name(), err)
 		}
 	}
+}
+
+// registryIDs lists all registered case IDs in registration order.
+func registryIDs() []string {
+	var out []string
+	for _, s := range cases.All() {
+		out = append(out, s.ID)
+	}
+	return out
 }

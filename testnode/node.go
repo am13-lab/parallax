@@ -52,6 +52,9 @@ type Script struct {
 	// ReadRequest reads and records the request before responding.
 	// When false (Reset), the stream is reset without reading.
 	ReadRequest bool
+	// StrictRequest resets the stream when the request frame is invalid
+	// (framing or CRC), like a spec-conformant client would.
+	StrictRequest bool
 	// Delay holds the response before writing it.
 	Delay time.Duration
 }
@@ -245,7 +248,10 @@ func (n *Node) serveStream(stream network.Stream, protocol string, s *Script, ma
 	}
 
 	if s.ReadRequest {
-		n.readAndRecord(stream, protocol, maxChunk)
+		if err := n.readAndRecord(stream, protocol, maxChunk); err != nil && s.StrictRequest {
+			stream.Reset()
+			return
+		}
 	}
 
 	switch s.Behavior {
@@ -272,18 +278,19 @@ func (n *Node) serveStream(stream network.Stream, protocol string, s *Script, ma
 	}
 }
 
-func (n *Node) readAndRecord(stream network.Stream, protocol string, maxChunk uint64) {
+func (n *Node) readAndRecord(stream network.Stream, protocol string, maxChunk uint64) error {
 	frame, err := wire.ReadFrame(stream, maxChunk)
 	if err != nil {
-		return
+		return err
 	}
 	body, err := wire.SnappyDecode(frame)
 	if err != nil {
-		return
+		return err
 	}
 	n.mu.Lock()
 	n.requests[protocol] = append(n.requests[protocol], body)
 	n.mu.Unlock()
+	return nil
 }
 
 func (n *Node) sink(topic string, relay *bool) error {
