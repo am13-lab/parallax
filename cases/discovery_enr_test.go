@@ -116,7 +116,7 @@ func TestENRFamiliesConvergent(t *testing.T) {
 	h := startBeacons(t, 2, map[string][]*testnode.Script{
 		"/eth2/beacon_chain/req/status/1/ssz_snappy": {{Behavior: testnode.Success, Chunks: [][]byte{make([]byte, 84)}, ReadRequest: true}},
 		pingProto: {{Behavior: testnode.Success, Chunks: [][]byte{{0x01}}, ReadRequest: true}},
-	}, nil, compliantBeacons(digest))
+	}, nil, nil, compliantBeacons(digest))
 	h.chain.CustodyRequirement = 4
 
 	for _, id := range []string{
@@ -155,7 +155,7 @@ func TestENRStructureDivergent(t *testing.T) {
 	})
 	beacons[1].ENR = eth2less
 
-	h := startBeacons(t, 2, map[string][]*testnode.Script{}, nil, beacons)
+	h := startBeacons(t, 2, map[string][]*testnode.Script{}, nil, nil, beacons)
 	divs := runCase(t, h, "discovery.enr.eth2_field_present")
 	if len(divs) != 1 || len(divs[0].OutlierClients) != 1 || divs[0].OutlierClients[0] != "B" {
 		t.Fatalf("missing eth2 must diverge with B as outlier: %+v", divs)
@@ -168,7 +168,7 @@ func TestConsistencyDivergent(t *testing.T) {
 	// Node B advertises a different next fork version.
 	beacons[1].ENR = compliantENR(digest, [4]byte{0x06, 0, 0, 0}, 269568)
 
-	h := startBeacons(t, 2, map[string][]*testnode.Script{}, nil, beacons)
+	h := startBeacons(t, 2, map[string][]*testnode.Script{}, nil, nil, beacons)
 	divs := runCase(t, h, "discovery.consistency.next_fork_version")
 	if len(divs) != 1 || divs[0].Type != runner.DivConsensusValue {
 		t.Fatalf("next fork version mismatch must be a consensus value divergence: %+v", divs)
@@ -181,7 +181,7 @@ func TestMetadataMismatchDivergent(t *testing.T) {
 	// Node B's metadata attnets disagree with its ENR.
 	beacons[1].MetaAttnets = "0x00000000000000ff"
 
-	h := startBeacons(t, 2, map[string][]*testnode.Script{}, nil, beacons)
+	h := startBeacons(t, 2, map[string][]*testnode.Script{}, nil, nil, beacons)
 	divs := runCase(t, h, "discovery.metadata.attnets_match_enr")
 	if len(divs) != 1 {
 		t.Fatalf("attnets mismatch must diverge: %+v", divs)

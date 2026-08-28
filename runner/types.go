@@ -78,6 +78,9 @@ type Client interface {
 	SendSlowly(ctx context.Context, protocol string, body []byte, perByte, timeout time.Duration) ([]byte, error)
 
 	PublishGossip(ctx context.Context, topic string, data []byte) error
+	// PrepareGossipTopic joins the topic ahead of publishing so the target
+	// can graft us onto its mesh before a burst.
+	PrepareGossipTopic(ctx context.Context, topic string) error
 	// ObserveGossip subscribes via a target-only observer host and waits
 	// for re-propagation of a message with this content.
 	ObserveGossip(ctx context.Context, topic string, data []byte, wait time.Duration) (GossipVerdict, error)

@@ -39,13 +39,13 @@ func start(t *testing.T, nodeCount int, scripts map[string][]*testnode.Script, r
 	for i := range beacons {
 		beacons[i] = &testnode.BeaconConfig{ENR: enrFor(t, enrs, i), HeadSlot: 32}
 	}
-	return startBeacons(t, nodeCount, scripts, relay, beacons)
+	return startBeacons(t, nodeCount, scripts, relay, nil, beacons)
 }
 
 // startBeacons is start() with full control over each node's beacon config
-// (ENR contents, node metadata).
+// (ENR contents, node metadata) and the gossip topics nodes subscribe to.
 func startBeacons(t *testing.T, nodeCount int, scripts map[string][]*testnode.Script,
-	relay []bool, beacons []*testnode.BeaconConfig) *harness {
+	relay []bool, topics []string, beacons []*testnode.BeaconConfig) *harness {
 	t.Helper()
 	h := &harness{chain: runner.ChainConfig{
 		Preset:        "mainnet",
@@ -63,13 +63,18 @@ func startBeacons(t *testing.T, nodeCount int, scripts map[string][]*testnode.Sc
 				protos[proto] = behaviors[i]
 			}
 		}
+		nodeTopics := topics
+		if len(nodeTopics) == 0 {
+			nodeTopics = []string{gossipTopic}
+		}
+		beacon := &testnode.BeaconConfig{HeadSlot: 32}
+		if i < len(beacons) && beacons[i] != nil {
+			beacon = beacons[i]
+		}
 		cfg := &testnode.Config{
 			Protocols: protos,
-			Topics:    []string{gossipTopic},
-			Beacon:    beacons[i],
-		}
-		if beacons[i] == nil {
-			cfg.Beacon = &testnode.BeaconConfig{HeadSlot: 32}
+			Topics:    nodeTopics,
+			Beacon:    beacon,
 		}
 		if i < len(relay) && !relay[i] {
 			off := false

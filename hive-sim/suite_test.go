@@ -35,6 +35,9 @@ func (f *fakeRunnerClient) SendSlowly(ctx context.Context, protocol string, body
 func (f *fakeRunnerClient) PublishGossip(ctx context.Context, topic string, data []byte) error {
 	return nil
 }
+func (f *fakeRunnerClient) PrepareGossipTopic(ctx context.Context, topic string) error {
+	return nil
+}
 func (f *fakeRunnerClient) ObserveGossip(ctx context.Context, topic string, data []byte, wait time.Duration) (runner.GossipVerdict, error) {
 	return runner.VerdictUnknown, nil
 }
