@@ -229,7 +229,7 @@ func TestRunSkipsBelowMinClients(t *testing.T) {
 func TestRunPreflightSkip(t *testing.T) {
 	cs := []runner.Client{newFakeClient("a"), newFakeClient("b")}
 	s := runner.Spec{ID: "t.pre", Category: "reqresp",
-		Preflight: func(ctx context.Context, cs []runner.Client) runner.PreflightResult {
+		Preflight: func(ctx context.Context, chain runner.ChainConfig, cs []runner.Client) runner.PreflightResult {
 			return runner.PreflightResult{Runnable: false, Reason: "no data sidecars"}
 		},
 		Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence { return nil },

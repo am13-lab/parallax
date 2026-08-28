@@ -123,7 +123,7 @@ type Spec struct {
 	Metadata Metadata
 	// Preflight proves the test is meaningful on the current environment
 	// before it consumes a scheduling slot. Nil means always runnable.
-	Preflight func(ctx context.Context, cs []Client) PreflightResult
+	Preflight func(ctx context.Context, chain ChainConfig, cs []Client) PreflightResult
 	Run       func(ctx context.Context, te TestEnv) []Divergence
 }
 

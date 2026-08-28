@@ -272,7 +272,7 @@ func Run(ctx context.Context, specs []Spec, clients []Client, environment env.En
 			result.Status = StatusSkipped
 			result.SkipReason = fmt.Sprintf("insufficient usable clients: have %d, need %d", len(usable), floor)
 		case s.Preflight != nil:
-			pf := s.Preflight(ctx, usable)
+			pf := s.Preflight(ctx, chain, usable)
 			if !pf.Runnable {
 				result.Status = StatusSkipped
 				result.SkipReason = pf.Reason

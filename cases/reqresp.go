@@ -194,7 +194,7 @@ func buildStatusBody(state *runner.NodeState) []byte {
 
 // requireChainState preflights that every client exposes a valid
 // Beacon API-derived chain state.
-func requireChainState(ctx context.Context, cs []runner.Client) runner.PreflightResult {
+func requireChainState(ctx context.Context, chain runner.ChainConfig, cs []runner.Client) runner.PreflightResult {
 	for _, c := range cs {
 		state, err := c.State(ctx)
 		if err != nil || state == nil || !state.Valid {

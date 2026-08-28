@@ -5,8 +5,8 @@ import (
 	"testing"
 	"time"
 
-	"libp2p-difftest/client"
 	"libp2p-difftest/cases"
+	"libp2p-difftest/client"
 	"libp2p-difftest/internal/testutil"
 	"libp2p-difftest/runner"
 	"libp2p-difftest/testnode"
@@ -35,10 +35,10 @@ type harness struct {
 func start(t *testing.T, nodeCount int, scripts map[string][]*testnode.Script, relay []bool, enrs [][]byte) *harness {
 	t.Helper()
 	h := &harness{chain: runner.ChainConfig{
-		Preset:       "mainnet",
-		ForkDigest:   [4]byte{0xde, 0xad, 0xbe, 0xef},
+		Preset:        "mainnet",
+		ForkDigest:    [4]byte{0xde, 0xad, 0xbe, 0xef},
 		GossipMaxSize: 10485760,
-		MaxChunkSize: 1048576,
+		MaxChunkSize:  1048576,
 	}}
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
