@@ -119,9 +119,10 @@ and so is a case that reports divergence against identical nodes.
 
 Batch 1 (done) ported the status family and the discovery ENR families
 (25 cases) with two capability additions: NodeState now carries the raw
-ENR string, and clients expose beacon node metadata. Batch 2 will
-parameterize the reqresp malformed/boundary families across protocols;
-batch 3 covers cases needing payload builders or scoring profiles; the
+ENR string, and clients expose beacon node metadata. Batch 2 (done)
+parameterized the reqresp boundary/malformed/trailing/length-bomb
+families across protocols as table-driven constructors (38 cases). Batch
+3 covers cases needing payload builders or scoring profiles; the
 generative subsystems (statemachine, cryptomsg, semantic_valid) stay out
 until the hand-written suites are over.
 

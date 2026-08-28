@@ -15,6 +15,7 @@ func All() []runner.Spec {
 	var all []runner.Spec
 	all = append(all, reqrespSpecs()...)
 	all = append(all, statusSpecs()...)
+	all = append(all, batch2Specs()...)
 	all = append(all, gossipSpecs()...)
 	all = append(all, discoverySpecs()...)
 	all = append(all, enrSpecs()...)

@@ -416,7 +416,12 @@ cross-checks), for 39 registered cases. The old repo's
 discovery.enr.fork_digest_valid and discovery.consistency.fork_digest are
 covered by the existing discovery.fork_digest case rather than ported
 twice. Old-case knowledge IDs (SHERLOCK-*, PROSE-*) carry into
-Metadata.KnowledgeIDs.
+Metadata.KnowledgeIDs. Batch 2 ported the four parameterized reqresp
+families (boundary, malformed, trailing bytes, length bombs) as
+table-driven constructors, 38 more cases, for 77 registered cases total.
+Duplicates with the seed set (status random-bytes malformation,
+blocks_by_root trailing bytes and length bomb) were skipped, not double
+ported.
 
 reqresp (port and harden from the previous repo):
 - reqresp.status.valid: valid Status request returns success chunk.

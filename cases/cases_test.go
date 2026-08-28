@@ -2,6 +2,7 @@ package cases_test
 
 import (
 	"context"
+	"math/rand"
 	"testing"
 	"time"
 
@@ -118,7 +119,7 @@ func (h *harness) env() runner.TestEnv {
 	return runner.TestEnv{
 		Clients: h.clients,
 		Chain:   h.chain,
-		RNG:     nil,
+		RNG:     rand.New(rand.NewSource(1)),
 	}
 }
 

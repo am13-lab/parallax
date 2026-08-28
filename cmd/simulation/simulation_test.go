@@ -15,16 +15,18 @@ func TestRunSimulationProducesDivergences(t *testing.T) {
 		t.Fatalf("simulation: %v", err)
 	}
 
-	if rep.Summary.Total != 39 {
+	if rep.Summary.Total != 77 {
 		t.Fatalf("seed set size: %d", rep.Summary.Total)
 	}
 	// The deviant node rejects all pings (the script cannot branch on the
 	// body), so both ping cases diverge; plus unknown protocol, gossip
 	// verdict, and fork digest.
 	// teku-c rejects all pings, so the ported still-connected check also
-	// flags it on every Status exchange: 5 protocol divergences + 6 status.
-	if rep.Summary.Divergent != 11 {
-		t.Fatalf("expected 11 divergences from the scripted deviant node: %+v", rep.Summary)
+	// flags it on every Status exchange, and every ping-based batch-2 case
+	// (malformed, varint, bombs, trailing chunk) diverges on it too:
+	// 5 protocol + 6 status + 16 ping-based = 27.
+	if rep.Summary.Divergent != 27 {
+		t.Fatalf("expected 27 divergences from the scripted deviant node: %+v", rep.Summary)
 	}
 
 	byID := map[string]runner.TestResult{}
@@ -40,6 +42,9 @@ func TestRunSimulationProducesDivergences(t *testing.T) {
 		"reqresp.status.boundary.all_slots_max_uint64",
 		"reqresp.status.finalized_mismatch",
 		"reqresp.status.fork_mismatch",
+		"reqresp.malformed.ping.truncate_one",
+		"reqresp.length_bomb.ping.varint_max_uint64",
+		"reqresp.trailing_bytes.ping.extra_snappy_chunk",
 		"reqresp.unknown_protocol",
 		"gossip.block.malformed",
 		"discovery.fork_digest",
