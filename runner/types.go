@@ -70,6 +70,13 @@ type Client interface {
 	// result with a nil error; failures are carried in ReqRespResult.Error.
 	ReqResp(ctx context.Context, protocol string, body []byte, timeout time.Duration) (*ReqRespResult, error)
 
+	// SendOnly opens a stream, writes the body, closes the write side, and
+	// does not read the response (server-timeout and corruption tests).
+	SendOnly(ctx context.Context, protocol string, body []byte) error
+	// SendSlowly writes the body byte-by-byte with the given per-byte delay,
+	// then reads the response (slow-client tests).
+	SendSlowly(ctx context.Context, protocol string, body []byte, perByte, timeout time.Duration) ([]byte, error)
+
 	PublishGossip(ctx context.Context, topic string, data []byte) error
 	// ObserveGossip subscribes via a target-only observer host and waits
 	// for re-propagation of a message with this content.

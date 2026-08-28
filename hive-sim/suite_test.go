@@ -26,6 +26,12 @@ func (f *fakeRunnerClient) Type() string { return "fake" }
 func (f *fakeRunnerClient) ReqResp(ctx context.Context, protocol string, body []byte, timeout time.Duration) (*runner.ReqRespResult, error) {
 	return &runner.ReqRespResult{}, nil
 }
+func (f *fakeRunnerClient) SendOnly(ctx context.Context, protocol string, body []byte) error {
+	return nil
+}
+func (f *fakeRunnerClient) SendSlowly(ctx context.Context, protocol string, body []byte, perByte, timeout time.Duration) ([]byte, error) {
+	return nil, nil
+}
 func (f *fakeRunnerClient) PublishGossip(ctx context.Context, topic string, data []byte) error {
 	return nil
 }

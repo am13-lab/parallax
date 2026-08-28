@@ -38,6 +38,12 @@ func (f *fakeClient) ReqResp(ctx context.Context, protocol string, body []byte, 
 	}
 	return &runner.ReqRespResult{RawBytes: []byte{0x00}}, nil
 }
+func (f *fakeClient) SendOnly(ctx context.Context, protocol string, body []byte) error {
+	return nil
+}
+func (f *fakeClient) SendSlowly(ctx context.Context, protocol string, body []byte, perByte, timeout time.Duration) ([]byte, error) {
+	return nil, nil
+}
 func (f *fakeClient) PublishGossip(ctx context.Context, topic string, data []byte) error {
 	return nil
 }

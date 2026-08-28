@@ -192,6 +192,17 @@ func isStreamOpenFailure(msg string) bool {
 		strings.Contains(msg, "all dials failed")
 }
 
+// SendOnly opens a stream, writes the body, and does not read.
+func (c *Client) SendOnly(ctx context.Context, protocol string, body []byte) error {
+	_, err := c.probe.SendOnly(ctx, protocol, body)
+	return err
+}
+
+// SendSlowly writes the body byte-by-byte, then reads the response.
+func (c *Client) SendSlowly(ctx context.Context, protocol string, body []byte, perByte, timeout time.Duration) ([]byte, error) {
+	return c.probe.SendSlowly(ctx, protocol, body, perByte, timeout)
+}
+
 // PublishGossip publishes a raw payload on the topic.
 func (c *Client) PublishGossip(ctx context.Context, topic string, data []byte) error {
 	return c.probe.Publish(topic, data)

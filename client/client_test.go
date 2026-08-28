@@ -291,3 +291,31 @@ func TestConnectNoStatusFreshConnection(t *testing.T) {
 		t.Fatalf("WithStatus connect must handshake v1+v2: v1 +%d, v2 %d", gotV1, gotV2)
 	}
 }
+
+func TestSendOnlyAndSlowly(t *testing.T) {
+	n := startDefaultNode(t)
+	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
+	defer cancel()
+
+	c, err := client.New(ctx, &client.Config{
+		Name: "n", ClientType: "fake", Multiaddr: n.Multiaddr(), BeaconAPI: n.BeaconURL(),
+	})
+	if err != nil {
+		t.Fatalf("client.New: %v", err)
+	}
+	t.Cleanup(func() { c.Close() })
+
+	if err := c.SendOnly(ctx, pingProto, wire.BuildSSZSnappy([]byte{0x01})); err != nil {
+		t.Fatalf("send only: %v", err)
+	}
+	deadline := time.Now().Add(2 * time.Second)
+	for len(n.Requests(pingProto)) == 0 && time.Now().Before(deadline) {
+		time.Sleep(20 * time.Millisecond)
+	}
+	if got := n.Requests(pingProto); len(got) == 0 {
+		t.Fatal("SendOnly request must reach the node")
+	}
+	if _, err := c.SendSlowly(ctx, pingProto, wire.BuildSSZSnappy([]byte{0x02}), 2*time.Millisecond, 3*time.Second); err != nil {
+		t.Fatalf("send slowly: %v", err)
+	}
+}
