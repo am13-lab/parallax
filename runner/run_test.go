@@ -68,6 +68,9 @@ func (f *fakeClient) Health(ctx context.Context) error {
 func (f *fakeClient) State(ctx context.Context) (*runner.NodeState, error) {
 	return nil, runner.ErrNoBeaconAPI
 }
+func (f *fakeClient) Metadata(ctx context.Context) (*runner.NodeMetadata, error) {
+	return nil, runner.ErrNoBeaconAPI
+}
 func (f *fakeClient) Snapshot(ctx context.Context) (*runner.ResourceSnapshot, error) {
 	return &runner.ResourceSnapshot{}, nil
 }

@@ -363,6 +363,14 @@ func (c *Client) State(ctx context.Context) (*beacon.NodeState, error) {
 	return c.state, nil
 }
 
+// Metadata fetches the node's gossipsub metadata from the Beacon API.
+func (c *Client) Metadata(ctx context.Context) (*beacon.NodeMetadata, error) {
+	if c.beaconAPI == "" {
+		return nil, runner.ErrNoBeaconAPI
+	}
+	return beacon.New(c.beaconAPI).Metadata(ctx)
+}
+
 // Snapshot collects a resource snapshot from the Beacon API.
 func (c *Client) Snapshot(ctx context.Context) (*beacon.ResourceSnapshot, error) {
 	if c.beaconAPI == "" {

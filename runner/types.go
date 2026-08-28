@@ -18,6 +18,7 @@ import (
 type (
 	ResourceSnapshot = beacon.ResourceSnapshot
 	NodeState        = beacon.NodeState
+	NodeMetadata     = beacon.NodeMetadata
 	ResponseChunk    = wire.ResponseChunk
 )
 
@@ -86,6 +87,8 @@ type Client interface {
 	// State returns the chain state fetched from the Beacon API, or
 	// ErrNoBeaconAPI when the endpoint has none.
 	State(ctx context.Context) (*NodeState, error)
+	// Metadata returns the node's gossipsub metadata, or ErrNoBeaconAPI.
+	Metadata(ctx context.Context) (*NodeMetadata, error)
 	Snapshot(ctx context.Context) (*ResourceSnapshot, error)
 	Close() error
 }
@@ -148,6 +151,9 @@ type ChainConfig struct {
 	GenesisValidatorsRoot [32]byte
 	GossipMaxSize         uint64
 	MaxChunkSize          uint64
+	// CustodyRequirement is the preset's minimum custody group count
+	// (Fulu PeerDAS); 0 means unknown and custody-dependent cases skip.
+	CustodyRequirement uint64
 }
 
 // DivergenceType classifies how clients diverged.

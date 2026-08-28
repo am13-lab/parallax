@@ -65,6 +65,12 @@ type BeaconConfig struct {
 	ForkName    string
 	PeerCount   int
 	Metrics     string // raw prometheus text
+
+	// Node metadata (/eth/v1/node/metadata).
+	MetaSeqNumber uint64
+	MetaAttnets   string // 0x-hex bitvector
+	MetaSyncnets  string // 0x-hex bitvector
+	MetaCGC       string // custody group count as string; empty omits the field
 }
 
 // Config configures a testnode.
@@ -342,6 +348,14 @@ func (n *Node) startBeacon(cfg *BeaconConfig) (*http.Server, error) {
 	mux.HandleFunc("/eth/v1/beacon/states/head/fork", func(w http.ResponseWriter, r *http.Request) {
 		writeJSON(w, fmt.Sprintf(`{"data":{"previous_version":"%s","current_version":"%s","epoch":"0","name":"%s"}}`,
 			cfg.ForkVersion, cfg.ForkVersion, cfg.ForkName))
+	})
+	mux.HandleFunc("/eth/v1/node/metadata", func(w http.ResponseWriter, r *http.Request) {
+		cgc := ""
+		if cfg.MetaCGC != "" {
+			cgc = fmt.Sprintf(`,"custody_group_count":"%s"`, cfg.MetaCGC)
+		}
+		writeJSON(w, fmt.Sprintf(`{"data":{"seq_number":"%d","attnets":"%s","syncnets":"%s"%s}}`,
+			cfg.MetaSeqNumber, cfg.MetaAttnets, cfg.MetaSyncnets, cgc))
 	})
 	mux.HandleFunc("/metrics", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(cfg.Metrics))

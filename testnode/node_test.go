@@ -410,3 +410,35 @@ func publishGossip(t *testing.T, h host.Host, maddr, topic string, payload []byt
 	defer cancel()
 	return tp.Publish(ctx, payload)
 }
+
+func TestNodeMetadataEndpoint(t *testing.T) {
+	n, err := Start(&Config{
+		Protocols: map[string]*Script{testProtocol: {Behavior: Success}},
+		Beacon: &BeaconConfig{MetaSeqNumber: 7, MetaAttnets: "0xffffffffffffffff",
+			MetaSyncnets: "0x0f", MetaCGC: "8"},
+	})
+	if err != nil {
+		t.Fatalf("start: %v", err)
+	}
+	defer n.Close()
+
+	resp, err := http.Get(n.BeaconURL() + "/eth/v1/node/metadata")
+	if err != nil {
+		t.Fatalf("metadata: %v", err)
+	}
+	defer resp.Body.Close()
+	var body struct {
+		Data struct {
+			SeqNumber string `json:"seq_number"`
+			Attnets   string `json:"attnets"`
+			Syncnets  string `json:"syncnets"`
+			CGC       string `json:"custody_group_count"`
+		} `json:"data"`
+	}
+	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+		t.Fatalf("decode: %v", err)
+	}
+	if body.Data.SeqNumber != "7" || body.Data.Attnets != "0xffffffffffffffff" || body.Data.CGC != "8" {
+		t.Fatalf("metadata mismatch: %+v", body.Data)
+	}
+}

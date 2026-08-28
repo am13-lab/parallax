@@ -23,6 +23,7 @@ import (
 // NodeState is the chain state needed for Status handshakes and requests.
 type NodeState struct {
 	ForkDigest            [4]byte
+	ENR                   string // raw ENR string from the identity endpoint
 	Fork                  string  // active fork name, e.g. "fulu"
 	ForkVersion           [4]byte // active fork version
 	GenesisForkVersion    [4]byte // genesis fork version
@@ -47,6 +48,38 @@ type ResourceSnapshot struct {
 	Tasks          int
 	OpenFDs        int
 	CPUSeconds     float64
+}
+
+// NodeMetadata is the /eth/v1/node/metadata payload.
+type NodeMetadata struct {
+	SeqNumber         uint64
+	Attnets           string // 0x-hex bitvector
+	Syncnets          string // 0x-hex bitvector
+	CustodyGroupCount uint64
+	HasCGC            bool // false on pre-Fulu nodes
+}
+
+// Metadata fetches the node's gossipsub metadata.
+func (c *Client) Metadata(ctx context.Context) (*NodeMetadata, error) {
+	data := c.getJSON(ctx, "/eth/v1/node/metadata")
+	if data == nil {
+		return nil, fmt.Errorf("metadata endpoint unavailable")
+	}
+	m := &NodeMetadata{}
+	if v := jsonPath(data, "data", "seq_number"); v != nil {
+		m.SeqNumber, _ = strconv.ParseUint(*v, 10, 64)
+	}
+	if v := jsonPath(data, "data", "attnets"); v != nil {
+		m.Attnets = *v
+	}
+	if v := jsonPath(data, "data", "syncnets"); v != nil {
+		m.Syncnets = *v
+	}
+	if v := jsonPath(data, "data", "custody_group_count"); v != nil {
+		m.CustodyGroupCount, _ = strconv.ParseUint(*v, 10, 64)
+		m.HasCGC = true
+	}
+	return m, nil
 }
 
 // Client queries one beacon node's HTTP API.
@@ -81,6 +114,7 @@ func (c *Client) State(ctx context.Context) (*NodeState, error) {
 	// the digest, so recomputation is only a fallback).
 	if data := c.getJSON(ctx, "/eth/v1/node/identity"); data != nil {
 		if e := jsonPath(data, "data", "enr"); e != nil {
+			s.ENR = *e
 			if rec, err := enr.DecodeENR(*e); err == nil {
 				if fid, err := rec.GetEth2(); err == nil {
 					s.ForkDigest = fid.ForkDigest

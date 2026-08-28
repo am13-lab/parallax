@@ -107,6 +107,9 @@ func TestStateFromENRForkDigest(t *testing.T) {
 	if state.ForkDigest != [4]byte{0xde, 0xad, 0xbe, 0xef} {
 		t.Fatalf("fork digest must come from the ENR eth2 field: %x", state.ForkDigest)
 	}
+	if state.ENR == "" || !strings.HasPrefix(state.ENR, "enr:") {
+		t.Fatalf("raw ENR must be carried on the state: %q", state.ENR)
+	}
 	var wantRoot [32]byte
 	for i := range wantRoot {
 		wantRoot[i] = 0x11
