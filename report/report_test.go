@@ -2,6 +2,7 @@ package report_test
 
 import (
 	"encoding/json"
+	"strconv"
 	"strings"
 	"testing"
 
@@ -74,6 +75,18 @@ func TestJUnitMapping(t *testing.T) {
 	}
 	if !strings.Contains(out, `name="t.div"`) {
 		t.Fatal("test id must appear")
+	}
+	// time attributes must be JUnit-conformant seconds (float), not Go
+	// duration strings.
+	for _, line := range strings.Split(out, "\n") {
+		if !strings.Contains(line, `time="`) {
+			continue
+		}
+		v := line[strings.Index(line, `time="`)+6:]
+		v = v[:strings.Index(v, `"`)]
+		if _, err := strconv.ParseFloat(v, 64); err != nil {
+			t.Fatalf("time attr %q is not a float: %v", v, err)
+		}
 	}
 }
 

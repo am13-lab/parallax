@@ -272,9 +272,10 @@ func TestBanRecovery(t *testing.T) {
 	seenCounts := map[string]int{}
 	var mu sync.Mutex
 
-	// TestIDs preserve the given order: poison, after, heal, recovered.
-	// t.poison bans a; t.after skips; t.heal (single-client) restores a's
-	// health; the recovery probe must then reinstate a for t.recovered.
+	// Exact TestIDs bypass run-class filtering but keep the specs-slice
+	// order: poison, heal, after, recovered. t.poison bans a; t.heal
+	// (single-client) restores a's health; the recovery probe must then
+	// reinstate a before t.after and t.recovered.
 	specs := []runner.Spec{
 		spec("t.poison", func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 			poison.Store(true)

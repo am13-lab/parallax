@@ -70,14 +70,12 @@ func runRun(ctx context.Context, cfg RunConfig) error {
 			Proxies:    ep.Proxies,
 		})
 		if err != nil {
-			teardownIgnore(envr)
 			return fmt.Errorf("connect to %s: %w", ep.Name, err)
 		}
 		clients = append(clients, c)
 		defer c.Close()
 	}
 	if len(clients) < 1 {
-		teardownIgnore(envr)
 		return fmt.Errorf("no usable clients in the environment")
 	}
 
@@ -148,12 +146,6 @@ func setupEnv(ctx context.Context, cfg RunConfig) (env.Environment, []env.Endpoi
 		return envr, envr.Endpoints(), nil
 	default:
 		return nil, nil, fmt.Errorf("unknown env %q (want static or kurtosis)", cfg.Env)
-	}
-}
-
-func teardownIgnore(e env.Environment) {
-	if e != nil {
-		_ = e.Teardown(context.Background())
 	}
 }
 

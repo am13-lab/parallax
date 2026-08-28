@@ -79,8 +79,13 @@ func (f *fakeHive) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "%d", f.nextID)
 
 	case strings.HasPrefix(path, "/testsuite/") && strings.HasSuffix(path, "/test") && r.Method == http.MethodPost:
+		var body struct {
+			Name string `json:"name"`
+		}
+		json.NewDecoder(r.Body).Decode(&body)
 		f.nextID++
 		f.tests[f.nextID] = true
+		f.testNames[f.nextID] = body.Name
 		fmt.Fprintf(w, "%d", f.nextID)
 
 	case strings.HasPrefix(path, "/testsuite/") && strings.Contains(path, "/node") && r.Method == http.MethodPost:
@@ -93,13 +98,15 @@ func (f *fakeHive) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		// handled above
 
 	case strings.Count(path, "/") >= 3 && strings.Contains(path, "/test/") && r.Method == http.MethodPost:
-		// end test: body carries {"pass":bool,...}
+		// end test: /testsuite/{suite}/test/{test}; body {"pass":bool}.
+		// (fmt.Sscanf cannot suppress verbs with %*, so split the path.)
 		var body struct {
 			Pass bool `json:"pass"`
 		}
 		json.NewDecoder(r.Body).Decode(&body)
+		parts := strings.Split(path, "/")
 		var id int
-		fmt.Sscanf(path, "/testsuite/%*d/test/%d", &id)
+		fmt.Sscanf(parts[len(parts)-1], "%d", &id)
 		f.ended[id] = true
 		if !body.Pass {
 			f.failures = append(f.failures, f.testNames[id])
@@ -227,5 +234,8 @@ func TestHiveSuiteFailureMapping(t *testing.T) {
 	}
 	if len(fake.failures) != 1 {
 		t.Fatalf("divergent spec must fail the hive test: %v", fake.failures)
+	}
+	if fake.failures[0] != "p2p-reqresp" {
+		t.Fatalf("failure must record the real test name, got %q", fake.failures[0])
 	}
 }

@@ -43,6 +43,9 @@ func (r *RealClient) ListCLServices(ctx context.Context, enclave string) ([]Serv
 	if err != nil {
 		return nil, fmt.Errorf("get enclave %s: %w", enclave, err)
 	}
+	// A nil identifier filter is assumed to return ALL services, matching
+	// the CLI's unfiltered enclave inspect. Manual-verified assumption:
+	// pin if the kurtosis API ever changes this behavior.
 	serviceCtxs, err := enclaveCtx.GetServiceContexts(nil)
 	if err != nil {
 		return nil, fmt.Errorf("list services: %w", err)

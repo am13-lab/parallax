@@ -502,6 +502,9 @@ claimed as done.
   (fake-tested); production paths use the cases registry and client.New.
 - cases: outcome classes are accept / reject / other; 1-vs-1 verdict ties
   report the rejecting side as the outlier.
+- run never tears the environment down automatically: on failures the
+  enclave or endpoints stay alive for inspection, and teardown is always an
+  explicit decision.
 
 ## 12. Open risks
 

@@ -92,10 +92,12 @@ func WriteJUnit(rep *runner.Report) ([]byte, error) {
 		rs := byCat[cat]
 		suite := junitSuite{Name: cat, Tests: len(rs)}
 		for _, r := range rs {
+			// JUnit expects the time attribute in seconds (float).
+			secs := float64(r.ElapsedDuration) / float64(time.Second)
 			tc := junitCase{
 				Name:      r.TestID,
 				ClassName: cat,
-				Time:      r.Elapsed,
+				Time:      fmt.Sprintf("%.6f", secs),
 			}
 			switch r.Status {
 			case runner.StatusDivergent:
