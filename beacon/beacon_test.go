@@ -209,11 +209,11 @@ func TestHealthUnreachable(t *testing.T) {
 
 func TestBuildStatusSSZLayout(t *testing.T) {
 	s := &beacon.NodeState{
-		ForkDigest:           [4]byte{1, 2, 3, 4},
-		FinalizedRoot:        [32]byte{5},
-		FinalizedEpoch:       0x1122334455667788,
-		HeadRoot:             [32]byte{9},
-		HeadSlot:             0x9988776655443322,
+		ForkDigest:            [4]byte{1, 2, 3, 4},
+		FinalizedRoot:         [32]byte{5},
+		FinalizedEpoch:        0x1122334455667788,
+		HeadRoot:              [32]byte{9},
+		HeadSlot:              0x9988776655443322,
 		EarliestAvailableSlot: 3,
 	}
 	v1 := beacon.BuildStatusSSZ(s)

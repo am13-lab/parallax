@@ -193,9 +193,9 @@ func TestProviderProvisionFlow(t *testing.T) {
 
 	argsPath := "/tmp/args.yaml"
 	e, err := p.Setup(context.Background(), kurtosisenv.Config{
-		Enclave:     "new-enclave",
-		ArgsFile:    argsPath,
-		PackageID:   "github.com/ethpandaops/ethereum-package",
+		Enclave:   "new-enclave",
+		ArgsFile:  argsPath,
+		PackageID: "github.com/ethpandaops/ethereum-package",
 	})
 	if err != nil {
 		t.Fatalf("setup: %v", err)

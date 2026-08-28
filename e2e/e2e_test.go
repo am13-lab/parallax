@@ -98,10 +98,10 @@ func TestEndToEndMiniSuite(t *testing.T) {
 					for name, v := range results {
 						if v == "reset" {
 							divs = append(divs, runner.Divergence{
-								Type:          runner.DivAcceptReject,
-								Severity:      runner.SeverityHigh,
-								Description:   "e2e.ping.divergent: responses differ",
-								ClientResults: results,
+								Type:           runner.DivAcceptReject,
+								Severity:       runner.SeverityHigh,
+								Description:    "e2e.ping.divergent: responses differ",
+								ClientResults:  results,
 								OutlierClients: []string{name},
 							})
 						}

@@ -23,7 +23,7 @@ import (
 // NodeState is the chain state needed for Status handshakes and requests.
 type NodeState struct {
 	ForkDigest            [4]byte
-	ENR                   string // raw ENR string from the identity endpoint
+	ENR                   string  // raw ENR string from the identity endpoint
 	Fork                  string  // active fork name, e.g. "fulu"
 	ForkVersion           [4]byte // active fork version
 	GenesisForkVersion    [4]byte // genesis fork version

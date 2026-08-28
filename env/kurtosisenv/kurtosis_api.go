@@ -23,7 +23,7 @@ const ethereumPackageWrapper = `def run(plan, args):
 // logic is fake-tested; live behavior is manual-verified against a running
 // engine, per the design doc.
 type RealClient struct {
-	ctx    *kurtosis_context.KurtosisContext
+	ctx       *kurtosis_context.KurtosisContext
 	packageID string
 }
 

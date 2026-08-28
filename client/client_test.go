@@ -17,7 +17,7 @@ const (
 	statusProto  = "/eth2/beacon_chain/req/status/1/ssz_snappy"
 	statusV2Spec = "/eth2/beacon_chain/req/status/2/ssz_snappy"
 	goodbyeSpec  = "/eth2/beacon_chain/req/goodbye/1/ssz_snappy"
-	testTopic   = "/eth2/aaaaaaaa/beacon_block/ssz_snappy"
+	testTopic    = "/eth2/aaaaaaaa/beacon_block/ssz_snappy"
 )
 
 func startNode(t *testing.T, cfg *testnode.Config) *testnode.Node {
