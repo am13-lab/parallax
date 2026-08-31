@@ -183,6 +183,16 @@ func Start(cfg *Config) (*Node, error) {
 	return n, nil
 }
 
+// EnableProtocol registers a protocol handler after Start, for tests that
+// simulate a client finishing initialization late.
+func (n *Node) EnableProtocol(proto string, script *Script) {
+	n.mu.Lock()
+	defer n.mu.Unlock()
+	n.host.SetStreamHandler(protocol.ID(proto), func(stream network.Stream) {
+		n.serveStream(stream, proto, script, 16<<20)
+	})
+}
+
 // Multiaddr returns the node's libp2p dial address.
 func (n *Node) Multiaddr() string {
 	addrs := n.host.Addrs()

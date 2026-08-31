@@ -35,6 +35,10 @@ type Config struct {
 	Proxies    []string
 	Mode       Mode
 	Logger     *slog.Logger
+	// HandshakeAttempts and HandshakeBackoff control the Status handshake
+	// retry loop; zero selects the defaults (3 attempts, 2s apart).
+	HandshakeAttempts int
+	HandshakeBackoff  time.Duration
 }
 
 // Client is one testable consensus node.
@@ -54,6 +58,9 @@ type Client struct {
 	statusV1 []byte
 	statusV2 []byte
 	hasState bool
+
+	handshakeAttempts int
+	handshakeBackoff  time.Duration
 
 	mu       sync.Mutex
 	observer *probe.Observer
@@ -75,6 +82,8 @@ func New(ctx context.Context, cfg *Config) (*Client, error) {
 	if c.log == nil {
 		c.log = slog.Default()
 	}
+	c.handshakeAttempts = cfg.HandshakeAttempts
+	c.handshakeBackoff = cfg.HandshakeBackoff
 
 	if c.beaconAPI != "" {
 		bc := beacon.New(c.beaconAPI)
@@ -103,9 +112,56 @@ func New(ctx context.Context, cfg *Config) (*Client, error) {
 	c.probe = p
 
 	if c.mode == ModeWithStatus && c.hasState {
-		c.statusHandshake(ctx)
+		c.statusHandshakeRetry(ctx)
 	}
 	return c, nil
+}
+
+// statusHandshakeRetry performs the handshake, re-dialing between attempts:
+// freshly connected clients often have not registered their protocols yet,
+// which surfaces as negotiation failures on the first attempt.
+func (c *Client) statusHandshakeRetry(ctx context.Context) {
+	attempts := c.handshakeAttempts
+	if attempts <= 0 {
+		attempts = 3
+	}
+	backoff := c.handshakeBackoff
+	if backoff <= 0 {
+		backoff = 2 * time.Second
+	}
+	for i := 0; i < attempts; i++ {
+		if i > 0 {
+			select {
+			case <-ctx.Done():
+				return
+			case <-time.After(backoff):
+			}
+			if err := c.freshConnect(ctx, true); err != nil {
+				c.log.Warn("handshake retry reconnect failed", "client", c.name, "err", err)
+				continue
+			}
+		}
+		if c.statusHandshakeOnce(ctx) {
+			return
+		}
+	}
+}
+
+// statusHandshakeOnce performs one handshake round; false means at least one
+// protocol negotiation failed and a retry is worthwhile.
+func (c *Client) statusHandshakeOnce(ctx context.Context) bool {
+	failed := false
+	for _, proto := range []string{"/eth2/beacon_chain/req/status/1/ssz_snappy", "/eth2/beacon_chain/req/status/2/ssz_snappy"} {
+		body := c.statusV1
+		if strings.HasSuffix(proto, "/2/") {
+			body = c.statusV2
+		}
+		if _, _, err := c.probe.SendAndReceive(ctx, proto, wire.BuildSSZSnappy(body), 5*time.Second); err != nil {
+			c.log.Warn("status handshake failed (non-fatal)", "client", c.name, "protocol", proto, "err", err)
+			failed = true
+		}
+	}
+	return !failed
 }
 
 func (c *Client) currentAddr() string {
@@ -117,19 +173,6 @@ func (c *Client) currentAddr() string {
 		return c.proxies[idx%len(c.proxies)]
 	}
 	return c.directAddr
-}
-
-func (c *Client) statusHandshake(ctx context.Context) {
-	for _, proto := range []string{"/eth2/beacon_chain/req/status/1/ssz_snappy", "/eth2/beacon_chain/req/status/2/ssz_snappy"} {
-		body := c.statusV1
-		if strings.HasSuffix(proto, "/2/") {
-			body = c.statusV2
-		}
-		_, _, err := c.probe.SendAndReceive(ctx, proto, wire.BuildSSZSnappy(body), 5*time.Second)
-		if err != nil {
-			c.log.Warn("status handshake failed (non-fatal)", "client", c.name, "protocol", proto, "err", err)
-		}
-	}
 }
 
 // Name returns the display name.
@@ -266,7 +309,7 @@ func (c *Client) Connect(ctx context.Context, mode runner.ConnectMode) error {
 	}
 	if err := c.probe.EnsureConnected(ctx); err == nil {
 		if c.hasState {
-			c.statusHandshake(ctx)
+			c.statusHandshakeRetry(ctx)
 		}
 		return nil
 	}
@@ -330,8 +373,8 @@ func (c *Client) RotateIdentity(ctx context.Context) error {
 	c.probe.Close()
 	c.probe = newProbe
 
-	if c.mode == ModeWithStatus && c.hasState {
-		c.statusHandshake(ctx)
+	if c.hasState {
+		c.statusHandshakeRetry(ctx)
 	}
 	return nil
 }

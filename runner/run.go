@@ -141,13 +141,17 @@ func (b *banState) isBanned(name string) bool {
 	return ok
 }
 
-func (b *banState) recordFailure(name string, threshold int) {
+// recordFailure bumps the failure count and returns true when the client
+// crossed the ban threshold.
+func (b *banState) recordFailure(name string, threshold int) bool {
 	b.mu.Lock()
 	defer b.mu.Unlock()
 	b.consecutive[name]++
 	if threshold > 0 && b.consecutive[name] >= threshold {
 		b.bannedAt[name] = time.Now()
+		return true
 	}
+	return false
 }
 
 func (b *banState) reset(name string) {
@@ -285,7 +289,9 @@ func Run(ctx context.Context, specs []Spec, clients []Client, environment env.En
 				for _, c := range usable {
 					rctx, cancel := context.WithTimeout(ctx, 30*time.Second)
 					if err := c.RotateIdentity(rctx); err != nil {
-						bans.recordFailure(c.Name(), opts.BanThreshold)
+						if banned := bans.recordFailure(c.Name(), opts.BanThreshold); banned {
+							slog.Warn("client banned after rotation failure", "client", c.Name())
+						}
 					}
 					cancel()
 				}
@@ -339,15 +345,34 @@ func Run(ctx context.Context, specs []Spec, clients []Client, environment env.En
 			}
 		}
 
-		// Post-test health check feeds the ban logic.
+		// Post-test health check feeds the ban logic. A failure hitting
+		// EVERY usable client at once is environmental (host stall, VM
+		// pressure) and must not ban anyone.
+		healthFailures := 0
 		for _, c := range usable {
-			hctx, cancel := context.WithTimeout(ctx, 5*time.Second)
+			hctx, cancel := context.WithTimeout(ctx, 8*time.Second)
 			err := c.Health(hctx)
 			cancel()
 			if err != nil {
-				bans.recordFailure(c.Name(), opts.BanThreshold)
-			} else {
-				bans.reset(c.Name())
+				healthFailures++
+			}
+		}
+		if len(usable) > 0 && healthFailures == len(usable) {
+			slog.Warn("all clients failed post-test health check; treating as environmental, no bans",
+				"test", s.ID, "clients", len(usable))
+		} else {
+			for _, c := range usable {
+				hctx, cancel := context.WithTimeout(ctx, 8*time.Second)
+				err := c.Health(hctx)
+				cancel()
+				if err != nil {
+					wasBanned := bans.recordFailure(c.Name(), opts.BanThreshold)
+					if wasBanned {
+						slog.Warn("client banned after repeated health failures", "client", c.Name(), "test", s.ID)
+					}
+				} else {
+					bans.reset(c.Name())
+				}
 			}
 		}
 
