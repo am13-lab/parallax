@@ -1,6 +1,6 @@
 # Methodology
 
-How libp2p-difftest generates its test cases, classifies verdicts, and how to
+How Parallax generates its test cases, classifies verdicts, and how to
 extend the suite. Architecture contracts live in DESIGN.md; this document is
 the testing playbook.
 
@@ -189,7 +189,7 @@ func TestAttesterSlashingEmptyBody(t *testing.T) {
 ```
 
 4. `go test ./cases/` must be green, then commit. The case automatically
-   appears in `difftest list` and every subsequent run.
+   appears in `parallax list` and every subsequent run.
 
 Checklist for a good case: single property under test, spec rule anchor,
 deterministic input, preflight when chain state is needed, convergent plus
@@ -211,9 +211,9 @@ divergent testnode proof, no cross-test state leakage.
 ## 8. Running
 
 ```bash
-go run ./cmd/difftest list                 # case registry
-go run ./cmd/difftest run --env static --config clients.yaml
-go run ./cmd/difftest analyze --report results/report.json --allowlist known.json
+go run ./cmd/parallax list                 # case registry
+go run ./cmd/parallax run --env static --config clients.yaml
+go run ./cmd/parallax analyze --report results/report.json --allowlist known.json
 
 # simulation: full seed set against scripted fake nodes, real artifacts
 go run ./cmd/simulation --out results/demo
@@ -221,3 +221,61 @@ go run ./cmd/simulation --out results/demo
 
 The simulation command is the fastest way to see the pipeline produce a
 report and junit.xml without any devnet.
+
+## 9. Where tests come from (discovery sources)
+
+Every case should trace to one of six sources; the Metadata.KnowledgeIDs
+field records which. This is how the original suite was built and how new
+tests should be found.
+
+1. Spec prose mining. The p2p-interface specs and EIPs are full of MUST,
+   MUST NOT and SHOULD sentences. The previous repo parsed them into
+   structured rule artifacts (ast/rule_ast.json,
+   spec_rules_generated.json) and hashed each sentence into a stable
+   anchor (the PROSE-MUST-* knowledge IDs). Each rule with differential
+   potential, meaning clients could plausibly disagree about it, becomes
+   a case. Workflow: grep the spec section for normative verbs, check the
+   rule against the coverage matrix, write the case, anchor it.
+
+2. New forks and EIPs (the highest-yield source). A new hardfork is a
+   test-case generator if you know the matrix: every new req/resp
+   protocol automatically gets the standard sweep (valid, empty body,
+   zero count, over-max count, seven malformations, trailing bytes,
+   length bombs, pre-fork handling); every new gossip topic gets the
+   gossip family; every new ENR field gets the discovery family; every
+   new validation rule gets a semantic check; every fork boundary gets
+   pre/post-transition cases. The Gloas execution-payload family and the
+   Fulu data-column families were produced exactly this way. When the
+   next fork ships, port its protocol IDs into the batch-2 constructor
+   tables and the matrix generates itself.
+
+3. Audit report mining. Findings from public audits of ANY implementation
+   transfer across clients because the bug patterns do (missing
+   timeouts, unbounded allocation before validation, encoding edge
+   cases, discovery manipulation, replay). The previous repo built
+   docs/knowledge/audit-findings-p2p-reference.md from Sigma Prime's
+   public-audits repository, mapping Reth, Forest, Gossamer, Charon and
+   Drand findings onto CL test cases (the RETH-* knowledge IDs). Same
+   for audit contest findings (the SHERLOCK-1140-* IDs). Workflow: read
+   the P2P sections of new audit reports, for each finding ask "do all
+   six clients check this?", and turn the unchecked variant into a case.
+
+4. Client advisories and incidents. Security advisories and post-mortems
+   (the CL-2020-01, CL-2022-06 style IDs) describe real crashes and
+   DoSes. Each one generalizes into at least one regression case: the
+   triggering input becomes the payload, the advisory's fix becomes the
+   expected verdict.
+
+5. Divergence feedback. Every triaged divergence from a live run feeds
+   back as a permanent seed: the triggering payload enters the corpus,
+   mutations of it become generated variants, and the known-divergences
+   allowlist records it. Regression coverage compounds this way.
+
+6. Client source review. When one client adds a new check, limit or
+   protocol handling in its p2p code, that is a hypothesis that the
+   other five lack it. Reading client changelogs and p2p handler diffs
+   is a targeted way to find exactly these asymmetries.
+
+Priority order for new work: fork/EIP matrices first (mechanical, high
+yield), then audit mining (targeted), then spec prose mining (exhaustive
+but slower), then divergence feedback (continuous).
