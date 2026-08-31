@@ -1,0 +1,187 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ethereum.org/schemas/p2p-vulnerabilities.schema.json",
+  "title": "Ethereum P2P Vulnerability Knowledge Base",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["metadata", "taxonomy", "entries"],
+  "properties": {
+    "metadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["last_updated", "generated_by", "scope"],
+      "properties": {
+        "last_updated": {"type": "string", "format": "date"},
+        "generated_by": {"type": "string"},
+        "scope": {"type": "string"}
+      }
+    },
+    "taxonomy": {
+      "type": "object",
+      "additionalProperties": {"type": "string"},
+      "required": [
+        "unchecked_length_or_count",
+        "integer_overflow_underflow",
+        "unbounded_allocation",
+        "unbounded_streams_or_fds",
+        "malformed_framing_or_encoding",
+        "handshake_crypto_validation",
+        "discovery_amplification",
+        "gossipsub_scoring_or_punishment_gap",
+        "dedup_or_replay_gap",
+        "timeout_or_slowloris",
+        "rate_limit_or_quota_accounting",
+        "spec_ambiguity"
+      ]
+    },
+    "entries": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/vulnerability_entry"}
+    }
+  },
+  "$defs": {
+    "date_or_null": {
+      "anyOf": [
+        {"type": "string", "format": "date"},
+        {"type": "null"}
+      ]
+    },
+    "vulnerability_entry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "title",
+        "source_type",
+        "source_url",
+        "affected_clients",
+        "layer",
+        "protocol_surface",
+        "vuln_class",
+        "impact",
+        "preconditions",
+        "exploit_shape",
+        "root_cause",
+        "fix_shape",
+        "status",
+        "dates",
+        "cve",
+        "ghsa",
+        "confidence",
+        "local_links",
+        "known_divergence_links",
+        "test_coverage",
+        "framework_areas",
+        "mapped_tests",
+        "transfer_candidates"
+      ],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "title": {"type": "string", "minLength": 1},
+        "source_type": {
+          "type": "string",
+          "enum": ["ef_disclosure", "github_security_advisory", "immunefi_report", "cantina_report", "local_report", "sherlock_contest"]
+        },
+        "source_url": {
+          "type": "string",
+          "pattern": "^(https://|docs/|poc/|analysis/)"
+        },
+        "affected_clients": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1},
+          "minItems": 1
+        },
+        "layer": {
+          "type": "string",
+          "enum": ["CL", "EL", "Spec"]
+        },
+        "protocol_surface": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["discovery", "gossipsub", "reqresp", "transport", "identify", "handshake", "rate_limit", "consensus_spec", "metadata", "el_p2p"]
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "vuln_class": {
+          "type": "string",
+          "enum": [
+            "unchecked_length_or_count",
+            "integer_overflow_underflow",
+            "unbounded_allocation",
+            "unbounded_streams_or_fds",
+            "malformed_framing_or_encoding",
+            "handshake_crypto_validation",
+            "discovery_amplification",
+            "gossipsub_scoring_or_punishment_gap",
+            "dedup_or_replay_gap",
+            "timeout_or_slowloris",
+            "rate_limit_or_quota_accounting",
+            "spec_ambiguity"
+          ]
+        },
+        "impact": {"type": "string", "minLength": 1},
+        "preconditions": {"type": "string", "minLength": 1},
+        "exploit_shape": {"type": "string", "minLength": 1},
+        "root_cause": {"type": "string", "minLength": 1},
+        "fix_shape": {"type": "string", "minLength": 1},
+        "status": {
+          "type": "string",
+          "enum": ["patched_public", "disclosed_public", "local_reported", "local_needs_review", "transfer_pattern", "contest_unverified"]
+        },
+        "dates": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["reported", "fixed", "published"],
+          "properties": {
+            "reported": {"$ref": "#/$defs/date_or_null"},
+            "fixed": {"$ref": "#/$defs/date_or_null"},
+            "published": {"$ref": "#/$defs/date_or_null"}
+          }
+        },
+        "cve": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "ghsa": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "confidence": {
+          "type": "string",
+          "enum": ["high", "medium", "low"]
+        },
+        "local_links": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "known_divergence_links": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "test_coverage": {
+          "type": "string",
+          "enum": ["covered", "partial", "gap", "not_applicable"]
+        },
+        "framework_areas": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["discovery", "gossipsub", "reqresp", "transport", "statemachine", "replay", "none"]
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "mapped_tests": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "transfer_candidates": {
+          "type": "array",
+          "items": {"type": "string"}
+        }
+      }
+    }
+  }
+}

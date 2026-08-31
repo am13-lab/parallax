@@ -1,0 +1,140 @@
+{
+  "description": "Data-driven invariant definitions for P2P protocol property checking",
+  "invariants": [
+    {
+      "id": "INV-001",
+      "description": "First req/resp in every connection epoch is Status",
+      "spec_rule_ids": [
+        "PROSE-MUST-369ed609"
+      ],
+      "type": "ordering",
+      "scope": "per_connection_epoch",
+      "filter": {
+        "source": {
+          "ne": "gossip"
+        }
+      },
+      "check": {
+        "operator": "first_row_field_contains",
+        "field": "protocol",
+        "value": "status"
+      }
+    },
+    {
+      "id": "INV-002",
+      "description": "Goodbye reason codes are in the spec-defined set",
+      "spec_rule_ids": [
+        "PROSE-MAY-6eb8c500"
+      ],
+      "type": "membership",
+      "scope": "per_row",
+      "filter": {
+        "decoded_goodbye_reason_name": {
+          "is_not_null": true
+        }
+      },
+      "check": {
+        "operator": "field_in_set",
+        "field": "decoded_goodbye_reason_name",
+        "values": [
+          "CLIENT_SHUTDOWN",
+          "IRRELEVANT_NETWORK",
+          "FAULT_OR_ERROR",
+          "TOO_MANY_PEERS",
+          "UNABLE_TO_VERIFY_NETWORK",
+          "TOO_MANY_PEERS_SUBNET"
+        ]
+      }
+    },
+    {
+      "id": "INV-003",
+      "description": "MetaData seq_number is non-decreasing within a peer",
+      "spec_rule_ids": [
+        "PROSE-MUST-3315a1c4"
+      ],
+      "type": "monotonicity",
+      "scope": "per_peer",
+      "filter": {
+        "decoded_meta_seq": {
+          "is_not_null": true
+        }
+      },
+      "check": {
+        "operator": "field_non_decreasing",
+        "field": "decoded_meta_seq"
+      }
+    },
+    {
+      "id": "INV-004",
+      "description": "Every Ping request gets a response from the same peer",
+      "spec_rule_ids": [
+        "PROSE-MAY-c3957c31",
+        "PROSE-MAY-9ad1e8ba"
+      ],
+      "type": "existence",
+      "scope": "global",
+      "filter": {
+        "protocol": {
+          "eq": "ping"
+        },
+        "direction": {
+          "eq": "req"
+        },
+        "source": {
+          "eq": "reqresp_poll"
+        }
+      },
+      "check": {
+        "operator": "exists_response_for_request",
+        "match_field": "peer_id",
+        "response_filter": {
+          "protocol": {
+            "eq": "ping"
+          },
+          "direction": {
+            "eq": "resp"
+          }
+        }
+      }
+    },
+    {
+      "id": "INV-005",
+      "description": "No non-Status req/resp appears before Status in a connection",
+      "spec_rule_ids": [
+        "PROSE-MUST-369ed609"
+      ],
+      "type": "ordering",
+      "scope": "per_connection_epoch",
+      "filter": {
+        "source": {
+          "ne": "gossip"
+        }
+      },
+      "check": {
+        "operator": "no_non_target_before_target",
+        "field": "protocol",
+        "target_value": "status"
+      }
+    },
+    {
+      "id": "INV-006",
+      "description": "All clients report the same fork_digest in Status",
+      "spec_rule_ids": [
+        "PROSE-SHOULD-d2397b37",
+        "ETH2-SHOULD-fade3c21"
+      ],
+      "type": "consistency",
+      "scope": "global",
+      "filter": {
+        "decoded_fork_digest": {
+          "is_not_null": true
+        }
+      },
+      "check": {
+        "operator": "field_matches_across_groups",
+        "field": "decoded_fork_digest",
+        "group_by": "client"
+      }
+    }
+  ]
+}

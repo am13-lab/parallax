@@ -1,0 +1,35 @@
+{
+  "description": "External knowledge anchors referenced by test Metadata.KnowledgeIDs. Spec-internal rule IDs (534 entries) resolve through spec/spec_rules_generated.json; everything here points to a reference document carried under knowledge/references.",
+  "entries": {
+    "SHERLOCK-1140": {
+      "title": "Sherlock contest 1140 findings (consensus client p2p)",
+      "kind": "audit-contest",
+      "path": "references/audit-findings-p2p-reference.md"
+    },
+    "RETH": {
+      "title": "Sigma Prime public audit: Reth (devp2p, discv4, ECIES, RLPx)",
+      "kind": "audit",
+      "path": "references/audit-findings-p2p-reference.md"
+    },
+    "PROSE": {
+      "title": "Consensus spec prose sentence anchors (hashes of normative MUST/SHOULD sentences)",
+      "kind": "spec-prose",
+      "path": "spec/spec_rules_generated.json"
+    },
+    "ETH2-SHOULD": {
+      "title": "Eth2 networking spec SHOULD anchors",
+      "kind": "spec-prose",
+      "path": "spec/spec_rules_generated.json"
+    },
+    "CL": {
+      "title": "Consensus client security advisories (CL-YYYY-NN identifiers)",
+      "kind": "advisory",
+      "path": "references/geth-security-advisories/advisories.json"
+    },
+    "GSR": {
+      "title": "GossipSub spec risk findings",
+      "kind": "audit",
+      "path": "references/p2p-vulnerability-patterns.md"
+    }
+  }
+}

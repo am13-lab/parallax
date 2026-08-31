@@ -1,0 +1,1701 @@
+[
+  {
+    "ghsa_id": "GHSA-m6j8-rg6r-7mv8",
+    "cve_id": "CVE-2026-26315",
+    "url": "https://api.github.com/repos/ethereum/go-ethereum/security-advisories/GHSA-m6j8-rg6r-7mv8",
+    "html_url": "https://github.com/ethereum/go-ethereum/security/advisories/GHSA-m6j8-rg6r-7mv8",
+    "summary": "Improper ECIES Public Key Validation in RLPx Handshake",
+    "description": "### Impact\r\n\r\nThrough a flaw in the ECIES cryptography implementation, an attacker may be able to extract bits of the p2p node key.\r\n\r\n### Patches\r\n\r\nThe issue is resolved in the v1.16.9 and v1.17.0 releases of Geth. We recommend rotating the node key after applying the upgrade, which can be done by removing the file `<datadir>/geth/nodekey` before starting Geth.\r\n\r\n### Credit\r\n\r\nThe issue was reported as a public pull request to go-ethereum by @fengjian. ",
+    "severity": "medium",
+    "author": null,
+    "publisher": {
+      "login": "fjl",
+      "id": 6915,
+      "node_id": "MDQ6VXNlcjY5MTU=",
+      "avatar_url": "https://avatars.githubusercontent.com/u/6915?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/fjl",
+      "html_url": "https://github.com/fjl",
+      "followers_url": "https://api.github.com/users/fjl/followers",
+      "following_url": "https://api.github.com/users/fjl/following{/other_user}",
+      "gists_url": "https://api.github.com/users/fjl/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/fjl/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/fjl/subscriptions",
+      "organizations_url": "https://api.github.com/users/fjl/orgs",
+      "repos_url": "https://api.github.com/users/fjl/repos",
+      "events_url": "https://api.github.com/users/fjl/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/fjl/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "identifiers": [
+      {
+        "value": "GHSA-m6j8-rg6r-7mv8",
+        "type": "GHSA"
+      },
+      {
+        "value": "CVE-2026-26315",
+        "type": "CVE"
+      }
+    ],
+    "state": "published",
+    "created_at": null,
+    "updated_at": "2026-02-17T16:23:56Z",
+    "published_at": "2026-02-17T16:23:56Z",
+    "closed_at": null,
+    "withdrawn_at": null,
+    "submission": null,
+    "vulnerabilities": [
+      {
+        "package": {
+          "ecosystem": "",
+          "name": ""
+        },
+        "vulnerable_version_range": "<= 1.16.8",
+        "patched_versions": ">= 1.16.9",
+        "vulnerable_functions": []
+      }
+    ],
+    "cvss_severities": {
+      "cvss_v3": {
+        "vector_string": null,
+        "score": null
+      },
+      "cvss_v4": {
+        "vector_string": null,
+        "score": null
+      }
+    },
+    "cwes": [],
+    "cwe_ids": [],
+    "credits": [
+      {
+        "login": "fengjian",
+        "type": "finder"
+      }
+    ],
+    "credits_detailed": [
+      {
+        "user": {
+          "login": "fengjian",
+          "id": 445077,
+          "node_id": "MDQ6VXNlcjQ0NTA3Nw==",
+          "avatar_url": "https://avatars.githubusercontent.com/u/445077?v=4",
+          "gravatar_id": "",
+          "url": "https://api.github.com/users/fengjian",
+          "html_url": "https://github.com/fengjian",
+          "followers_url": "https://api.github.com/users/fengjian/followers",
+          "following_url": "https://api.github.com/users/fengjian/following{/other_user}",
+          "gists_url": "https://api.github.com/users/fengjian/gists{/gist_id}",
+          "starred_url": "https://api.github.com/users/fengjian/starred{/owner}{/repo}",
+          "subscriptions_url": "https://api.github.com/users/fengjian/subscriptions",
+          "organizations_url": "https://api.github.com/users/fengjian/orgs",
+          "repos_url": "https://api.github.com/users/fengjian/repos",
+          "events_url": "https://api.github.com/users/fengjian/events{/privacy}",
+          "received_events_url": "https://api.github.com/users/fengjian/received_events",
+          "type": "User",
+          "user_view_type": "public",
+          "site_admin": false
+        },
+        "type": "finder",
+        "state": "accepted"
+      }
+    ],
+    "collaborating_users": null,
+    "collaborating_teams": null,
+    "private_fork": null,
+    "cvss": {
+      "vector_string": null,
+      "score": null
+    }
+  },
+  {
+    "ghsa_id": "GHSA-2gjw-fg97-vg3r",
+    "cve_id": "CVE-2026-26314",
+    "url": "https://api.github.com/repos/ethereum/go-ethereum/security-advisories/GHSA-2gjw-fg97-vg3r",
+    "html_url": "https://github.com/ethereum/go-ethereum/security/advisories/GHSA-2gjw-fg97-vg3r",
+    "summary": "DoS via malicious p2p message",
+    "description": "### Impact\r\n\r\nA vulnerable node can be forced to shutdown/crash using a specially crafted message.\r\nMore details to be released later.\r\n\r\n### Patches\r\n\r\nThe problem is resolved in the v1.16.9 and v1.17.0 releases of Geth.\r\n\r\n### Credit\r\n\r\nThis issue was reported to the Ethereum Foundation Bug Bounty Program by Waleed Ahmed from vulsight.com\r\n",
+    "severity": "high",
+    "author": null,
+    "publisher": {
+      "login": "fjl",
+      "id": 6915,
+      "node_id": "MDQ6VXNlcjY5MTU=",
+      "avatar_url": "https://avatars.githubusercontent.com/u/6915?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/fjl",
+      "html_url": "https://github.com/fjl",
+      "followers_url": "https://api.github.com/users/fjl/followers",
+      "following_url": "https://api.github.com/users/fjl/following{/other_user}",
+      "gists_url": "https://api.github.com/users/fjl/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/fjl/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/fjl/subscriptions",
+      "organizations_url": "https://api.github.com/users/fjl/orgs",
+      "repos_url": "https://api.github.com/users/fjl/repos",
+      "events_url": "https://api.github.com/users/fjl/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/fjl/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "identifiers": [
+      {
+        "value": "GHSA-2gjw-fg97-vg3r",
+        "type": "GHSA"
+      },
+      {
+        "value": "CVE-2026-26314",
+        "type": "CVE"
+      }
+    ],
+    "state": "published",
+    "created_at": null,
+    "updated_at": "2026-02-17T16:23:48Z",
+    "published_at": "2026-02-17T16:23:48Z",
+    "closed_at": null,
+    "withdrawn_at": null,
+    "submission": null,
+    "vulnerabilities": [
+      {
+        "package": {
+          "ecosystem": "go",
+          "name": "github.com/ethereum/go-ethereum"
+        },
+        "vulnerable_version_range": "<= 1.16.8",
+        "patched_versions": ">= 1.16.9",
+        "vulnerable_functions": []
+      }
+    ],
+    "cvss_severities": {
+      "cvss_v3": {
+        "vector_string": null,
+        "score": null
+      },
+      "cvss_v4": {
+        "vector_string": null,
+        "score": null
+      }
+    },
+    "cwes": [],
+    "cwe_ids": [],
+    "credits": [],
+    "credits_detailed": [],
+    "collaborating_users": null,
+    "collaborating_teams": null,
+    "private_fork": null,
+    "cvss": {
+      "vector_string": null,
+      "score": null
+    }
+  },
+  {
+    "ghsa_id": "GHSA-689v-6xwf-5jf3",
+    "cve_id": "CVE-2026-26313",
+    "url": "https://api.github.com/repos/ethereum/go-ethereum/security-advisories/GHSA-689v-6xwf-5jf3",
+    "html_url": "https://github.com/ethereum/go-ethereum/security/advisories/GHSA-689v-6xwf-5jf3",
+    "summary": "DoS via malicious p2p message",
+    "description": "### Impact\r\n\r\nAn attacker can cause high memory usage by sending a specially-crafted p2p message.\r\nMore details to be released later.\r\n\r\n### Patches\r\n\r\nThe issue is resolved in the v1.17.0 release. \r\n\r\n### Credit\r\n\r\nThis issue was reported to the Ethereum Foundation Bug Bounty Program by @revofusion",
+    "severity": "medium",
+    "author": null,
+    "publisher": {
+      "login": "fjl",
+      "id": 6915,
+      "node_id": "MDQ6VXNlcjY5MTU=",
+      "avatar_url": "https://avatars.githubusercontent.com/u/6915?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/fjl",
+      "html_url": "https://github.com/fjl",
+      "followers_url": "https://api.github.com/users/fjl/followers",
+      "following_url": "https://api.github.com/users/fjl/following{/other_user}",
+      "gists_url": "https://api.github.com/users/fjl/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/fjl/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/fjl/subscriptions",
+      "organizations_url": "https://api.github.com/users/fjl/orgs",
+      "repos_url": "https://api.github.com/users/fjl/repos",
+      "events_url": "https://api.github.com/users/fjl/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/fjl/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "identifiers": [
+      {
+        "value": "GHSA-689v-6xwf-5jf3",
+        "type": "GHSA"
+      },
+      {
+        "value": "CVE-2026-26313",
+        "type": "CVE"
+      }
+    ],
+    "state": "published",
+    "created_at": null,
+    "updated_at": "2026-02-17T16:23:39Z",
+    "published_at": "2026-02-17T16:23:39Z",
+    "closed_at": null,
+    "withdrawn_at": null,
+    "submission": null,
+    "vulnerabilities": [
+      {
+        "package": {
+          "ecosystem": "go",
+          "name": "github.com/ethereum/go-ethereum"
+        },
+        "vulnerable_version_range": "< 1.17.0",
+        "patched_versions": ">= 1.17.0",
+        "vulnerable_functions": []
+      }
+    ],
+    "cvss_severities": {
+      "cvss_v3": {
+        "vector_string": null,
+        "score": null
+      },
+      "cvss_v4": {
+        "vector_string": null,
+        "score": null
+      }
+    },
+    "cwes": [],
+    "cwe_ids": [],
+    "credits": [
+      {
+        "login": "revofusion",
+        "type": "finder"
+      }
+    ],
+    "credits_detailed": [
+      {
+        "user": {
+          "login": "revofusion",
+          "id": 138184593,
+          "node_id": "U_kgDOCDyHkQ",
+          "avatar_url": "https://avatars.githubusercontent.com/u/138184593?v=4",
+          "gravatar_id": "",
+          "url": "https://api.github.com/users/revofusion",
+          "html_url": "https://github.com/revofusion",
+          "followers_url": "https://api.github.com/users/revofusion/followers",
+          "following_url": "https://api.github.com/users/revofusion/following{/other_user}",
+          "gists_url": "https://api.github.com/users/revofusion/gists{/gist_id}",
+          "starred_url": "https://api.github.com/users/revofusion/starred{/owner}{/repo}",
+          "subscriptions_url": "https://api.github.com/users/revofusion/subscriptions",
+          "organizations_url": "https://api.github.com/users/revofusion/orgs",
+          "repos_url": "https://api.github.com/users/revofusion/repos",
+          "events_url": "https://api.github.com/users/revofusion/events{/privacy}",
+          "received_events_url": "https://api.github.com/users/revofusion/received_events",
+          "type": "User",
+          "user_view_type": "public",
+          "site_admin": false
+        },
+        "type": "finder",
+        "state": "accepted"
+      }
+    ],
+    "collaborating_users": null,
+    "collaborating_teams": null,
+    "private_fork": null,
+    "cvss": {
+      "vector_string": null,
+      "score": null
+    }
+  },
+  {
+    "ghsa_id": "GHSA-mq3p-rrmp-79jg",
+    "cve_id": "CVE-2026-22868",
+    "url": "https://api.github.com/repos/ethereum/go-ethereum/security-advisories/GHSA-mq3p-rrmp-79jg",
+    "html_url": "https://github.com/ethereum/go-ethereum/security/advisories/GHSA-mq3p-rrmp-79jg",
+    "summary": "DoS via malicious p2p message",
+    "description": "**Impact**\r\n\r\nAn attacker can cause high CPU usage by sending a specially crafted p2p message.\r\nMore details to be released later.\r\n\r\n**Credit**\r\n\r\nThis issue was reported to the Ethereum Foundation Bug Bounty Program by @Yenya030",
+    "severity": "medium",
+    "author": null,
+    "publisher": {
+      "login": "fjl",
+      "id": 6915,
+      "node_id": "MDQ6VXNlcjY5MTU=",
+      "avatar_url": "https://avatars.githubusercontent.com/u/6915?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/fjl",
+      "html_url": "https://github.com/fjl",
+      "followers_url": "https://api.github.com/users/fjl/followers",
+      "following_url": "https://api.github.com/users/fjl/following{/other_user}",
+      "gists_url": "https://api.github.com/users/fjl/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/fjl/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/fjl/subscriptions",
+      "organizations_url": "https://api.github.com/users/fjl/orgs",
+      "repos_url": "https://api.github.com/users/fjl/repos",
+      "events_url": "https://api.github.com/users/fjl/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/fjl/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "identifiers": [
+      {
+        "value": "GHSA-mq3p-rrmp-79jg",
+        "type": "GHSA"
+      },
+      {
+        "value": "CVE-2026-22868",
+        "type": "CVE"
+      }
+    ],
+    "state": "published",
+    "created_at": null,
+    "updated_at": "2026-01-13T20:04:07Z",
+    "published_at": "2026-01-13T19:24:59Z",
+    "closed_at": null,
+    "withdrawn_at": null,
+    "submission": null,
+    "vulnerabilities": [
+      {
+        "package": {
+          "ecosystem": "go",
+          "name": "github.com/ethereum/go-ethereum"
+        },
+        "vulnerable_version_range": "<= 1.16.7",
+        "patched_versions": ">= 1.16.8",
+        "vulnerable_functions": []
+      }
+    ],
+    "cvss_severities": {
+      "cvss_v3": {
+        "vector_string": null,
+        "score": null
+      },
+      "cvss_v4": {
+        "vector_string": null,
+        "score": null
+      }
+    },
+    "cwes": [],
+    "cwe_ids": [],
+    "credits": [
+      {
+        "login": "Yenya030",
+        "type": "finder"
+      }
+    ],
+    "credits_detailed": [
+      {
+        "user": {
+          "login": "Yenya030",
+          "id": 211584612,
+          "node_id": "U_kgDODJyGZA",
+          "avatar_url": "https://avatars.githubusercontent.com/u/211584612?v=4",
+          "gravatar_id": "",
+          "url": "https://api.github.com/users/Yenya030",
+          "html_url": "https://github.com/Yenya030",
+          "followers_url": "https://api.github.com/users/Yenya030/followers",
+          "following_url": "https://api.github.com/users/Yenya030/following{/other_user}",
+          "gists_url": "https://api.github.com/users/Yenya030/gists{/gist_id}",
+          "starred_url": "https://api.github.com/users/Yenya030/starred{/owner}{/repo}",
+          "subscriptions_url": "https://api.github.com/users/Yenya030/subscriptions",
+          "organizations_url": "https://api.github.com/users/Yenya030/orgs",
+          "repos_url": "https://api.github.com/users/Yenya030/repos",
+          "events_url": "https://api.github.com/users/Yenya030/events{/privacy}",
+          "received_events_url": "https://api.github.com/users/Yenya030/received_events",
+          "type": "User",
+          "user_view_type": "public",
+          "site_admin": false
+        },
+        "type": "finder",
+        "state": "accepted"
+      }
+    ],
+    "collaborating_users": null,
+    "collaborating_teams": null,
+    "private_fork": null,
+    "cvss": {
+      "vector_string": null,
+      "score": null
+    }
+  },
+  {
+    "ghsa_id": "GHSA-mr7q-c9w9-wh4h",
+    "cve_id": "CVE-2026-22862",
+    "url": "https://api.github.com/repos/ethereum/go-ethereum/security-advisories/GHSA-mr7q-c9w9-wh4h",
+    "html_url": "https://github.com/ethereum/go-ethereum/security/advisories/GHSA-mr7q-c9w9-wh4h",
+    "summary": "DoS via malicious p2p message ",
+    "description": "**Impact**\r\n\r\nA vulnerable node can be forced to shutdown/crash using a specially crafted message. \r\nMore details to be released later.\r\n\r\n**Credit**\r\n\r\nThis issue was reported to the Ethereum Foundation Bug Bounty Program by DELENE TCHIO ROMUALD.",
+    "severity": "high",
+    "author": null,
+    "publisher": {
+      "login": "fjl",
+      "id": 6915,
+      "node_id": "MDQ6VXNlcjY5MTU=",
+      "avatar_url": "https://avatars.githubusercontent.com/u/6915?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/fjl",
+      "html_url": "https://github.com/fjl",
+      "followers_url": "https://api.github.com/users/fjl/followers",
+      "following_url": "https://api.github.com/users/fjl/following{/other_user}",
+      "gists_url": "https://api.github.com/users/fjl/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/fjl/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/fjl/subscriptions",
+      "organizations_url": "https://api.github.com/users/fjl/orgs",
+      "repos_url": "https://api.github.com/users/fjl/repos",
+      "events_url": "https://api.github.com/users/fjl/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/fjl/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "identifiers": [
+      {
+        "value": "GHSA-mr7q-c9w9-wh4h",
+        "type": "GHSA"
+      },
+      {
+        "value": "CVE-2026-22862",
+        "type": "CVE"
+      }
+    ],
+    "state": "published",
+    "created_at": null,
+    "updated_at": "2026-01-13T17:41:33Z",
+    "published_at": "2026-01-13T17:40:23Z",
+    "closed_at": null,
+    "withdrawn_at": null,
+    "submission": null,
+    "vulnerabilities": [
+      {
+        "package": {
+          "ecosystem": "go",
+          "name": "github.com/ethereum/go-ethereum"
+        },
+        "vulnerable_version_range": "<= 1.16.7",
+        "patched_versions": ">= 1.16.8",
+        "vulnerable_functions": []
+      }
+    ],
+    "cvss_severities": {
+      "cvss_v3": {
+        "vector_string": null,
+        "score": null
+      },
+      "cvss_v4": {
+        "vector_string": null,
+        "score": null
+      }
+    },
+    "cwes": [],
+    "cwe_ids": [],
+    "credits": [],
+    "credits_detailed": [],
+    "collaborating_users": null,
+    "collaborating_teams": null,
+    "private_fork": null,
+    "cvss": {
+      "vector_string": null,
+      "score": null
+    }
+  },
+  {
+    "ghsa_id": "GHSA-q26p-9cq4-7fc2",
+    "cve_id": "CVE-2025-24883",
+    "url": "https://api.github.com/repos/ethereum/go-ethereum/security-advisories/GHSA-q26p-9cq4-7fc2",
+    "html_url": "https://github.com/ethereum/go-ethereum/security/advisories/GHSA-q26p-9cq4-7fc2",
+    "summary": "DoS via malicious p2p message",
+    "description": "### Impact\r\n\r\nA vulnerable node can be forced to shutdown/crash using a specially crafted message.\r\n\r\nDuring the peer-to-peer connection handshake, a shared secret key is computed. The implementation\r\ndid not verify whether the EC public key provided by the remote party is a valid point on the secp256k1 curve.\r\nBy simply sending an all-zero public key, a crash could be induced due to unexpected results from the handshake.\r\n\r\nThe issue was fixed by adding a curve point validity check in https://github.com/ethereum/go-ethereum/commit/159fb1a1db551c544978dc16a5568a4730b4abf3\r\n\r\n### Patches\r\n\r\nA fix has been included in geth version 1.14.13 and onwards.\r\n\r\n### Workarounds\r\n\r\nUnfortunately, no workaround is available.\r\n\r\n### Credits\r\n\r\nThis issue was originally reported to Polygon Security by David Matosse (@iam-ned).\r\n",
+    "severity": "high",
+    "author": null,
+    "publisher": {
+      "login": "fjl",
+      "id": 6915,
+      "node_id": "MDQ6VXNlcjY5MTU=",
+      "avatar_url": "https://avatars.githubusercontent.com/u/6915?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/fjl",
+      "html_url": "https://github.com/fjl",
+      "followers_url": "https://api.github.com/users/fjl/followers",
+      "following_url": "https://api.github.com/users/fjl/following{/other_user}",
+      "gists_url": "https://api.github.com/users/fjl/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/fjl/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/fjl/subscriptions",
+      "organizations_url": "https://api.github.com/users/fjl/orgs",
+      "repos_url": "https://api.github.com/users/fjl/repos",
+      "events_url": "https://api.github.com/users/fjl/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/fjl/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "identifiers": [
+      {
+        "value": "GHSA-q26p-9cq4-7fc2",
+        "type": "GHSA"
+      },
+      {
+        "value": "CVE-2025-24883",
+        "type": "CVE"
+      }
+    ],
+    "state": "published",
+    "created_at": null,
+    "updated_at": "2025-03-16T09:57:35Z",
+    "published_at": "2025-01-30T13:23:02Z",
+    "closed_at": null,
+    "withdrawn_at": null,
+    "submission": null,
+    "vulnerabilities": [
+      {
+        "package": {
+          "ecosystem": "go",
+          "name": "github.com/ethereum/go-ethereum"
+        },
+        "vulnerable_version_range": ">= 1.14.0, < 1.14.13",
+        "patched_versions": ">= 1.14.13",
+        "vulnerable_functions": []
+      }
+    ],
+    "cvss_severities": {
+      "cvss_v3": {
+        "vector_string": null,
+        "score": null
+      },
+      "cvss_v4": {
+        "vector_string": null,
+        "score": null
+      }
+    },
+    "cwes": [],
+    "cwe_ids": [],
+    "credits": [
+      {
+        "login": "iam-ned",
+        "type": "finder"
+      }
+    ],
+    "credits_detailed": [
+      {
+        "user": {
+          "login": "iam-ned",
+          "id": 73633078,
+          "node_id": "MDQ6VXNlcjczNjMzMDc4",
+          "avatar_url": "https://avatars.githubusercontent.com/u/73633078?v=4",
+          "gravatar_id": "",
+          "url": "https://api.github.com/users/iam-ned",
+          "html_url": "https://github.com/iam-ned",
+          "followers_url": "https://api.github.com/users/iam-ned/followers",
+          "following_url": "https://api.github.com/users/iam-ned/following{/other_user}",
+          "gists_url": "https://api.github.com/users/iam-ned/gists{/gist_id}",
+          "starred_url": "https://api.github.com/users/iam-ned/starred{/owner}{/repo}",
+          "subscriptions_url": "https://api.github.com/users/iam-ned/subscriptions",
+          "organizations_url": "https://api.github.com/users/iam-ned/orgs",
+          "repos_url": "https://api.github.com/users/iam-ned/repos",
+          "events_url": "https://api.github.com/users/iam-ned/events{/privacy}",
+          "received_events_url": "https://api.github.com/users/iam-ned/received_events",
+          "type": "User",
+          "user_view_type": "public",
+          "site_admin": false
+        },
+        "type": "finder",
+        "state": "accepted"
+      }
+    ],
+    "collaborating_users": null,
+    "collaborating_teams": null,
+    "private_fork": null,
+    "cvss": {
+      "vector_string": null,
+      "score": null
+    }
+  },
+  {
+    "ghsa_id": "GHSA-4xc9-8hmq-j652",
+    "cve_id": "CVE-2024-32972",
+    "url": "https://api.github.com/repos/ethereum/go-ethereum/security-advisories/GHSA-4xc9-8hmq-j652",
+    "html_url": "https://github.com/ethereum/go-ethereum/security/advisories/GHSA-4xc9-8hmq-j652",
+    "summary": "DoS via malicious p2p message",
+    "description": "### Impact\r\n\r\nA vulnerable node can be made to consume very large amounts of memory when handling specially crafted p2p messages sent from an attacker node.\r\n\r\nIn order to carry out the attack, the attacker establishes a peer connections to the victim, and sends a malicious `GetBlockHeadersRequest` message with a `count` of  `0`, using the `ETH` protocol. \r\n\r\nIn `descendants := chain.GetHeadersFrom(num+count-1, count-1)`, the value of `count-1` is passed to the function `GetHeadersFrom(number, count uint64)` as parameter `count`. Due to integer overflow, `UINT64_MAX` value is then passed as the `count` argument to function `GetHeadersFrom(number, count uint64)`. This allows an attacker to bypass `maxHeadersServe` and request all headers from the latest block back to the genesis block. \r\n\r\n### Patches\r\n\r\nThe fix has been included in geth version `1.13.15` and onwards. \r\n\r\nThe vulnerability was patched in: https://github.com/ethereum/go-ethereum/pull/29534\r\n\r\n### Workarounds\r\n\r\nNo workarounds have been made public. \r\n\r\n### References\r\n\r\nNo more information is released at this time.\r\n\r\n### Credit\r\n\r\nThis issue was disclosed responsibly by DongHan Kim via the Ethereum bug bounty program. Thank you for your cooperation. ",
+    "severity": "high",
+    "author": null,
+    "publisher": {
+      "login": "holiman",
+      "id": 142290,
+      "node_id": "MDQ6VXNlcjE0MjI5MA==",
+      "avatar_url": "https://avatars.githubusercontent.com/u/142290?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/holiman",
+      "html_url": "https://github.com/holiman",
+      "followers_url": "https://api.github.com/users/holiman/followers",
+      "following_url": "https://api.github.com/users/holiman/following{/other_user}",
+      "gists_url": "https://api.github.com/users/holiman/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/holiman/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/holiman/subscriptions",
+      "organizations_url": "https://api.github.com/users/holiman/orgs",
+      "repos_url": "https://api.github.com/users/holiman/repos",
+      "events_url": "https://api.github.com/users/holiman/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/holiman/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "identifiers": [
+      {
+        "value": "GHSA-4xc9-8hmq-j652",
+        "type": "GHSA"
+      },
+      {
+        "value": "CVE-2024-32972",
+        "type": "CVE"
+      }
+    ],
+    "state": "published",
+    "created_at": null,
+    "updated_at": "2024-08-16T06:17:45Z",
+    "published_at": "2024-05-06T13:24:45Z",
+    "closed_at": null,
+    "withdrawn_at": null,
+    "submission": null,
+    "vulnerabilities": [
+      {
+        "package": {
+          "ecosystem": "go",
+          "name": "github.com/ethereum/go-ethereum"
+        },
+        "vulnerable_version_range": "< 1.13.15",
+        "patched_versions": ">= 1.13.15",
+        "vulnerable_functions": []
+      }
+    ],
+    "cvss_severities": {
+      "cvss_v3": {
+        "vector_string": null,
+        "score": null
+      },
+      "cvss_v4": {
+        "vector_string": null,
+        "score": null
+      }
+    },
+    "cwes": [],
+    "cwe_ids": [],
+    "credits": [],
+    "credits_detailed": [],
+    "collaborating_users": null,
+    "collaborating_teams": null,
+    "private_fork": null,
+    "cvss": {
+      "vector_string": null,
+      "score": null
+    }
+  },
+  {
+    "ghsa_id": "GHSA-ppjg-v974-84cm",
+    "cve_id": "CVE-2023-40591",
+    "url": "https://api.github.com/repos/ethereum/go-ethereum/security-advisories/GHSA-ppjg-v974-84cm",
+    "html_url": "https://github.com/ethereum/go-ethereum/security/advisories/GHSA-ppjg-v974-84cm",
+    "summary": "DoS via malicious p2p message",
+    "description": "### Impact\r\n\r\nA vulnerable node, can be made to consume unbounded amounts of memory when handling specially crafted p2p messages sent from an attacker node.\r\n\r\n### Details\r\n\r\nThe p2p handler spawned a new goroutine to respond to `ping` requests. By flooding a node with ping requests, an unbounded number of goroutines can be created, leading to resource exhaustion and potentially crash due to OOM.\r\n\r\n### Patches\r\n\r\nThe fix is included in geth version `1.12.1-stable`, i.e, `1.12.2-unstable` and onwards. \r\n\r\nFixed by https://github.com/ethereum/go-ethereum/pull/27887\r\n\r\n### Workarounds\r\n\r\nNo known workarounds. \r\n\r\n### Credits\r\n\r\nThis bug was reported by Patrick McHardy and reported via [bounty@ethereum.org](mailto:bounty@ethereum.org). \r\n\r\n### References\r\n\r\n",
+    "severity": "high",
+    "author": null,
+    "publisher": {
+      "login": "holiman",
+      "id": 142290,
+      "node_id": "MDQ6VXNlcjE0MjI5MA==",
+      "avatar_url": "https://avatars.githubusercontent.com/u/142290?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/holiman",
+      "html_url": "https://github.com/holiman",
+      "followers_url": "https://api.github.com/users/holiman/followers",
+      "following_url": "https://api.github.com/users/holiman/following{/other_user}",
+      "gists_url": "https://api.github.com/users/holiman/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/holiman/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/holiman/subscriptions",
+      "organizations_url": "https://api.github.com/users/holiman/orgs",
+      "repos_url": "https://api.github.com/users/holiman/repos",
+      "events_url": "https://api.github.com/users/holiman/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/holiman/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "identifiers": [
+      {
+        "value": "GHSA-ppjg-v974-84cm",
+        "type": "GHSA"
+      },
+      {
+        "value": "CVE-2023-40591",
+        "type": "CVE"
+      }
+    ],
+    "state": "published",
+    "created_at": null,
+    "updated_at": "2023-11-08T14:30:02Z",
+    "published_at": "2023-09-06T07:29:44Z",
+    "closed_at": null,
+    "withdrawn_at": null,
+    "submission": null,
+    "vulnerabilities": [
+      {
+        "package": {
+          "ecosystem": "go",
+          "name": "github.com/ethereum/go-ethereum"
+        },
+        "vulnerable_version_range": ">= 1.10.0, < 1.12.1",
+        "patched_versions": ">= 1.12.1",
+        "vulnerable_functions": []
+      }
+    ],
+    "cvss_severities": {
+      "cvss_v3": {
+        "vector_string": null,
+        "score": null
+      },
+      "cvss_v4": {
+        "vector_string": null,
+        "score": null
+      }
+    },
+    "cwes": [],
+    "cwe_ids": [],
+    "credits": [],
+    "credits_detailed": [],
+    "collaborating_users": null,
+    "collaborating_teams": null,
+    "private_fork": null,
+    "cvss": {
+      "vector_string": null,
+      "score": null
+    }
+  },
+  {
+    "ghsa_id": "GHSA-wjxw-gh3m-7pm5",
+    "cve_id": "CVE-2022-29177",
+    "url": "https://api.github.com/repos/ethereum/go-ethereum/security-advisories/GHSA-wjxw-gh3m-7pm5",
+    "html_url": "https://github.com/ethereum/go-ethereum/security/advisories/GHSA-wjxw-gh3m-7pm5",
+    "summary": "DoS via malicious p2p message",
+    "description": "### Impact\r\n\r\nA vulnerable node, if configured to use high verbosity logging, can be made to crash when handling specially crafted p2p messages sent from an attacker node. \r\n\r\n### Patches\r\n\r\nThe following PR addresses the problem: https://github.com/ethereum/go-ethereum/pull/24507\r\n\r\n### Workarounds\r\n\r\nAside from applying the PR linked above, setting loglevel to default level (`INFO`) makes the node not vulnerable to this attack.\r\n\r\n### Credits\r\n\r\nThis bug was reported by `nrv` via bounty@ethereum.org, who has gracefully requested that the bounty rewards be donated to Médecins sans frontières.\r\n\r\n### For more information\r\nIf you have any questions or comments about this advisory:\r\n* Open an issue in [go-ethereum](https://github.com/ethereum/go-ethereum)\r\n",
+    "severity": "low",
+    "author": null,
+    "publisher": {
+      "login": "holiman",
+      "id": 142290,
+      "node_id": "MDQ6VXNlcjE0MjI5MA==",
+      "avatar_url": "https://avatars.githubusercontent.com/u/142290?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/holiman",
+      "html_url": "https://github.com/holiman",
+      "followers_url": "https://api.github.com/users/holiman/followers",
+      "following_url": "https://api.github.com/users/holiman/following{/other_user}",
+      "gists_url": "https://api.github.com/users/holiman/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/holiman/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/holiman/subscriptions",
+      "organizations_url": "https://api.github.com/users/holiman/orgs",
+      "repos_url": "https://api.github.com/users/holiman/repos",
+      "events_url": "https://api.github.com/users/holiman/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/holiman/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "identifiers": [
+      {
+        "value": "GHSA-wjxw-gh3m-7pm5",
+        "type": "GHSA"
+      },
+      {
+        "value": "CVE-2022-29177",
+        "type": "CVE"
+      }
+    ],
+    "state": "published",
+    "created_at": null,
+    "updated_at": "2022-05-11T08:51:21Z",
+    "published_at": "2022-05-11T08:51:21Z",
+    "closed_at": null,
+    "withdrawn_at": null,
+    "submission": null,
+    "vulnerabilities": [
+      {
+        "package": {
+          "ecosystem": "go",
+          "name": "github.com/ethereum/go-ethereum"
+        },
+        "vulnerable_version_range": "< 1.10.17",
+        "patched_versions": ">= 1.10.17",
+        "vulnerable_functions": []
+      }
+    ],
+    "cvss_severities": {
+      "cvss_v3": {
+        "vector_string": null,
+        "score": null
+      },
+      "cvss_v4": {
+        "vector_string": null,
+        "score": null
+      }
+    },
+    "cwes": [],
+    "cwe_ids": [],
+    "credits": [],
+    "credits_detailed": [],
+    "collaborating_users": null,
+    "collaborating_teams": null,
+    "private_fork": null,
+    "cvss": {
+      "vector_string": null,
+      "score": null
+    }
+  },
+  {
+    "ghsa_id": "GHSA-59hh-656j-3p7v",
+    "cve_id": "CVE-2021-41173",
+    "url": "https://api.github.com/repos/ethereum/go-ethereum/security-advisories/GHSA-59hh-656j-3p7v",
+    "html_url": "https://github.com/ethereum/go-ethereum/security/advisories/GHSA-59hh-656j-3p7v",
+    "summary": "DoS via malicious snap/1 request",
+    "description": "### Impact\r\n\r\nA vulnerable node is susceptible to crash when processing a maliciously crafted message from a peer, via the `snap/1` protocol. The crash can be triggered by sending a malicious `snap/1` `GetTrieNodes` package. \r\n\r\n### Details\r\n\r\nOn September 21, 2021, geth-team member Gary Rong (@rjl493456442) found a way to crash the snap request handler . \r\nBy using this vulnerability, a peer connected on the `snap/1` protocol could cause a vulnerable node to crash with a `panic`.\r\n\r\nIn the `trie.TryGetNode` implementation, if the requested path is reached, the associated node will be returned. However the nilness is\r\nnot checked there.\r\n\r\n```golang\r\nfunc (t *Trie) tryGetNode(origNode node, path []byte, pos int) (item []byte, newnode node, resolved int, err error) {\r\n\t// If we reached the requested path, return the current node\r\n\tif pos >= len(path) {\r\n\t\t// Although we most probably have the original node expanded, encoding\r\n\t\t// that into consensus form can be nasty (needs to cascade down) and\r\n\t\t// time consuming. Instead, just pull the hash up from disk directly.\r\n\t\tvar hash hashNode\r\n\t\tif node, ok := origNode.(hashNode); ok {\r\n\t\t\thash = node\r\n\t\t} else {\r\n\t\t\thash, _ = origNode.cache()\r\n\t\t}\r\n```\r\nMore specifically the `origNode` can be nil(e.g. the child of fullnode) and system can panic at line `hash, _ = origNode.cache()`. \r\n\r\nWhen investigating this, @holiman tried to find it via fuzzing, which uncovered a second crasher, also related to the snap `GetTrieNodes` package. If the caller requests a storage trie:\r\n```golang\r\n\t\t\t\t// Storage slots requested, open the storage trie and retrieve from there\r\n\t\t\t\taccount, err := snap.Account(common.BytesToHash(pathset[0]))\r\n\t\t\t\tloads++ // always account database reads, even for failures\r\n\t\t\t\tif account == nil {\r\n\t\t\t\t\tbreak\r\n\t\t\t\t}\r\n\t\t\t\tstTrie, err := trie.NewSecure(common.BytesToHash(account.Root), triedb)\r\n```\r\nThe code assumes that `snap.Account` returns _either_ a non-nil response unless `error` is also provided. This is however not the case, since `snap.Account` can return `nil, nil`. \r\n\r\n### Patches\r\n\r\n```diff\r\n--- a/eth/protocols/snap/handler.go\r\n+++ b/eth/protocols/snap/handler.go\r\n@@ -469,7 +469,7 @@ func handleMessage(backend Backend, peer *Peer) error {\r\n \t\t\t\t// Storage slots requested, open the storage trie and retrieve from there\r\n \t\t\t\taccount, err := snap.Account(common.BytesToHash(pathset[0]))\r\n \t\t\t\tloads++ // always account database reads, even for failures\r\n-\t\t\t\tif err != nil {\r\n+\t\t\t\tif err != nil || account == nil {\r\n \t\t\t\t\tbreak\r\n \t\t\t\t}\r\n \t\t\t\tstTrie, err := trie.NewSecure(common.BytesToHash(account.Root), triedb)\r\ndiff --git a/trie/trie.go b/trie/trie.go\r\nindex 7ea7efa835..d0f0d4e2bc 100644\r\n--- a/trie/trie.go\r\n+++ b/trie/trie.go\r\n@@ -174,6 +174,10 @@ func (t *Trie) TryGetNode(path []byte) ([]byte, int, error) {\r\n }\r\n \r\n func (t *Trie) tryGetNode(origNode node, path []byte, pos int) (item []byte, newnode node, resolved int, err error) {\r\n+\t// If non-existent path requested, abort\r\n+\tif origNode == nil {\r\n+\t\treturn nil, nil, 0, nil\r\n+\t}\r\n \t// If we reached the requested path, return the current node\r\n \tif pos >= len(path) {\r\n \t\t// Although we most probably have the original node expanded, encoding\r\n@@ -193,10 +197,6 @@ func (t *Trie) tryGetNode(origNode node, path []byte, pos int) (item []byte, new\r\n \t}\r\n \t// Path still needs to be traversed, descend into children\r\n \tswitch n := (origNode).(type) {\r\n-\tcase nil:\r\n-\t\t// Non-existent path requested, abort\r\n-\t\treturn nil, nil, 0, nil\r\n-\r\n \tcase valueNode:\r\n \t\t// Path prematurely ended, abort\r\n \t\treturn nil, nil, 0, nil\r\n\r\n``` \r\nThe fixes were merged into [#23657](https://github.com/ethereum/go-ethereum/pull/23657), with commit [f1fd963](https://github.com/ethereum/go-ethereum/pull/23657/commits/f1fd963a5a965e643e52fcf805a2a02a323c32b8), and released as part of Geth [v1.10.9](https://github.com/ethereum/go-ethereum/tree/v1.10.9) on Sept 29, 2021. \r\n\r\n### Workarounds\r\n\r\nApply the patch above or upgrade to a version which is not vulnerable.\r\n\r\n### For more information\r\nIf you have any questions or comments about this advisory:\r\n* Open an issue in [go-ethereum](https://github.com/ethereum/go-ethereum/)\r\n* Email us at [security@ethereum.org](mailto:security@ethereum.org)\r\n",
+    "severity": "medium",
+    "author": null,
+    "publisher": {
+      "login": "holiman",
+      "id": 142290,
+      "node_id": "MDQ6VXNlcjE0MjI5MA==",
+      "avatar_url": "https://avatars.githubusercontent.com/u/142290?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/holiman",
+      "html_url": "https://github.com/holiman",
+      "followers_url": "https://api.github.com/users/holiman/followers",
+      "following_url": "https://api.github.com/users/holiman/following{/other_user}",
+      "gists_url": "https://api.github.com/users/holiman/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/holiman/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/holiman/subscriptions",
+      "organizations_url": "https://api.github.com/users/holiman/orgs",
+      "repos_url": "https://api.github.com/users/holiman/repos",
+      "events_url": "https://api.github.com/users/holiman/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/holiman/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "identifiers": [
+      {
+        "value": "GHSA-59hh-656j-3p7v",
+        "type": "GHSA"
+      },
+      {
+        "value": "CVE-2021-41173",
+        "type": "CVE"
+      }
+    ],
+    "state": "published",
+    "created_at": null,
+    "updated_at": "2021-11-23T11:39:54Z",
+    "published_at": "2021-10-25T06:28:36Z",
+    "closed_at": null,
+    "withdrawn_at": null,
+    "submission": null,
+    "vulnerabilities": [
+      {
+        "package": {
+          "ecosystem": "go",
+          "name": "github.com/ethereum/go-ethereum"
+        },
+        "vulnerable_version_range": "< 1.10.9",
+        "patched_versions": ">= 1.10.9",
+        "vulnerable_functions": []
+      }
+    ],
+    "cvss_severities": {
+      "cvss_v3": {
+        "vector_string": null,
+        "score": null
+      },
+      "cvss_v4": {
+        "vector_string": null,
+        "score": null
+      }
+    },
+    "cwes": [],
+    "cwe_ids": [],
+    "credits": [
+      {
+        "login": "rjl493456442",
+        "type": "analyst"
+      },
+      {
+        "login": "holiman",
+        "type": "analyst"
+      }
+    ],
+    "credits_detailed": [
+      {
+        "user": {
+          "login": "rjl493456442",
+          "id": 5959481,
+          "node_id": "MDQ6VXNlcjU5NTk0ODE=",
+          "avatar_url": "https://avatars.githubusercontent.com/u/5959481?v=4",
+          "gravatar_id": "",
+          "url": "https://api.github.com/users/rjl493456442",
+          "html_url": "https://github.com/rjl493456442",
+          "followers_url": "https://api.github.com/users/rjl493456442/followers",
+          "following_url": "https://api.github.com/users/rjl493456442/following{/other_user}",
+          "gists_url": "https://api.github.com/users/rjl493456442/gists{/gist_id}",
+          "starred_url": "https://api.github.com/users/rjl493456442/starred{/owner}{/repo}",
+          "subscriptions_url": "https://api.github.com/users/rjl493456442/subscriptions",
+          "organizations_url": "https://api.github.com/users/rjl493456442/orgs",
+          "repos_url": "https://api.github.com/users/rjl493456442/repos",
+          "events_url": "https://api.github.com/users/rjl493456442/events{/privacy}",
+          "received_events_url": "https://api.github.com/users/rjl493456442/received_events",
+          "type": "User",
+          "user_view_type": "public",
+          "site_admin": false
+        },
+        "type": "analyst",
+        "state": "accepted"
+      },
+      {
+        "user": {
+          "login": "holiman",
+          "id": 142290,
+          "node_id": "MDQ6VXNlcjE0MjI5MA==",
+          "avatar_url": "https://avatars.githubusercontent.com/u/142290?v=4",
+          "gravatar_id": "",
+          "url": "https://api.github.com/users/holiman",
+          "html_url": "https://github.com/holiman",
+          "followers_url": "https://api.github.com/users/holiman/followers",
+          "following_url": "https://api.github.com/users/holiman/following{/other_user}",
+          "gists_url": "https://api.github.com/users/holiman/gists{/gist_id}",
+          "starred_url": "https://api.github.com/users/holiman/starred{/owner}{/repo}",
+          "subscriptions_url": "https://api.github.com/users/holiman/subscriptions",
+          "organizations_url": "https://api.github.com/users/holiman/orgs",
+          "repos_url": "https://api.github.com/users/holiman/repos",
+          "events_url": "https://api.github.com/users/holiman/events{/privacy}",
+          "received_events_url": "https://api.github.com/users/holiman/received_events",
+          "type": "User",
+          "user_view_type": "public",
+          "site_admin": false
+        },
+        "type": "analyst",
+        "state": "accepted"
+      }
+    ],
+    "collaborating_users": null,
+    "collaborating_teams": null,
+    "private_fork": null,
+    "cvss": {
+      "vector_string": null,
+      "score": null
+    }
+  },
+  {
+    "ghsa_id": "GHSA-9856-9gg9-qcmq",
+    "cve_id": "CVE-2021-39137",
+    "url": "https://api.github.com/repos/ethereum/go-ethereum/security-advisories/GHSA-9856-9gg9-qcmq",
+    "html_url": "https://github.com/ethereum/go-ethereum/security/advisories/GHSA-9856-9gg9-qcmq",
+    "summary": "RETURNDATA corruption via datacopy",
+    "description": "### Impact\r\n\r\nA vulnerability in the Geth EVM could cause a node to reject the canonical chain. \r\n\r\n### Description \r\n\r\nA memory-corruption bug within the EVM can cause a consensus error, where vulnerable nodes obtain a different `stateRoot` when processing a maliciously crafted transaction. This, in turn, would lead to the chain being split in two forks.\r\n\r\nAll Geth versions supporting the London hard fork are vulnerable (which predates London), so all users should update.\r\n\r\nThis bug was exploited on Mainnet at block 13107518, leading to a minority chain split. \r\n\r\n### Patches\r\n\r\nA patch is included in the `v1.10.8` release.\r\nThe exact patch to fix the issue is contained within this [commit](https://github.com/ethereum/go-ethereum/pull/23381/commits/4d4879cafd1b3c906fc184a8c4a357137465128f)\r\n\r\n### Workarounds\r\n\r\nNo workarounds exist, save to update and/or apply the patch commit. \r\n\r\n### References. \r\n\r\nPost-mortem [write-up](https://github.com/ethereum/go-ethereum/blob/master/docs/postmortems/2021-08-22-split-postmortem.md).\r\n\r\n### Credits\r\n\r\nThe bug was found by @guidovranken (working for [Sentnl](https://sentnl.io/) during an audit of the [Telos EVM](https://www.telos.net/evm)) and reported via bounty@ethereum.org.\r\n\r\n### For more information\r\nIf you have any questions or comments about this advisory:\r\n\r\n* Open an issue in [go-ethereum](https://github.com/ethereum/go-ethereum/)\r\n* Email us at [security@ethereum.org](mailto:security@ethereum.org)\r\n",
+    "severity": "high",
+    "author": null,
+    "publisher": {
+      "login": "holiman",
+      "id": 142290,
+      "node_id": "MDQ6VXNlcjE0MjI5MA==",
+      "avatar_url": "https://avatars.githubusercontent.com/u/142290?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/holiman",
+      "html_url": "https://github.com/holiman",
+      "followers_url": "https://api.github.com/users/holiman/followers",
+      "following_url": "https://api.github.com/users/holiman/following{/other_user}",
+      "gists_url": "https://api.github.com/users/holiman/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/holiman/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/holiman/subscriptions",
+      "organizations_url": "https://api.github.com/users/holiman/orgs",
+      "repos_url": "https://api.github.com/users/holiman/repos",
+      "events_url": "https://api.github.com/users/holiman/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/holiman/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "identifiers": [
+      {
+        "value": "GHSA-9856-9gg9-qcmq",
+        "type": "GHSA"
+      },
+      {
+        "value": "CVE-2021-39137",
+        "type": "CVE"
+      }
+    ],
+    "state": "published",
+    "created_at": null,
+    "updated_at": "2021-09-07T07:35:57Z",
+    "published_at": "2021-08-24T07:25:57Z",
+    "closed_at": null,
+    "withdrawn_at": null,
+    "submission": null,
+    "vulnerabilities": [
+      {
+        "package": {
+          "ecosystem": "go",
+          "name": "go-ethereum"
+        },
+        "vulnerable_version_range": ">= 1.10.0, < 1.10.8",
+        "patched_versions": ">= 1.10.8",
+        "vulnerable_functions": []
+      }
+    ],
+    "cvss_severities": {
+      "cvss_v3": {
+        "vector_string": null,
+        "score": null
+      },
+      "cvss_v4": {
+        "vector_string": null,
+        "score": null
+      }
+    },
+    "cwes": [],
+    "cwe_ids": [],
+    "credits": [
+      {
+        "login": "guidovranken",
+        "type": "analyst"
+      }
+    ],
+    "credits_detailed": [
+      {
+        "user": {
+          "login": "guidovranken",
+          "id": 6846644,
+          "node_id": "MDQ6VXNlcjY4NDY2NDQ=",
+          "avatar_url": "https://avatars.githubusercontent.com/u/6846644?v=4",
+          "gravatar_id": "",
+          "url": "https://api.github.com/users/guidovranken",
+          "html_url": "https://github.com/guidovranken",
+          "followers_url": "https://api.github.com/users/guidovranken/followers",
+          "following_url": "https://api.github.com/users/guidovranken/following{/other_user}",
+          "gists_url": "https://api.github.com/users/guidovranken/gists{/gist_id}",
+          "starred_url": "https://api.github.com/users/guidovranken/starred{/owner}{/repo}",
+          "subscriptions_url": "https://api.github.com/users/guidovranken/subscriptions",
+          "organizations_url": "https://api.github.com/users/guidovranken/orgs",
+          "repos_url": "https://api.github.com/users/guidovranken/repos",
+          "events_url": "https://api.github.com/users/guidovranken/events{/privacy}",
+          "received_events_url": "https://api.github.com/users/guidovranken/received_events",
+          "type": "User",
+          "user_view_type": "public",
+          "site_admin": false
+        },
+        "type": "analyst",
+        "state": "accepted"
+      }
+    ],
+    "collaborating_users": null,
+    "collaborating_teams": null,
+    "private_fork": null,
+    "cvss": {
+      "vector_string": null,
+      "score": null
+    }
+  },
+  {
+    "ghsa_id": "GHSA-xw37-57qp-9mm4",
+    "cve_id": "CVE-2020-26265",
+    "url": "https://api.github.com/repos/ethereum/go-ethereum/security-advisories/GHSA-xw37-57qp-9mm4",
+    "html_url": "https://github.com/ethereum/go-ethereum/security/advisories/GHSA-xw37-57qp-9mm4",
+    "summary": "Consensus flaw during block processing",
+    "description": "### Impact\r\n\r\nA consensus-vulnerability in Geth could cause a chain split, where vulnerable versions refuse to accept the canonical chain. \r\n\r\n### Description\r\n\r\n\r\nA flaw was repoted at 2020-08-11 by John Youngseok Yang (Software Platform Lab), where a particular sequence of transactions could cause a consensus failure.\r\n\r\n- Tx 1:\r\n  - `sender` invokes `caller`.\r\n  - `caller` invokes `0xaa`. `0xaa` has 3 wei, does a self-destruct-to-self\r\n  - `caller` does a  `1 wei` -call to `0xaa`, who thereby has 1 wei (the code in `0xaa` still executed, since the tx is still ongoing, but doesn't redo the selfdestruct, it takes a different path if callvalue is non-zero)\r\n\r\n- Tx 2:\r\n  - `sender` does a 5-wei call to 0xaa. No exec (since no code). \r\n\r\nIn geth, the result would be that `0xaa` had `6 wei`, whereas OE reported (correctly) `5` wei. Furthermore, in geth, if the second tx was not executed, the `0xaa` would be destructed, resulting in `0 wei`. Thus obviously wrong. \r\n\r\nIt was determined that the root cause was this [commit](https://github.com/ethereum/go-ethereum/commit/223b950944f494a5b4e0957fd9f92c48b09037ad) from [this PR](https://github.com/ethereum/go-ethereum/pull/19953). The semantics of `createObject` was subtly changd, into returning a non-nil object (with `deleted=true`) where it previously did not if the account had been destructed. This return value caused the new object to inherit the old `balance`:\r\n\r\n```golang\r\nfunc (s *StateDB) CreateAccount(addr common.Address) {\r\n\tnewObj, prev := s.createObject(addr)\r\n\tif prev != nil {\r\n\t\tnewObj.setBalance(prev.data.Balance)\r\n\t}\r\n}\r\n```\r\n\r\nIt was determined that the minimal possible correct fix was\r\n\r\n```diff\r\n+++ b/core/state/statedb.go\r\n@@ -589,7 +589,10 @@ func (s *StateDB) createObject(addr common.Address) (newobj, prev *stateObject)\r\n                s.journal.append(resetObjectChange{prev: prev, prevdestruct: prevdestruct})\r\n        }\r\n        s.setStateObject(newobj)\r\n-       return newobj, prev\r\n+       if prev != nil && !prev.deleted {\r\n+               return newobj, prev\r\n+       }\r\n+       return newobj, nil\r\n```\r\n\r\n### Patches\r\n\r\nSee above. The fix was included in Geth `v1.9.20` \"Paragade\".\r\n\r\n### Workarounds\r\n\r\nNo individual workaround patches have been made -- all users are recommended to upgrade to a newer version.\r\n\r\n### References\r\n\r\n\r\n### Credits\r\n\r\nThe bug was found by @johnyangk and reported via bounty@ethereum.org.\r\n\r\n### For more information\r\nIf you have any questions or comments about this advisory:\r\n* Open an issue in [go-ethereum](https://github.com/ethereum/go-ethereum)\r\n* Email us at [security@ethereum.org](mailto:security@ethereum.org)\r\n",
+    "severity": "high",
+    "author": null,
+    "publisher": {
+      "login": "fjl",
+      "id": 6915,
+      "node_id": "MDQ6VXNlcjY5MTU=",
+      "avatar_url": "https://avatars.githubusercontent.com/u/6915?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/fjl",
+      "html_url": "https://github.com/fjl",
+      "followers_url": "https://api.github.com/users/fjl/followers",
+      "following_url": "https://api.github.com/users/fjl/following{/other_user}",
+      "gists_url": "https://api.github.com/users/fjl/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/fjl/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/fjl/subscriptions",
+      "organizations_url": "https://api.github.com/users/fjl/orgs",
+      "repos_url": "https://api.github.com/users/fjl/repos",
+      "events_url": "https://api.github.com/users/fjl/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/fjl/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "identifiers": [
+      {
+        "value": "GHSA-xw37-57qp-9mm4",
+        "type": "GHSA"
+      },
+      {
+        "value": "CVE-2020-26265",
+        "type": "CVE"
+      }
+    ],
+    "state": "published",
+    "created_at": null,
+    "updated_at": "2021-03-25T19:02:48Z",
+    "published_at": "2020-12-11T08:07:15Z",
+    "closed_at": null,
+    "withdrawn_at": null,
+    "submission": null,
+    "vulnerabilities": [
+      {
+        "package": {
+          "ecosystem": "go",
+          "name": "github.com/ethereum/go-ethereum"
+        },
+        "vulnerable_version_range": ">= v1.9.4, < 1.9.20",
+        "patched_versions": ">= 1.9.20",
+        "vulnerable_functions": []
+      }
+    ],
+    "cvss_severities": {
+      "cvss_v3": {
+        "vector_string": null,
+        "score": null
+      },
+      "cvss_v4": {
+        "vector_string": null,
+        "score": null
+      }
+    },
+    "cwes": [],
+    "cwe_ids": [],
+    "credits": [
+      {
+        "login": "johnyangk",
+        "type": "analyst"
+      }
+    ],
+    "credits_detailed": [
+      {
+        "user": {
+          "login": "johnyangk",
+          "id": 4114572,
+          "node_id": "MDQ6VXNlcjQxMTQ1NzI=",
+          "avatar_url": "https://avatars.githubusercontent.com/u/4114572?v=4",
+          "gravatar_id": "",
+          "url": "https://api.github.com/users/johnyangk",
+          "html_url": "https://github.com/johnyangk",
+          "followers_url": "https://api.github.com/users/johnyangk/followers",
+          "following_url": "https://api.github.com/users/johnyangk/following{/other_user}",
+          "gists_url": "https://api.github.com/users/johnyangk/gists{/gist_id}",
+          "starred_url": "https://api.github.com/users/johnyangk/starred{/owner}{/repo}",
+          "subscriptions_url": "https://api.github.com/users/johnyangk/subscriptions",
+          "organizations_url": "https://api.github.com/users/johnyangk/orgs",
+          "repos_url": "https://api.github.com/users/johnyangk/repos",
+          "events_url": "https://api.github.com/users/johnyangk/events{/privacy}",
+          "received_events_url": "https://api.github.com/users/johnyangk/received_events",
+          "type": "User",
+          "user_view_type": "public",
+          "site_admin": false
+        },
+        "type": "analyst",
+        "state": "accepted"
+      }
+    ],
+    "collaborating_users": null,
+    "collaborating_teams": null,
+    "private_fork": null,
+    "cvss": {
+      "vector_string": null,
+      "score": null
+    }
+  },
+  {
+    "ghsa_id": "GHSA-r33q-22hv-j29q",
+    "cve_id": "CVE-2020-26264",
+    "url": "https://api.github.com/repos/ethereum/go-ethereum/security-advisories/GHSA-r33q-22hv-j29q",
+    "html_url": "https://github.com/ethereum/go-ethereum/security/advisories/GHSA-r33q-22hv-j29q",
+    "summary": "LES Server DoS via GetProofsV2",
+    "description": "### Impact\r\n\r\nA DoS vulnerability can make a LES server crash via malicious `GetProofsV2` request from a connected LES client.\r\n\r\n### Patches\r\n\r\nThe vulnerability was patched in https://github.com/ethereum/go-ethereum/pull/21896. \r\n\r\n### Workarounds\r\n\r\nThis vulnerability only concerns users explicitly enabling `les` server; disabling `les` prevents the exploit. \r\nIt can also be patched by manually applying the patch in https://github.com/ethereum/go-ethereum/pull/21896. \r\n\r\n\r\n### For more information\r\nIf you have any questions or comments about this advisory:\r\n* Open an issue in [go-ethereum](https://github.com/ethereum/go-ethereum)\r\n* Email us at [security@ethereum.org](mailto:security@ethereum.org)",
+    "severity": "medium",
+    "author": null,
+    "publisher": {
+      "login": "fjl",
+      "id": 6915,
+      "node_id": "MDQ6VXNlcjY5MTU=",
+      "avatar_url": "https://avatars.githubusercontent.com/u/6915?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/fjl",
+      "html_url": "https://github.com/fjl",
+      "followers_url": "https://api.github.com/users/fjl/followers",
+      "following_url": "https://api.github.com/users/fjl/following{/other_user}",
+      "gists_url": "https://api.github.com/users/fjl/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/fjl/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/fjl/subscriptions",
+      "organizations_url": "https://api.github.com/users/fjl/orgs",
+      "repos_url": "https://api.github.com/users/fjl/repos",
+      "events_url": "https://api.github.com/users/fjl/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/fjl/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "identifiers": [
+      {
+        "value": "GHSA-r33q-22hv-j29q",
+        "type": "GHSA"
+      },
+      {
+        "value": "CVE-2020-26264",
+        "type": "CVE"
+      }
+    ],
+    "state": "published",
+    "created_at": null,
+    "updated_at": "2020-12-11T08:07:23Z",
+    "published_at": "2020-12-11T08:07:23Z",
+    "closed_at": null,
+    "withdrawn_at": null,
+    "submission": null,
+    "vulnerabilities": [
+      {
+        "package": {
+          "ecosystem": "go",
+          "name": "github.com/ethereum/go-ethereum"
+        },
+        "vulnerable_version_range": "< 1.9.25",
+        "patched_versions": ">= 1.9.25",
+        "vulnerable_functions": []
+      }
+    ],
+    "cvss_severities": {
+      "cvss_v3": {
+        "vector_string": null,
+        "score": null
+      },
+      "cvss_v4": {
+        "vector_string": null,
+        "score": null
+      }
+    },
+    "cwes": [],
+    "cwe_ids": [],
+    "credits": [
+      {
+        "login": "lukaszmatczak",
+        "type": "analyst"
+      }
+    ],
+    "credits_detailed": [
+      {
+        "user": {
+          "login": "lukaszmatczak",
+          "id": 16467154,
+          "node_id": "MDQ6VXNlcjE2NDY3MTU0",
+          "avatar_url": "https://avatars.githubusercontent.com/u/16467154?v=4",
+          "gravatar_id": "",
+          "url": "https://api.github.com/users/lukaszmatczak",
+          "html_url": "https://github.com/lukaszmatczak",
+          "followers_url": "https://api.github.com/users/lukaszmatczak/followers",
+          "following_url": "https://api.github.com/users/lukaszmatczak/following{/other_user}",
+          "gists_url": "https://api.github.com/users/lukaszmatczak/gists{/gist_id}",
+          "starred_url": "https://api.github.com/users/lukaszmatczak/starred{/owner}{/repo}",
+          "subscriptions_url": "https://api.github.com/users/lukaszmatczak/subscriptions",
+          "organizations_url": "https://api.github.com/users/lukaszmatczak/orgs",
+          "repos_url": "https://api.github.com/users/lukaszmatczak/repos",
+          "events_url": "https://api.github.com/users/lukaszmatczak/events{/privacy}",
+          "received_events_url": "https://api.github.com/users/lukaszmatczak/received_events",
+          "type": "User",
+          "user_view_type": "public",
+          "site_admin": false
+        },
+        "type": "analyst",
+        "state": "accepted"
+      }
+    ],
+    "collaborating_users": null,
+    "collaborating_teams": null,
+    "private_fork": null,
+    "cvss": {
+      "vector_string": null,
+      "score": null
+    }
+  },
+  {
+    "ghsa_id": "GHSA-m6gx-rhvj-fh52",
+    "cve_id": "CVE-2020-28362",
+    "url": "https://api.github.com/repos/ethereum/go-ethereum/security-advisories/GHSA-m6gx-rhvj-fh52",
+    "html_url": "https://github.com/ethereum/go-ethereum/security/advisories/GHSA-m6gx-rhvj-fh52",
+    "summary": "Denial of service due to Go CVE-2020-28362",
+    "description": "### Impact\r\nVersions of Geth built with Go `<1.15.5` or `<1.14.12` are most likely affected by a critical DoS-related security vulnerability. The golang team has registered the underlying flaw as ‘CVE-2020-28362’.\r\n\r\nWe recommend all users to rebuild (ideally `v1.9.24`) with Go `1.15.5` or `1.14.12`, to avoid node crashes. Alternatively, if you are running binaries distributed via one of our official channels, we’re going to release `v1.9.24` ourselves built with Go `1.15.5`.\r\n\r\n### Patches\r\nThis is not an issue in go-ethereum, rebuilding an older version with Go `1.15.5` or `1.14.12` will suffice to address the vulnerability. \r\n\r\n### Workarounds\r\nRebuilding with Go `1.15.5` or `1.14.12` will suffice to address the vulnerability. \r\n\r\n### References\r\n- https://blog.ethereum.org/2020/11/12/geth_security_release/\r\n- https://groups.google.com/g/golang-announce/c/NpBGTTmKzpM\r\n\r\n### For more information\r\nIf you have any questions or comments about this advisory:\r\n* Open an issue in [go-ethereum](https://github.com/ethereum/go-ethereum)\r\n* Email us at [security@ethereum.org](mailto:security@ethereum.org)\r\n",
+    "severity": "critical",
+    "author": null,
+    "publisher": {
+      "login": "holiman",
+      "id": 142290,
+      "node_id": "MDQ6VXNlcjE0MjI5MA==",
+      "avatar_url": "https://avatars.githubusercontent.com/u/142290?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/holiman",
+      "html_url": "https://github.com/holiman",
+      "followers_url": "https://api.github.com/users/holiman/followers",
+      "following_url": "https://api.github.com/users/holiman/following{/other_user}",
+      "gists_url": "https://api.github.com/users/holiman/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/holiman/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/holiman/subscriptions",
+      "organizations_url": "https://api.github.com/users/holiman/orgs",
+      "repos_url": "https://api.github.com/users/holiman/repos",
+      "events_url": "https://api.github.com/users/holiman/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/holiman/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "identifiers": [
+      {
+        "value": "GHSA-m6gx-rhvj-fh52",
+        "type": "GHSA"
+      },
+      {
+        "value": "CVE-2020-28362",
+        "type": "CVE"
+      }
+    ],
+    "state": "published",
+    "created_at": null,
+    "updated_at": "2020-11-24T19:10:51Z",
+    "published_at": "2020-11-24T18:39:50Z",
+    "closed_at": null,
+    "withdrawn_at": null,
+    "submission": null,
+    "vulnerabilities": [
+      {
+        "package": {
+          "ecosystem": "go",
+          "name": "github.com/ethereum/go-ethereum"
+        },
+        "vulnerable_version_range": "< 1.9.24",
+        "patched_versions": ">= 1.9.24",
+        "vulnerable_functions": []
+      }
+    ],
+    "cvss_severities": {
+      "cvss_v3": {
+        "vector_string": null,
+        "score": null
+      },
+      "cvss_v4": {
+        "vector_string": null,
+        "score": null
+      }
+    },
+    "cwes": [],
+    "cwe_ids": [],
+    "credits": [],
+    "credits_detailed": [],
+    "collaborating_users": null,
+    "collaborating_teams": null,
+    "private_fork": null,
+    "cvss": {
+      "vector_string": null,
+      "score": null
+    }
+  },
+  {
+    "ghsa_id": "GHSA-jm5c-rv3w-w83m",
+    "cve_id": "CVE-2020-26242",
+    "url": "https://api.github.com/repos/ethereum/go-ethereum/security-advisories/GHSA-jm5c-rv3w-w83m",
+    "html_url": "https://github.com/ethereum/go-ethereum/security/advisories/GHSA-jm5c-rv3w-w83m",
+    "summary": "Denial of service via `MulMod`",
+    "description": "### Impact\r\nDenial-of-service (crash) during block processing\r\n\r\n### Details\r\n\r\nAffected versions suffer from a vulnerability which can be exploited through the `MULMOD` operation, by specifying a modulo of `0`: `mulmod(a,b,0)`, causing a `panic` in the underlying library. \r\nThe crash was in the `uint256` library, where a buffer [underflowed](https://github.com/holiman/uint256/blob/4ce82e695c10ddad57215bdbeafb68b8c5df2c30/uint256.go#L442).\r\n\r\n\tif `d == 0`, `dLen` remains `0`\r\n\r\nand https://github.com/holiman/uint256/blob/4ce82e695c10ddad57215bdbeafb68b8c5df2c30/uint256.go#L451 will try to access index `[-1]`.\r\n\r\nThe `uint256` library was first merged in this [commit](https://github.com/ethereum/go-ethereum/commit/cf6674539c589f80031f3371a71c6a80addbe454), on 2020-06-08. \r\nExploiting this vulnerabilty would cause all vulnerable nodes to drop off the network. \r\n\r\nThe issue was brought to our attention through a [bug report](https://github.com/ethereum/go-ethereum/issues/21367), showing a `panic` occurring on sync from genesis on the Ropsten network.\r\n \r\nIt was estimated that the least obvious way to fix this would be to merge the fix into `uint256`, make a new release of that library and then update the geth-dependency.\r\n\r\n- https://github.com/holiman/uint256/releases/tag/v1.1.1 was made the same day, \r\n- PR to address the issue: https://github.com/holiman/uint256/pull/80 \r\n- PR to update geth deps: https://github.com/ethereum/go-ethereum/pull/21368 \r\n\r\n\r\n\r\n### Patches\r\n\r\nUpgrade to v1.9.18 or higher\r\n\r\n### Workarounds\r\n\r\nNot at this time\r\n\r\n### References\r\n\r\nhttps://blog.ethereum.org/2020/11/12/geth_security_release/\r\n### For more information\r\nIf you have any questions or comments about this advisory:\r\n* Open an issue in [go-ethereum](https://github.com/ethereum/go-ethereum)\r\n* Email us at [security@ethereum.org](mailto:security@ethereum.org)\r\n",
+    "severity": "high",
+    "author": null,
+    "publisher": {
+      "login": "holiman",
+      "id": 142290,
+      "node_id": "MDQ6VXNlcjE0MjI5MA==",
+      "avatar_url": "https://avatars.githubusercontent.com/u/142290?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/holiman",
+      "html_url": "https://github.com/holiman",
+      "followers_url": "https://api.github.com/users/holiman/followers",
+      "following_url": "https://api.github.com/users/holiman/following{/other_user}",
+      "gists_url": "https://api.github.com/users/holiman/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/holiman/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/holiman/subscriptions",
+      "organizations_url": "https://api.github.com/users/holiman/orgs",
+      "repos_url": "https://api.github.com/users/holiman/repos",
+      "events_url": "https://api.github.com/users/holiman/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/holiman/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "identifiers": [
+      {
+        "value": "GHSA-jm5c-rv3w-w83m",
+        "type": "GHSA"
+      },
+      {
+        "value": "CVE-2020-26242",
+        "type": "CVE"
+      }
+    ],
+    "state": "published",
+    "created_at": null,
+    "updated_at": "2021-03-25T19:05:35Z",
+    "published_at": "2020-11-24T18:40:03Z",
+    "closed_at": null,
+    "withdrawn_at": null,
+    "submission": null,
+    "vulnerabilities": [
+      {
+        "package": {
+          "ecosystem": "go",
+          "name": "github.com/ethereum/go-ethereum"
+        },
+        "vulnerable_version_range": ">= 1.9.16, < 1.9.18",
+        "patched_versions": ">= v1.9.18",
+        "vulnerable_functions": []
+      }
+    ],
+    "cvss_severities": {
+      "cvss_v3": {
+        "vector_string": null,
+        "score": null
+      },
+      "cvss_v4": {
+        "vector_string": null,
+        "score": null
+      }
+    },
+    "cwes": [],
+    "cwe_ids": [],
+    "credits": [],
+    "credits_detailed": [],
+    "collaborating_users": null,
+    "collaborating_teams": null,
+    "private_fork": null,
+    "cvss": {
+      "vector_string": null,
+      "score": null
+    }
+  },
+  {
+    "ghsa_id": "GHSA-69v6-xc2j-r2jf",
+    "cve_id": "CVE-2020-26241",
+    "url": "https://api.github.com/repos/ethereum/go-ethereum/security-advisories/GHSA-69v6-xc2j-r2jf",
+    "html_url": "https://github.com/ethereum/go-ethereum/security/advisories/GHSA-69v6-xc2j-r2jf",
+    "summary": "Shallow copy in the 0x4 precompile could lead to EVM memory corruption",
+    "description": "### Impact\r\nThis is a Consensus vulnerability, which can be used to cause a chain-split where vulnerable nodes reject the canonical chain. \r\n\r\nGeth’s pre-compiled `dataCopy` (at `0x00...04`) contract did a shallow copy on invocation. An attacker could deploy a contract that \r\n\r\n- writes `X` to an EVM memory region `R`,\r\n- calls `0x00..04` with `R` as an argument,\r\n- overwrites `R` to `Y`,\r\n- and finally invokes the `RETURNDATACOPY` opcode.\r\n\r\nWhen this contract is invoked, a consensus-compliant node would push `X` on the EVM stack, whereas Geth would push `Y`.\r\n\r\n\r\n### Patches\r\n\r\nNo standalone patches have been made. \r\n\r\n### Workarounds\r\n\r\nUpgrade to `1.9.17` or higher.\r\n\r\n### References\r\n\r\nhttps://blog.ethereum.org/2020/11/12/geth_security_release/\r\n\r\n### For more information\r\nIf you have any questions or comments about this advisory:\r\n* Open an issue in [go-ethereum](https://github.com/ethereum/go-ethereum)\r\n* Email us at [security@ethereum.org](mailto:security@ethereum.org)\r\n",
+    "severity": "high",
+    "author": null,
+    "publisher": {
+      "login": "holiman",
+      "id": 142290,
+      "node_id": "MDQ6VXNlcjE0MjI5MA==",
+      "avatar_url": "https://avatars.githubusercontent.com/u/142290?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/holiman",
+      "html_url": "https://github.com/holiman",
+      "followers_url": "https://api.github.com/users/holiman/followers",
+      "following_url": "https://api.github.com/users/holiman/following{/other_user}",
+      "gists_url": "https://api.github.com/users/holiman/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/holiman/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/holiman/subscriptions",
+      "organizations_url": "https://api.github.com/users/holiman/orgs",
+      "repos_url": "https://api.github.com/users/holiman/repos",
+      "events_url": "https://api.github.com/users/holiman/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/holiman/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "identifiers": [
+      {
+        "value": "GHSA-69v6-xc2j-r2jf",
+        "type": "GHSA"
+      },
+      {
+        "value": "CVE-2020-26241",
+        "type": "CVE"
+      }
+    ],
+    "state": "published",
+    "created_at": null,
+    "updated_at": "2020-11-24T19:12:56Z",
+    "published_at": "2020-11-24T18:38:28Z",
+    "closed_at": null,
+    "withdrawn_at": null,
+    "submission": null,
+    "vulnerabilities": [
+      {
+        "package": {
+          "ecosystem": "go",
+          "name": "github.com/ethereum/go-ethereum"
+        },
+        "vulnerable_version_range": ">= 1.9.7, < 1.9.17",
+        "patched_versions": ">= 1.9.17",
+        "vulnerable_functions": []
+      }
+    ],
+    "cvss_severities": {
+      "cvss_v3": {
+        "vector_string": null,
+        "score": null
+      },
+      "cvss_v4": {
+        "vector_string": null,
+        "score": null
+      }
+    },
+    "cwes": [],
+    "cwe_ids": [],
+    "credits": [
+      {
+        "login": "johnyangk",
+        "type": "analyst"
+      }
+    ],
+    "credits_detailed": [
+      {
+        "user": {
+          "login": "johnyangk",
+          "id": 4114572,
+          "node_id": "MDQ6VXNlcjQxMTQ1NzI=",
+          "avatar_url": "https://avatars.githubusercontent.com/u/4114572?v=4",
+          "gravatar_id": "",
+          "url": "https://api.github.com/users/johnyangk",
+          "html_url": "https://github.com/johnyangk",
+          "followers_url": "https://api.github.com/users/johnyangk/followers",
+          "following_url": "https://api.github.com/users/johnyangk/following{/other_user}",
+          "gists_url": "https://api.github.com/users/johnyangk/gists{/gist_id}",
+          "starred_url": "https://api.github.com/users/johnyangk/starred{/owner}{/repo}",
+          "subscriptions_url": "https://api.github.com/users/johnyangk/subscriptions",
+          "organizations_url": "https://api.github.com/users/johnyangk/orgs",
+          "repos_url": "https://api.github.com/users/johnyangk/repos",
+          "events_url": "https://api.github.com/users/johnyangk/events{/privacy}",
+          "received_events_url": "https://api.github.com/users/johnyangk/received_events",
+          "type": "User",
+          "user_view_type": "public",
+          "site_admin": false
+        },
+        "type": "analyst",
+        "state": "accepted"
+      }
+    ],
+    "collaborating_users": null,
+    "collaborating_teams": null,
+    "private_fork": null,
+    "cvss": {
+      "vector_string": null,
+      "score": null
+    }
+  },
+  {
+    "ghsa_id": "GHSA-v592-xf75-856p",
+    "cve_id": "CVE-2020-26240",
+    "url": "https://api.github.com/repos/ethereum/go-ethereum/security-advisories/GHSA-v592-xf75-856p",
+    "html_url": "https://github.com/ethereum/go-ethereum/security/advisories/GHSA-v592-xf75-856p",
+    "summary": "Ethash DAG generation bug can cause miners to create invalid PoW",
+    "description": "### Impact\r\nAn ethash mining DAG generation flaw in Geth could cause miners to erroneously calculate PoW in an upcoming epoch (estimated early January, 2021). This happened on the ETC chain on 2020-11-06. This issue is relevant only for miners, non-mining nodes are unaffected.\r\n\r\n### Patches\r\nThis issue is also fixed as of 1.9.24. Thanks to @slavikus for bringing the issue to our attention and writing the fix. \r\n\r\n### Workarounds\r\nThis PR implements a patch: https://github.com/ethereum/go-ethereum/pull/21793 \r\n\r\n### References\r\nhttps://blog.ethereum.org/2020/11/12/geth_security_release/\r\n\r\n### For more information\r\nIf you have any questions or comments about this advisory:\r\n* Open an issue in [go-ethereum](https://github.com/ethereum/go-ethereum)\r\n* Email us at [security@ethereum.org](mailto:security@ethereum.org)",
+    "severity": "medium",
+    "author": null,
+    "publisher": {
+      "login": "holiman",
+      "id": 142290,
+      "node_id": "MDQ6VXNlcjE0MjI5MA==",
+      "avatar_url": "https://avatars.githubusercontent.com/u/142290?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/holiman",
+      "html_url": "https://github.com/holiman",
+      "followers_url": "https://api.github.com/users/holiman/followers",
+      "following_url": "https://api.github.com/users/holiman/following{/other_user}",
+      "gists_url": "https://api.github.com/users/holiman/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/holiman/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/holiman/subscriptions",
+      "organizations_url": "https://api.github.com/users/holiman/orgs",
+      "repos_url": "https://api.github.com/users/holiman/repos",
+      "events_url": "https://api.github.com/users/holiman/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/holiman/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "identifiers": [
+      {
+        "value": "GHSA-v592-xf75-856p",
+        "type": "GHSA"
+      },
+      {
+        "value": "CVE-2020-26240",
+        "type": "CVE"
+      }
+    ],
+    "state": "published",
+    "created_at": null,
+    "updated_at": "2020-11-24T19:21:28Z",
+    "published_at": "2020-11-24T18:40:29Z",
+    "closed_at": null,
+    "withdrawn_at": null,
+    "submission": null,
+    "vulnerabilities": [
+      {
+        "package": {
+          "ecosystem": "go",
+          "name": "github.com/ethereum/go-ethereum"
+        },
+        "vulnerable_version_range": "< 1.9.24",
+        "patched_versions": ">= 1.9.24",
+        "vulnerable_functions": []
+      }
+    ],
+    "cvss_severities": {
+      "cvss_v3": {
+        "vector_string": null,
+        "score": null
+      },
+      "cvss_v4": {
+        "vector_string": null,
+        "score": null
+      }
+    },
+    "cwes": [],
+    "cwe_ids": [],
+    "credits": [
+      {
+        "login": "slavikus",
+        "type": "analyst"
+      }
+    ],
+    "credits_detailed": [
+      {
+        "user": {
+          "login": "slavikus",
+          "id": 143051,
+          "node_id": "MDQ6VXNlcjE0MzA1MQ==",
+          "avatar_url": "https://avatars.githubusercontent.com/u/143051?v=4",
+          "gravatar_id": "",
+          "url": "https://api.github.com/users/slavikus",
+          "html_url": "https://github.com/slavikus",
+          "followers_url": "https://api.github.com/users/slavikus/followers",
+          "following_url": "https://api.github.com/users/slavikus/following{/other_user}",
+          "gists_url": "https://api.github.com/users/slavikus/gists{/gist_id}",
+          "starred_url": "https://api.github.com/users/slavikus/starred{/owner}{/repo}",
+          "subscriptions_url": "https://api.github.com/users/slavikus/subscriptions",
+          "organizations_url": "https://api.github.com/users/slavikus/orgs",
+          "repos_url": "https://api.github.com/users/slavikus/repos",
+          "events_url": "https://api.github.com/users/slavikus/events{/privacy}",
+          "received_events_url": "https://api.github.com/users/slavikus/received_events",
+          "type": "User",
+          "user_view_type": "public",
+          "site_admin": false
+        },
+        "type": "analyst",
+        "state": "accepted"
+      }
+    ],
+    "collaborating_users": null,
+    "collaborating_teams": null,
+    "private_fork": null,
+    "cvss": {
+      "vector_string": null,
+      "score": null
+    }
+  }
+]

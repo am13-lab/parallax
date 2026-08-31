@@ -1,0 +1,1706 @@
+{
+  "SPEC-AGG-001": {
+    "text": "[REJECT] beacon_aggregate_and_proof: Committee index within expected range for state",
+    "ast_ids": [
+      "BEACON_AGGREGATE_AND_PROOF-REJECT-fc3dd3a9"
+    ]
+  },
+  "SPEC-AGG-002": {
+    "text": "[IGNORE] beacon_aggregate_and_proof: aggregate.data.slot <= current_slot (with MAXIMUM_GOSSIP_CLOCK_DISPARITY)",
+    "ast_ids": [
+      "BEACON_AGGREGATE_AND_PROOF-REJECT-c26fb5e5",
+      "BEACON_AGGREGATE_AND_PROOF-IGNORE-67149835",
+      "BEACON_AGGREGATE_AND_PROOF-REJECT-71d8d9a9"
+    ]
+  },
+  "SPEC-AGG-003": {
+    "text": "[IGNORE] beacon_aggregate_and_proof: Epoch of slot is current or previous epoch (EIP-7045)",
+    "ast_ids": [
+      "BEACON_AGGREGATE_AND_PROOF-IGNORE-85b80178"
+    ]
+  },
+  "SPEC-AGG-004": {
+    "text": "[REJECT] beacon_aggregate_and_proof: target.epoch == compute_epoch_at_slot(aggregate.data.slot)",
+    "ast_ids": [
+      "BEACON_AGGREGATE_AND_PROOF-REJECT-c26fb5e5",
+      "BEACON_AGGREGATE_AND_PROOF-REJECT-71d8d9a9",
+      "BEACON_AGGREGATE_AND_PROOF-REJECT-2dc5a2c5"
+    ]
+  },
+  "SPEC-AGG-005": {
+    "text": "[REJECT] beacon_aggregate_and_proof: Number of aggregation_bits matches committee size",
+    "ast_ids": [
+      "BEACON_AGGREGATE_AND_PROOF-REJECT-f41bc7a4"
+    ]
+  },
+  "SPEC-AGG-006": {
+    "text": "[REJECT] beacon_aggregate_and_proof: Aggregate has at least one participant (aggregation_bits not empty)",
+    "ast_ids": [
+      "BEACON_AGGREGATE_AND_PROOF-REJECT-b6185e7c",
+      "BEACON_AGGREGATE_AND_PROOF-REJECT-71d8d9a9",
+      "BEACON_AGGREGATE_AND_PROOF-REJECT-2dc5a2c5"
+    ]
+  },
+  "SPEC-AGG-007": {
+    "text": "[IGNORE] beacon_aggregate_and_proof: No valid aggregate with superset of aggregation_bits already seen",
+    "ast_ids": [
+      "BEACON_AGGREGATE_AND_PROOF-IGNORE-0e37cd0e"
+    ]
+  },
+  "SPEC-AGG-008": {
+    "text": "[IGNORE] beacon_aggregate_and_proof: First valid aggregate from aggregator for this epoch",
+    "ast_ids": [
+      "BEACON_AGGREGATE_AND_PROOF-IGNORE-7c1a7594"
+    ]
+  },
+  "SPEC-AGG-009": {
+    "text": "[REJECT] beacon_aggregate_and_proof: selection_proof selects validator as aggregator",
+    "ast_ids": [
+      "BEACON_AGGREGATE_AND_PROOF-REJECT-2fa7d152",
+      "BEACON_AGGREGATE_AND_PROOF-REJECT-9d4a9467"
+    ]
+  },
+  "SPEC-AGG-010": {
+    "text": "[REJECT] beacon_aggregate_and_proof: Aggregator's validator_index is within the committee",
+    "ast_ids": [
+      "BEACON_AGGREGATE_AND_PROOF-REJECT-9d4a9467",
+      "BEACON_AGGREGATE_AND_PROOF-REJECT-fc3dd3a9",
+      "BEACON_AGGREGATE_AND_PROOF-REJECT-b0b9c377"
+    ]
+  },
+  "SPEC-AGG-011": {
+    "text": "[REJECT] beacon_aggregate_and_proof: selection_proof signature is valid",
+    "ast_ids": [
+      "BEACON_AGGREGATE_AND_PROOF-REJECT-b10dbef1",
+      "BEACON_AGGREGATE_AND_PROOF-REJECT-14282100",
+      "BEACON_AGGREGATE_AND_PROOF-REJECT-863359b5"
+    ]
+  },
+  "SPEC-AGG-012": {
+    "text": "[REJECT] beacon_aggregate_and_proof: Aggregator signature is valid",
+    "ast_ids": [
+      "BEACON_AGGREGATE_AND_PROOF-REJECT-b10dbef1",
+      "BEACON_AGGREGATE_AND_PROOF-REJECT-14282100",
+      "BEACON_AGGREGATE_AND_PROOF-REJECT-863359b5"
+    ]
+  },
+  "SPEC-AGG-013": {
+    "text": "[REJECT] beacon_aggregate_and_proof: Aggregate signature valid (is_valid_indexed_attestation)",
+    "ast_ids": [
+      "BEACON_AGGREGATE_AND_PROOF-REJECT-14282100",
+      "BEACON_AGGREGATE_AND_PROOF-REJECT-b10dbef1",
+      "BEACON_AGGREGATE_AND_PROOF-REJECT-863359b5"
+    ]
+  },
+  "SPEC-AGG-014": {
+    "text": "[IGNORE] beacon_aggregate_and_proof: Block being voted for (beacon_block_root) has been seen",
+    "ast_ids": [
+      "BEACON_AGGREGATE_AND_PROOF-IGNORE-19a3a197"
+    ]
+  },
+  "SPEC-AGG-015": {
+    "text": "[REJECT] beacon_aggregate_and_proof: Block being voted for passes validation",
+    "ast_ids": [
+      "BEACON_AGGREGATE_AND_PROOF-REJECT-544ecc21"
+    ]
+  },
+  "SPEC-AGG-016": {
+    "text": "[REJECT] beacon_aggregate_and_proof: Target block is ancestor of LMD vote block",
+    "ast_ids": [
+      "BEACON_AGGREGATE_AND_PROOF-REJECT-5658ca54"
+    ]
+  },
+  "SPEC-AGG-017": {
+    "text": "[IGNORE] beacon_aggregate_and_proof: Finalized checkpoint is ancestor of block",
+    "ast_ids": [
+      "BEACON_AGGREGATE_AND_PROOF-IGNORE-dc38af01"
+    ]
+  },
+  "SPEC-AGG-018": {
+    "text": "[REJECT] beacon_aggregate_and_proof (Electra): len(committee_indices) == 1",
+    "ast_ids": [
+      "BEACON_AGGREGATE_AND_PROOF-REJECT-b0b9c377",
+      "BEACON_AGGREGATE_AND_PROOF-REJECT-ab7fb155",
+      "BEACON_AGGREGATE_AND_PROOF-REJECT-71d8d9a9"
+    ]
+  },
+  "SPEC-ASLASH-001": {
+    "text": "[IGNORE] attester_slashing: At least one index in intersection not yet slashed",
+    "ast_ids": [
+      "ATTESTER_SLASHING-IGNORE-647ecfb9"
+    ]
+  },
+  "SPEC-ASLASH-002": {
+    "text": "[REJECT] attester_slashing: Attestations are slashable (is_slashable_attestation_data)",
+    "ast_ids": [
+      "ATTESTER_SLASHING-REJECT-2d878548",
+      "ATTESTER_SLASHING-REJECT-6cea922f",
+      "ATTESTER_SLASHING-REJECT-8adc7b7d"
+    ]
+  },
+  "SPEC-ASLASH-003": {
+    "text": "[REJECT] attester_slashing: Both indexed attestations are valid (is_valid_indexed_attestation)",
+    "ast_ids": [
+      "ATTESTER_SLASHING-REJECT-8adc7b7d",
+      "ATTESTER_SLASHING-REJECT-6425e9b8",
+      "ATTESTER_SLASHING-REJECT-e0453bd4"
+    ]
+  },
+  "SPEC-ASLASH-004": {
+    "text": "[REJECT] attester_slashing: At least one validator in intersection is slashable",
+    "ast_ids": [
+      "ATTESTER_SLASHING-REJECT-2d878548"
+    ]
+  },
+  "SPEC-ATT-001": {
+    "text": "[REJECT] beacon_attestation: Committee index within expected range",
+    "ast_ids": [
+      "BEACON_ATTESTATION-REJECT-fc3dd3a9"
+    ]
+  },
+  "SPEC-ATT-002": {
+    "text": "[REJECT] beacon_attestation: Attestation is for the correct subnet",
+    "ast_ids": [
+      "BEACON_ATTESTATION-REJECT-02f714ed"
+    ]
+  },
+  "SPEC-ATT-003": {
+    "text": "[IGNORE] beacon_attestation: attestation.data.slot <= current_slot (with MAXIMUM_GOSSIP_CLOCK_DISPARITY)",
+    "ast_ids": [
+      "PAYLOAD_ATTESTATION_MESSAGE-IGNORE-731cabe0",
+      "BEACON_ATTESTATION-IGNORE-5da40ec3"
+    ]
+  },
+  "SPEC-ATT-004": {
+    "text": "[IGNORE] beacon_attestation: Epoch of slot is current or previous epoch (EIP-7045)",
+    "ast_ids": [
+      "BEACON_ATTESTATION-IGNORE-493398b9",
+      "BEACON_AGGREGATE_AND_PROOF-IGNORE-85b80178"
+    ]
+  },
+  "SPEC-ATT-005": {
+    "text": "[REJECT] beacon_attestation: target.epoch == compute_epoch_at_slot(attestation.data.slot)",
+    "ast_ids": [
+      "BEACON_ATTESTATION-REJECT-2d8f2580",
+      "BEACON_ATTESTATION_SUBNET_ID-REJECT-0b8c20eb",
+      "BEACON_ATTESTATION-REJECT-36fd424b"
+    ]
+  },
+  "SPEC-ATT-006": {
+    "text": "[REJECT] beacon_attestation (Electra): Attester is a member of the committee",
+    "ast_ids": [
+      "BEACON_ATTESTATION-REJECT-20aed41d"
+    ]
+  },
+  "SPEC-ATT-007": {
+    "text": "[IGNORE] beacon_attestation: No prior valid attestation from this validator for this target epoch",
+    "ast_ids": [
+      "BEACON_ATTESTATION-IGNORE-fa60d57c"
+    ]
+  },
+  "SPEC-ATT-008": {
+    "text": "[REJECT] beacon_attestation: Signature is valid (is_valid_indexed_attestation)",
+    "ast_ids": [
+      "BEACON_ATTESTATION-REJECT-f7a87fa4",
+      "PAYLOAD_ATTESTATION_MESSAGE-REJECT-198ad7b3"
+    ]
+  },
+  "SPEC-ATT-009": {
+    "text": "[IGNORE] beacon_attestation: Block being voted for (beacon_block_root) has been seen",
+    "ast_ids": [
+      "BEACON_ATTESTATION-IGNORE-19a3a197"
+    ]
+  },
+  "SPEC-ATT-010": {
+    "text": "[REJECT] beacon_attestation: Block being voted for passes validation",
+    "ast_ids": [
+      "BEACON_ATTESTATION-REJECT-544ecc21"
+    ]
+  },
+  "SPEC-ATT-011": {
+    "text": "[REJECT] beacon_attestation: Target block is ancestor of LMD vote block",
+    "ast_ids": [
+      "BEACON_ATTESTATION-REJECT-cb7a1c7e"
+    ]
+  },
+  "SPEC-ATT-012": {
+    "text": "[IGNORE] beacon_attestation: Finalized checkpoint is ancestor of the block",
+    "ast_ids": [
+      "BEACON_ATTESTATION-IGNORE-e55933f5",
+      "BEACON_ATTESTATION-REJECT-cb7a1c7e",
+      "PAYLOAD_ATTESTATION_MESSAGE-IGNORE-335c4459"
+    ]
+  },
+  "SPEC-BBR-001": {
+    "text": "BlocksByRange count MUST NOT exceed MAX_REQUEST_BLOCKS_DENEB (128)",
+    "ast_ids": [
+      "PROSE-MUST-beb326de"
+    ]
+  },
+  "SPEC-BBR-002": {
+    "text": "BlocksByRange with count=0: response behavior is unspecified by the P2P spec (no count=0 InvalidRequest rule); local differential/spec-clarification candidate",
+    "retired": true,
+    "reason": "Legacy local candidate/false-positive metadata; not a canonical AST rule."
+  },
+  "SPEC-BLOB-DEPRECATION-001": {
+    "text": "BlobSidecarsByRange/Root transition: MUST serve pre-Fulu blob sidecars during deprecation window",
+    "ast_ids": [
+      "PROSE-MUST-9cd4be04",
+      "PROSE-MUST-4bfaa766"
+    ]
+  },
+  "SPEC-BLOB-DEPRECATION-002": {
+    "text": "BlobSidecars transition: SHOULD NOT penalize peers requesting blobs from FULU_FORK_EPOCH",
+    "ast_ids": [
+      "PROSE-MUST-baa6186c",
+      "PROSE-MUST-9cd4be04",
+      "PROSE-MUST-4bfaa766"
+    ]
+  },
+  "SPEC-BLOB-DEPRECATION-003": {
+    "text": "BlobSidecars transition: MAY return empty for requests entirely at or after FULU_FORK_EPOCH",
+    "ast_ids": [
+      "PROSE-MUST-9cd4be04",
+      "PROSE-MUST-4bfaa766",
+      "PROSE-MUST-f38be262"
+    ]
+  },
+  "SPEC-BLOBGOSSIP-001": {
+    "text": "[REJECT] blob_sidecar: sidecar.index < MAX_BLOBS_PER_BLOCK",
+    "ast_ids": [
+      "BLOB_SIDECAR-REJECT-e13efefd",
+      "BLOB_SIDECAR-REJECT-5e9003ab"
+    ]
+  },
+  "SPEC-BLOBGOSSIP-002": {
+    "text": "[REJECT] blob_sidecar: Correct subnet (compute_subnet_for_blob_sidecar(index) == subnet_id)",
+    "ast_ids": [
+      "BLOB_SIDECAR-REJECT-c094c7ea",
+      "BLOB_SIDECAR-REJECT-e13efefd",
+      "BLOB_SIDECAR-REJECT-5e9003ab"
+    ]
+  },
+  "SPEC-BLOBGOSSIP-003": {
+    "text": "[IGNORE] blob_sidecar: Not from future slot (with MAXIMUM_GOSSIP_CLOCK_DISPARITY)",
+    "ast_ids": [
+      "BLOB_SIDECAR-IGNORE-8cf6775b",
+      "BLOB_SIDECAR-IGNORE-6478f02b",
+      "BLOB_SIDECAR-IGNORE-ed3428e1"
+    ]
+  },
+  "SPEC-BLOBGOSSIP-004": {
+    "text": "[IGNORE] blob_sidecar: Slot > finalized slot",
+    "ast_ids": [
+      "BLOB_SIDECAR-IGNORE-6478f02b",
+      "BLOB_SIDECAR-IGNORE-8cf6775b",
+      "BLOB_SIDECAR-IGNORE-ed3428e1"
+    ]
+  },
+  "SPEC-BLOBGOSSIP-005": {
+    "text": "[REJECT] blob_sidecar: Proposer signature of signed_block_header is valid",
+    "ast_ids": [
+      "BLOB_SIDECAR-REJECT-c9c1666b"
+    ]
+  },
+  "SPEC-BLOBGOSSIP-006": {
+    "text": "[REJECT] blob_sidecar: Inclusion proof valid (verify_blob_sidecar_inclusion_proof)",
+    "ast_ids": [
+      "BLOB_SIDECAR-REJECT-124b7dda"
+    ]
+  },
+  "SPEC-BLOBGOSSIP-007": {
+    "text": "[REJECT] blob_sidecar: KZG proof valid (verify_blob_kzg_proof)",
+    "ast_ids": [
+      "BLOB_SIDECAR-REJECT-190a8460",
+      "BLOB_SIDECAR-REJECT-124b7dda",
+      "BLOB_SIDECAR-REJECT-c9c1666b"
+    ]
+  },
+  "SPEC-BLOBGOSSIP-008": {
+    "text": "[IGNORE] blob_sidecar: First sidecar for (slot, proposer_index, blob_index)",
+    "ast_ids": [
+      "BLOB_SIDECAR-IGNORE-ed3428e1"
+    ]
+  },
+  "SPEC-BLOBGOSSIP-009": {
+    "text": "[REJECT] blob_sidecar: Proposed by expected proposer_index for slot",
+    "ast_ids": [
+      "BLOB_SIDECAR-REJECT-28436443",
+      "BLOB_SIDECAR-REJECT-f5bf199b",
+      "BLOB_SIDECAR-IGNORE-ed3428e1"
+    ]
+  },
+  "SPEC-BLOBGOSSIP-010": {
+    "text": "[IGNORE] blob_sidecar: sidecar block parent has been seen",
+    "ast_ids": [
+      "BLOB_SIDECAR-IGNORE-80194614"
+    ]
+  },
+  "SPEC-BLOBGOSSIP-011": {
+    "text": "[REJECT] blob_sidecar: sidecar block parent passes validation",
+    "ast_ids": [
+      "BLOB_SIDECAR-REJECT-5f6c65a0"
+    ]
+  },
+  "SPEC-BLOBGOSSIP-012": {
+    "text": "[REJECT] blob_sidecar: sidecar slot is higher than parent slot",
+    "ast_ids": [
+      "BLOB_SIDECAR-REJECT-f5bf199b"
+    ]
+  },
+  "SPEC-BLOBGOSSIP-013": {
+    "text": "[REJECT] blob_sidecar: finalized checkpoint is ancestor of sidecar block",
+    "ast_ids": [
+      "BLOB_SIDECAR-REJECT-fb4868ac",
+      "BLOB_SIDECAR-REJECT-5f6c65a0",
+      "BLOB_SIDECAR-REJECT-f5bf199b"
+    ]
+  },
+  "SPEC-BLOBRANGE-001": {
+    "text": "BlobSidecarsByRange: response MUST contain no more than count * MAX_BLOBS_PER_BLOCK sidecars",
+    "ast_ids": [
+      "PROSE-MUST-7a65230f"
+    ]
+  },
+  "SPEC-BLOBRANGE-002": {
+    "text": "BlobSidecarsByRange: sidecars sent in (slot, index) order",
+    "ast_ids": [
+      "PROSE-MUST-621e66c7"
+    ]
+  },
+  "SPEC-BLOBRANGE-003": {
+    "text": "BlobSidecarsByRange: MUST respond with >= 1 sidecar from first blob-carrying block if available",
+    "ast_ids": [
+      "PROSE-MUST-78397db4"
+    ]
+  },
+  "SPEC-BLOBRANGE-004": {
+    "text": "BlobSidecarsByRange: serve range [max(current_epoch - MIN_EPOCHS_FOR_BLOB_SIDECARS_REQUESTS, DENEB_FORK_EPOCH), current_epoch]",
+    "retired": true,
+    "reason": "Legacy curated summary could not be mapped precisely; superseded by the canonical AST catalog."
+  },
+  "SPEC-BLOBRANGE-005": {
+    "text": "BlobSidecarsByRange: SHOULD respond with ResourceUnavailable for out-of-range requests",
+    "ast_ids": [
+      "PROSE-SHOULD-e922a14f"
+    ]
+  },
+  "SPEC-BLOBROOT-001": {
+    "text": "BlobSidecarsByRoot: No more than compute_max_request_blob_sidecars identifiers may be requested",
+    "retired": true,
+    "reason": "Legacy curated summary could not be mapped precisely; superseded by the canonical AST catalog."
+  },
+  "SPEC-BLOBROOT-002": {
+    "text": "BlobSidecarsByRoot: response length <= number of requested sidecars",
+    "ast_ids": [
+      "PROSE-MAY-ab6cf530"
+    ]
+  },
+  "SPEC-BLOBROOT-003": {
+    "text": "BlobSidecarsByRoot: MUST respond with >= 1 sidecar if available",
+    "retired": true,
+    "reason": "Legacy curated summary could not be mapped precisely; superseded by the canonical AST catalog."
+  },
+  "SPEC-BLOBROOT-004": {
+    "text": "BlobSidecarsByRoot: support requesting sidecars since minimum_request_epoch",
+    "ast_ids": [
+      "PROSE-MUST-baa6186c",
+      "PROSE-MUST-9d54ce13"
+    ]
+  },
+  "SPEC-BLOBROOT-005": {
+    "text": "BlobSidecarsByRoot: MAY return ResourceUnavailable or omit sidecars before minimum_request_epoch",
+    "retired": true,
+    "reason": "Legacy curated summary could not be mapped precisely; superseded by the canonical AST catalog."
+  },
+  "SPEC-BLOCK-001": {
+    "text": "[IGNORE] beacon_block: Block is not from a future slot (with MAXIMUM_GOSSIP_CLOCK_DISPARITY allowance)",
+    "ast_ids": [
+      "BEACON_BLOCK-IGNORE-451f432d"
+    ]
+  },
+  "SPEC-BLOCK-002": {
+    "text": "[IGNORE] beacon_block: Block from slot greater than latest finalized slot",
+    "ast_ids": [
+      "BEACON_BLOCK-IGNORE-e183d5a9"
+    ]
+  },
+  "SPEC-BLOCK-003": {
+    "text": "[IGNORE] beacon_block: First block with valid signature received for (proposer_index, slot)",
+    "ast_ids": [
+      "BEACON_BLOCK-IGNORE-f0952a23"
+    ]
+  },
+  "SPEC-BLOCK-004": {
+    "text": "[REJECT] beacon_block: proposer_index is a valid validator index",
+    "ast_ids": [
+      "BEACON_BLOCK-REJECT-4df28963"
+    ]
+  },
+  "SPEC-BLOCK-005": {
+    "text": "[REJECT] beacon_block: Proposer signature is valid",
+    "ast_ids": [
+      "BEACON_BLOCK-REJECT-3fd28bdc",
+      "BEACON_BLOCK-REJECT-4df28963"
+    ]
+  },
+  "SPEC-BLOCK-006": {
+    "text": "[IGNORE] beacon_block: Block's parent (block.parent_root) has been seen",
+    "ast_ids": [
+      "BEACON_BLOCK-IGNORE-b127f4ef",
+      "BEACON_BLOCK-IGNORE-7c4ad118",
+      "BEACON_BLOCK-IGNORE-da534e6d"
+    ]
+  },
+  "SPEC-BLOCK-007": {
+    "text": "[REJECT] beacon_block: Block's parent passes validation",
+    "ast_ids": [
+      "BEACON_BLOCK-REJECT-823c7319",
+      "BEACON_BLOCK-REJECT-5f829684",
+      "BEACON_BLOCK-IGNORE-da534e6d"
+    ]
+  },
+  "SPEC-BLOCK-008": {
+    "text": "[REJECT] beacon_block: Block from higher slot than its parent",
+    "ast_ids": [
+      "BEACON_BLOCK-REJECT-33eeeb94"
+    ]
+  },
+  "SPEC-BLOCK-009": {
+    "text": "[REJECT] beacon_block: Current finalized checkpoint is an ancestor of the block",
+    "ast_ids": [
+      "BEACON_BLOCK-REJECT-dbd5e1e1"
+    ]
+  },
+  "SPEC-BLOCK-010": {
+    "text": "[REJECT] beacon_block: Block proposed by expected proposer_index for the slot",
+    "ast_ids": [
+      "BEACON_BLOCK-REJECT-a3e807db",
+      "BEACON_BLOCK-REJECT-83dcef19",
+      "BEACON_BLOCK-REJECT-33eeeb94"
+    ]
+  },
+  "SPEC-BLOCK-011": {
+    "text": "[REJECT] beacon_block: len(blob_kzg_commitments) <= max_blobs_per_block (fork-dependent limit)",
+    "ast_ids": [
+      "BEACON_BLOCK-REJECT-fb1328bc",
+      "BEACON_BLOCK-REJECT-29379623",
+      "BEACON_BLOCK-REJECT-823c7319"
+    ]
+  },
+  "SPEC-BLOCK-012": {
+    "text": "[REJECT] beacon_block (Bellatrix through Fulu; removed in Gloas): execution_payload.timestamp matches block slot",
+    "ast_ids": [
+      "BEACON_BLOCK-REJECT-f0f96765",
+      "BEACON_BLOCK-REJECT-83dcef19",
+      "DATA_COLUMN_SIDECAR_SUBNET_ID-REJECT-caa919e9"
+    ]
+  },
+  "SPEC-BLOCK-013": {
+    "text": "[IGNORE] beacon_block (Bellatrix through Fulu; removed in Gloas): parent execution payload passes validation",
+    "ast_ids": [
+      "BEACON_BLOCK-IGNORE-04770bd3"
+    ]
+  },
+  "SPEC-BLSEXEC-001": {
+    "text": "[IGNORE] bls_to_execution_change: Current epoch >= CAPELLA_FORK_EPOCH",
+    "ast_ids": [
+      "BLS_TO_EXECUTION_CHANGE-IGNORE-c2adbb4f",
+      "BLS_TO_EXECUTION_CHANGE-IGNORE-b226c668"
+    ]
+  },
+  "SPEC-BLSEXEC-002": {
+    "text": "[IGNORE] bls_to_execution_change: First valid message for this validator",
+    "ast_ids": [
+      "BLS_TO_EXECUTION_CHANGE-IGNORE-b226c668"
+    ]
+  },
+  "SPEC-BLSEXEC-003": {
+    "text": "[REJECT] bls_to_execution_change: Validator has BLS withdrawal credentials (prefix == BLS_WITHDRAWAL_PREFIX)",
+    "ast_ids": [
+      "BLS_TO_EXECUTION_CHANGE-REJECT-3869cf36"
+    ]
+  },
+  "SPEC-BLSEXEC-004": {
+    "text": "[REJECT] bls_to_execution_change: from_bls_pubkey matches withdrawal credentials",
+    "ast_ids": [
+      "BLS_TO_EXECUTION_CHANGE-REJECT-3869cf36",
+      "BLS_TO_EXECUTION_CHANGE-REJECT-c61b3034"
+    ]
+  },
+  "SPEC-BLSEXEC-005": {
+    "text": "[REJECT] bls_to_execution_change: Signature is valid",
+    "ast_ids": [
+      "BLS_TO_EXECUTION_CHANGE-REJECT-cc9547b7"
+    ]
+  },
+  "SPEC-CONN-001": {
+    "text": "Clients MAY send Goodbye messages upon disconnection",
+    "ast_ids": [
+      "PROSE-MAY-6eb8c500"
+    ]
+  },
+  "SPEC-CONN-002": {
+    "text": "Clients MUST NOT process req/resp before Status handshake",
+    "retired": true,
+    "reason": "Legacy local false-positive rule: pre-Status request rejection is intentionally not a canonical consensus-spec requirement."
+  },
+  "SPEC-DCOL-001": {
+    "text": "DataColumnSidecarsByRange requests: column indices are typed as ColumnIndex; the explicit index < NUMBER_OF_COLUMNS (128) bound is defined in sidecar gossip validation, not request validation (spec-clarification candidate for request-side enforcement)",
+    "retired": true,
+    "reason": "Legacy local candidate/false-positive metadata; not a canonical AST rule."
+  },
+  "SPEC-DISC-001": {
+    "text": "ENR attnets bitvector MUST match MetaData attnets",
+    "ast_ids": [
+      "PROSE-MUST-0648388b"
+    ]
+  },
+  "SPEC-DISC-002": {
+    "text": "Clients MAY reject peers whose MetaData custody_group_count is less than CUSTODY_REQUIREMENT (4); separately, the ENR cgc field MUST be added once FULU_FORK_EPOCH is scheduled (no ENR-level minimum-value rule)",
+    "ast_ids": [
+      "PROSE-MAY-99c5c95f",
+      "PROSE-MUST-56ec7740"
+    ]
+  },
+  "SPEC-DISC-003": {
+    "text": "Node MUST increment MetaData.seq_number when its MetaData fields change; the ENR seq_number is updated by the discovery layer only when ENR contents (e.g. attnets) change, so ENR-seq update on metadata change is indirect",
+    "ast_ids": [
+      "PROSE-MUST-3315a1c4",
+      "PROSE-MUST-0648388b"
+    ]
+  },
+  "SPEC-FULU-DAS": {
+    "text": "DataColumnSidecarsByRoot requests: column indices are typed as ColumnIndex; the explicit index < NUMBER_OF_COLUMNS (128) bound is defined in sidecar gossip validation, not request validation (spec-clarification candidate for request-side enforcement)",
+    "retired": true,
+    "reason": "Legacy local spec-clarification candidate; request-side ColumnIndex bound is not a standalone canonical P2P rule."
+  },
+  "SPEC-FULU-DCOL-001": {
+    "text": "[REJECT] data_column_sidecar (Fulu): verify_data_column_sidecar(sidecar) passes",
+    "ast_ids": [
+      "DATA_COLUMN_SIDECAR-REJECT-459b0d39",
+      "DATA_COLUMN_SIDECAR-REJECT-5f6c65a0",
+      "DATA_COLUMN_SIDECAR-REJECT-c094c7ea"
+    ]
+  },
+  "SPEC-FULU-DCOL-002": {
+    "text": "[REJECT] data_column_sidecar (Fulu): compute_subnet_for_data_column_sidecar(sidecar.index) == subnet_id",
+    "ast_ids": [
+      "DATA_COLUMN_SIDECAR-REJECT-c094c7ea",
+      "DATA_COLUMN_SIDECAR_SUBNET_ID-REJECT-f74e78e5",
+      "DATA_COLUMN_SIDECAR-REJECT-f173b70c"
+    ]
+  },
+  "SPEC-FULU-DCOL-003": {
+    "text": "[IGNORE] data_column_sidecar (Fulu): Not from future slot (MAXIMUM_GOSSIP_CLOCK_DISPARITY)",
+    "ast_ids": [
+      "DATA_COLUMN_SIDECAR-IGNORE-8cf6775b",
+      "PARTIAL_DATA_COLUMN_SIDECAR-IGNORE-93b9b10e",
+      "DATA_COLUMN_SIDECAR-IGNORE-6478f02b"
+    ]
+  },
+  "SPEC-FULU-DCOL-004": {
+    "text": "[IGNORE] data_column_sidecar (Fulu): Slot > finalized slot",
+    "ast_ids": [
+      "DATA_COLUMN_SIDECAR-IGNORE-6478f02b",
+      "PARTIAL_DATA_COLUMN_SIDECAR-IGNORE-73fe21ca",
+      "DATA_COLUMN_SIDECAR-IGNORE-8cf6775b"
+    ]
+  },
+  "SPEC-FULU-DCOL-005": {
+    "text": "[REJECT] data_column_sidecar (Fulu): Proposer signature valid",
+    "ast_ids": [
+      "DATA_COLUMN_SIDECAR-REJECT-b049ffd8",
+      "PARTIAL_DATA_COLUMN_SIDECAR-REJECT-84dab49d",
+      "DATA_COLUMN_SIDECAR-REJECT-4df28963"
+    ]
+  },
+  "SPEC-FULU-DCOL-006": {
+    "text": "[REJECT] data_column_sidecar (Fulu): Slot > parent slot",
+    "ast_ids": [
+      "DATA_COLUMN_SIDECAR-REJECT-f5bf199b",
+      "DATA_COLUMN_SIDECAR-REJECT-5f6c65a0",
+      "PARTIAL_DATA_COLUMN_SIDECAR-REJECT-819b18b6"
+    ]
+  },
+  "SPEC-FULU-DCOL-007": {
+    "text": "[REJECT] data_column_sidecar (Fulu): Finalized checkpoint is ancestor",
+    "ast_ids": [
+      "DATA_COLUMN_SIDECAR-REJECT-fb4868ac",
+      "DATA_COLUMN_SIDECAR-REJECT-c094c7ea",
+      "DATA_COLUMN_SIDECAR-REJECT-f173b70c"
+    ]
+  },
+  "SPEC-FULU-DCOL-008": {
+    "text": "[REJECT] data_column_sidecar (Fulu): KZG commitments inclusion proof valid",
+    "ast_ids": [
+      "PARTIAL_DATA_COLUMN_SIDECAR-REJECT-0a994b43",
+      "DATA_COLUMN_SIDECAR-REJECT-f173b70c",
+      "DATA_COLUMN_SIDECAR-REJECT-9a465758"
+    ]
+  },
+  "SPEC-FULU-DCOL-009": {
+    "text": "[REJECT] data_column_sidecar (Fulu): KZG proofs valid",
+    "ast_ids": [
+      "DATA_COLUMN_SIDECAR-REJECT-f173b70c",
+      "DATA_COLUMN_SIDECAR-REJECT-9a465758",
+      "DATA_COLUMN_SIDECAR-REJECT-4df28963"
+    ]
+  },
+  "SPEC-FULU-DCOL-010": {
+    "text": "[IGNORE] data_column_sidecar (Fulu): First for (slot, proposer_index, sidecar.index)",
+    "ast_ids": [
+      "DATA_COLUMN_SIDECAR-IGNORE-869c65a5"
+    ]
+  },
+  "SPEC-FULU-DCOL-011": {
+    "text": "[REJECT] data_column_sidecar (Fulu): Proposed by expected proposer_index",
+    "ast_ids": [
+      "DATA_COLUMN_SIDECAR-REJECT-28436443",
+      "PARTIAL_DATA_COLUMN_SIDECAR-REJECT-a18636bd"
+    ]
+  },
+  "SPEC-FULU-DCOL-012": {
+    "text": "[IGNORE] data_column_sidecar (Fulu): sidecar block parent has been seen",
+    "ast_ids": [
+      "DATA_COLUMN_SIDECAR-IGNORE-80194614"
+    ]
+  },
+  "SPEC-FULU-DCOL-013": {
+    "text": "[REJECT] data_column_sidecar (Fulu): sidecar block parent passes validation",
+    "ast_ids": [
+      "DATA_COLUMN_SIDECAR-REJECT-5f6c65a0"
+    ]
+  },
+  "SPEC-FULU-DCOLRANGE-001": {
+    "text": "DataColumnSidecarsByRange: Response MUST contain no more than count * NUMBER_OF_COLUMNS sidecars",
+    "ast_ids": [
+      "PROSE-MUST-dc077cf0"
+    ]
+  },
+  "SPEC-FULU-DCOLRANGE-002": {
+    "text": "DataColumnSidecarsByRange: Sidecars sent in (slot, column_index) order",
+    "ast_ids": [
+      "PROSE-MUST-c9531b0b"
+    ]
+  },
+  "SPEC-FULU-DCOLRANGE-003": {
+    "text": "DataColumnSidecarsByRange: MUST respond with >= 1 sidecar from first blob-carrying block",
+    "ast_ids": [
+      "PROSE-MUST-53017fdb",
+      "PROSE-MUST-78397db4"
+    ]
+  },
+  "SPEC-FULU-DCOLRANGE-004": {
+    "text": "DataColumnSidecarsByRange: Serve range [max(current_epoch - MIN_EPOCHS_FOR_DATA_COLUMN_SIDECARS_REQUESTS, FULU_FORK_EPOCH), current_epoch]",
+    "retired": true,
+    "reason": "Legacy curated summary could not be mapped precisely; superseded by the canonical AST catalog."
+  },
+  "SPEC-FULU-DCOLRANGE-005": {
+    "text": "DataColumnSidecarsByRange: SHOULD respond with ResourceUnavailable for out-of-range requests",
+    "ast_ids": [
+      "PROSE-SHOULD-591bb836"
+    ]
+  },
+  "SPEC-FULU-DCOLROOT-001": {
+    "text": "DataColumnSidecarsByRoot: No more than MAX_REQUEST_BLOCKS_DENEB (128) identifiers per request",
+    "retired": true,
+    "reason": "Legacy curated summary could not be mapped precisely; superseded by the canonical AST catalog."
+  },
+  "SPEC-FULU-DCOLROOT-002": {
+    "text": "DataColumnSidecarsByRoot: Response length <= requested columns count",
+    "retired": true,
+    "reason": "Legacy curated summary could not be mapped precisely; superseded by the canonical AST catalog."
+  },
+  "SPEC-FULU-DCOLROOT-003": {
+    "text": "DataColumnSidecarsByRoot: MUST respond with >= 1 sidecar if available",
+    "retired": true,
+    "reason": "Legacy curated summary could not be mapped precisely; superseded by the canonical AST catalog."
+  },
+  "SPEC-FULU-DCOLROOT-004": {
+    "text": "DataColumnSidecarsByRoot: MAY respond with ResourceUnavailable for epochs before MIN_EPOCHS range",
+    "retired": true,
+    "reason": "Legacy curated summary could not be mapped precisely; superseded by the canonical AST catalog."
+  },
+  "SPEC-FULU-META-001": {
+    "text": "GetMetaData v3: Response includes custody_group_count field",
+    "ast_ids": [
+      "PROSE-MAY-99c5c95f",
+      "PROSE-MUST-3315a1c4",
+      "PROSE-MUST-e60454a8"
+    ]
+  },
+  "SPEC-FULU-META-002": {
+    "text": "GetMetaData v3: peers MAY reject custody_group_count below CUSTODY_REQUIREMENT (4)",
+    "ast_ids": [
+      "PROSE-MAY-99c5c95f"
+    ]
+  },
+  "SPEC-FULU-PARTIAL-001": {
+    "text": "[REJECT] partial data column (Fulu): Message not semantically empty",
+    "ast_ids": [
+      "PROSE-MUST-b6f01228",
+      "PARTIAL_DATA_COLUMN_SIDECAR-REJECT-47e00126",
+      "PARTIAL_DATA_COLUMN_SIDECAR-REJECT-d3e82f5b"
+    ]
+  },
+  "SPEC-FULU-PARTIAL-002": {
+    "text": "[REJECT] partial data column (Fulu): Equal number of cells and proofs matching bitmap",
+    "ast_ids": [
+      "DATA_COLUMN_SIDECAR_SUBNET_ID-REJECT-d9ecba79",
+      "PARTIAL_DATA_COLUMN_SIDECAR-REJECT-47e00126",
+      "PARTIAL_DATA_COLUMN_SIDECAR-REJECT-d3e82f5b"
+    ]
+  },
+  "SPEC-FULU-PARTIAL-003": {
+    "text": "[REJECT] partial data column (Fulu): Header consistency with prior header",
+    "ast_ids": [
+      "PARTIAL_DATA_COLUMN_SIDECAR-REJECT-47e00126",
+      "PARTIAL_DATA_COLUMN_SIDECAR-REJECT-d3e82f5b",
+      "PARTIAL_DATA_COLUMN_SIDECAR-REJECT-ba7e950d"
+    ]
+  },
+  "SPEC-FULU-PARTIAL-004": {
+    "text": "[REJECT] partial data column (Fulu): Block hash matches group ID",
+    "ast_ids": [
+      "PARTIAL_DATA_COLUMN_SIDECAR-REJECT-97a846a9",
+      "DATA_COLUMN_SIDECAR_SUBNET_ID-REJECT-2006109a",
+      "DATA_COLUMN_SIDECAR_SUBNET_ID-REJECT-2f6142a5"
+    ]
+  },
+  "SPEC-FULU-PARTIAL-005": {
+    "text": "[REJECT] partial data column (Fulu): KZG commitments list non-empty",
+    "ast_ids": [
+      "PARTIAL_DATA_COLUMN_SIDECAR-REJECT-023db612",
+      "DATA_COLUMN_SIDECAR_SUBNET_ID-REJECT-68a65743"
+    ]
+  },
+  "SPEC-FULU-PARTIAL-006": {
+    "text": "[REJECT] partial data column (Fulu): Proposer signature valid",
+    "ast_ids": [
+      "PARTIAL_DATA_COLUMN_SIDECAR-REJECT-84dab49d",
+      "PARTIAL_DATA_COLUMN_SIDECAR-REJECT-4df28963",
+      "PARTIAL_DATA_COLUMN_SIDECAR-REJECT-d3e82f5b"
+    ]
+  },
+  "SPEC-FULU-PARTIAL-007": {
+    "text": "[REJECT] partial data column (Fulu): KZG commitments inclusion proof valid",
+    "ast_ids": [
+      "PARTIAL_DATA_COLUMN_SIDECAR-REJECT-d3e82f5b",
+      "PARTIAL_DATA_COLUMN_SIDECAR-REJECT-0a994b43",
+      "DATA_COLUMN_SIDECAR_SUBNET_ID-MUST-aa0e3ac7"
+    ]
+  },
+  "SPEC-FULU-PARTIAL-008": {
+    "text": "[REJECT] partial data column (Fulu): cells_present_bitmap length == len(kzg_commitments)",
+    "ast_ids": [
+      "PARTIAL_DATA_COLUMN_SIDECAR-REJECT-9dcea1ee"
+    ]
+  },
+  "SPEC-FULU-PARTIAL-009": {
+    "text": "partial data column (Fulu): receivers MAY check that the sidecar's cell/proof data equals their local copy for already-received cells as an additional safeguard (optional, not a mandatory [REJECT]; sender MUST always send valid cell/proof data)",
+    "ast_ids": [
+      "DATA_COLUMN_SIDECAR_SUBNET_ID-MUST-aa0e3ac7",
+      "DATA_COLUMN_SIDECAR_SUBNET_ID-MAY-ec107f68",
+      "PARTIAL_DATA_COLUMN_SIDECAR-REJECT-d3e82f5b"
+    ]
+  },
+  "SPEC-FULU-PARTIAL-010": {
+    "text": "[REJECT] partial data column (Fulu): KZG proofs valid for partial cells",
+    "ast_ids": [
+      "PARTIAL_DATA_COLUMN_SIDECAR-REJECT-d3e82f5b",
+      "PARTIAL_DATA_COLUMN_SIDECAR-REJECT-84dab49d",
+      "PARTIAL_DATA_COLUMN_SIDECAR-REJECT-4df28963"
+    ]
+  },
+  "SPEC-FULU-PARTIAL-011": {
+    "text": "[REJECT] partial data column (Fulu): Proposed by expected proposer",
+    "ast_ids": [
+      "PARTIAL_DATA_COLUMN_SIDECAR-REJECT-a18636bd",
+      "PARTIAL_DATA_COLUMN_SIDECAR-REJECT-84dab49d",
+      "PARTIAL_DATA_COLUMN_SIDECAR-REJECT-4df28963"
+    ]
+  },
+  "SPEC-FULU-PARTIAL-012": {
+    "text": "[IGNORE] partial data column (Fulu): Header not from future slot",
+    "ast_ids": [
+      "PARTIAL_DATA_COLUMN_SIDECAR-IGNORE-93b9b10e",
+      "PARTIAL_DATA_COLUMN_SIDECAR-IGNORE-64fbc194",
+      "PARTIAL_DATA_COLUMN_SIDECAR-IGNORE-73fe21ca"
+    ]
+  },
+  "SPEC-FULU-PARTIAL-013": {
+    "text": "[IGNORE] partial data column (Fulu): Header slot > finalized slot",
+    "ast_ids": [
+      "PARTIAL_DATA_COLUMN_SIDECAR-IGNORE-73fe21ca",
+      "PARTIAL_DATA_COLUMN_SIDECAR-IGNORE-e843ba36",
+      "PARTIAL_DATA_COLUMN_SIDECAR-IGNORE-93b9b10e"
+    ]
+  },
+  "SPEC-FULU-PARTIAL-014": {
+    "text": "[IGNORE] partial data column (Fulu): Header block parent has been seen",
+    "ast_ids": [
+      "PARTIAL_DATA_COLUMN_SIDECAR-IGNORE-4b3745fd"
+    ]
+  },
+  "SPEC-FULU-PARTIAL-015": {
+    "text": "[REJECT] partial data column (Fulu): Header block parent passes validation",
+    "ast_ids": [
+      "PARTIAL_DATA_COLUMN_SIDECAR-REJECT-1191de75"
+    ]
+  },
+  "SPEC-FULU-PARTIAL-016": {
+    "text": "[REJECT] partial data column (Fulu): Header slot is higher than parent slot",
+    "ast_ids": [
+      "PARTIAL_DATA_COLUMN_SIDECAR-REJECT-819b18b6"
+    ]
+  },
+  "SPEC-FULU-PARTIAL-017": {
+    "text": "[REJECT] partial data column (Fulu): Finalized checkpoint is ancestor of header block",
+    "ast_ids": [
+      "PARTIAL_DATA_COLUMN_SIDECAR-REJECT-ba7e950d",
+      "PARTIAL_DATA_COLUMN_SIDECAR-REJECT-1191de75",
+      "BEACON_BLOCK-REJECT-dbd5e1e1"
+    ]
+  },
+  "SPEC-FULU-PARTIAL-018": {
+    "text": "[IGNORE] partial data column (Fulu): Corresponding PartialDataColumnHeader has been seen for cell-only message",
+    "ast_ids": [
+      "DATA_COLUMN_SIDECAR_SUBNET_ID-IGNORE-9d8437f3",
+      "PARTIAL_DATA_COLUMN_SIDECAR-IGNORE-ac743680",
+      "PROSE-SHOULD-e1ee5362"
+    ]
+  },
+  "SPEC-FULU-PARTIAL-019": {
+    "text": "[IGNORE] partial data column (Fulu): Corresponding header not from future slot",
+    "ast_ids": [
+      "PARTIAL_DATA_COLUMN_SIDECAR-IGNORE-64fbc194",
+      "PARTIAL_DATA_COLUMN_SIDECAR-IGNORE-93b9b10e",
+      "PARTIAL_DATA_COLUMN_SIDECAR-IGNORE-e843ba36"
+    ]
+  },
+  "SPEC-FULU-PARTIAL-020": {
+    "text": "[IGNORE] partial data column (Fulu): Corresponding header slot > finalized slot",
+    "ast_ids": [
+      "PARTIAL_DATA_COLUMN_SIDECAR-IGNORE-e843ba36",
+      "PARTIAL_DATA_COLUMN_SIDECAR-IGNORE-73fe21ca",
+      "PARTIAL_DATA_COLUMN_SIDECAR-IGNORE-64fbc194"
+    ]
+  },
+  "SPEC-FULU-PARTIAL-021": {
+    "text": "Partial data column group ID (Fulu): version byte MUST be zero",
+    "ast_ids": [
+      "PROSE-MUST-b6f01228"
+    ]
+  },
+  "SPEC-FULU-PARTIAL-022": {
+    "text": "Partial data column responses (Fulu): responses MUST encode/decode PartialDataColumnSidecar",
+    "ast_ids": [
+      "PROSE-MUST-af08a0f4",
+      "PARTIAL_DATA_COLUMN_SIDECAR-REJECT-d3e82f5b"
+    ]
+  },
+  "SPEC-FULU-STATUS-001": {
+    "text": "Status v2: Response includes earliest_available_slot field",
+    "ast_ids": [
+      "PROSE-MUST-369ed609"
+    ]
+  },
+  "SPEC-FULU-STATUS-002": {
+    "text": "Status v2: earliest_available_slot SHOULD advertise earliest slot from which all sidecars or blocks are served",
+    "ast_ids": [
+      "PROSE-MUST-1cc30454",
+      "PROSE-SHOULD-5c74107b",
+      "PROSE-SHOULD-12343187"
+    ]
+  },
+  "SPEC-GLOAS-AGG-001": {
+    "text": "[REJECT] beacon_aggregate_and_proof (Gloas): aggregate.data.index < 2",
+    "ast_ids": [
+      "BEACON_AGGREGATE_AND_PROOF-REJECT-71d8d9a9",
+      "BEACON_AGGREGATE_AND_PROOF-REJECT-2dc5a2c5",
+      "BEACON_AGGREGATE_AND_PROOF-REJECT-c26fb5e5"
+    ]
+  },
+  "SPEC-GLOAS-AGG-002": {
+    "text": "[REJECT] beacon_aggregate_and_proof (Gloas): index == 0 if block.slot == aggregate.data.slot",
+    "ast_ids": [
+      "BEACON_AGGREGATE_AND_PROOF-REJECT-c26fb5e5"
+    ]
+  },
+  "SPEC-GLOAS-AGG-003": {
+    "text": "[REJECT] beacon_aggregate_and_proof (Gloas): If index==1, execution payload passes validation",
+    "ast_ids": [
+      "BEACON_AGGREGATE_AND_PROOF-REJECT-cedaccef"
+    ]
+  },
+  "SPEC-GLOAS-AGG-004": {
+    "text": "beacon_aggregate_and_proof (Gloas): Removed old unconditional reject rule aggregate.data.index == 0",
+    "ast_ids": [
+      "BEACON_AGGREGATE_AND_PROOF-REJECT-71d8d9a9",
+      "BEACON_AGGREGATE_AND_PROOF-REJECT-2dc5a2c5",
+      "BEACON_AGGREGATE_AND_PROOF-REJECT-c26fb5e5"
+    ]
+  },
+  "SPEC-GLOAS-AGG-005": {
+    "text": "[IGNORE] beacon_aggregate_and_proof (Gloas): If index==1, execution payload has been seen or should be requested by root",
+    "ast_ids": [
+      "BEACON_AGGREGATE_AND_PROOF-IGNORE-bbde83d3",
+      "BEACON_AGGREGATE_AND_PROOF-REJECT-cedaccef",
+      "BEACON_AGGREGATE_AND_PROOF-IGNORE-0e37cd0e"
+    ]
+  },
+  "SPEC-GLOAS-ATT-001": {
+    "text": "[REJECT] beacon_attestation (Gloas): attestation.data.index < 2",
+    "ast_ids": [
+      "BEACON_ATTESTATION_SUBNET_ID-REJECT-45ccc192",
+      "BEACON_ATTESTATION_SUBNET_ID-REJECT-2cabe902",
+      "BEACON_ATTESTATION_SUBNET_ID-REJECT-0b8c20eb"
+    ]
+  },
+  "SPEC-GLOAS-ATT-002": {
+    "text": "[REJECT] beacon_attestation (Gloas): index == 0 if block.slot == attestation.data.slot",
+    "ast_ids": [
+      "BEACON_ATTESTATION_SUBNET_ID-REJECT-0b8c20eb"
+    ]
+  },
+  "SPEC-GLOAS-ATT-003": {
+    "text": "[REJECT] beacon_attestation (Gloas): If index==1, execution payload passes validation",
+    "ast_ids": [
+      "BEACON_ATTESTATION_SUBNET_ID-REJECT-274e7fc1"
+    ]
+  },
+  "SPEC-GLOAS-ATT-004": {
+    "text": "beacon_attestation (Gloas): Removed old unconditional reject rule attestation.data.index == 0",
+    "ast_ids": [
+      "BEACON_ATTESTATION_SUBNET_ID-REJECT-45ccc192",
+      "BEACON_ATTESTATION_SUBNET_ID-REJECT-2cabe902",
+      "BEACON_ATTESTATION_SUBNET_ID-REJECT-0b8c20eb"
+    ]
+  },
+  "SPEC-GLOAS-ATT-005": {
+    "text": "[IGNORE] beacon_attestation (Gloas): If index==1, execution payload has been seen or should be requested by root",
+    "ast_ids": [
+      "BEACON_ATTESTATION_SUBNET_ID-IGNORE-adbaa5bc",
+      "BEACON_AGGREGATE_AND_PROOF-IGNORE-bbde83d3",
+      "PAYLOAD_ATTESTATION_MESSAGE-IGNORE-08332a39"
+    ]
+  },
+  "SPEC-GLOAS-BID-001": {
+    "text": "[IGNORE] execution_payload_bid: bid.slot is current slot or next slot",
+    "ast_ids": [
+      "EXECUTION_PAYLOAD_BID-IGNORE-d54f6a80"
+    ]
+  },
+  "SPEC-GLOAS-BID-002": {
+    "text": "[IGNORE] execution_payload_bid: Matching signed_proposer_preferences has been seen",
+    "ast_ids": [
+      "EXECUTION_PAYLOAD_BID-IGNORE-2ad71c19"
+    ]
+  },
+  "SPEC-GLOAS-BID-003": {
+    "text": "[REJECT] execution_payload_bid: bid.builder_index is active builder",
+    "ast_ids": [
+      "EXECUTION_PAYLOAD_BID-REJECT-afc6a4f2",
+      "EXECUTION_PAYLOAD_BID-REJECT-8ddbf789"
+    ]
+  },
+  "SPEC-GLOAS-BID-004": {
+    "text": "[REJECT] execution_payload_bid: bid.execution_payment == 0",
+    "ast_ids": [
+      "EXECUTION_PAYLOAD_BID-REJECT-7cce51c6"
+    ]
+  },
+  "SPEC-GLOAS-BID-005": {
+    "text": "[REJECT] execution_payload_bid: bid.fee_recipient matches proposer_preferences.fee_recipient",
+    "ast_ids": [
+      "EXECUTION_PAYLOAD_BID-REJECT-ce45577d"
+    ]
+  },
+  "SPEC-GLOAS-BID-006": {
+    "text": "[IGNORE] execution_payload_bid: is_gas_limit_target_compatible(parent_gas_limit, bid.gas_limit, proposer_preferences.target_gas_limit) is True (checked together with bid.parent_block_hash being a known execution payload in fork choice)",
+    "ast_ids": [
+      "EXECUTION_PAYLOAD_BID-IGNORE-a19e5554"
+    ]
+  },
+  "SPEC-GLOAS-BID-007": {
+    "text": "[REJECT] execution_payload_bid: len(bid.blob_kzg_commitments) <= max_blobs_per_block",
+    "ast_ids": [
+      "EXECUTION_PAYLOAD_BID-REJECT-20d905d0",
+      "EXECUTION_PAYLOAD_BID-REJECT-7cce51c6",
+      "EXECUTION_PAYLOAD_BID-REJECT-ce45577d"
+    ]
+  },
+  "SPEC-GLOAS-BID-008": {
+    "text": "[IGNORE] execution_payload_bid: First valid signed bid from builder for this slot",
+    "ast_ids": [
+      "EXECUTION_PAYLOAD_BID-IGNORE-3136e278"
+    ]
+  },
+  "SPEC-GLOAS-BID-009": {
+    "text": "[IGNORE] execution_payload_bid: Highest value bid for (slot, parent_block_hash, parent_block_root)",
+    "ast_ids": [
+      "EXECUTION_PAYLOAD_BID-IGNORE-fbe8d000"
+    ]
+  },
+  "SPEC-GLOAS-BID-010": {
+    "text": "[IGNORE] execution_payload_bid: bid.value <= builder's excess_balance",
+    "ast_ids": [
+      "EXECUTION_PAYLOAD_BID-IGNORE-fbe8d000",
+      "EXECUTION_PAYLOAD_BID-IGNORE-afe205bd",
+      "EXECUTION_PAYLOAD_BID-IGNORE-3136e278"
+    ]
+  },
+  "SPEC-GLOAS-BID-011": {
+    "text": "[IGNORE] execution_payload_bid: bid.parent_block_hash is the block hash of a known execution payload in fork choice AND is_gas_limit_target_compatible(parent_gas_limit, bid.gas_limit, proposer_preferences.target_gas_limit) is True",
+    "ast_ids": [
+      "EXECUTION_PAYLOAD_BID-IGNORE-a19e5554"
+    ]
+  },
+  "SPEC-GLOAS-BID-012": {
+    "text": "[REJECT] execution_payload_bid: Signature is valid",
+    "ast_ids": [
+      "EXECUTION_PAYLOAD_BID-REJECT-8ddbf789"
+    ]
+  },
+  "SPEC-GLOAS-BID-013": {
+    "text": "[IGNORE] execution_payload_bid: bid.parent_block_root is known in fork choice",
+    "ast_ids": [
+      "EXECUTION_PAYLOAD_BID-IGNORE-31651fed"
+    ]
+  },
+  "SPEC-GLOAS-BLOCK-001": {
+    "text": "[REJECT] beacon_block (Gloas): len(bid.blob_kzg_commitments) <= max_blobs_per_block",
+    "ast_ids": [
+      "BEACON_BLOCK-REJECT-fb1328bc",
+      "BEACON_BLOCK-REJECT-feb8803d",
+      "BEACON_BLOCK-REJECT-c329a1aa"
+    ]
+  },
+  "SPEC-GLOAS-BLOCK-002": {
+    "text": "[IGNORE] beacon_block (Gloas): Parent execution payload (bid.parent_block_hash) has been seen",
+    "ast_ids": [
+      "BEACON_BLOCK-IGNORE-7c4ad118"
+    ]
+  },
+  "SPEC-GLOAS-BLOCK-003": {
+    "text": "[REJECT] beacon_block (Gloas): Parent execution payload passes validation",
+    "ast_ids": [
+      "BEACON_BLOCK-REJECT-c329a1aa",
+      "BEACON_BLOCK-IGNORE-04770bd3"
+    ]
+  },
+  "SPEC-GLOAS-BLOCK-004": {
+    "text": "[REJECT] beacon_block (Gloas): bid.parent_block_root == block.parent_root",
+    "ast_ids": [
+      "BEACON_BLOCK-REJECT-feb8803d"
+    ]
+  },
+  "SPEC-GLOAS-DCOL-001": {
+    "text": "[IGNORE] data_column_sidecar (Gloas): Valid block for sidecar's beacon_block_root has been seen",
+    "ast_ids": [
+      "DATA_COLUMN_SIDECAR-IGNORE-80194614",
+      "DATA_COLUMN_SIDECAR_SUBNET_ID-IGNORE-469a56aa",
+      "PARTIAL_DATA_COLUMN_SIDECAR-IGNORE-ac743680"
+    ]
+  },
+  "SPEC-GLOAS-DCOL-002": {
+    "text": "[REJECT] data_column_sidecar (Gloas): sidecar.slot matches slot of block with beacon_block_root",
+    "ast_ids": [
+      "DATA_COLUMN_SIDECAR_SUBNET_ID-REJECT-caa919e9"
+    ]
+  },
+  "SPEC-GLOAS-DCOL-003": {
+    "text": "[REJECT] data_column_sidecar (Gloas): verify_data_column_sidecar(sidecar, bid.blob_kzg_commitments)",
+    "ast_ids": [
+      "DATA_COLUMN_SIDECAR_SUBNET_ID-REJECT-53c9fb57",
+      "DATA_COLUMN_SIDECAR_SUBNET_ID-REJECT-ab807743"
+    ]
+  },
+  "SPEC-GLOAS-DCOL-004": {
+    "text": "[REJECT] data_column_sidecar (Gloas): Correct subnet mapping",
+    "ast_ids": [
+      "DATA_COLUMN_SIDECAR-REJECT-c094c7ea",
+      "DATA_COLUMN_SIDECAR_SUBNET_ID-REJECT-f74e78e5"
+    ]
+  },
+  "SPEC-GLOAS-DCOL-005": {
+    "text": "[REJECT] data_column_sidecar (Gloas): KZG proofs valid with bid commitments",
+    "ast_ids": [
+      "DATA_COLUMN_SIDECAR_SUBNET_ID-REJECT-d9ecba79",
+      "DATA_COLUMN_SIDECAR_SUBNET_ID-REJECT-53c9fb57",
+      "DATA_COLUMN_SIDECAR_SUBNET_ID-REJECT-ab807743"
+    ]
+  },
+  "SPEC-GLOAS-DCOL-006": {
+    "text": "[IGNORE] data_column_sidecar (Gloas): First sidecar for (beacon_block_root, index)",
+    "ast_ids": [
+      "DATA_COLUMN_SIDECAR_SUBNET_ID-IGNORE-0b87a903",
+      "DATA_COLUMN_SIDECAR-IGNORE-869c65a5"
+    ]
+  },
+  "SPEC-GLOAS-EPRANGE-001": {
+    "text": "ExecutionPayloadEnvelopesByRange: count MUST NOT exceed MAX_REQUEST_BLOCKS_DENEB (128)",
+    "ast_ids": [
+      "PROSE-MUST-c554346a"
+    ]
+  },
+  "SPEC-GLOAS-EPRANGE-002": {
+    "text": "ExecutionPayloadEnvelopesByRange: count=0 InvalidRequest behavior is a local differential/spec-clarification candidate",
+    "retired": true,
+    "reason": "Legacy local spec-clarification candidate for count=0 behavior; no canonical P2P rule."
+  },
+  "SPEC-GLOAS-EPRANGE-003": {
+    "text": "ExecutionPayloadEnvelopesByRange: Respond from single fork choice view",
+    "ast_ids": [
+      "PROSE-MUST-a0fb5bcb"
+    ]
+  },
+  "SPEC-GLOAS-EPRANGE-004": {
+    "text": "ExecutionPayloadEnvelopesByRange: ForkDigest context from compute_epoch_at_slot(beacon_block.slot)",
+    "retired": true,
+    "reason": "Legacy curated summary could not be mapped precisely; superseded by the canonical AST catalog."
+  },
+  "SPEC-GLOAS-EPROOT-001": {
+    "text": "ExecutionPayloadEnvelopesByRoot: No more than MAX_REQUEST_PAYLOADS (128) roots per request",
+    "ast_ids": [
+      "PROSE-MAY-1059b963"
+    ]
+  },
+  "SPEC-GLOAS-EPROOT-002": {
+    "text": "ExecutionPayloadEnvelopesByRoot: Response length <= number of requested envelopes",
+    "ast_ids": [
+      "PROSE-MAY-1059b963"
+    ]
+  },
+  "SPEC-GLOAS-EPROOT-003": {
+    "text": "ExecutionPayloadEnvelopesByRoot: MUST respond with >= 1 envelope if available",
+    "ast_ids": [
+      "PROSE-MUST-fae5b75b"
+    ]
+  },
+  "SPEC-GLOAS-EPROOT-004": {
+    "text": "ExecutionPayloadEnvelopesByRoot: Support epoch range [max(GLOAS_FORK_EPOCH, current_epoch - min_epochs), current_epoch]",
+    "ast_ids": [
+      "PROSE-MUST-a0fb5bcb"
+    ]
+  },
+  "SPEC-GLOAS-PARTIAL-001": {
+    "text": "Partial data column group ID (Gloas): version byte MUST be 0x01",
+    "ast_ids": [
+      "PROSE-MUST-b6f01228"
+    ]
+  },
+  "SPEC-GLOAS-PARTIAL-002": {
+    "text": "Partial data column group ID (Gloas): implementations MUST ignore unknown versions",
+    "ast_ids": [
+      "DATA_COLUMN_SIDECAR_SUBNET_ID-MUST-78d7f688"
+    ]
+  },
+  "SPEC-GLOAS-PARTIAL-003": {
+    "text": "[IGNORE] partial data column (Gloas): Valid block for Group ID beacon_block_root has been seen",
+    "ast_ids": [
+      "PAYLOAD_ATTESTATION_MESSAGE-IGNORE-335c4459",
+      "PAYLOAD_ATTESTATION_MESSAGE-IGNORE-08332a39",
+      "EXECUTION_PAYLOAD-IGNORE-72cda16e"
+    ]
+  },
+  "SPEC-GLOAS-PARTIAL-004": {
+    "text": "[REJECT] partial data column (Gloas): Group ID slot matches block slot for beacon_block_root",
+    "ast_ids": [
+      "DATA_COLUMN_SIDECAR_SUBNET_ID-REJECT-2006109a",
+      "DATA_COLUMN_SIDECAR_SUBNET_ID-REJECT-caa919e9"
+    ]
+  },
+  "SPEC-GLOAS-PARTIAL-005": {
+    "text": "[REJECT] partial data column (Gloas): cells_present_bitmap length equals len(bid.blob_kzg_commitments)",
+    "ast_ids": [
+      "DATA_COLUMN_SIDECAR_SUBNET_ID-REJECT-ab807743",
+      "DATA_COLUMN_SIDECAR_SUBNET_ID-REJECT-d9ecba79",
+      "DATA_COLUMN_SIDECAR_SUBNET_ID-REJECT-c020ff6f"
+    ]
+  },
+  "SPEC-GLOAS-PARTIAL-006": {
+    "text": "[REJECT] partial data column (Gloas): partial cell/proof KZG proofs valid with bid commitments",
+    "ast_ids": [
+      "DATA_COLUMN_SIDECAR_SUBNET_ID-REJECT-c020ff6f",
+      "PARTIAL_DATA_COLUMN_SIDECAR-REJECT-d3e82f5b",
+      "DATA_COLUMN_SIDECAR_SUBNET_ID-REJECT-ab807743"
+    ]
+  },
+  "SPEC-GLOAS-PATTEST-001": {
+    "text": "[IGNORE] payload_attestation_message: slot == current_slot (with MAXIMUM_GOSSIP_CLOCK_DISPARITY)",
+    "ast_ids": [
+      "PAYLOAD_ATTESTATION_MESSAGE-IGNORE-731cabe0"
+    ]
+  },
+  "SPEC-GLOAS-PATTEST-002": {
+    "text": "[IGNORE] payload_attestation_message: First valid message from validator",
+    "ast_ids": [
+      "PAYLOAD_ATTESTATION_MESSAGE-IGNORE-0196991d"
+    ]
+  },
+  "SPEC-GLOAS-PATTEST-003": {
+    "text": "[IGNORE] payload_attestation_message: beacon_block_root has been seen",
+    "ast_ids": [
+      "PAYLOAD_ATTESTATION_MESSAGE-IGNORE-335c4459",
+      "PAYLOAD_ATTESTATION_MESSAGE-IGNORE-08332a39"
+    ]
+  },
+  "SPEC-GLOAS-PATTEST-004": {
+    "text": "[REJECT] payload_attestation_message: block passes validation",
+    "ast_ids": [
+      "PAYLOAD_ATTESTATION_MESSAGE-REJECT-d775db46"
+    ]
+  },
+  "SPEC-GLOAS-PATTEST-005": {
+    "text": "[REJECT] payload_attestation_message: validator_index is in payload committee (get_ptc)",
+    "ast_ids": [
+      "PAYLOAD_ATTESTATION_MESSAGE-REJECT-11770d59",
+      "PAYLOAD_ATTESTATION_MESSAGE-REJECT-d775db46",
+      "PAYLOAD_ATTESTATION_MESSAGE-REJECT-198ad7b3"
+    ]
+  },
+  "SPEC-GLOAS-PATTEST-006": {
+    "text": "[REJECT] payload_attestation_message: Signature is valid",
+    "ast_ids": [
+      "PAYLOAD_ATTESTATION_MESSAGE-REJECT-198ad7b3"
+    ]
+  },
+  "SPEC-GLOAS-PAYLOAD-001": {
+    "text": "[IGNORE] execution_payload: envelope.beacon_block_root has been seen",
+    "ast_ids": [
+      "EXECUTION_PAYLOAD-IGNORE-72cda16e",
+      "EXECUTION_PAYLOAD_BID-IGNORE-2ad71c19"
+    ]
+  },
+  "SPEC-GLOAS-PAYLOAD-002": {
+    "text": "[IGNORE] execution_payload: No prior valid envelope from this builder for this block root",
+    "ast_ids": [
+      "EXECUTION_PAYLOAD-IGNORE-79b34cb2"
+    ]
+  },
+  "SPEC-GLOAS-PAYLOAD-003": {
+    "text": "[IGNORE] execution_payload: envelope slot >= finalized slot",
+    "ast_ids": [
+      "EXECUTION_PAYLOAD-IGNORE-2805c6c6",
+      "EXECUTION_PAYLOAD-REJECT-59c20312",
+      "EXECUTION_PAYLOAD-REJECT-78d238c5"
+    ]
+  },
+  "SPEC-GLOAS-PAYLOAD-004": {
+    "text": "[REJECT] execution_payload: block passes validation",
+    "ast_ids": [
+      "EXECUTION_PAYLOAD-REJECT-77bbd0e1"
+    ]
+  },
+  "SPEC-GLOAS-PAYLOAD-005": {
+    "text": "[REJECT] execution_payload: block.slot == envelope.payload.slot_number",
+    "ast_ids": [
+      "EXECUTION_PAYLOAD-REJECT-59c20312"
+    ]
+  },
+  "SPEC-GLOAS-PAYLOAD-006": {
+    "text": "[REJECT] execution_payload: envelope.builder_index == bid.builder_index",
+    "ast_ids": [
+      "EXECUTION_PAYLOAD-REJECT-78d238c5"
+    ]
+  },
+  "SPEC-GLOAS-PAYLOAD-007": {
+    "text": "[REJECT] execution_payload: payload.block_hash == bid.block_hash",
+    "ast_ids": [
+      "EXECUTION_PAYLOAD-REJECT-e459bd28"
+    ]
+  },
+  "SPEC-GLOAS-PAYLOAD-008": {
+    "text": "[REJECT] execution_payload: hash_tree_root(envelope.execution_requests) == bid.execution_requests_root",
+    "ast_ids": [
+      "EXECUTION_PAYLOAD-REJECT-cfd12f6e"
+    ]
+  },
+  "SPEC-GLOAS-PAYLOAD-009": {
+    "text": "[REJECT] execution_payload: Signature is valid (verify_execution_payload_envelope_signature)",
+    "ast_ids": [
+      "EXECUTION_PAYLOAD-REJECT-922e6de0"
+    ]
+  },
+  "SPEC-GLOAS-PREFS-001": {
+    "text": "[IGNORE] proposer_preferences: proposal_slot is within the proposer lookahead range [current_epoch, current_epoch + MIN_SEED_LOOKAHEAD] and has not already passed (proposal_slot > current_slot)",
+    "ast_ids": [
+      "PROPOSER_PREFERENCES-IGNORE-c8eb001d",
+      "PROPOSER_PREFERENCES-IGNORE-4d809352"
+    ]
+  },
+  "SPEC-GLOAS-PREFS-002": {
+    "text": "[IGNORE] proposer_preferences: proposal_slot > current_slot",
+    "ast_ids": [
+      "PROPOSER_PREFERENCES-IGNORE-4d809352",
+      "PROPOSER_PREFERENCES-IGNORE-c8eb001d"
+    ]
+  },
+  "SPEC-GLOAS-PREFS-003": {
+    "text": "[IGNORE] proposer_preferences: Block with dependent_root has been seen",
+    "ast_ids": [
+      "PROPOSER_PREFERENCES-IGNORE-e07433f8",
+      "EXECUTION_PAYLOAD_BID-IGNORE-2ad71c19"
+    ]
+  },
+  "SPEC-GLOAS-PREFS-004": {
+    "text": "[REJECT] proposer_preferences: is_valid_proposal_slot(state, preferences) == True",
+    "ast_ids": [
+      "PROPOSER_PREFERENCES-REJECT-1ebbef91"
+    ]
+  },
+  "SPEC-GLOAS-PREFS-005": {
+    "text": "[IGNORE] proposer_preferences: First valid message for (dependent_root, proposal_slot, validator_index)",
+    "ast_ids": [
+      "PROPOSER_PREFERENCES-IGNORE-bee5dad7"
+    ]
+  },
+  "SPEC-GLOAS-PREFS-006": {
+    "text": "[REJECT] proposer_preferences: Signature is valid",
+    "ast_ids": [
+      "PROPOSER_PREFERENCES-REJECT-cb7c6b7a"
+    ]
+  },
+  "SPEC-GOODBYE-001": {
+    "text": "Client MAY send Goodbye messages upon disconnection",
+    "ast_ids": [
+      "PROSE-MAY-6eb8c500"
+    ]
+  },
+  "SPEC-GOSSIP-001": {
+    "text": "Clients MUST reject messages with an unknown topic",
+    "ast_ids": [
+      "PROSE-MUST-04d4d686"
+    ]
+  },
+  "SPEC-GOSSIP-002": {
+    "text": "Attestation subnet_id MUST be less than ATTESTATION_SUBNET_COUNT (64)",
+    "ast_ids": [
+      "BEACON_ATTESTATION-REJECT-02f714ed",
+      "BEACON_ATTESTATION_SUBNET_ID-MUST-454af71d"
+    ]
+  },
+  "SPEC-GOSSIP-003": {
+    "text": "Sync committee subnet_id MUST be less than SYNC_COMMITTEE_SUBNET_COUNT (4)",
+    "ast_ids": [
+      "SYNC_COMMITTEE_MESSAGE-REJECT-c428cd4e"
+    ]
+  },
+  "SPEC-GOSSIP-004": {
+    "text": "Messages with wrong fork_digest in topic string MUST be rejected",
+    "ast_ids": [
+      "PROSE-MUST-bb726adf"
+    ]
+  },
+  "SPEC-GOSSIP-005": {
+    "text": "Attestations on subnet topics MUST be within ATTESTATION_PROPAGATION_SLOT_RANGE (32) slots of current slot. NOTE: For aggregates, Deneb/EIP-7045 changed to epoch-based (see SPEC-AGG-002/003, SPEC-ATT-003/004)",
+    "ast_ids": [
+      "BEACON_ATTESTATION-IGNORE-9dbc7051",
+      "BEACON_ATTESTATION-IGNORE-5da40ec3",
+      "BEACON_ATTESTATION-IGNORE-493398b9"
+    ]
+  },
+  "SPEC-GOSSIP-006": {
+    "text": "Clients MUST NOT forward messages that fail validation",
+    "ast_ids": [
+      "PROSE-SHOULD_NOT-dbc982fe",
+      "PROSE-MUST-bb726adf",
+      "PROSE-SHOULD-ef57ae27"
+    ]
+  },
+  "SPEC-GOSSIP-007": {
+    "text": "Data column sidecar index MUST be less than NUMBER_OF_COLUMNS (128)",
+    "ast_ids": [
+      "DATA_COLUMN_SIDECAR-REJECT-c094c7ea",
+      "DATA_COLUMN_SIDECAR-REJECT-459b0d39"
+    ]
+  },
+  "SPEC-METADATA-001": {
+    "text": "If seq_number changes, node MUST increment and respond to Pings with new seq",
+    "ast_ids": [
+      "PROSE-MUST-3315a1c4"
+    ]
+  },
+  "SPEC-MSGID-001": {
+    "text": "Message-ID computation (Altair+): SHA256(DOMAIN + uint64_le(len(topic)) + topic + data)[:20]",
+    "ast_ids": [
+      "LIGHT_CLIENT_OPTIMISTIC_UPDATE-SHOULD-99530fb5",
+      "LIGHT_CLIENT_FINALITY_UPDATE-SHOULD-17458999",
+      "PROSE-MUST-543a88cb"
+    ]
+  },
+  "SPEC-MSGID-002": {
+    "text": "Message-ID for invalid snappy: SHA256(DOMAIN_INVALID + uint64_le(len(topic)) + topic + raw_data)[:20]",
+    "retired": true,
+    "reason": "Legacy curated summary could not be mapped precisely; superseded by the canonical AST catalog."
+  },
+  "SPEC-PING-001": {
+    "text": "Ping is sent intermittently to check liveness; the sender's local MetaData sequence number is exchanged, a missing response MAY trigger disconnection, and a higher peer seq_number MAY trigger a follow-up GetMetaData (descriptive, not normative)",
+    "ast_ids": [
+      "PROSE-MAY-c3957c31",
+      "PROSE-MAY-9ad1e8ba"
+    ]
+  },
+  "SPEC-PSLASH-001": {
+    "text": "[IGNORE] proposer_slashing: First valid proposer slashing received for this proposer",
+    "ast_ids": [
+      "PROPOSER_SLASHING-IGNORE-a4a13783"
+    ]
+  },
+  "SPEC-PSLASH-002": {
+    "text": "[REJECT] proposer_slashing: Header slots match (header_1.slot == header_2.slot)",
+    "ast_ids": [
+      "PROPOSER_SLASHING-REJECT-be80525c",
+      "PROPOSER_SLASHING-REJECT-54d620b6"
+    ]
+  },
+  "SPEC-PSLASH-003": {
+    "text": "[REJECT] proposer_slashing: Header proposer indices match",
+    "ast_ids": [
+      "PROPOSER_SLASHING-REJECT-54d620b6"
+    ]
+  },
+  "SPEC-PSLASH-004": {
+    "text": "[REJECT] proposer_slashing: Headers are different (header_1 != header_2)",
+    "ast_ids": [
+      "PROPOSER_SLASHING-REJECT-1248d8f2"
+    ]
+  },
+  "SPEC-PSLASH-005": {
+    "text": "[REJECT] proposer_slashing: Proposer is slashable (is_slashable_validator)",
+    "ast_ids": [
+      "PROPOSER_SLASHING-REJECT-bb7fb86d",
+      "PROPOSER_SLASHING-REJECT-54d620b6",
+      "PROPOSER_SLASHING-REJECT-4df28963"
+    ]
+  },
+  "SPEC-PSLASH-006": {
+    "text": "[REJECT] proposer_slashing: Both header signatures are valid",
+    "ast_ids": [
+      "PROPOSER_SLASHING-REJECT-4e6c2331",
+      "PROPOSER_SLASHING-REJECT-be80525c",
+      "PROPOSER_SLASHING-REJECT-54d620b6"
+    ]
+  },
+  "SPEC-REQRESP-001": {
+    "text": "MUST NOT make more than MAX_CONCURRENT_REQUESTS concurrent requests per protocol",
+    "ast_ids": [
+      "PROSE-MUST_NOT-305625f9",
+      "PROSE-MAY-c3746d81"
+    ]
+  },
+  "SPEC-REQRESP-002": {
+    "text": "The requester MUST close the write side of the stream once it finishes writing",
+    "ast_ids": [
+      "PROSE-MUST-faaebe5c"
+    ]
+  },
+  "SPEC-REQRESP-003": {
+    "text": "Transmission of an INVALID execution payload via the Req/Resp domain SHOULD NOT cause a node to be down-scored or disconnected (Bellatrix optimistic-sync exception only); other malformed/invalid Req/Resp data MAY affect peer reputation",
+    "ast_ids": [
+      "PROSE-SHOULD_NOT-38845239",
+      "PROSE-MAY-36429b44"
+    ]
+  },
+  "SPEC-REQRESP-004": {
+    "text": "When rate limiting, the responder MUST NOT respond with an error or close the stream, and MUST send each response_chunk in full promptly once capacity is available; a requester SHOULD reset the stream on timeout or when the response is no longer relevant",
+    "ast_ids": [
+      "PROSE-MUST-bc7717a4",
+      "PROSE-MUST_NOT-89347b2a"
+    ]
+  },
+  "SPEC-REQRESP-005": {
+    "text": "The response MUST begin with a single-byte response code",
+    "retired": true,
+    "reason": "Legacy curated summary could not be mapped precisely; superseded by the canonical AST catalog."
+  },
+  "SPEC-REQRESP-006": {
+    "text": "Clients MUST respond with INVALID_REQUEST to requests with wrong SSZ length",
+    "retired": true,
+    "reason": "Legacy curated summary could not be mapped precisely; superseded by the canonical AST catalog."
+  },
+  "SPEC-STATUS-001": {
+    "text": "The dialing client MUST send a Status request upon connection",
+    "ast_ids": [
+      "PROSE-MUST-369ed609"
+    ]
+  },
+  "SPEC-STATUS-002": {
+    "text": "Clients SHOULD immediately disconnect if fork_digest does not match",
+    "ast_ids": [
+      "PROSE-SHOULD-d2397b37",
+      "ETH2-SHOULD-fade3c21"
+    ]
+  },
+  "SPEC-STATUS-003": {
+    "text": "Clients SHOULD immediately disconnect if finalized checkpoint is incompatible",
+    "ast_ids": [
+      "PROSE-SHOULD-d2397b37",
+      "PROSE-MUST-1cc30454"
+    ]
+  },
+  "SPEC-SYNC-001": {
+    "text": "[IGNORE] sync_committee_{subnet_id}: Message slot is current slot (with MAXIMUM_GOSSIP_CLOCK_DISPARITY)",
+    "ast_ids": [
+      "SYNC_COMMITTEE_MESSAGE-IGNORE-dddd9a14"
+    ]
+  },
+  "SPEC-SYNC-002": {
+    "text": "[REJECT] sync_committee_{subnet_id}: validator_index is valid",
+    "ast_ids": [
+      "SYNC_COMMITTEE_MESSAGE-REJECT-9b15dc3b",
+      "SYNC_COMMITTEE_MESSAGE-REJECT-3aa5be35",
+      "SYNC_COMMITTEE_MESSAGE-REJECT-c428cd4e"
+    ]
+  },
+  "SPEC-SYNC-003": {
+    "text": "[REJECT] sync_committee_{subnet_id}: subnet_id valid for validator (compute_subnets_for_sync_committee)",
+    "ast_ids": [
+      "SYNC_COMMITTEE_MESSAGE-REJECT-3aa5be35",
+      "SYNC_COMMITTEE_MESSAGE-REJECT-9b15dc3b",
+      "SYNC_COMMITTEE_MESSAGE-REJECT-c428cd4e"
+    ]
+  },
+  "SPEC-SYNC-004": {
+    "text": "[IGNORE] sync_committee_{subnet_id}: First valid message from validator for (slot, subnet_id)",
+    "ast_ids": [
+      "SYNC_COMMITTEE_MESSAGE-IGNORE-dddd9a14",
+      "SYNC_COMMITTEE_MESSAGE-REJECT-9b15dc3b",
+      "SYNC_COMMITTEE_MESSAGE-REJECT-3aa5be35"
+    ]
+  },
+  "SPEC-SYNC-005": {
+    "text": "[REJECT] sync_committee_{subnet_id}: Signature valid for beacon_block_root",
+    "ast_ids": [
+      "SYNC_COMMITTEE_MESSAGE-REJECT-9b15dc3b",
+      "SYNC_COMMITTEE_MESSAGE-REJECT-3aa5be35"
+    ]
+  },
+  "SPEC-SYNCAGG-001": {
+    "text": "[IGNORE] sync_committee_contribution_and_proof: Contribution slot is current slot (with MAXIMUM_GOSSIP_CLOCK_DISPARITY)",
+    "ast_ids": [
+      "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-IGNORE-908a6bf7"
+    ]
+  },
+  "SPEC-SYNCAGG-002": {
+    "text": "[REJECT] sync_committee_contribution_and_proof: subcommittee_index < SYNC_COMMITTEE_SUBNET_COUNT",
+    "ast_ids": [
+      "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-5d5257a1",
+      "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-1d325814",
+      "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-5bdbca46"
+    ]
+  },
+  "SPEC-SYNCAGG-003": {
+    "text": "[REJECT] sync_committee_contribution_and_proof: Contribution has participants (aggregation_bits not empty)",
+    "ast_ids": [
+      "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-5d5257a1"
+    ]
+  },
+  "SPEC-SYNCAGG-004": {
+    "text": "[REJECT] sync_committee_contribution_and_proof: selection_proof selects validator as aggregator",
+    "ast_ids": [
+      "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-52168aa3"
+    ]
+  },
+  "SPEC-SYNCAGG-005": {
+    "text": "[REJECT] sync_committee_contribution_and_proof: aggregator_index is valid",
+    "ast_ids": [
+      "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-1d325814",
+      "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-08097fc1",
+      "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-5448167e"
+    ]
+  },
+  "SPEC-SYNCAGG-006": {
+    "text": "[REJECT] sync_committee_contribution_and_proof: Aggregator's pubkey is in declared subcommittee",
+    "ast_ids": [
+      "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-c33e885a",
+      "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-1d325814",
+      "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-5bdbca46"
+    ]
+  },
+  "SPEC-SYNCAGG-007": {
+    "text": "[IGNORE] sync_committee_contribution_and_proof: No superset contribution already seen",
+    "ast_ids": [
+      "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-IGNORE-85bd91b0",
+      "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-IGNORE-908a6bf7"
+    ]
+  },
+  "SPEC-SYNCAGG-008": {
+    "text": "[IGNORE] sync_committee_contribution_and_proof: First valid contribution from aggregator for (slot, subcommittee_index)",
+    "ast_ids": [
+      "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-IGNORE-b4eb6360"
+    ]
+  },
+  "SPEC-SYNCAGG-009": {
+    "text": "[REJECT] sync_committee_contribution_and_proof: selection_proof signature is valid",
+    "ast_ids": [
+      "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-08097fc1",
+      "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-5448167e",
+      "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-1d325814"
+    ]
+  },
+  "SPEC-SYNCAGG-010": {
+    "text": "[REJECT] sync_committee_contribution_and_proof: Aggregator signature is valid",
+    "ast_ids": [
+      "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-08097fc1",
+      "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-1d325814"
+    ]
+  },
+  "SPEC-SYNCAGG-011": {
+    "text": "[REJECT] sync_committee_contribution_and_proof: Aggregate signature is valid",
+    "ast_ids": [
+      "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-08097fc1",
+      "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-5dd820ac",
+      "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-1d325814"
+    ]
+  },
+  "SPEC-VEXIT-001": {
+    "text": "[IGNORE] voluntary_exit: First valid voluntary exit received for this validator",
+    "ast_ids": [
+      "VOLUNTARY_EXIT-IGNORE-c9db1ebe"
+    ]
+  },
+  "SPEC-VEXIT-002": {
+    "text": "[REJECT] voluntary_exit: Validator index is valid",
+    "ast_ids": [
+      "VOLUNTARY_EXIT-REJECT-3aa5be35"
+    ]
+  },
+  "SPEC-VEXIT-003": {
+    "text": "[REJECT] voluntary_exit: Validator is active",
+    "ast_ids": [
+      "VOLUNTARY_EXIT-REJECT-15cadc01",
+      "VOLUNTARY_EXIT-REJECT-f5f33715",
+      "VOLUNTARY_EXIT-REJECT-3aa5be35"
+    ]
+  },
+  "SPEC-VEXIT-004": {
+    "text": "[REJECT] voluntary_exit: Validator has not already initiated exit",
+    "ast_ids": [
+      "VOLUNTARY_EXIT-REJECT-e7806012"
+    ]
+  },
+  "SPEC-VEXIT-005": {
+    "text": "[REJECT] voluntary_exit: Current epoch >= exit.epoch",
+    "ast_ids": [
+      "VOLUNTARY_EXIT-REJECT-f64fc894",
+      "VOLUNTARY_EXIT-REJECT-e7806012"
+    ]
+  },
+  "SPEC-VEXIT-006": {
+    "text": "[REJECT] voluntary_exit: Validator active long enough (>= SHARD_COMMITTEE_PERIOD)",
+    "ast_ids": [
+      "VOLUNTARY_EXIT-REJECT-f5f33715",
+      "VOLUNTARY_EXIT-REJECT-15cadc01"
+    ]
+  },
+  "SPEC-VEXIT-007": {
+    "text": "[REJECT] voluntary_exit: Signature valid (uses CAPELLA_FORK_VERSION per EIP-7044)",
+    "ast_ids": [
+      "VOLUNTARY_EXIT-REJECT-cc9547b7",
+      "VOLUNTARY_EXIT-REJECT-3aa5be35"
+    ]
+  }
+}

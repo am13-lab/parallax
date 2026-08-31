@@ -1,0 +1,220 @@
+{
+  "entries": [
+    {
+      "transition": "sub_metadata_v3",
+      "client": "nimbus",
+      "action": "suppress",
+      "reason": "Nimbus cgc=64 causes metadata divergence \u2014 tracked (issue status-im/nimbus-eth2#8420), confirmed live still cgc=64 in v26.6.2 (2026-07-01). Root cause: Nimbus forcibly aliases --peerdas-supernode to light-supernode (nimbus_beacon_node.nim:2752-2756, sets lightSupernode=true / peerdasSupernode=false) because full supernode reconstruction is not run; a light supernode custodies NUMBER_OF_COLUMNS/2 groups, so lightSupernodeGroupsCount = (128 div 2) div 1 = 64 (validator_custody.nim:73-76), vs 128 for a true supernode. The value rose 4->64 since #8420 was filed on v26.3.1 (then it fell through to CUSTODY_REQUIREMENT=4). A 'stale' flag on this transition-keyed entry is a false positive: the behavior persists (verified via /eth/v1/node/identity), the statemachine transition just did not surface it that run."
+    },
+    {
+      "transition": "disc_metadata_v3",
+      "client": "nimbus",
+      "action": "suppress",
+      "reason": "Nimbus cgc=64 causes metadata divergence \u2014 tracked (issue status-im/nimbus-eth2#8420), confirmed live still cgc=64 in v26.6.2 (2026-07-01) while all other clients advertise cgc=128 in supernode mode. Root cause: --peerdas-supernode is aliased to light-supernode (custodies half the columns), so cgc = NUMBER_OF_COLUMNS/2 = 64. See the sub_metadata_v3 entry for the full code trace."
+    },
+    {
+      "test_pattern": "discovery.consistency.cgc_minimum",
+      "client": "nimbus",
+      "action": "suppress",
+      "reason": "Nimbus cgc=64 \u2014 known, tracked"
+    },
+    {
+      "test_pattern": "discovery.enr.cgc_encoding",
+      "client": "nimbus",
+      "action": "suppress",
+      "reason": "Nimbus cgc=64 \u2014 known, tracked"
+    },
+    {
+      "test_pattern": "discovery.metadata.custody_group_count",
+      "client": "nimbus",
+      "action": "suppress",
+      "reason": "Nimbus cgc=64 \u2014 known, tracked"
+    },
+    {
+      "test_pattern": "discovery.enr.seq_number_*",
+      "action": "suppress",
+      "reason": "ENR seq_number is implementation-specific, not spec-constrained"
+    },
+    {
+      "test_pattern": "discovery.enr.has_transport",
+      "action": "suppress",
+      "reason": "Transport protocol choice (tcp/quic) is implementation-specific"
+    },
+    {
+      "test_pattern": "discovery.metadata.seq_number_*",
+      "action": "suppress",
+      "reason": "Metadata seq_number is node-internal counter, no spec constraint on value"
+    },
+    {
+      "test_pattern": "discovery.peers.has_peers",
+      "action": "suppress",
+      "reason": "Transient networking state \u2014 peer count varies by timing"
+    },
+    {
+      "test_pattern": "discovery.consistency.nfd_value",
+      "client": "lighthouse",
+      "action": "suppress",
+      "reason": "Lighthouse NFD computation divergence \u2014 known reported bug, not a new finding"
+    },
+    {
+      "test_pattern": "discovery.enr.nfd_size",
+      "client": "lighthouse",
+      "action": "suppress",
+      "reason": "Lighthouse NFD value divergence \u2014 known reported bug, not a new finding"
+    },
+    {
+      "test_pattern": "poc.lodestar.discv5_malformed_enr",
+      "client": "lodestar",
+      "action": "suppress",
+      "reason": "Confirmed in chainsafe/lodestar:v1.43.0: a signature-valid ENR with malformed raw ip in a partial discv5 NODES response triggers uncaught InvalidMultiaddrError at ENR.getLocationMultiaddr. The worker survives, but the active lookup can remain stuck until the 60s lookup timeout, suppressing serialized active discovery on an under-peered node. A 2026-06-18 max PoC run with 16 helper Sybils produced 15 malformed responses in five 3-response batches while chain health continued. PoC: poc/needs-review/LODESTAR-DISCV5-MALFORMED-ENR"
+    },
+    {
+      "test_pattern": "poc.lodestar.gossip_topic_cache_dos",
+      "client": "lodestar",
+      "action": "suppress",
+      "reason": "Confirmed on 2026-06-18 against chainsafe/lodestar:v1.43.0/5cb87b7 in local Kurtosis using poc/needs-review/LODESTAR-GOSSIP-TOPIC-CACHE-DOS. In enclave lodestar-topic-cache-oom, a raw /meshsub/1.2.0 peer sent 505,000 unique parseable /eth2/<fork>/beacon_attestation_<n>/ssz_snappy topics in 101 RPC frames (28.79 MiB) with one-byte snappy payloads; under the bundled constrained testnet (cl_max_mem=1280, NODE_OPTIONS=--max-old-space-size=768), Lodestar's Beacon API/metrics became unavailable for 65.7s and Docker reported Exited(137), OOMKilled=true, finished at 2026-06-18T13:39:27Z. A larger enclave lodestar-topic-cache-8gb reproduced the DoS with cl_max_mem=8192 and NODE_OPTIONS=--max-old-space-size=7168: 695,000 unique topics in 139 RPC frames (39.66 MiB), Beacon API/metrics unavailable for 101.6s, Docker Exited(137), OOMKilled=true, finished at 2026-06-18T14:13:21Z. No V8 OOM line was emitted in Lodestar logs; the evidence is container OOM kill plus API/metrics connection refused after topic-cache flooding. The framework's current GossipPublisher joins/subscribes topics and does not exercise this exact raw pre-subscription meshsub receive path, so regression coverage currently lives in the PoC rather than replay corpus."
+    },
+    {
+      "test_pattern": "poc.nimbus.gloas_execution_payload_orphan_retention",
+      "client": "nimbus",
+      "action": "suppress",
+      "reason": "Confirmed on 2026-06-22 against statusim/nimbus-eth2:multiarch-v26.5.0 with geth v1.17.3 in local Kurtosis using poc/needs-review/NIMBUS-GLOAS-ENVELOPE-ORPHANS-DOS. The geth-only Gloas-at-genesis config was environment-blocked by geth genesis RLP rejection (`BlockAccessListHash`); the epoch-1 fallback reached active Gloas (`0x80000038`, fork digest bf7036d6). Raw /meshsub/1.2.0 publication of random-root SignedExecutionPayloadEnvelope messages hit Nimbus `ExecutionPayload: block not found` IGNORE validation and retained orphan envelope memory. A 1,000-message run with 1 MiB decoded envelopes produced 1,000 new `execution_payload_envelopes_dropped{reason=\"Ignore\"}` increments, about +1.0 GiB cgroup growth, and 98% retained cgroup memory after cooldown. A capped-container OOM was not confirmed in that run because later attempts were limited by Nimbus peer scoring/topic-subscription gating (`topic without subscription`), not by refutation of the retained orphan path. A 2026-06-23 rerun with only `cl_image` changed to statusim/nimbus-eth2:multiarch-v26.6.0 reached the same Gloas fork digest but did not reproduce the retained-orphan path: 5-message smoke and 1,000 x 1 MiB raw runs produced `ignore_delta=0`, `reject_delta=0`, incremented `nbc_gossip_failed_ssz`, and ended without retained RSS/cgroup growth or Docker OOM. Code inspection found two relevant v26.6.0 changes: the PoC's 12-byte empty `ExecutionRequests` encoding is stale after Nimbus adopted the v1.7.0-alpha.11/EIP-8282 5-list Gloas shape, and `EnvelopeQuarantine.orphans` is now LRU-bounded to `SLOTS_PER_EPOCH * 3` entries."
+    },
+    {
+      "transition": "blocks_by_root_v1_probe",
+      "action": "suppress",
+      "reason": "Intentional, spec-permitted divergence (not a bug). phase0/p2p-interface.md: `/eth2/beacon_chain/req/beacon_blocks_by_root/1/` is deprecated and 'Clients MAY respond with an empty list during the deprecation transition period.' 2026-07-01 (cl-0701): Lighthouse v8.2.0 and Grandine 2.0.5 still serve v1 (SUCCESS with block bytes) while Prysm v7.1.5, Teku master, Nimbus v26.6.2, and Lodestar v1.44.0-rc.3 reject it (STREAM_RESET/INVALID_REQUEST). Both behaviors are spec-permitted for a deprecated protocol."
+    },
+    {
+      "transition": "blocks_by_range_v1_probe",
+      "action": "suppress",
+      "reason": "Intentional, spec-permitted divergence (not a bug), same deprecation basis as beacon_blocks_by_root/1. 2026-07-01 (cl-0701): Lighthouse serves the deprecated `beacon_blocks_by_range/1/` while the other clients reject it. Deprecated-protocol support is optional; do not file as a bug."
+    },
+    {
+      "test_pattern": "reqresp.trailing_bytes.*",
+      "action": "suppress",
+      "reason": "Reported bug \u2014 do not re-file. Trailing-bytes spec violation: clients accept req/resp requests with bytes appended after the SSZ payload instead of returning InvalidRequest, violating phase0/p2p-interface.md L1294-1306 (MUST treat remaining bytes as invalid, MUST respond InvalidRequest). Filed: sigp/lighthouse#9301 and OffchainLabs/prysm#16782 (both open, LH marked 'will fix'); bug-tables.csv row 18 (2026/5/13, targets Prysm/Lodestar/Lighthouse/Nimbus/Grandine). Teku is the only spec-compliant client. Confirmed still present 2026-07-01 on cl-0701. The filed issues describe the Ping case; the same root cause also surfaces on metadata_v3, blocks_by_root, blocks_by_range, data_columns_by_range, and goodbye (this pattern), which are the same defect on other protocols."
+    },
+    {
+      "transition": "garbage_appended_ping",
+      "action": "suppress",
+      "reason": "Reported bug \u2014 do not re-file. Same trailing-bytes defect as reqresp.trailing_bytes.* (Ping with garbage appended after the SSZ payload accepted with SUCCESS by all clients except Teku). Filed: sigp/lighthouse#9301, OffchainLabs/prysm#16782; bug-tables.csv row 18. Confirmed still present 2026-07-01 on cl-0701."
+    },
+    {
+      "test_pattern": "reqresp.malformed.ping.append_garbage",
+      "action": "suppress",
+      "reason": "Reported bug \u2014 do not re-file. Trailing-bytes defect (Ping payload with appended garbage). Filed: sigp/lighthouse#9301, OffchainLabs/prysm#16782; bug-tables.csv row 18. Teku alone rejects with InvalidRequest per phase0 p2p L1294-1306."
+    },
+    {
+      "transition": "status_v1_valid",
+      "action": "suppress",
+      "reason": "Intentional, not a bug (investigated 2026-07-01 on cl-0701). Prysm and Lodestar deliberately unregister the status/1 handler at the Fulu fork boundary and serve only status/2: Prysm beacon-chain/sync/rpc.go registers only RPCStatusTopicV2 for Fulu/Gloas (comment 'Updated in Fulu'); Lodestar ReqRespBeaconNode.ts unregisters StatusV1 for ForkSeq>=fulu (see ChainSafe/lodestar#8168). Grandine/Lighthouse/Teku still answer status/1. So opening /eth2/beacon_chain/req/status/1/ against Prysm or Lodestar on a Fulu network yields a stream reset (no handler) \u2014 expected. Nimbus keeps its status/1 handler (peer_protocol.nim statusV1 registered unconditionally) and returns STATUS_SUCCESS for status/1 on a clean first step; the intermittent STREAM_RESET seen in connlifecycle sequences is a connection-state/timing artifact of Nimbus's inbound-Status-then-disconnect behavior, not a dropped protocol. Fulu introduced status/2 and honest peers negotiate the higher version; retiring superseded status/1 at the fork boundary is defensible. Same class as the deprecated beacon_blocks_by_root/1 split. At most a spec-clarification (does Fulu retire status/1?), not a client bug."
+    },
+    {
+      "transition": "disc_status_v1_then_query",
+      "action": "suppress",
+      "reason": "Same intentional behavior as status_v1_valid (see that entry): Prysm and Lodestar unregister status/1 at the Fulu boundary and serve only status/2, so a status/1 probe followed by a query resets on those clients. Not a bug. Nimbus inclusion is the same connection-state/timing artifact."
+    },
+    {
+      "transition": "status_v1_on_fulu",
+      "action": "suppress",
+      "reason": "Same intentional behavior as status_v1_valid (see that entry): status/1 is intentionally not served by Prysm/Lodestar on Fulu (v2-only at the fork boundary). Not a bug."
+    },
+    {
+      "test_pattern": "gossip.blob_sidecar.slot_not_higher_than_parent",
+      "client": "lodestar",
+      "action": "suppress",
+      "reason": "Reported bug \u2014 do not re-file. Lodestar's validateGossipBlobSidecar classified a blob sidecar whose header slot is <= its known parent's slot as IGNORE, but Deneb p2p-interface.md requires REJECT ('[REJECT] The sidecar is from a higher slot than the sidecar's block's parent', L665-667; spec test test_gossip_blob_sidecar__reject_slot_not_higher_than_parent asserts reject). Code: packages/beacon-node/src/chain/validation/blobSidecar.ts L112-119 threw GossipAction.IGNORE for NOT_LATER_THAN_PARENT while the data-column sibling (dataColumnSidecar.ts L98-105) already used REJECT for the identical condition; the branch's own comment said [REJECT], confirming an oversight not a deliberate deviation. Filed and fixed: ChainSafe/lodestar#9740 (one-line IGNORE->REJECT). Maintainer retitled to chore since no live network is on Deneb and the path is effectively unused post-Fulu; low severity (peer-accountability/scoring only, no consensus or crash impact). Fix also present on a maintainer branch, and #9372 wires up gossip-validation spec tests that catch this. If this divergence disappears from a run, the fix landed."
+    },
+    {
+      "test_pattern": "discovery.consistency.next_fork_version",
+      "client": "caplin",
+      "action": "suppress",
+      "reason": "Already fixed upstream \u2014 do not file. Caplin on erigon v3.5.4 advertises ENR next_fork_version=0x80000038 (Gloas) while next_fork_epoch=FAR_FUTURE_EPOCH, and all six other clients advertise 0x70000038 (Fulu, == current). phase0/p2p-interface.md L1700-1705 requires next_fork_version == current_fork_version when no future fork is planned. Root cause: ForkId() in cl/utils/eth_clock/ethereum_clock.go L182-189 picked the first schedule entry above the current epoch without skipping FAR_FUTURE_EPOCH forks, while the next_fork_epoch half of the same 16-byte field is computed by NextForkEpochIncludeBPO() L212-217, which does normalise them away \u2014 so the two halves disagreed. Introduced by erigon PR #16207 (2025-08-03), which moved next_fork_epoch to NextForkEpochIncludeBPO but left the version loop's FAR_FUTURE case unhandled. Fixed upstream in erigontech/erigon PR #22948 (merged 2026-08-03) by skipping FAR_FUTURE/MaxUint64 entries in that loop; the upstream PR reports the same defect observed on chiado/gnosis. Expected on any erigon image at or before v3.5.4 (2026-07-28) and on any image built before 2026-08-03. Our EL-clients/erigon submodule was bumped to d8fbff9fe2 (2026-08-11) and now CONTAINS the fix, so source inspection will no longer show the bug while the pinned v3.5.4 image still exhibits it: read the fix state from the image tag, not the submodule. If this divergence disappears after an image bump past 2026-08-03, the fix landed \u2014 re-verify rather than treating the disappearance as a regression in our harness."
+    },
+    {
+      "test_pattern": "discovery.consistency.cgc_minimum",
+      "client": "caplin",
+      "action": "suppress",
+      "reason": "Configuration asymmetry and harness noise, not a Caplin bug. In configs/cl-0801.yaml, the six comparison clients explicitly set supernode: true while the Caplin participant deliberately omits it because current Caplin has no supernode or custody-count CLI option. The current ethereum-package caplin_launcher.star uses participant.supernode only in labels and CL context; it does not add a Caplin command-line option. The run assigned 11 validator keys to each node. Caplin applies the Fulu validator custody formula total_balance / BALANCE_PER_ADDITIONAL_CUSTODY_GROUP, bounded by VALIDATOR_CUSTODY_REQUIREMENT and NUMBER_OF_CUSTODY_GROUPS, so eleven 32 ETH validators correctly produce cgc=11. The 2026-08-11 run observed PASS for Caplin cgc=11 and PASS for the explicitly configured supernodes at cgc=128; Caplin's one-byte ENR encoding was also valid. The framework still reports a divergence because discovery.consistency.cgc_minimum sends descriptive PASS strings containing each value into framework.Compare, even though the spec permits different valid custody counts. Current Erigon main at d8fbff9fe25da5f0fcfe15ee332e9aff96e284a3 still has no explicit supernode flag and retains the same balance-derived behavior. A ResourceUnavailable response for a column outside Caplin's advertised custody is correct."
+    },
+    {
+      "test_pattern": "discovery.enr.cgc_encoding",
+      "client": "caplin",
+      "action": "suppress",
+      "reason": "Not a bug \u2014 consequence of Caplin having no supernode flag (see the discovery.consistency.cgc_minimum caplin entry). Caplin encodes its lower cgc in one byte where supernode clients encode 128; the encoding itself is spec-valid (no leading zeros)."
+    },
+    {
+      "test_pattern": "discovery.metadata.custody_group_count",
+      "client": "caplin",
+      "action": "suppress",
+      "reason": "Caplin omits custody_group_count from the /eth/v1/node/identity Metadata response while advertising cgc in its ENR, so the harness reports 'ENR cgc=N but MetaData custody_group_count absent'. Observed 2026-08-11 on erigon v3.5.4. This is a Beacon API response-shape gap, not a P2P wire-protocol divergence: the value the spec constrains travels in the ENR and in the MetaData V3 req/resp message, and this test reads the HTTP API. Confirm against MetaData V3 over the wire before treating any Caplin custody mismatch as a finding."
+    },
+    {
+      "test_pattern": "reqresp.rate_limit_error.*",
+      "client": "caplin",
+      "action": "suppress",
+      "reason": "Intentional spec deviation, not a new vulnerability report. Confirmed on erigon v3.5.4 and still present on upstream main at d8fbff9fe25da5f0fcfe15ee332e9aff96e284a3 on 2026-08-11. phase0/p2p-interface.md L1193-1198 permits rate limiting only by delaying response chunks until capacity is available and says the responder MUST NOT send an error or close the stream. Caplin instead writes an SSZ-snappy InvalidRequest response and gracefully closes the stream for admission throttling (cl/sentinel/handlers/handlers.go:175-179); batch token exhaustion also writes InvalidRequest (handlers.go:224-233). This mislabels a well-formed request as malformed. The behavior was deliberately introduced in erigon PR #20146: its history explicitly changes the limiter to a proper SSZ error response and then to a graceful close so the peer receives that error. TestPingRateLimit asserts that ping 3 and 4 return InvalidRequest, and TestBlocksByRangeRateLimit asserts that a second well-formed 96-block request returns InvalidRequest; both tests pass on the current main checkout. The rationale for consensus-specs PR #3767 is the opposite model: keep requests open and queue or delay responses, avoiding disconnects, peer-scoring problems, and client-specific rate-limit guessing. Treat this as known intentional behavior and a test-harness hazard, not a fresh vulnerability. Any Caplin 0x01 on a rate-limited protocol is ambiguous with genuine validation failure; use pacing and Caplin logs when triaging."
+    },
+    {
+      "transition": "sub_metadata_v3",
+      "client": "caplin",
+      "action": "suppress",
+      "reason": "Same Caplin custody/metadata asymmetry already recorded under test_pattern discovery.metadata.custody_group_count, reaching the report through the statemachine transition key instead. Caplin advertises cgc in its ENR but omits custody_group_count from its MetaData response, and internal/statemachine/executor.go:1002-1007 treats hasENRCGC && !hasMDCGC as DISC_METADATA_MISMATCH. Observed 2026-08-11: 31 DISC_METADATA_MISMATCH results, all on caplin and none on any other client, across 24 sub_metadata_v3 steps. Not a wire-protocol divergence: the spec-constrained value travels in the ENR and in MetaData V3 over req/resp, and Caplin has no supernode/custody flag at all (see the discovery.consistency.cgc_minimum caplin entry). Compare MetaData V3 on the wire before treating any Caplin custody mismatch as a finding. Note the sibling Nimbus entry on this same transition covers a different root cause (cgc=64 from light-supernode aliasing)."
+    },
+    {
+      "test_pattern": "statemachine.connlifecycle.*",
+      "client": "caplin",
+      "action": "downgrade",
+      "reason": "Downgraded, not suppressed: these are real Caplin-vs-others sequence differences but the mechanism is throttling, not protocol behavior, so they should not read as MEDIUM findings. Caplin's goodbye bucket is burst 1 refilling 0.1/s (cl/sentinel/handlers/rate_limiter.go:126-133) and a rate-limited request is answered with INVALID_REQUEST plus a stream close (handlers.go:166-181), so any sequence touching goodbye more than once shows a Caplin rejection that is purely rate limiting. Observed 2026-08-11: caplin was sole outlier in 73 of 88 seven-client statemachine.connlifecycle blocks, dominant shape step2:INVALID_REQUEST where step 2 is sem_conn_goodbye_baseline, and Caplin's own log ended the run with 82 goodbye rate-limit rejections. Kept visible as INFO because a genuine connection-lifecycle bug would also land here; re-check any specific case with --inter-test-delay 6s (goodbye needs 10s+ to refill a single token) or against an idle enclave before dismissing it."
+    },
+    {
+      "test_pattern": "statemachine.forktransition.*",
+      "client": "caplin",
+      "action": "downgrade",
+      "reason": "Downgraded so it stays visible but does not read as a fork-digest finding. Caplin was sole outlier in 16 of 52 seven-client statemachine.forktransition blocks on 2026-08-11, 13 of them reporting STATUS_REJECTED at step0 sem_fork_status_current, a Status carrying the CORRECT current fork digest that five other clients answer with STATUS_SUCCESS. That looks like a fork-digest validation divergence and is not one: ConnStatusRejected in internal/statemachine/executor.go:846-863 is assigned for any non-zero response code, so it absorbs the 0x01 that Caplin's rate limiter emits (status/2 bucket is 5 tokens at 0.33/s), and Caplin's status/2 rate-limit rejections rose from 9 to 38 while these tests ran. Kept as INFO rather than suppressed because a genuine fork-boundary bug would also land here. Re-check any specific case with --inter-test-delay 6s or against an idle enclave, and confirm against the client's own rate-limit log, before treating a Caplin STATUS_REJECTED here as behavior."
+    },
+    {
+      "test_pattern": "*light_client_*",
+      "client": "teku",
+      "action": "suppress",
+      "reason": "Config/support gap, not a bug (cov-0817, 2026-08-18). Teku serves light-client data over REST only (--Xrest-api-light-client-enabled); it registers no p2p reqresp light-client server, so LC bootstrap/updates/finality/optimistic requests get a negotiation reset. A reset on an unsupported/unadvertised protocol is correct libp2p behavior; the altair SHOULD (altair/light-client/p2p-interface.md:183-184) binds only servers that advertise the protocol. Even after cl-coverage.yaml enables LC serving on prysm/nimbus, teku (and grandine, whose enable_light_client_server is not CLI-exposed) will still reset LC requests. Applies to grandine as well (add a grandine-client twin of this entry if surfaced separately)."
+    },
+    {
+      "test_pattern": "*light_client_*",
+      "client": "grandine",
+      "action": "suppress",
+      "reason": "Config/support gap, not a bug (cov-0817, 2026-08-18). Grandine's light-client server (eth2_libp2p enable_light_client_server, default false) is not exposed to the CLI, so it cannot be enabled via cl_extra_params and the node registers no p2p LC server; LC requests get a negotiation reset. Correct libp2p behavior for an unadvertised protocol; the altair SHOULD binds only advertising servers. Would require rebuilding the coverage image with the field forced true to test the ResourceUnavailable SHOULD. See the teku twin of this entry."
+    },
+    {
+      "test_pattern": "reqresp.empty_body.blocks_by_range.*",
+      "client": "",
+      "action": "suppress",
+      "reason": "Real but LOW-impact spec non-conformance, cross-validated (cov-0817, 2026-08-18; Claude P2-A + codex blind both REAL, phase0/p2p-interface.md:1309 MUST InvalidRequest on undecodable request). On an EMPTY/truncated request body, grandine + lighthouse close the inbound substream with EMPTY (no 0x01 chunk) instead of InvalidRequest; the framework flags the reset group (caplin/nimbus/prysm) as the vote outlier, so this is scoped by test rather than by client. Shared root cause (grandine eth2_libp2p forks lighthouse_network): decode returns need-more-bytes (codec.rs:170) -> IncompleteStream, the inbound upgrade discards the stream (protocol.rs:795/804-805 LH, 637-639 grandine) with no stream left to write the error chunk (handler.rs:892-901). DISTINCT from CLOSED sigp/lighthouse#9301 / prysm#16782 (those fail to DETECT trailing bytes and return SUCCESS+data; here bad input IS detected but the rejection is never signalled). Impact peer-accountability/compliance only, no DoS/memory/consensus. Scoped to the two range RPCs only; empty-body on ping/status is a separate signal (Caplin no-validation #23166) and is deliberately NOT covered here. Regression coverage: --replay-fuzz mutators wire.truncate_half + ssz.empty_list on a captured by_range request reproduce this. Trigger recipe: Triage_sessions/cov-0817/drafts/corpus-seed-earlyeof-empty-body.md."
+    },
+    {
+      "test_pattern": "reqresp.empty_body.data_columns_by_range.*",
+      "client": "",
+      "action": "suppress",
+      "reason": "Real but LOW-impact spec non-conformance, cross-validated (cov-0817, 2026-08-18; Claude P2-A + codex blind both REAL, phase0/p2p-interface.md:1309 MUST InvalidRequest on undecodable request). On an EMPTY/truncated request body, grandine + lighthouse close the inbound substream with EMPTY (no 0x01 chunk) instead of InvalidRequest; the framework flags the reset group (caplin/nimbus/prysm) as the vote outlier, so this is scoped by test rather than by client. Shared root cause (grandine eth2_libp2p forks lighthouse_network): decode returns need-more-bytes (codec.rs:170) -> IncompleteStream, the inbound upgrade discards the stream (protocol.rs:795/804-805 LH, 637-639 grandine) with no stream left to write the error chunk (handler.rs:892-901). DISTINCT from CLOSED sigp/lighthouse#9301 / prysm#16782 (those fail to DETECT trailing bytes and return SUCCESS+data; here bad input IS detected but the rejection is never signalled). Impact peer-accountability/compliance only, no DoS/memory/consensus. Scoped to the two range RPCs only; empty-body on ping/status is a separate signal (Caplin no-validation #23166) and is deliberately NOT covered here. Regression coverage: --replay-fuzz mutators wire.truncate_half + ssz.empty_list on a captured by_range request reproduce this. Trigger recipe: Triage_sessions/cov-0817/drafts/corpus-seed-earlyeof-empty-body.md."
+    },
+    {
+      "transition": "sv_rr_blocks_by_head_v1",
+      "client": "grandine",
+      "action": "suppress",
+      "reason": "Confirmed implementation gap (adoption lag), not an intentional non-support decision (cov-0817, 2026-08-18). BeaconBlocksByHead v1 (/eth2/beacon_chain/req/beacon_blocks_by_head/1/) is New-in-Fulu with MUST-level serving (consensus-specs/specs/fulu/p2p-interface.md:776), added 2026-05-11 (consensus-specs 945a70ae5, PR #5181). caplin/lighthouse/lodestar register+serve it; grandine (version in this run) does not register the protocol yet, so libp2p negotiation fails and the prober sees STREAM_RESET. No upstream statement of intent to omit it; treat as a real but low-impact gap (blocks reachable via mandatory by_range/by_root) that is tracked here to avoid re-filing each run rather than filed as a separate issue. Scoped per lagging client so a future regression by a serving client (lighthouse/lodestar/caplin) still surfaces. Recheck on later releases; if still unimplemented several forks on, escalate."
+    },
+    {
+      "transition": "sv_rr_blocks_by_head_v1",
+      "client": "prysm",
+      "action": "suppress",
+      "reason": "Confirmed implementation gap (adoption lag), not an intentional non-support decision (cov-0817, 2026-08-18). BeaconBlocksByHead v1 (/eth2/beacon_chain/req/beacon_blocks_by_head/1/) is New-in-Fulu with MUST-level serving (consensus-specs/specs/fulu/p2p-interface.md:776), added 2026-05-11 (consensus-specs 945a70ae5, PR #5181). caplin/lighthouse/lodestar register+serve it; prysm (version in this run) does not register the protocol yet, so libp2p negotiation fails and the prober sees STREAM_RESET. No upstream statement of intent to omit it; treat as a real but low-impact gap (blocks reachable via mandatory by_range/by_root) that is tracked here to avoid re-filing each run rather than filed as a separate issue. Scoped per lagging client so a future regression by a serving client (lighthouse/lodestar/caplin) still surfaces. Recheck on later releases; if still unimplemented several forks on, escalate."
+    },
+    {
+      "transition": "sv_rr_blocks_by_head_v1",
+      "client": "teku",
+      "action": "suppress",
+      "reason": "Confirmed implementation gap (adoption lag), not an intentional non-support decision (cov-0817, 2026-08-18). BeaconBlocksByHead v1 (/eth2/beacon_chain/req/beacon_blocks_by_head/1/) is New-in-Fulu with MUST-level serving (consensus-specs/specs/fulu/p2p-interface.md:776), added 2026-05-11 (consensus-specs 945a70ae5, PR #5181). caplin/lighthouse/lodestar register+serve it; teku (version in this run) does not register the protocol yet, so libp2p negotiation fails and the prober sees STREAM_RESET. No upstream statement of intent to omit it; treat as a real but low-impact gap (blocks reachable via mandatory by_range/by_root) that is tracked here to avoid re-filing each run rather than filed as a separate issue. Scoped per lagging client so a future regression by a serving client (lighthouse/lodestar/caplin) still surfaces. Recheck on later releases; if still unimplemented several forks on, escalate."
+    }
+  ]
+}

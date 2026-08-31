@@ -1,0 +1,2705 @@
+{
+  "ATTESTER_SLASHING-IGNORE-647ecfb9": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "ATTESTER_SLASHING-REJECT-2d878548": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "ATTESTER_SLASHING-REJECT-6425e9b8": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "ATTESTER_SLASHING-REJECT-6cea922f": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "ATTESTER_SLASHING-REJECT-8adc7b7d": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "ATTESTER_SLASHING-REJECT-e0453bd4": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "BEACON_AGGREGATE_AND_PROOF-IGNORE-0e37cd0e": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "indirect",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false,
+    "known_bugs": "Lighthouse MISSING"
+  },
+  "BEACON_AGGREGATE_AND_PROOF-IGNORE-19a3a197": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "indirect",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "BEACON_AGGREGATE_AND_PROOF-IGNORE-67149835": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "BEACON_AGGREGATE_AND_PROOF-IGNORE-7c1a7594": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "BEACON_AGGREGATE_AND_PROOF-IGNORE-85b80178": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "BEACON_AGGREGATE_AND_PROOF-IGNORE-bbde83d3": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "known_bugs": "Lighthouse MISSING",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "BEACON_AGGREGATE_AND_PROOF-IGNORE-dc38af01": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "indirect",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "BEACON_AGGREGATE_AND_PROOF-REJECT-14282100": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "BEACON_AGGREGATE_AND_PROOF-REJECT-2dc5a2c5": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false,
+    "known_bugs": "Lighthouse MISSING; Nimbus BUG (old rule blocks)"
+  },
+  "BEACON_AGGREGATE_AND_PROOF-REJECT-2fa7d152": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "BEACON_AGGREGATE_AND_PROOF-REJECT-544ecc21": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "indirect",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "BEACON_AGGREGATE_AND_PROOF-REJECT-5658ca54": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "indirect",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "BEACON_AGGREGATE_AND_PROOF-REJECT-71d8d9a9": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false,
+    "known_bugs": "Lighthouse MISSING; Nimbus BUG (old rule blocks)"
+  },
+  "BEACON_AGGREGATE_AND_PROOF-REJECT-863359b5": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "BEACON_AGGREGATE_AND_PROOF-REJECT-9d4a9467": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "BEACON_AGGREGATE_AND_PROOF-REJECT-ab7fb155": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "BEACON_AGGREGATE_AND_PROOF-REJECT-b0b9c377": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "BEACON_AGGREGATE_AND_PROOF-REJECT-b10dbef1": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "BEACON_AGGREGATE_AND_PROOF-REJECT-b6185e7c": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "BEACON_AGGREGATE_AND_PROOF-REJECT-c26fb5e5": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false,
+    "known_bugs": "Lighthouse MISSING; Nimbus BUG (old rule blocks)"
+  },
+  "BEACON_AGGREGATE_AND_PROOF-REJECT-cedaccef": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "indirect",
+    "state_machine": "gossip",
+    "known_bugs": "Lighthouse MISSING",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "BEACON_AGGREGATE_AND_PROOF-REJECT-f41bc7a4": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "BEACON_AGGREGATE_AND_PROOF-REJECT-fc3dd3a9": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "BEACON_ATTESTATION-IGNORE-19a3a197": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "indirect",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "BEACON_ATTESTATION-IGNORE-493398b9": {
+    "test_ids": [
+      "gossipsub.attestation_stale.offset_33",
+      "gossipsub.attestation_stale.offset_100"
+    ],
+    "invariant_ids": [],
+    "transitions": [
+      "inject_stale_attestation",
+      "inject_old_slot"
+    ],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "covered",
+    "current_status": "active",
+    "observable_in_traffic": true
+  },
+  "BEACON_ATTESTATION-IGNORE-5da40ec3": {
+    "test_ids": [
+      "gossipsub.attestation_stale.offset_33",
+      "gossipsub.attestation_stale.offset_100"
+    ],
+    "invariant_ids": [],
+    "transitions": [
+      "inject_stale_attestation",
+      "inject_old_slot"
+    ],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "covered",
+    "current_status": "active",
+    "observable_in_traffic": true
+  },
+  "BEACON_ATTESTATION-IGNORE-9dbc7051": {
+    "test_ids": [
+      "gossipsub.attestation_stale.offset_33",
+      "gossipsub.attestation_stale.offset_100"
+    ],
+    "invariant_ids": [],
+    "transitions": [
+      "inject_stale_attestation",
+      "inject_old_slot"
+    ],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "covered",
+    "current_status": "active",
+    "observable_in_traffic": true
+  },
+  "BEACON_ATTESTATION-IGNORE-e55933f5": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "indirect",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "BEACON_ATTESTATION-IGNORE-fa60d57c": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "BEACON_ATTESTATION-REJECT-02f714ed": {
+    "test_ids": [
+      "gossipsub.attestation_subnet_oob.64",
+      "gossipsub.attestation_subnet_oob.100"
+    ],
+    "invariant_ids": [],
+    "transitions": [
+      "inject_attestation_subnet_oob"
+    ],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "covered",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "BEACON_ATTESTATION-REJECT-20aed41d": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "BEACON_ATTESTATION-REJECT-2d8f2580": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "BEACON_ATTESTATION-REJECT-36fd424b": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "BEACON_ATTESTATION-REJECT-544ecc21": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "indirect",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "BEACON_ATTESTATION-REJECT-cb7a1c7e": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "indirect",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "BEACON_ATTESTATION-REJECT-f7a87fa4": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "BEACON_ATTESTATION-REJECT-fc3dd3a9": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "BEACON_ATTESTATION_SUBNET_ID-IGNORE-adbaa5bc": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "known_bugs": "Lighthouse MISSING",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "BEACON_ATTESTATION_SUBNET_ID-MUST-454af71d": {
+    "test_ids": [
+      "gossipsub.attestation_subnet_oob.64",
+      "gossipsub.attestation_subnet_oob.100"
+    ],
+    "invariant_ids": [],
+    "transitions": [
+      "inject_attestation_subnet_oob"
+    ],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "covered",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "BEACON_ATTESTATION_SUBNET_ID-REJECT-0b8c20eb": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false,
+    "known_bugs": "Lighthouse MISSING"
+  },
+  "BEACON_ATTESTATION_SUBNET_ID-REJECT-274e7fc1": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "indirect",
+    "state_machine": "gossip",
+    "known_bugs": "Lighthouse MISSING",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "BEACON_ATTESTATION_SUBNET_ID-REJECT-2cabe902": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "known_bugs": "Lighthouse MISSING",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "BEACON_ATTESTATION_SUBNET_ID-REJECT-45ccc192": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "known_bugs": "Lighthouse MISSING",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "BEACON_BLOCK-IGNORE-04770bd3": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false,
+    "known_bugs": "Lighthouse MISSING"
+  },
+  "BEACON_BLOCK-IGNORE-451f432d": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "BEACON_BLOCK-IGNORE-7c4ad118": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "indirect",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false,
+    "known_bugs": "Lighthouse MISSING"
+  },
+  "BEACON_BLOCK-IGNORE-b127f4ef": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "indirect",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "BEACON_BLOCK-IGNORE-da534e6d": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "indirect",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "BEACON_BLOCK-IGNORE-e183d5a9": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "BEACON_BLOCK-IGNORE-f0952a23": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "BEACON_BLOCK-REJECT-29379623": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "BEACON_BLOCK-REJECT-33eeeb94": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "indirect",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "BEACON_BLOCK-REJECT-3fd28bdc": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "BEACON_BLOCK-REJECT-4df28963": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "BEACON_BLOCK-REJECT-5f829684": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "indirect",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "BEACON_BLOCK-REJECT-823c7319": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "indirect",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "BEACON_BLOCK-REJECT-83dcef19": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "BEACON_BLOCK-REJECT-a3e807db": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "BEACON_BLOCK-REJECT-c329a1aa": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "known_bugs": "Lighthouse MISSING; Nimbus MISSING",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "BEACON_BLOCK-REJECT-dbd5e1e1": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "indirect",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "BEACON_BLOCK-REJECT-f0f96765": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "BEACON_BLOCK-REJECT-fb1328bc": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false,
+    "known_bugs": "Lighthouse MISSING; Nimbus MISSING"
+  },
+  "BEACON_BLOCK-REJECT-feb8803d": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "known_bugs": "Lighthouse MISSING; Nimbus MISSING",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "BLOB_SIDECAR-IGNORE-6478f02b": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "deprecated",
+    "observable_in_traffic": false
+  },
+  "BLOB_SIDECAR-IGNORE-80194614": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "deprecated",
+    "observable_in_traffic": false
+  },
+  "BLOB_SIDECAR-IGNORE-8cf6775b": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "deprecated",
+    "observable_in_traffic": false
+  },
+  "BLOB_SIDECAR-IGNORE-ed3428e1": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "deprecated",
+    "observable_in_traffic": false
+  },
+  "BLOB_SIDECAR-REJECT-124b7dda": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "deprecated",
+    "observable_in_traffic": false
+  },
+  "BLOB_SIDECAR-REJECT-190a8460": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "deprecated",
+    "observable_in_traffic": false
+  },
+  "BLOB_SIDECAR-REJECT-28436443": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "deprecated",
+    "observable_in_traffic": false
+  },
+  "BLOB_SIDECAR-REJECT-5e9003ab": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "deprecated",
+    "observable_in_traffic": false
+  },
+  "BLOB_SIDECAR-REJECT-5f6c65a0": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "deprecated",
+    "observable_in_traffic": false
+  },
+  "BLOB_SIDECAR-REJECT-c094c7ea": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "deprecated",
+    "observable_in_traffic": false
+  },
+  "BLOB_SIDECAR-REJECT-c9c1666b": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "deprecated",
+    "observable_in_traffic": false
+  },
+  "BLOB_SIDECAR-REJECT-e13efefd": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "deprecated",
+    "observable_in_traffic": false
+  },
+  "BLOB_SIDECAR-REJECT-f5bf199b": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "deprecated",
+    "observable_in_traffic": false
+  },
+  "BLOB_SIDECAR-REJECT-fb4868ac": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "deprecated",
+    "observable_in_traffic": false
+  },
+  "BLS_TO_EXECUTION_CHANGE-IGNORE-b226c668": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "BLS_TO_EXECUTION_CHANGE-IGNORE-c2adbb4f": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "BLS_TO_EXECUTION_CHANGE-REJECT-3869cf36": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "BLS_TO_EXECUTION_CHANGE-REJECT-c61b3034": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "BLS_TO_EXECUTION_CHANGE-REJECT-cc9547b7": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "DATA_COLUMN_SIDECAR-IGNORE-6478f02b": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "DATA_COLUMN_SIDECAR-IGNORE-80194614": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false,
+    "known_bugs": "Lighthouse MISSING (InvalidVariant); Lodestar MISSING (Fulu-only)"
+  },
+  "DATA_COLUMN_SIDECAR-IGNORE-869c65a5": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "DATA_COLUMN_SIDECAR-IGNORE-8cf6775b": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "DATA_COLUMN_SIDECAR-REJECT-28436443": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "DATA_COLUMN_SIDECAR-REJECT-459b0d39": {
+    "test_ids": [
+      "gossipsub.data_column_index_oob.128",
+      "gossipsub.data_column_index_oob.200"
+    ],
+    "invariant_ids": [],
+    "transitions": [
+      "inject_data_column_index_oob"
+    ],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "covered",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "DATA_COLUMN_SIDECAR-REJECT-4df28963": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "DATA_COLUMN_SIDECAR-REJECT-5f6c65a0": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "DATA_COLUMN_SIDECAR-REJECT-9a465758": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "DATA_COLUMN_SIDECAR-REJECT-b049ffd8": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "DATA_COLUMN_SIDECAR-REJECT-c094c7ea": {
+    "test_ids": [
+      "gossipsub.data_column_index_oob.128",
+      "gossipsub.data_column_index_oob.200"
+    ],
+    "invariant_ids": [],
+    "transitions": [
+      "inject_data_column_index_oob"
+    ],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "covered",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "DATA_COLUMN_SIDECAR-REJECT-f173b70c": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "DATA_COLUMN_SIDECAR-REJECT-f5bf199b": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "indirect",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "DATA_COLUMN_SIDECAR-REJECT-fb4868ac": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "indirect",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "DATA_COLUMN_SIDECAR_SUBNET_ID-IGNORE-0b87a903": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "DATA_COLUMN_SIDECAR_SUBNET_ID-IGNORE-469a56aa": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "indirect",
+    "state_machine": "gossip",
+    "known_bugs": "Lighthouse MISSING (InvalidVariant); Lodestar MISSING (Fulu-only)",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "DATA_COLUMN_SIDECAR_SUBNET_ID-IGNORE-9d8437f3": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "DATA_COLUMN_SIDECAR_SUBNET_ID-MAY-ec107f68": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "DATA_COLUMN_SIDECAR_SUBNET_ID-MUST-78d7f688": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "DATA_COLUMN_SIDECAR_SUBNET_ID-MUST-aa0e3ac7": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "DATA_COLUMN_SIDECAR_SUBNET_ID-REJECT-2006109a": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "DATA_COLUMN_SIDECAR_SUBNET_ID-REJECT-2f6142a5": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "DATA_COLUMN_SIDECAR_SUBNET_ID-REJECT-53c9fb57": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "DATA_COLUMN_SIDECAR_SUBNET_ID-REJECT-68a65743": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "DATA_COLUMN_SIDECAR_SUBNET_ID-REJECT-ab807743": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "DATA_COLUMN_SIDECAR_SUBNET_ID-REJECT-c020ff6f": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "DATA_COLUMN_SIDECAR_SUBNET_ID-REJECT-caa919e9": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "DATA_COLUMN_SIDECAR_SUBNET_ID-REJECT-d9ecba79": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "DATA_COLUMN_SIDECAR_SUBNET_ID-REJECT-f74e78e5": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "ETH2-SHOULD-fade3c21": {
+    "test_ids": [
+      "reqresp.status.fork_mismatch"
+    ],
+    "invariant_ids": [
+      "INV-006"
+    ],
+    "transitions": [
+      "status_wrong_fork_digest"
+    ],
+    "testability": "direct",
+    "state_machine": "connlifecycle",
+    "coverage_status": "covered",
+    "current_status": "active",
+    "observable_in_traffic": true
+  },
+  "EXECUTION_PAYLOAD-IGNORE-2805c6c6": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "EXECUTION_PAYLOAD-IGNORE-72cda16e": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "EXECUTION_PAYLOAD-IGNORE-79b34cb2": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "EXECUTION_PAYLOAD-REJECT-59c20312": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "EXECUTION_PAYLOAD-REJECT-77bbd0e1": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "indirect",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "EXECUTION_PAYLOAD-REJECT-78d238c5": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "EXECUTION_PAYLOAD-REJECT-922e6de0": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "EXECUTION_PAYLOAD-REJECT-cfd12f6e": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "EXECUTION_PAYLOAD-REJECT-e459bd28": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "EXECUTION_PAYLOAD_BID-IGNORE-2ad71c19": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "EXECUTION_PAYLOAD_BID-IGNORE-3136e278": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "EXECUTION_PAYLOAD_BID-IGNORE-31651fed": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "EXECUTION_PAYLOAD_BID-IGNORE-a19e5554": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "known_bugs": "Nimbus MISSING this check; Teku/Lodestar TODO",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "EXECUTION_PAYLOAD_BID-IGNORE-afe205bd": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "EXECUTION_PAYLOAD_BID-IGNORE-d54f6a80": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "EXECUTION_PAYLOAD_BID-IGNORE-fbe8d000": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "indirect",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "EXECUTION_PAYLOAD_BID-REJECT-20d905d0": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "EXECUTION_PAYLOAD_BID-REJECT-7cce51c6": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "known_bugs": "Prysm has INVERTED logic (rejects non-zero payment)",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "EXECUTION_PAYLOAD_BID-REJECT-8ddbf789": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false,
+    "known_bugs": "Prysm uses WRONG signing domain"
+  },
+  "EXECUTION_PAYLOAD_BID-REJECT-afc6a4f2": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "EXECUTION_PAYLOAD_BID-REJECT-ce45577d": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "known_bugs": "Nimbus MISSING this check; Teku/Lodestar TODO",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "LIGHT_CLIENT_FINALITY_UPDATE-SHOULD-17458999": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "indirect",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "LIGHT_CLIENT_OPTIMISTIC_UPDATE-SHOULD-99530fb5": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "indirect",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "PARTIAL_DATA_COLUMN_SIDECAR-IGNORE-4b3745fd": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "PARTIAL_DATA_COLUMN_SIDECAR-IGNORE-64fbc194": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "PARTIAL_DATA_COLUMN_SIDECAR-IGNORE-73fe21ca": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "PARTIAL_DATA_COLUMN_SIDECAR-IGNORE-93b9b10e": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "PARTIAL_DATA_COLUMN_SIDECAR-IGNORE-ac743680": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false,
+    "known_bugs": "Lighthouse MISSING (InvalidVariant); Lodestar MISSING (Fulu-only)"
+  },
+  "PARTIAL_DATA_COLUMN_SIDECAR-IGNORE-e843ba36": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "PARTIAL_DATA_COLUMN_SIDECAR-REJECT-023db612": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "PARTIAL_DATA_COLUMN_SIDECAR-REJECT-0a994b43": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "PARTIAL_DATA_COLUMN_SIDECAR-REJECT-1191de75": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "PARTIAL_DATA_COLUMN_SIDECAR-REJECT-47e00126": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "PARTIAL_DATA_COLUMN_SIDECAR-REJECT-4df28963": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "PARTIAL_DATA_COLUMN_SIDECAR-REJECT-819b18b6": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "indirect",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "PARTIAL_DATA_COLUMN_SIDECAR-REJECT-84dab49d": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "PARTIAL_DATA_COLUMN_SIDECAR-REJECT-97a846a9": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "PARTIAL_DATA_COLUMN_SIDECAR-REJECT-9dcea1ee": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "PARTIAL_DATA_COLUMN_SIDECAR-REJECT-a18636bd": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "PARTIAL_DATA_COLUMN_SIDECAR-REJECT-ba7e950d": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "PARTIAL_DATA_COLUMN_SIDECAR-REJECT-d3e82f5b": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "PAYLOAD_ATTESTATION_MESSAGE-IGNORE-0196991d": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "PAYLOAD_ATTESTATION_MESSAGE-IGNORE-08332a39": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "known_bugs": "Lighthouse MISSING",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "PAYLOAD_ATTESTATION_MESSAGE-IGNORE-335c4459": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "indirect",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "PAYLOAD_ATTESTATION_MESSAGE-IGNORE-731cabe0": {
+    "test_ids": [
+      "gossipsub.attestation_stale.offset_33",
+      "gossipsub.attestation_stale.offset_100"
+    ],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "covered",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "PAYLOAD_ATTESTATION_MESSAGE-REJECT-11770d59": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "PAYLOAD_ATTESTATION_MESSAGE-REJECT-198ad7b3": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "PAYLOAD_ATTESTATION_MESSAGE-REJECT-d775db46": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "indirect",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "PROPOSER_PREFERENCES-IGNORE-4d809352": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "known_bugs": "Nimbus MISSING entire topic; Lodestar MISSING",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "PROPOSER_PREFERENCES-IGNORE-bee5dad7": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "PROPOSER_PREFERENCES-IGNORE-c8eb001d": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "known_bugs": "Nimbus MISSING entire topic; Lodestar MISSING",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "PROPOSER_PREFERENCES-IGNORE-e07433f8": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "indirect",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "PROPOSER_PREFERENCES-REJECT-1ebbef91": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "PROPOSER_PREFERENCES-REJECT-cb7c6b7a": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "known_bugs": "Prysm uses wrong signing domain",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "PROPOSER_SLASHING-IGNORE-a4a13783": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "PROPOSER_SLASHING-REJECT-1248d8f2": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "PROPOSER_SLASHING-REJECT-4df28963": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "PROPOSER_SLASHING-REJECT-4e6c2331": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "PROPOSER_SLASHING-REJECT-54d620b6": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "PROPOSER_SLASHING-REJECT-bb7fb86d": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "PROPOSER_SLASHING-REJECT-be80525c": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "PROSE-MAY-1059b963": {
+    "test_ids": [
+      "reqresp.execution_payload_by_root.over_max"
+    ],
+    "invariant_ids": [],
+    "transitions": [
+      "valid_payload_envelopes_by_root"
+    ],
+    "testability": "direct",
+    "state_machine": "reqresp",
+    "coverage_status": "covered",
+    "current_status": "active",
+    "observable_in_traffic": true
+  },
+  "PROSE-MAY-36429b44": {
+    "test_ids": [
+      "reqresp.error_scoring.5_errors",
+      "reqresp.error_scoring.10_errors"
+    ],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "reqresp",
+    "coverage_status": "covered",
+    "current_status": "active",
+    "observable_in_traffic": true
+  },
+  "PROSE-MAY-6eb8c500": {
+    "test_ids": [],
+    "invariant_ids": [
+      "INV-002"
+    ],
+    "transitions": [
+      "send_goodbye_client_shutdown",
+      "send_goodbye_irrelevant_network",
+      "send_goodbye_fault",
+      "send_goodbye_reserved",
+      "send_goodbye_custom"
+    ],
+    "testability": "indirect",
+    "state_machine": "connlifecycle",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": true
+  },
+  "PROSE-MAY-99c5c95f": {
+    "test_ids": [
+      "discovery.metadata.custody_group_count",
+      "discovery.consistency.cgc_minimum",
+      "reqresp.metadata.v3"
+    ],
+    "invariant_ids": [],
+    "transitions": [
+      "disc_verify_cgc",
+      "valid_metadata_v3"
+    ],
+    "testability": "direct",
+    "state_machine": "discovery",
+    "coverage_status": "covered",
+    "current_status": "active",
+    "observable_in_traffic": true
+  },
+  "PROSE-MAY-9ad1e8ba": {
+    "test_ids": [
+      "reqresp.ping.valid"
+    ],
+    "invariant_ids": [
+      "INV-004"
+    ],
+    "transitions": [
+      "valid_ping"
+    ],
+    "testability": "indirect",
+    "state_machine": "reqresp",
+    "coverage_status": "covered",
+    "current_status": "active",
+    "observable_in_traffic": true
+  },
+  "PROSE-MAY-ab6cf530": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "reqresp",
+    "coverage_status": "untested",
+    "current_status": "deprecated",
+    "observable_in_traffic": false
+  },
+  "PROSE-MAY-c3746d81": {
+    "test_ids": [
+      "reqresp.exhaustion.parallel_streams_1",
+      "reqresp.exhaustion.parallel_streams_5",
+      "reqresp.exhaustion.parallel_streams_10"
+    ],
+    "invariant_ids": [],
+    "transitions": [
+      "half_open_stream"
+    ],
+    "testability": "not_observable",
+    "state_machine": "reqresp",
+    "coverage_status": "covered",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "PROSE-MAY-c3957c31": {
+    "test_ids": [
+      "reqresp.ping.valid"
+    ],
+    "invariant_ids": [
+      "INV-004"
+    ],
+    "transitions": [
+      "valid_ping"
+    ],
+    "testability": "indirect",
+    "state_machine": "reqresp",
+    "coverage_status": "covered",
+    "current_status": "active",
+    "observable_in_traffic": true
+  },
+  "PROSE-MUST-04d4d686": {
+    "test_ids": [
+      "gossipsub.unknown_topic"
+    ],
+    "invariant_ids": [],
+    "transitions": [
+      "inject_nonexistent_topic"
+    ],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "covered",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "PROSE-MUST-0648388b": {
+    "test_ids": [
+      "discovery.metadata.attnets_match_enr",
+      "discovery.enr.seq_number_value",
+      "discovery.enr.seq_number_nonzero"
+    ],
+    "invariant_ids": [],
+    "transitions": [
+      "disc_verify_attnets",
+      "disc_re_query_enr",
+      "disc_query_enr_baseline"
+    ],
+    "testability": "direct",
+    "state_machine": "discovery",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": true
+  },
+  "PROSE-MUST-1cc30454": {
+    "test_ids": [
+      "reqresp.status.finalized_mismatch"
+    ],
+    "invariant_ids": [],
+    "transitions": [
+      "status_wrong_finalized"
+    ],
+    "testability": "indirect",
+    "state_machine": "reqresp",
+    "coverage_status": "covered",
+    "current_status": "active",
+    "observable_in_traffic": true
+  },
+  "PROSE-MUST-3315a1c4": {
+    "test_ids": [
+      "discovery.enr.seq_number_value",
+      "discovery.enr.seq_number_nonzero",
+      "reqresp.metadata.v3",
+      "discovery.metadata.seq_number_positive"
+    ],
+    "invariant_ids": [
+      "INV-003"
+    ],
+    "transitions": [
+      "disc_re_query_enr",
+      "disc_query_enr_baseline",
+      "valid_metadata_v3"
+    ],
+    "testability": "indirect",
+    "state_machine": "discovery",
+    "coverage_status": "covered",
+    "current_status": "active",
+    "observable_in_traffic": true
+  },
+  "PROSE-MUST-369ed609": {
+    "test_ids": [
+      "reqresp.status.valid"
+    ],
+    "invariant_ids": [
+      "INV-001",
+      "INV-005"
+    ],
+    "transitions": [
+      "status_v2_valid",
+      "status_v1_valid"
+    ],
+    "testability": "direct",
+    "state_machine": "reqresp",
+    "coverage_status": "covered",
+    "current_status": "active",
+    "observable_in_traffic": true
+  },
+  "PROSE-MUST-4bfaa766": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "reqresp",
+    "coverage_status": "untested",
+    "current_status": "transitional",
+    "observable_in_traffic": true
+  },
+  "PROSE-MUST-53017fdb": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "reqresp",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": true
+  },
+  "PROSE-MUST-543a88cb": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "indirect",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "PROSE-MUST-56ec7740": {
+    "test_ids": [
+      "discovery.metadata.custody_group_count",
+      "discovery.consistency.cgc_minimum"
+    ],
+    "invariant_ids": [],
+    "transitions": [
+      "disc_verify_cgc"
+    ],
+    "testability": "direct",
+    "state_machine": "discovery",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": true
+  },
+  "PROSE-MUST-621e66c7": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "reqresp",
+    "coverage_status": "untested",
+    "current_status": "deprecated",
+    "observable_in_traffic": false
+  },
+  "PROSE-MUST-78397db4": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "reqresp",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": true
+  },
+  "PROSE-MUST-7a65230f": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "reqresp",
+    "coverage_status": "untested",
+    "current_status": "deprecated",
+    "observable_in_traffic": false
+  },
+  "PROSE-MUST-9cd4be04": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "reqresp",
+    "coverage_status": "untested",
+    "current_status": "transitional",
+    "observable_in_traffic": true
+  },
+  "PROSE-MUST-9d54ce13": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "reqresp",
+    "coverage_status": "untested",
+    "current_status": "deprecated",
+    "observable_in_traffic": false
+  },
+  "PROSE-MUST-a0fb5bcb": {
+    "test_ids": [
+      "reqresp.execution_payload_by_range.valid_1"
+    ],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "indirect",
+    "state_machine": "reqresp",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": true
+  },
+  "PROSE-MUST-af08a0f4": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "PROSE-MUST-b6f01228": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "PROSE-MUST-baa6186c": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "reqresp",
+    "coverage_status": "untested",
+    "current_status": "transitional",
+    "observable_in_traffic": true
+  },
+  "PROSE-MUST-bb726adf": {
+    "test_ids": [
+      "gossipsub.malformed.wrong_fork_digest"
+    ],
+    "invariant_ids": [],
+    "transitions": [
+      "inject_wrong_fork_digest"
+    ],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "covered",
+    "current_status": "active",
+    "observable_in_traffic": true
+  },
+  "PROSE-MUST-bc7717a4": {
+    "test_ids": [
+      "reqresp.exhaustion.slow_request"
+    ],
+    "invariant_ids": [],
+    "transitions": [
+      "valid_ping",
+      "valid_metadata_v3",
+      "valid_blocks_by_range",
+      "valid_status_v2"
+    ],
+    "testability": "indirect",
+    "state_machine": "reqresp",
+    "coverage_status": "covered",
+    "current_status": "active",
+    "observable_in_traffic": true
+  },
+  "PROSE-MUST-beb326de": {
+    "test_ids": [
+      "reqresp.blocks_by_range.over_129"
+    ],
+    "invariant_ids": [],
+    "transitions": [
+      "blocks_by_range_count_over_max",
+      "valid_blocks_by_range"
+    ],
+    "testability": "direct",
+    "state_machine": "reqresp",
+    "coverage_status": "covered",
+    "current_status": "active",
+    "observable_in_traffic": true
+  },
+  "PROSE-MUST-c554346a": {
+    "test_ids": [
+      "reqresp.execution_payload_by_range.over_max"
+    ],
+    "invariant_ids": [],
+    "transitions": [
+      "valid_payload_envelopes_by_range",
+      "malformed_payload_envelopes_by_range"
+    ],
+    "testability": "direct",
+    "state_machine": "reqresp",
+    "coverage_status": "covered",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "PROSE-MUST-c9531b0b": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "reqresp",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": true
+  },
+  "PROSE-MUST-dc077cf0": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "reqresp",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": true
+  },
+  "PROSE-MUST-e60454a8": {
+    "test_ids": [
+      "reqresp.metadata.v3"
+    ],
+    "invariant_ids": [],
+    "transitions": [
+      "valid_metadata_v3"
+    ],
+    "testability": "direct",
+    "state_machine": "reqresp",
+    "coverage_status": "covered",
+    "current_status": "active",
+    "observable_in_traffic": true
+  },
+  "PROSE-MUST-f38be262": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "reqresp",
+    "coverage_status": "untested",
+    "current_status": "transitional",
+    "observable_in_traffic": false
+  },
+  "PROSE-MUST-faaebe5c": {
+    "test_ids": [
+      "reqresp.exhaustion.half_open_stream"
+    ],
+    "invariant_ids": [],
+    "transitions": [
+      "half_open_stream",
+      "read_half_open"
+    ],
+    "testability": "not_observable",
+    "state_machine": "reqresp",
+    "coverage_status": "covered",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "PROSE-MUST-fae5b75b": {
+    "test_ids": [
+      "reqresp.execution_payload_by_root.single"
+    ],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "reqresp",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": true
+  },
+  "PROSE-MUST_NOT-305625f9": {
+    "test_ids": [
+      "reqresp.exhaustion.parallel_streams_1",
+      "reqresp.exhaustion.parallel_streams_5",
+      "reqresp.exhaustion.parallel_streams_10"
+    ],
+    "invariant_ids": [],
+    "transitions": [
+      "half_open_stream"
+    ],
+    "testability": "not_observable",
+    "state_machine": "reqresp",
+    "coverage_status": "covered",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "PROSE-MUST_NOT-89347b2a": {
+    "test_ids": [
+      "reqresp.exhaustion.slow_request"
+    ],
+    "invariant_ids": [],
+    "transitions": [
+      "valid_ping",
+      "valid_metadata_v3",
+      "valid_blocks_by_range",
+      "valid_status_v2"
+    ],
+    "testability": "indirect",
+    "state_machine": "reqresp",
+    "coverage_status": "covered",
+    "current_status": "active",
+    "observable_in_traffic": true
+  },
+  "PROSE-SHOULD-12343187": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "indirect",
+    "state_machine": "reqresp",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": true
+  },
+  "PROSE-SHOULD-591bb836": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "reqresp",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": true
+  },
+  "PROSE-SHOULD-5c74107b": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "indirect",
+    "state_machine": "reqresp",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": true
+  },
+  "PROSE-SHOULD-d2397b37": {
+    "test_ids": [
+      "reqresp.status.fork_mismatch",
+      "reqresp.status.finalized_mismatch"
+    ],
+    "invariant_ids": [
+      "INV-006"
+    ],
+    "transitions": [
+      "status_wrong_fork_digest",
+      "status_wrong_finalized"
+    ],
+    "testability": "direct",
+    "state_machine": "connlifecycle",
+    "coverage_status": "covered",
+    "current_status": "active",
+    "observable_in_traffic": true
+  },
+  "PROSE-SHOULD-e1ee5362": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "PROSE-SHOULD-e922a14f": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "reqresp",
+    "coverage_status": "untested",
+    "current_status": "deprecated",
+    "observable_in_traffic": false
+  },
+  "PROSE-SHOULD-ef57ae27": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "not_observable",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "PROSE-SHOULD_NOT-38845239": {
+    "test_ids": [
+      "reqresp.error_scoring.5_errors",
+      "reqresp.error_scoring.10_errors"
+    ],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "reqresp",
+    "coverage_status": "covered",
+    "current_status": "active",
+    "observable_in_traffic": true
+  },
+  "PROSE-SHOULD_NOT-dbc982fe": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "not_observable",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-IGNORE-85bd91b0": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "indirect",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-IGNORE-908a6bf7": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-IGNORE-b4eb6360": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-08097fc1": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-1d325814": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-52168aa3": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-5448167e": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-5bdbca46": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-5d5257a1": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-5dd820ac": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-c33e885a": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "SYNC_COMMITTEE_MESSAGE-IGNORE-dddd9a14": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "SYNC_COMMITTEE_MESSAGE-REJECT-3aa5be35": {
+    "test_ids": [
+      "gossipsub.sync_committee_subnet_oob.4",
+      "gossipsub.sync_committee_subnet_oob.10"
+    ],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "covered",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "SYNC_COMMITTEE_MESSAGE-REJECT-9b15dc3b": {
+    "test_ids": [
+      "gossipsub.sync_committee_subnet_oob.4",
+      "gossipsub.sync_committee_subnet_oob.10"
+    ],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "covered",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "SYNC_COMMITTEE_MESSAGE-REJECT-c428cd4e": {
+    "test_ids": [
+      "gossipsub.sync_committee_subnet_oob.4",
+      "gossipsub.sync_committee_subnet_oob.10"
+    ],
+    "invariant_ids": [],
+    "transitions": [
+      "inject_sync_committee_subnet_oob"
+    ],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "covered",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "VOLUNTARY_EXIT-IGNORE-c9db1ebe": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "VOLUNTARY_EXIT-REJECT-15cadc01": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "VOLUNTARY_EXIT-REJECT-3aa5be35": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "VOLUNTARY_EXIT-REJECT-cc9547b7": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "VOLUNTARY_EXIT-REJECT-e7806012": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "VOLUNTARY_EXIT-REJECT-f5f33715": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  },
+  "VOLUNTARY_EXIT-REJECT-f64fc894": {
+    "test_ids": [],
+    "invariant_ids": [],
+    "transitions": [],
+    "testability": "direct",
+    "state_machine": "gossip",
+    "coverage_status": "untested",
+    "current_status": "active",
+    "observable_in_traffic": false
+  }
+}
