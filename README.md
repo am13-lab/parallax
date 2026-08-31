@@ -21,6 +21,53 @@ worked recipe for adding more tests. Summary:
 - every layer is tested without a live devnet through an in-process fake
   beacon node (testnode) and fake backend servers
 
+## Quick start
+
+Prerequisites: Go 1.25+. For live devnets: Docker (OrbStack or Docker
+Desktop) and the kurtosis CLI (`brew install kurtosis-tech/tap/kurtosis-cli`).
+
+1. Sanity check, no devnet needed (about 1 minute):
+
+```bash
+go run ./cmd/simulation --out results/demo
+```
+
+This runs the full case set against scripted fake nodes and writes
+`results/demo/report.json` plus `results/demo/junit.xml`.
+
+2. List what can be tested:
+
+```bash
+go run ./cmd/parallax list
+```
+
+3. Test a live devnet. Either let Parallax provision one through
+   ethereum-package (one command, takes ~15 minutes for six clients):
+
+```bash
+go run ./cmd/parallax run --env kurtosis --enclave parallax-test \
+    --args-file configs/live-cl0801-lite.yaml \
+    --seed 42 --out results/live
+```
+
+Or attach to nodes that are already running (any devnet; the YAML is the
+previous tool's clients.yaml format):
+
+```bash
+go run ./cmd/parallax run --env static --config clients.yaml \
+    --seed 42 --out results/live
+```
+
+4. Triage, with known divergences suppressed:
+
+```bash
+go run ./cmd/parallax analyze --report results/live/report.json \
+    --allowlist knowledge/known_divergences.json
+```
+
+Everything that survives the allowlist is a candidate finding; each
+divergence carries per-client verdicts and spec rule anchors.
+
 ## Commands
 
 ```bash
