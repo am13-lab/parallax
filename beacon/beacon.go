@@ -16,8 +16,8 @@ import (
 	"strings"
 	"time"
 
-	"libp2p-difftest/enr"
-	"libp2p-difftest/wire"
+	"parallax/enr"
+	"parallax/wire"
 )
 
 // NodeState is the chain state needed for Status handshakes and requests.

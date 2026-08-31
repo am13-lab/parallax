@@ -14,8 +14,8 @@ import (
 	"testing"
 	"time"
 
-	"libp2p-difftest/env"
-	"libp2p-difftest/env/kurtosisenv"
+	"parallax/env"
+	"parallax/env/kurtosisenv"
 )
 
 // fake API client.

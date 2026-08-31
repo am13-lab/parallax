@@ -1,4 +1,4 @@
-# libp2p-difftest Design
+# Parallax Design
 
 Status: v3 (implemented; deviations from v2 recorded below)
 This document is the architectural contract for the rewrite. The implementation
@@ -60,7 +60,7 @@ introduced.
 ## 4. Package layout
 
 ```
-cmd/difftest      CLI: list, run, analyze subcommands (stdlib flag only)
+cmd/parallax      CLI: list, run, analyze subcommands (stdlib flag only)
 wire              pure functions: varint, snappy framing, SSZ-snappy req/resp
                   build/parse, malformed payload builders, crc32c, fork digest
 probe             libp2p probe host: connect (with/without Status handshake),
@@ -365,7 +365,7 @@ container networking, and it depends on hive carrying CL client definitions
 own plan; the fake-API tests pin the interaction patterns so the later
 provisioning work slots into a tested harness.
 
-Mapping within scope: one hive test case per difftest category; inside it the
+Mapping within scope: one hive test case per Parallax category; inside it the
 simulator starts one node per configured CL client type, waits for health,
 runs runner.Run, and maps divergent → hive failure with per-divergence
 detail, pass → pass, and the full JSON report in the test details.
@@ -480,8 +480,8 @@ valid report from a three-spec mini suite.
 Phase 2, kurtosis backend: env/kurtosisenv behind the fake-tested interface.
 Verification: mapping tests green; provision path marked manual-verified.
 
-Phase 3, CLI and cases: cmd/difftest list/run/analyze, seed case set.
-Verification: difftest list shows the seed set; difftest run against
+Phase 3, CLI and cases: cmd/parallax list/run/analyze, seed case set.
+Verification: parallax list shows the seed set; parallax run against
 testnodes emits report.json and junit.xml; analyze re-processes a saved
 report and emits the legacy shape on demand.
 

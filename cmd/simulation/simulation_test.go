@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"libp2p-difftest/runner"
+	"parallax/runner"
 )
 
 func TestRunSimulationProducesDivergences(t *testing.T) {

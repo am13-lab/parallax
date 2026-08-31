@@ -11,11 +11,11 @@ import (
 	"sync"
 	"time"
 
-	"libp2p-difftest/beacon"
-	"libp2p-difftest/env"
-	"libp2p-difftest/probe"
-	"libp2p-difftest/runner"
-	"libp2p-difftest/wire"
+	"parallax/beacon"
+	"parallax/env"
+	"parallax/probe"
+	"parallax/runner"
+	"parallax/wire"
 )
 
 // ConnectMode alias so callers do not need to import runner for basic use.

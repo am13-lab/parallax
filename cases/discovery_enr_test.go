@@ -4,10 +4,10 @@ import (
 	"context"
 	"testing"
 
-	"libp2p-difftest/cases"
-	"libp2p-difftest/internal/testutil"
-	"libp2p-difftest/runner"
-	"libp2p-difftest/testnode"
+	"parallax/cases"
+	"parallax/internal/testutil"
+	"parallax/runner"
+	"parallax/testnode"
 )
 
 // statusScripts keeps both nodes serving status v1/v2 and pings so the

@@ -17,9 +17,9 @@ import (
 	"github.com/libp2p/go-libp2p/p2p/security/noise"
 	"github.com/libp2p/go-libp2p/p2p/transport/tcp"
 
-	"libp2p-difftest/probe"
-	"libp2p-difftest/testnode"
-	"libp2p-difftest/wire"
+	"parallax/probe"
+	"parallax/testnode"
+	"parallax/wire"
 )
 
 const pingProto = "/eth2/beacon_chain/req/ping/1/ssz_snappy"

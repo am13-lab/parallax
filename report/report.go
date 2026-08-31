@@ -11,7 +11,7 @@ import (
 	"sort"
 	"time"
 
-	"libp2p-difftest/runner"
+	"parallax/runner"
 )
 
 // Finding groups divergences that share the same root cause.

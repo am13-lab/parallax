@@ -9,7 +9,7 @@ import (
 	"sync"
 	"time"
 
-	"libp2p-difftest/env"
+	"parallax/env"
 )
 
 // Status is the outcome of one executed test.

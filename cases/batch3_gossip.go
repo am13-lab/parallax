@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"time"
 
-	"libp2p-difftest/runner"
-	"libp2p-difftest/wire"
+	"parallax/runner"
+	"parallax/wire"
 )
 
 // Batch 3c: the old gossipsub families. Verdicts are remote re-propagation

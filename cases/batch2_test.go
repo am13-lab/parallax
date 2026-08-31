@@ -3,7 +3,7 @@ package cases_test
 import (
 	"testing"
 
-	"libp2p-difftest/testnode"
+	"parallax/testnode"
 )
 
 // batch2 scripts: nodes serve every protocol the families touch. The

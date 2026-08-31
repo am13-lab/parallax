@@ -7,8 +7,8 @@ import (
 	"sort"
 	"strings"
 
-	"libp2p-difftest/enr"
-	"libp2p-difftest/runner"
+	"parallax/enr"
+	"parallax/runner"
 )
 
 const farFutureEpoch = ^uint64(0)

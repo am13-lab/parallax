@@ -10,13 +10,13 @@ import (
 	"os"
 	"time"
 
-	"libp2p-difftest/cases"
-	"libp2p-difftest/client"
-	"libp2p-difftest/env/staticenv"
-	"libp2p-difftest/internal/testutil"
-	"libp2p-difftest/report"
-	"libp2p-difftest/runner"
-	"libp2p-difftest/testnode"
+	"parallax/cases"
+	"parallax/client"
+	"parallax/env/staticenv"
+	"parallax/internal/testutil"
+	"parallax/report"
+	"parallax/runner"
+	"parallax/testnode"
 )
 
 // SimConfig configures the simulation.

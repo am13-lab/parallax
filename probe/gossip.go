@@ -12,7 +12,7 @@ import (
 	"github.com/libp2p/go-libp2p/core/host"
 	"github.com/libp2p/go-libp2p/core/peer"
 
-	"libp2p-difftest/wire"
+	"parallax/wire"
 )
 
 // GossipMessageID computes the spec gossipsub message id; see wire.GossipMessageID.

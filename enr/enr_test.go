@@ -7,8 +7,8 @@ import (
 
 	"github.com/decred/dcrd/dcrec/secp256k1/v4"
 
-	"libp2p-difftest/enr"
-	"libp2p-difftest/internal/testutil"
+	"parallax/enr"
+	"parallax/internal/testutil"
 )
 
 func TestDecodeENRFields(t *testing.T) {

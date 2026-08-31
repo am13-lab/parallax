@@ -8,12 +8,12 @@ import (
 	"testing"
 	"time"
 
-	"libp2p-difftest/client"
-	"libp2p-difftest/env/staticenv"
-	"libp2p-difftest/report"
-	"libp2p-difftest/runner"
-	"libp2p-difftest/testnode"
-	"libp2p-difftest/wire"
+	"parallax/client"
+	"parallax/env/staticenv"
+	"parallax/report"
+	"parallax/runner"
+	"parallax/testnode"
+	"parallax/wire"
 )
 
 const pingProto = "/eth2/beacon_chain/req/ping/1/ssz_snappy"

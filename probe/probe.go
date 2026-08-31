@@ -28,7 +28,7 @@ import (
 
 	ma "github.com/multiformats/go-multiaddr"
 
-	"libp2p-difftest/wire"
+	"parallax/wire"
 )
 
 // Probe is a libp2p host for probing one target peer.

@@ -1,5 +1,5 @@
 // Command hive-sim is an ethereum/hive simulator that runs the
-// libp2p-difftest engine against hive-launched consensus clients.
+// parallax engine against hive-launched consensus clients.
 //
 // V1 scope (per DESIGN.md): suite construction, client orchestration and
 // result mapping, tested against a fake hive API. Genesis and bootnode

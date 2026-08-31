@@ -10,8 +10,8 @@ import (
 	"testing"
 	"time"
 
-	"libp2p-difftest/env"
-	"libp2p-difftest/runner"
+	"parallax/env"
+	"parallax/runner"
 )
 
 // ---- fakes ----

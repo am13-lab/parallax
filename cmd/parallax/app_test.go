@@ -10,9 +10,9 @@ import (
 	"testing"
 	"time"
 
-	"libp2p-difftest/report"
-	"libp2p-difftest/runner"
-	"libp2p-difftest/testnode"
+	"parallax/report"
+	"parallax/runner"
+	"parallax/testnode"
 )
 
 func TestRunList(t *testing.T) {

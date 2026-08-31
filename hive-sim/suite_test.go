@@ -14,8 +14,8 @@ import (
 
 	"github.com/ethereum/hive/hivesim"
 
-	"libp2p-difftest/env"
-	"libp2p-difftest/runner"
+	"parallax/env"
+	"parallax/runner"
 )
 
 // fakeRunnerClient satisfies runner.Client without any network.

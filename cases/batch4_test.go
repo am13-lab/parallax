@@ -3,8 +3,8 @@ package cases_test
 import (
 	"testing"
 
-	"libp2p-difftest/cases"
-	"libp2p-difftest/testnode"
+	"parallax/cases"
+	"parallax/testnode"
 )
 
 func TestBatch4GeneratorsDeterministic(t *testing.T) {

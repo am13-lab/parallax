@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"libp2p-difftest/runner"
+	"parallax/runner"
 )
 
 func TestErrNoBeaconAPISentinel(t *testing.T) {

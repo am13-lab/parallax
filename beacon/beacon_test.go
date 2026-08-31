@@ -9,9 +9,9 @@ import (
 	"strings"
 	"testing"
 
-	"libp2p-difftest/beacon"
-	"libp2p-difftest/internal/testutil"
-	"libp2p-difftest/wire"
+	"parallax/beacon"
+	"parallax/internal/testutil"
+	"parallax/wire"
 )
 
 // beaconServer serves canned responses shaped like the endpoints clients expose.

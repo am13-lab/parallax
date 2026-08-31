@@ -10,10 +10,10 @@ import (
 
 	"github.com/ethereum/hive/hivesim"
 
-	"libp2p-difftest/client"
-	"libp2p-difftest/enr"
-	"libp2p-difftest/env"
-	"libp2p-difftest/runner"
+	"parallax/client"
+	"parallax/enr"
+	"parallax/env"
+	"parallax/runner"
 )
 
 // Config configures the simulator.

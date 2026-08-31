@@ -6,11 +6,11 @@ import (
 	"testing"
 	"time"
 
-	"libp2p-difftest/cases"
-	"libp2p-difftest/client"
-	"libp2p-difftest/internal/testutil"
-	"libp2p-difftest/runner"
-	"libp2p-difftest/testnode"
+	"parallax/cases"
+	"parallax/client"
+	"parallax/internal/testutil"
+	"parallax/runner"
+	"parallax/testnode"
 )
 
 const (

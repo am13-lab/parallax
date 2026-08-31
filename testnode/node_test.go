@@ -22,7 +22,7 @@ import (
 	"github.com/libp2p/go-libp2p/p2p/security/noise"
 	"github.com/libp2p/go-libp2p/p2p/transport/tcp"
 
-	"libp2p-difftest/wire"
+	"parallax/wire"
 )
 
 const testProtocol = "/eth2/beacon_chain/req/ping/1/ssz_snappy"

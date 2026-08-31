@@ -10,13 +10,13 @@ import (
 	"strings"
 	"time"
 
-	"libp2p-difftest/cases"
-	"libp2p-difftest/client"
-	"libp2p-difftest/env"
-	"libp2p-difftest/env/kurtosisenv"
-	"libp2p-difftest/env/staticenv"
-	"libp2p-difftest/report"
-	"libp2p-difftest/runner"
+	"parallax/cases"
+	"parallax/client"
+	"parallax/env"
+	"parallax/env/kurtosisenv"
+	"parallax/env/staticenv"
+	"parallax/report"
+	"parallax/runner"
 )
 
 // RunConfig carries the `run` subcommand options.

@@ -12,7 +12,7 @@ import (
 	"github.com/multiformats/go-multiaddr"
 	"gopkg.in/yaml.v3"
 
-	"libp2p-difftest/env"
+	"parallax/env"
 )
 
 // ClientEntry is one endpoint in the config file.

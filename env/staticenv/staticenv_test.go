@@ -13,8 +13,8 @@ import (
 	"github.com/libp2p/go-libp2p/core/crypto"
 	"github.com/libp2p/go-libp2p/core/peer"
 
-	"libp2p-difftest/env"
-	"libp2p-difftest/env/staticenv"
+	"parallax/env"
+	"parallax/env/staticenv"
 )
 
 func writeConfig(t *testing.T, content string) string {

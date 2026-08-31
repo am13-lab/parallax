@@ -9,9 +9,9 @@ import (
 	"math/rand"
 	"time"
 
-	"libp2p-difftest/beacon"
-	"libp2p-difftest/env"
-	"libp2p-difftest/wire"
+	"parallax/beacon"
+	"parallax/env"
+	"parallax/wire"
 )
 
 // Re-exported shared types: tests speak a single vocabulary.

@@ -1,10 +1,10 @@
-module libp2p-difftest/hive-sim
+module parallax/hive-sim
 
 go 1.26.0
 
 require (
 	github.com/ethereum/hive v0.0.0-20260825141342-6eb5d742079e
-	libp2p-difftest v0.0.0
+	parallax v0.0.0
 )
 
 require (
@@ -125,4 +125,4 @@ require (
 	lukechampine.com/blake3 v1.4.1 // indirect
 )
 
-replace libp2p-difftest => ../
+replace parallax => ../

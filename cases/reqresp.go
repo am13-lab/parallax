@@ -5,8 +5,8 @@ import (
 	"context"
 	"time"
 
-	"libp2p-difftest/runner"
-	"libp2p-difftest/wire"
+	"parallax/runner"
+	"parallax/wire"
 )
 
 const (

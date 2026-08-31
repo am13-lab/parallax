@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"libp2p-difftest/env"
+	"parallax/env"
 )
 
 func TestErrLogsUnsupportedIsDistinct(t *testing.T) {

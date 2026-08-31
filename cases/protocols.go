@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"time"
 
-	"libp2p-difftest/runner"
-	"libp2p-difftest/wire"
+	"parallax/runner"
+	"parallax/wire"
 )
 
 const gossipWait = 8 * time.Second

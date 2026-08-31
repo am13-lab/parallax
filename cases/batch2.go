@@ -6,8 +6,8 @@ import (
 	"math"
 	"strings"
 
-	"libp2p-difftest/runner"
-	"libp2p-difftest/wire"
+	"parallax/runner"
+	"parallax/wire"
 )
 
 // Batch 2: the old repo's parameterized reqresp families (boundary,

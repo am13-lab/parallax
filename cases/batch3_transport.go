@@ -6,8 +6,8 @@ import (
 	"sync"
 	"time"
 
-	"libp2p-difftest/runner"
-	"libp2p-difftest/wire"
+	"parallax/runner"
+	"parallax/wire"
 )
 
 // Batch 3a/3b: the old transporttest and exhaustion families. These send

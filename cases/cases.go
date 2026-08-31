@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"sort"
 
-	"libp2p-difftest/runner"
+	"parallax/runner"
 )
 
 // All returns every registered seed case.

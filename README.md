@@ -1,4 +1,4 @@
-# libp2p-difftest
+# Parallax
 
 Differential testing of Ethereum consensus layer libp2p networking across
 client implementations (Prysm, Lighthouse, Teku, Nimbus, Lodestar, Grandine).
@@ -25,19 +25,19 @@ worked recipe for adding more tests. Summary:
 
 ```bash
 # show the case registry
-go run ./cmd/difftest list
+go run ./cmd/parallax list
 
 # attach to running nodes (previous tool's clients.yaml format)
-go run ./cmd/difftest run --env static --config clients.yaml \
+go run ./cmd/parallax run --env static --config clients.yaml \
     --category reqresp --seed 42 --out results/
 
 # provision a devnet via ethereum-package, then test it
-go run ./cmd/difftest run --env kurtosis --enclave p2p-test \
+go run ./cmd/parallax run --env kurtosis --enclave p2p-test \
     --args-file configs/net.yaml
 
 # analyze a saved report, apply the known-divergence allowlist,
 # and emit the previous tool's report shape for existing triage scripts
-go run ./cmd/difftest analyze --report results/report.json \
+go run ./cmd/parallax analyze --report results/report.json \
     --allowlist known_divergences.json --legacy
 ```
 

@@ -11,7 +11,7 @@ import (
 	"strings"
 	"time"
 
-	"libp2p-difftest/env"
+	"parallax/env"
 )
 
 // ServiceInfo is the per-service data the mapping needs, extracted from the

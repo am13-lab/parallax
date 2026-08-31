@@ -6,8 +6,8 @@ import (
 	"strings"
 	"testing"
 
-	"libp2p-difftest/report"
-	"libp2p-difftest/runner"
+	"parallax/report"
+	"parallax/runner"
 )
 
 func sampleReport() *runner.Report {

@@ -3,7 +3,7 @@ package testutil
 import (
 	"testing"
 
-	"libp2p-difftest/enr"
+	"parallax/enr"
 )
 
 func TestBuildTestENRFieldsDecodes(t *testing.T) {

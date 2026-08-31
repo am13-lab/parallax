@@ -3,7 +3,7 @@ package cases_test
 import (
 	"testing"
 
-	"libp2p-difftest/testnode"
+	"parallax/testnode"
 )
 
 // batch3 scripts: transport/exhaustion abuse goes to ping; gossip topics

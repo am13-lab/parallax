@@ -1,4 +1,4 @@
-module libp2p-difftest
+module parallax
 
 go 1.26.0
 

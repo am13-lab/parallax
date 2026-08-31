@@ -5,8 +5,8 @@ import (
 	"encoding/binary"
 	"fmt"
 
-	"libp2p-difftest/runner"
-	"libp2p-difftest/wire"
+	"parallax/runner"
+	"parallax/wire"
 )
 
 // Batch 3d/3e: Gloas execution-payload protocols, data column validation,

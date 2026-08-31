@@ -26,7 +26,7 @@ import (
 	"github.com/libp2p/go-libp2p/p2p/security/noise"
 	"github.com/libp2p/go-libp2p/p2p/transport/tcp"
 
-	"libp2p-difftest/wire"
+	"parallax/wire"
 )
 
 // Behavior selects how a scripted protocol responds.
