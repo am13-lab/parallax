@@ -1,0 +1,65 @@
+participants:
+  - el_type: geth
+    cl_type: prysm
+    el_image: ethereum/client-go:v1.17.5
+    cl_image: offchainlabs/prysm-beacon-chain:v7.1.8
+    cl_log_level: debug
+    supernode: true
+
+  - el_type: geth
+    cl_type: lighthouse
+    el_image: ethereum/client-go:v1.17.5
+    cl_image: sigp/lighthouse:v8.2.1
+    cl_log_level: debug
+    supernode: true
+
+  - el_type: geth
+    cl_type: teku
+    el_image: ethereum/client-go:v1.17.5
+    cl_image: ethpandaops/teku:master
+    cl_log_level: debug
+    supernode: true
+
+  - el_type: geth
+    cl_type: nimbus
+    el_image: ethereum/client-go:v1.17.5
+    cl_image: statusim/nimbus-eth2:multiarch-v26.7.0
+    cl_log_level: debug
+    supernode: true
+
+  - el_type: geth
+    cl_type: lodestar
+    el_image: ethereum/client-go:v1.17.5
+    cl_image: chainsafe/lodestar:v1.45.0
+    cl_extra_params:
+      - "--network.rateLimitMultiplier=0"
+    cl_log_level: debug
+    supernode: true
+
+  - el_type: geth
+    cl_type: grandine
+    el_image: ethereum/client-go:v1.17.5
+    cl_image: sifrai/grandine:2.0.5
+    cl_log_level: debug
+    supernode: true
+
+  # Caplin (Erigon's embedded CL). Erigon pairing only: geth rejects every Caplin
+  # engine_newPayloadV4 ("missing required field 'transactions'"), so a geth-paired
+  # Caplin never leaves slot 0. Caplin also has no supernode/custody flag, so it
+  # custodies a partial column set. See docs/framework-usage.md.
+  - el_type: erigon
+    cl_type: caplin
+    el_image: erigontech/erigon:v3.5.4
+    cl_image: erigontech/erigon:v3.5.4
+    cl_log_level: debug
+    use_separate_vc: true
+    vc_type: lighthouse
+
+network_params:
+  network_id: "260801"
+  num_validator_keys_per_node: 10
+
+disable_peer_scoring: true
+
+additional_services:
+  - dora
