@@ -100,6 +100,22 @@ type Client interface {
 	// Metadata returns the node's gossipsub metadata, or ErrNoBeaconAPI.
 	Metadata(ctx context.Context) (*NodeMetadata, error)
 	Snapshot(ctx context.Context) (*ResourceSnapshot, error)
+	// OpenStream opens a raw req/resp stream to the client without writing,
+	// for fine-grained multi-step interactions (partial write, delayed
+	// close, explicit read).
+	OpenStream(ctx context.Context, protocol string) (IRStream, error)
+	Close() error
+}
+
+// IRStream is one open req/resp stream held across multiple test steps.
+type IRStream interface {
+	// WriteChunk writes bytes to the stream; when closeWrite is true the
+	// write side is half-closed after writing.
+	WriteChunk(body []byte, closeWrite bool) error
+	// ReadResponse sets a read deadline, reads until EOF or error, closes
+	// the stream, and returns the raw bytes.
+	ReadResponse(timeout time.Duration) ([]byte, error)
+	// Close discards the stream without reading.
 	Close() error
 }
 
@@ -130,6 +146,9 @@ type Metadata struct {
 type Spec struct {
 	ID       string
 	Category string
+	// What explains in one sentence what the test does and what outcome is
+	// expected — surfaced in reports so a reader needs no code access.
+	What     string
 	Metadata Metadata
 	// Preflight proves the test is meaningful on the current environment
 	// before it consumes a scheduling slot. Nil means always runnable.
@@ -194,6 +213,16 @@ const (
 	SeverityInfo     Severity = "INFO"
 )
 
+// StepOutcome is one step of a multi-step (sequence) test: what was sent,
+// what verdict was expected, and what each client actually did.
+type StepOutcome struct {
+	Index         int               `json:"index"`
+	Label         string            `json:"label"`
+	Input         string            `json:"input,omitempty"`
+	Expected      string            `json:"expected"`
+	ClientResults map[string]string `json:"client_results"`
+}
+
 // Divergence describes one behavioral divergence across clients. JSON field
 // names match the previous tool's DivergenceReport so triage tooling and
 // allowlist formats keep working.
@@ -205,7 +234,11 @@ type Divergence struct {
 	Type            DivergenceType    `json:"type"`
 	Severity        Severity          `json:"severity"`
 	Description     string            `json:"description"`
+	Input           string            `json:"input,omitempty"`
+	Expected        string            `json:"expected,omitempty"`
+	Steps           []StepOutcome     `json:"steps,omitempty"`
 	ClientResults   map[string]string `json:"client_results"`
+	ClientDetails   map[string]string `json:"client_details,omitempty"`
 	SpecRuleIDs     []string          `json:"spec_rule_ids,omitempty"`
 	ExcludedClients []string          `json:"excluded_clients,omitempty"`
 	OutlierClients  []string          `json:"outlier_clients,omitempty"`

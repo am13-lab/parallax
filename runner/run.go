@@ -26,6 +26,7 @@ const (
 type TestResult struct {
 	TestID          string       `json:"test_id"`
 	Category        string       `json:"category"`
+	What            string       `json:"description,omitempty"`
 	Status          Status       `json:"status"`
 	SkipReason      string       `json:"skip_reason,omitempty"`
 	ExcludedClients []string     `json:"excluded_clients,omitempty"`
@@ -65,6 +66,7 @@ type Report struct {
 	Endpoints     []EndpointFingerprint `json:"endpoints"`
 	Chain         ChainConfig           `json:"-"`
 	ChainPreset   string                `json:"chain_preset,omitempty"`
+	Command       string                `json:"command,omitempty"`
 	Results       []TestResult          `json:"results"`
 	Summary       Summary               `json:"summary"`
 }
@@ -258,7 +260,7 @@ func Run(ctx context.Context, specs []Spec, clients []Client, environment env.En
 			}
 		}
 
-		result := TestResult{TestID: s.ID, Category: s.Category}
+		result := TestResult{TestID: s.ID, Category: s.Category, What: s.What}
 		for _, name := range bans.bannedNames() {
 			result.ExcludedClients = append(result.ExcludedClients, name)
 		}
