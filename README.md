@@ -23,6 +23,33 @@ worked recipe for adding more tests. Summary:
 
 ## Commands
 
+Regenerate the spec-derived test cases end to end (knowledge artifacts, IR
+plans, and runner.Spec cases) from a consensus-specs checkout:
+
+```bash
+go run ./cmd/specchain -specs /path/to/consensus-specs/specs
+```
+
+Each stage can also run on its own for partial regeneration:
+
+```bash
+# knowledge artifacts only
+go run ./cmd/specgen -generate -specs /path/to/consensus-specs/specs
+
+# SM-IR test plans from the knowledge artifacts
+go run ./cmd/irdrive
+
+# runner.Spec cases from the IR plans (three generate modes)
+go run ./cmd/smgen -generate knowledge/ir/sm_ir_generated
+go run ./cmd/smgen -generate-stateless knowledge/ir/stateless_tests_generated.json
+go run ./cmd/smgen -generate-sequences knowledge/ir/sequence_tests_generated.json
+```
+
+`specgen` writes `knowledge/spec/rule_ast.json`,
+`knowledge/spec/spec_rules_generated.json`, and
+`knowledge/spec/protocol_model.json`. The protocol model keeps its existing
+typed method definitions and refreshes protocol availability from the spec.
+
 ```bash
 # show the case registry
 go run ./cmd/parallax list
