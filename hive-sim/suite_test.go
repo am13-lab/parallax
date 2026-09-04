@@ -29,6 +29,9 @@ func (f *fakeRunnerClient) ReqResp(ctx context.Context, protocol string, body []
 func (f *fakeRunnerClient) SendOnly(ctx context.Context, protocol string, body []byte) error {
 	return nil
 }
+func (f *fakeRunnerClient) OpenStream(ctx context.Context, protocol string) (runner.IRStream, error) {
+	return nil, nil
+}
 func (f *fakeRunnerClient) SendSlowly(ctx context.Context, protocol string, body []byte, perByte, timeout time.Duration) ([]byte, error) {
 	return nil, nil
 }

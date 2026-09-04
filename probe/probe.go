@@ -255,6 +255,12 @@ func (p *Probe) SendAndReceiveWithTTFB(ctx context.Context, protocolID string, b
 	}
 }
 
+// OpenStream opens a raw libp2p stream to the target without writing, for
+// fine-grained multi-step interactions.
+func (p *Probe) OpenStream(ctx context.Context, protocolID string) (network.Stream, error) {
+	return p.openStream(ctx, protocolID)
+}
+
 // SendOnly sends the body without reading the response (server timeout tests).
 func (p *Probe) SendOnly(ctx context.Context, protocolID string, body []byte) (network.Stream, error) {
 	stream, err := p.openStream(ctx, protocolID)

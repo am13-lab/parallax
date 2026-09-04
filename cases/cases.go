@@ -6,6 +6,7 @@ package cases
 import (
 	"fmt"
 	"sort"
+	"strings"
 
 	"parallax/runner"
 )
@@ -23,6 +24,10 @@ func All() []runner.Spec {
 	all = append(all, generatedCryptomsgSpecs()...)
 	all = append(all, generatedStatemachineSpecs()...)
 	all = append(all, generatedSemanticSpecs()...)
+	all = append(all, irMachineSpecs()...)
+	all = append(all, irStatelessSpecs()...)
+	all = append(all, irSequenceSpecs()...)
+	all = append(all, irWalkSpecs()...)
 	all = append(all, gossipSpecs()...)
 	all = append(all, discoverySpecs()...)
 	all = append(all, enrSpecs()...)
@@ -80,6 +85,43 @@ func outcome(res *runner.ReqRespResult, err error) string {
 	}
 }
 
+// detail renders the raw substance of one exchange: what the client
+// actually sent back (error text, result code, reset, timeout), so a
+// divergence record can show what the verdict class is made of.
+func detail(res *runner.ReqRespResult, err error) string {
+	if err != nil {
+		return err.Error()
+	}
+	if res == nil {
+		return "nil result"
+	}
+	if res.StreamReset {
+		if res.Error != "" {
+			return "stream reset: " + res.Error
+		}
+		return "stream reset by peer"
+	}
+	if res.Error != "" && len(res.RawBytes) == 0 {
+		return res.Error
+	}
+	if len(res.ResponseChunks) == 0 {
+		return "empty response"
+	}
+	c := res.ResponseChunks[0]
+	switch c.ResultCode {
+	case 0x00:
+		return fmt.Sprintf("success chunk (%d bytes)", len(c.Payload))
+	case 0x01, 0x02, 0x03:
+		msg := strings.TrimSpace(string(c.Payload))
+		if msg == "" {
+			return fmt.Sprintf("error chunk 0x%02x (no message)", c.ResultCode)
+		}
+		return fmt.Sprintf("error chunk 0x%02x: %s", c.ResultCode, msg)
+	default:
+		return fmt.Sprintf("unknown result code %d", c.ResultCode)
+	}
+}
+
 // diverge compares per-client outcome classes and returns one divergence
 // when more than one class is observed. The outlier clients are the
 // minority side of the split.
@@ -108,11 +150,27 @@ func diverge(id, category string, meta runner.Metadata, results map[string]strin
 		}
 	}
 
-	var lines []string
+	// Expected class: the majority side; on a tie the side that is not the
+	// deviating minority.
+	var expCls string
 	for _, cls := range sortedKeys(classes) {
-		lines = append(lines, fmt.Sprintf("%s: %v", cls, classes[cls]))
+		if classes[cls][0] == minority[0] {
+			continue
+		}
+		if expCls == "" || len(classes[cls]) > len(classes[expCls]) {
+			expCls = cls
+		}
 	}
-	desc := id + ": divergent verdicts (" + joinLines(lines, "; ") + ")"
+	expNames := strings.Join(classes[expCls], ", ")
+	var dev []string
+	for _, cls := range sortedKeys(classes) {
+		if cls == expCls {
+			continue
+		}
+		dev = append(dev, fmt.Sprintf("%s (%s)", strings.Join(classes[cls], ", "), cls))
+	}
+	desc := fmt.Sprintf("%s: %d/%d clients %s (%s); diverged: %s",
+		id, len(classes[expCls]), len(results), expCls, expNames, strings.Join(dev, "; "))
 
 	severity := runner.SeverityHigh
 	if _, ok := classes["other"]; ok {
@@ -127,6 +185,7 @@ func diverge(id, category string, meta runner.Metadata, results map[string]strin
 		Type:           runner.DivAcceptReject,
 		Severity:       severity,
 		Description:    desc,
+		Expected:       expCls,
 		ClientResults:  results,
 		OutlierClients: minority,
 	}}

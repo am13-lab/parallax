@@ -17,6 +17,7 @@ func gossipSpecs() []runner.Spec {
 		{
 			ID:       "gossip.block.malformed",
 			Category: "gossip",
+			What:     "Publishes a malformed signed block on gossip; honest clients must reject it (never re-propagate), consistently across clients.",
 			Metadata: runner.Metadata{
 				SpecRules:    []string{"gossipsub:topics", "gossipsub:block-validation"},
 				LogSensitive: false,
@@ -58,6 +59,7 @@ func discoverySpecs() []runner.Spec {
 		{
 			ID:       "discovery.fork_digest",
 			Category: "discovery",
+			What:     "Compares the fork digest each client reports through discovery; all clients on the same chain must agree.",
 			Metadata: runner.Metadata{
 				SpecRules: []string{"discovery:enr", "enr:eth2-field"},
 			},
@@ -114,6 +116,7 @@ func transportSpecs() []runner.Spec {
 		{
 			ID:       "transport.handshake.connect",
 			Category: "transport",
+			What:     "Connects to every client over libp2p and completes the status handshake; basic reachability must be uniform.",
 			Metadata: runner.Metadata{
 				SpecRules: []string{"transport:noise"},
 			},
@@ -132,6 +135,7 @@ func transportSpecs() []runner.Spec {
 		{
 			ID:       "transport.handshake.identity_rotation",
 			Category: "transport",
+			What:     "Rotates the peer identity mid-session; every client must handle the stale peer consistently.",
 			Metadata: runner.Metadata{
 				SpecRules: []string{"transport:identity"},
 			},

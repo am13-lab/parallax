@@ -25,6 +25,7 @@ func reqrespSpecs() []runner.Spec {
 		{
 			ID:       "reqresp.status.valid",
 			Category: "reqresp",
+			What:     "Exchanges a valid Status/1 built from each client's live chain state; every client must accept it.",
 			Metadata: runner.Metadata{
 				SpecRules: []string{"reqresp:status", "phase0:status-envelope"},
 			},
@@ -46,6 +47,7 @@ func reqrespSpecs() []runner.Spec {
 		{
 			ID:       "reqresp.ping.empty_body",
 			Category: "reqresp",
+			What:     "Sends PING with a zero-length SSZ payload; the malformed body must be rejected, not accepted.",
 			Metadata: runner.Metadata{SpecRules: []string{"reqresp:ping"}},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				results := map[string]string{}
@@ -59,6 +61,7 @@ func reqrespSpecs() []runner.Spec {
 		{
 			ID:       "reqresp.ping.extra_bytes",
 			Category: "reqresp",
+			What:     "Sends PING with 2 trailing bytes after the 8-byte payload; spec framing requires rejecting trailing data.",
 			Metadata: runner.Metadata{SpecRules: []string{"reqresp:request-framing"}},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				results := map[string]string{}
@@ -73,6 +76,7 @@ func reqrespSpecs() []runner.Spec {
 		{
 			ID:       "reqresp.status.malformed",
 			Category: "reqresp",
+			What:     "Sends Status with randomly corrupted SSZ bytes; the client must reject the malformed payload.",
 			Metadata: runner.Metadata{SpecRules: []string{"reqresp:status", "reqresp:ssz-decoding"}},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				results := map[string]string{}
@@ -88,6 +92,7 @@ func reqrespSpecs() []runner.Spec {
 		{
 			ID:       "reqresp.status.pre_status",
 			Category: "reqresp",
+			What:     "Connects without the Status handshake, then requests Status; the client must not serve Status before the handshake.",
 			Metadata: runner.Metadata{SpecRules: []string{"reqresp:status-handshake-required"}},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				results := map[string]string{}
@@ -109,6 +114,7 @@ func reqrespSpecs() []runner.Spec {
 		{
 			ID:       "reqresp.blocks_by_root.length_bomb",
 			Category: "reqresp",
+			What:     "Sends BlocksByRoot with a snappy size bomb (declares 1GiB uncompressed); the client must reject it without allocating.",
 			Metadata: runner.Metadata{SpecRules: []string{"reqresp:length-prefix", "reqresp:blocks-by-root"}},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				results := map[string]string{}
@@ -123,6 +129,7 @@ func reqrespSpecs() []runner.Spec {
 		{
 			ID:       "reqresp.blocks_by_root.trailing_bytes",
 			Category: "reqresp",
+			What:     "Sends BlocksByRoot with 3 trailing bytes after the payload; framing rules require rejection.",
 			Metadata: runner.Metadata{SpecRules: []string{"reqresp:request-framing", "reqresp:blocks-by-root"}},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				results := map[string]string{}
@@ -137,6 +144,7 @@ func reqrespSpecs() []runner.Spec {
 		{
 			ID:       "reqresp.metadata.valid",
 			Category: "reqresp",
+			What:     "Requests METADATA/2 with an empty request body; every client must answer with its metadata.",
 			Metadata: runner.Metadata{SpecRules: []string{"reqresp:metadata"}},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				results := map[string]string{}
@@ -150,6 +158,7 @@ func reqrespSpecs() []runner.Spec {
 		{
 			ID:       "reqresp.goodbye.valid",
 			Category: "reqresp",
+			What:     "Sends GOODBYE with the spec-defined shutdown reason 0x80; all clients must handle it consistently (response, reset or silence all conform).",
 			Metadata: runner.Metadata{SpecRules: []string{"reqresp:goodbye"}},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				results := map[string]string{}
@@ -170,6 +179,7 @@ func reqrespSpecs() []runner.Spec {
 		{
 			ID:       "reqresp.unknown_protocol",
 			Category: "reqresp",
+			What:     "Requests a nonexistent protocol ID; every client must fail protocol negotiation the same way.",
 			Metadata: runner.Metadata{SpecRules: []string{"reqresp:protocol-negotiation"}},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				results := map[string]string{}

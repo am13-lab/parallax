@@ -17,9 +17,21 @@ const statusV2 = "/eth2/beacon_chain/req/status/2/ssz_snappy"
 // in peer classification. After the exchange a Ping verifies the peer did
 // not disconnect us.
 func statusBoundarySpec(label string, setHead, setFinalized, setEarliest bool) runner.Spec {
+	var what string
+	switch {
+	case setHead && setFinalized && setEarliest:
+		what = "head slot, finalized epoch and earliest available slot"
+	case setHead:
+		what = "head slot"
+	case setFinalized:
+		what = "finalized epoch"
+	default:
+		what = "earliest available slot"
+	}
 	return runner.Spec{
 		ID:       fmt.Sprintf("reqresp.status.boundary.%s", label),
 		Category: "reqresp",
+		What:     "Sends Status/2 with " + what + " = MaxUint64 (otherwise valid live state); the client must process the boundary without crashing or dropping the connection.",
 		Metadata: runner.Metadata{
 			SpecRules:    []string{"reqresp:status", "reqresp:ssz-decoding"},
 			KnowledgeIDs: []string{"SHERLOCK-1140-status-boundary"},
@@ -80,6 +92,7 @@ func statusMismatchSpec(id, description string, mutator func(ssz []byte, state *
 	return runner.Spec{
 		ID:       id,
 		Category: "reqresp",
+		What:     "Sends Status/2 with " + description + "; the client must reject the mismatched Status.",
 		Metadata: runner.Metadata{
 			SpecRules:    []string{"reqresp:status", "reqresp:status-handshake-required"},
 			KnowledgeIDs: []string{"PROSE-SHOULD-d2397b37"},

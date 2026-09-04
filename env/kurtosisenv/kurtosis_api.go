@@ -13,12 +13,6 @@ import (
 	kurtosis_context "github.com/kurtosis-tech/kurtosis/api/golang/engine/lib/kurtosis_context"
 )
 
-// ethereumPackageWrapper runs the ethereum-package from a Starlark script,
-// mirroring `kurtosis run github.com/ethpandaops/ethereum-package --args-file`.
-const ethereumPackageWrapper = `def run(plan, args):
-    run("github.com/ethpandaops/ethereum-package", args)
-`
-
 // RealClient talks to a local kurtosis engine over the Go API. The mapping
 // logic is fake-tested; live behavior is manual-verified against a running
 // engine, per the design doc.
@@ -136,9 +130,8 @@ func (r *RealClient) Provision(ctx context.Context, enclaveName, argsFile string
 
 	runConfig := starlark_run_config.NewRunStarlarkConfig(
 		starlark_run_config.WithSerializedParams(string(argsData)),
-		starlark_run_config.WithParallel(true),
 	)
-	_, err = enclaveCtx.RunStarlarkScriptBlocking(ctx, ethereumPackageWrapper, runConfig)
+	_, err = enclaveCtx.RunStarlarkRemotePackageBlocking(ctx, r.packageID, runConfig)
 	if err != nil {
 		return fmt.Errorf("run %s: %w", r.packageID, err)
 	}

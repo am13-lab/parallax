@@ -3,6 +3,7 @@ package cases
 import (
 	"context"
 	"fmt"
+	"strings"
 	"sync"
 	"time"
 
@@ -31,6 +32,30 @@ func outcomeConn(err error) string {
 	return "accept"
 }
 
+// whatForTransport explains a transport/exhaustion case in one sentence,
+// derived from its ID.
+func whatForTransport(id string) string {
+	switch {
+	case strings.HasPrefix(id, "transporttest.corrupted."):
+		return "Writes corrupted or oversized payload bytes on the wire (send-only), then probes peer health; resilience must be consistent across clients."
+	case strings.HasPrefix(id, "transporttest.handshake.stalled"):
+		return "Opens connections that never complete the libp2p handshake; the peer must reap stalled streams, consistently across clients."
+	case strings.HasPrefix(id, "transporttest.identify.push_malformed"):
+		return "Pushes random garbage bytes on the identify protocol; the peer must survive and stay consistent."
+	case strings.HasPrefix(id, "transporttest.identify.slow_stream"):
+		return "Dribbles an identify request a few bytes at a time; slow-stream handling must be consistent across clients."
+	case strings.HasPrefix(id, "reqresp.exhaustion.slow_request"):
+		return "Drips a PING request body 100ms per chunk; request-timeout behavior must be consistent across clients."
+	case strings.HasPrefix(id, "reqresp.exhaustion.half_open_stream"):
+		return "Writes only half of a PING request and stops; the peer must not hang indefinitely, consistently across clients."
+	case strings.HasPrefix(id, "reqresp.exhaustion.never_read_response"):
+		return "Sends a full PING without reading the response; unread-response handling must be consistent across clients."
+	case strings.HasPrefix(id, "reqresp.exhaustion.parallel_streams"):
+		return "Opens 8 parallel PING streams and counts how many are served; concurrency limits must behave consistently."
+	}
+	return ""
+}
+
 // transportAbuseSpec builds a case that writes an abusive body via SendOnly
 // and then classifies whether the peer is still usable.
 func transportAbuseSpec(id string, runClass runner.RunClass, knowledge []string,
@@ -43,6 +68,7 @@ func transportAbuseSpecProtocol(id string, runClass runner.RunClass, knowledge [
 	return runner.Spec{
 		ID:       id,
 		Category: "transport",
+		What:     whatForTransport(id),
 		Metadata: runner.Metadata{
 			SpecRules:    []string{"reqresp:request-framing"},
 			KnowledgeIDs: knowledge,
@@ -69,6 +95,7 @@ func stalledSpec(id string, runClass runner.RunClass, knowledge []string, count 
 	return runner.Spec{
 		ID:       id,
 		Category: "transport",
+		What:     whatForTransport(id),
 		Metadata: runner.Metadata{
 			SpecRules:    []string{"transport:handshake-timeout"},
 			KnowledgeIDs: knowledge,
@@ -89,7 +116,7 @@ func stalledSpec(id string, runClass runner.RunClass, knowledge []string, count 
 				}
 				results[c.Name()] = fmt.Sprintf("survived=%d/%d", survived, count)
 			}
-			return divergeValues(id, te, runner.DivValueDiff, runner.SeverityLow, results)
+			return divergeValues(id, "transport", te, runner.DivValueDiff, runner.SeverityLow, results)
 		},
 	}
 }
@@ -125,6 +152,7 @@ func transportSpecs3() []runner.Spec {
 		{
 			ID:       "transporttest.handshake.stalled_no_stream",
 			Category: "transport",
+			What:     "Connects without handshaking and opens no stream; connection health must behave consistently across clients.",
 			Metadata: runner.Metadata{
 				SpecRules:    []string{"transport:handshake-timeout"},
 				KnowledgeIDs: []string{"CL-2026-02"},
@@ -151,6 +179,7 @@ func transportSpecs3() []runner.Spec {
 		{
 			ID:       "transporttest.identify.slow_stream",
 			Category: "transport",
+			What:     "Dribbles an identify request a few bytes at a time; slow-stream handling must be consistent across clients.",
 			Metadata: runner.Metadata{
 				SpecRules: []string{"libp2p:identify"},
 				RunClass:  runner.RunClassHeavy,
@@ -175,6 +204,7 @@ func exhaustedSpecs() []runner.Spec {
 		{
 			ID:       "reqresp.exhaustion.slow_request",
 			Category: "reqresp",
+			What:     "Drips a PING request body 100ms per chunk; request-timeout behavior must be consistent across clients.",
 			Metadata: runner.Metadata{
 				SpecRules: []string{"reqresp:request-timeouts"},
 				RunClass:  runner.RunClassHeavy,
@@ -192,6 +222,7 @@ func exhaustedSpecs() []runner.Spec {
 		{
 			ID:       "reqresp.exhaustion.half_open_stream",
 			Category: "reqresp",
+			What:     "Writes only half of a PING request and stops; the peer must not hang indefinitely, consistently across clients.",
 			Metadata: runner.Metadata{
 				SpecRules: []string{"reqresp:request-timeouts"},
 				RunClass:  runner.RunClassHeavy,
@@ -209,6 +240,7 @@ func exhaustedSpecs() []runner.Spec {
 		{
 			ID:       "reqresp.exhaustion.never_read_response",
 			Category: "reqresp",
+			What:     "Sends a full PING without reading the response; unread-response handling must be consistent across clients.",
 			Metadata: runner.Metadata{
 				SpecRules: []string{"reqresp:request-timeouts"},
 				RunClass:  runner.RunClassHeavy,
@@ -224,6 +256,7 @@ func exhaustedSpecs() []runner.Spec {
 		{
 			ID:       "reqresp.exhaustion.parallel_streams",
 			Category: "reqresp",
+			What:     "Opens 8 parallel PING streams and counts how many are served; concurrency limits must behave consistently.",
 			Metadata: runner.Metadata{
 				SpecRules: []string{"reqresp:stream-limits"},
 				RunClass:  runner.RunClassHeavy,
@@ -250,7 +283,7 @@ func exhaustedSpecs() []runner.Spec {
 					wg.Wait()
 					results[c.Name()] = fmt.Sprintf("served=%d/8", served)
 				}
-				return divergeValues("reqresp.exhaustion.parallel_streams", te,
+				return divergeValues("reqresp.exhaustion.parallel_streams", "reqresp", te,
 					runner.DivValueDiff, runner.SeverityLow, results)
 			},
 		},

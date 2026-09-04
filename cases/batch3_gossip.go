@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/binary"
 	"fmt"
+	"strings"
 	"time"
 
 	"parallax/runner"
@@ -13,6 +14,27 @@ import (
 // Batch 3c: the old gossipsub families. Verdicts are remote re-propagation
 // observations (strong accept, weak reject, see METHODOLOGY section 3).
 
+// whatForGossip explains a gossipsub case in one sentence, derived from its ID.
+func whatForGossip(id string) string {
+	switch {
+	case strings.HasPrefix(id, "gossipsub.malformed."):
+		return "Publishes a malformed/garbage gossip message (" + strings.ReplaceAll(strings.TrimPrefix(id, "gossipsub.malformed."), "_", " ") + "); honest clients must reject it, consistently across clients."
+	case id == "gossipsub.unknown_topic":
+		return "Publishes on a topic no client subscribes to; every client must ignore it (no re-propagation)."
+	case strings.HasPrefix(id, "gossipsub.attestation_subnet_oob.") || strings.HasPrefix(id, "gossipsub.sync_committee_subnet_oob.") || strings.HasPrefix(id, "gossipsub.data_column_index_oob."):
+		return "Publishes on an out-of-range subnet; the message must be ignored, consistently across clients."
+	case strings.HasPrefix(id, "gossipsub.attestation_stale."):
+		return "Publishes an ancient attestation; freshness rules must reject it, consistently across clients."
+	case strings.HasPrefix(id, "gossipsub.replay."):
+		return "Replays previously seen gossip messages; message-id dedup must reject them, consistently across clients."
+	case id == "gossipsub.config.post_fulu.blob_vs_data_topics":
+		return "Publishes on a blob sidecar topic post-Fulu; topic handling must be consistent across clients."
+	case id == "gossipsub.invalid_flood":
+		return "Floods 32 invalid messages then probes again; peer scoring must treat subsequent invalid messages consistently."
+	}
+	return "Publishes a gossip message and compares re-propagation verdicts across clients."
+}
+
 // gossipVerdictCase publishes a payload on a topic and compares observed
 // verdicts across clients.
 func gossipVerdictCase(id, rule string, runClass runner.RunClass,
@@ -20,6 +42,7 @@ func gossipVerdictCase(id, rule string, runClass runner.RunClass,
 	return runner.Spec{
 		ID:       id,
 		Category: "gossip",
+		What:     whatForGossip(id),
 		Metadata: runner.Metadata{
 			SpecRules: []string{rule},
 			RunClass:  runClass,
@@ -184,6 +207,7 @@ func gossipSpecs3() []runner.Spec {
 	specs = append(specs, runner.Spec{
 		ID:       "gossipsub.invalid_flood",
 		Category: "gossip",
+		What:     whatForGossip("gossipsub.invalid_flood"),
 		Metadata: runner.Metadata{
 			SpecRules: []string{"gossipsub:peer-scoring"},
 			RunClass:  runner.RunClassHeavy,

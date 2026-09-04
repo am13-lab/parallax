@@ -51,6 +51,7 @@ func protocolSpecs3() []runner.Spec {
 		specs = append(specs, runner.Spec{
 			ID:       fmt.Sprintf("reqresp.execution_payload_by_range.%s", p.label),
 			Category: "reqresp",
+			What:     "Requests ExecutionPayloadByRange with count=" + fmt.Sprint(count) + " (boundary probe: 1 valid, 0 empty, 129 over max); all clients must handle it identically.",
 			Metadata: runner.Metadata{
 				SpecRules:    []string{"gloas:execution-payload-by-range"},
 				KnowledgeIDs: []string{"SHERLOCK-1140-004", "SHERLOCK-1140-378"},
@@ -83,6 +84,7 @@ func protocolSpecs3() []runner.Spec {
 		specs = append(specs, runner.Spec{
 			ID:       fmt.Sprintf("reqresp.execution_payload_by_root.%s", p.label),
 			Category: "reqresp",
+			What:     "Requests ExecutionPayloadByRoot with " + fmt.Sprint(roots) + " root(s) (1 valid, 0 empty, 129 over max); all clients must handle it identically.",
 			Metadata: runner.Metadata{
 				SpecRules: []string{"gloas:execution-payload-by-root"},
 				RunClass:  runner.RunClassConfig,
@@ -108,6 +110,7 @@ func protocolSpecs3() []runner.Spec {
 		runner.Spec{
 			ID:       "reqresp.data_columns_by_range.columns_oob",
 			Category: "reqresp",
+			What:     "Requests a data column with an out-of-range index (999999); the client must reject the invalid request.",
 			Metadata: runner.Metadata{SpecRules: []string{"fulu:data-columns-by-range"}},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				body := dataColumnsByRangeRequest(0, 1, []uint64{999999})
@@ -122,6 +125,7 @@ func protocolSpecs3() []runner.Spec {
 		runner.Spec{
 			ID:       "reqresp.data_columns_by_range.zero_columns",
 			Category: "reqresp",
+			What:     "Requests one slot with zero columns; the spec-defined empty response must be consistent across clients.",
 			Metadata: runner.Metadata{SpecRules: []string{"fulu:data-columns-by-range"}},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				body := dataColumnsByRangeRequest(0, 1, nil)
@@ -139,6 +143,7 @@ func protocolSpecs3() []runner.Spec {
 	specs = append(specs, runner.Spec{
 		ID:       "discovery.custody.advertised_matches_requirement",
 		Category: "discovery",
+		What:     "Reads each client's advertised custody group count (ENR/metadata); it must meet the spec requirement.",
 		Metadata: runner.Metadata{
 			SpecRules:    []string{"fulu:custody-enr"},
 			KnowledgeIDs: []string{"SHERLOCK-1140-058", "SHERLOCK-1140-071"},
@@ -178,6 +183,7 @@ func protocolSpecs3() []runner.Spec {
 		specs = append(specs, runner.Spec{
 			ID:       target.id,
 			Category: "reqresp",
+			What:     "Bursts 40 requests on " + target.protocol + " in a tight loop; rate-limit error responses must behave consistently across clients.",
 			Metadata: runner.Metadata{
 				SpecRules: []string{"reqresp:rate-limiting"},
 				RunClass:  runner.RunClassHeavy,
