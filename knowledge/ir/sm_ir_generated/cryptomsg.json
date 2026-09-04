@@ -1,0 +1,1747 @@
+{
+  "name": "CryptoMsg",
+  "constructor": "NewCryptoMsgMachine",
+  "init_state": "CryptoReady",
+  "states": [
+    {
+      "name": "CryptoReady"
+    },
+    {
+      "name": "CryptoSent"
+    },
+    {
+      "name": "CryptoCompleted",
+      "terminal": true
+    }
+  ],
+  "transitions": [
+    {
+      "from": "CryptoReady",
+      "to": "CryptoSent",
+      "label": "cm_baseline",
+      "weight": 1,
+      "description": "backbone: liveness check",
+      "action": {
+        "type": "ActCheckConnected"
+      }
+    },
+    {
+      "from": "CryptoSent",
+      "to": "CryptoReady",
+      "label": "cm_reset",
+      "weight": 1,
+      "description": "backbone: cycle back",
+      "action": {
+        "type": "ActCheckConnected"
+      }
+    },
+    {
+      "from": "CryptoSent",
+      "to": "CryptoCompleted",
+      "label": "cm_finish",
+      "weight": 1,
+      "description": "backbone: terminal path",
+      "action": {
+        "type": "ActCheckConnected"
+      }
+    },
+    {
+      "from": "CryptoReady",
+      "to": "CryptoSent",
+      "label": "cm_valid_attester_slashing",
+      "weight": 2,
+      "description": "valid signed attester_slashing baseline",
+      "action": {
+        "type": "ActInjectGossip",
+        "protocol": "attester_slashing",
+        "payload": {
+          "kind": "builder",
+          "wrap": "raw",
+          "name": "buildValidAttesterSlashing"
+        }
+      },
+      "oracle": {
+        "differential": true
+      }
+    },
+    {
+      "from": "CryptoReady",
+      "to": "CryptoSent",
+      "label": "cm_valid_beacon_aggregate_and_proof",
+      "weight": 2,
+      "description": "valid signed beacon_aggregate_and_proof baseline",
+      "action": {
+        "type": "ActInjectGossip",
+        "protocol": "beacon_aggregate_and_proof",
+        "payload": {
+          "kind": "builder",
+          "wrap": "raw",
+          "name": "buildValidBeaconAggregateAndProof"
+        }
+      },
+      "oracle": {
+        "differential": true
+      }
+    },
+    {
+      "from": "CryptoReady",
+      "to": "CryptoSent",
+      "label": "cm_valid_beacon_attestation",
+      "weight": 2,
+      "description": "valid signed beacon_attestation baseline",
+      "action": {
+        "type": "ActInjectGossip",
+        "protocol": "beacon_attestation_0",
+        "payload": {
+          "kind": "builder",
+          "wrap": "raw",
+          "name": "buildValidBeaconAttestation"
+        }
+      },
+      "oracle": {
+        "differential": true
+      }
+    },
+    {
+      "from": "CryptoReady",
+      "to": "CryptoSent",
+      "label": "cm_valid_beacon_block",
+      "weight": 2,
+      "description": "valid signed beacon_block baseline",
+      "action": {
+        "type": "ActInjectGossip",
+        "protocol": "beacon_block",
+        "payload": {
+          "kind": "builder",
+          "wrap": "raw",
+          "name": "buildValidBeaconBlock"
+        }
+      },
+      "oracle": {
+        "differential": true
+      }
+    },
+    {
+      "from": "CryptoReady",
+      "to": "CryptoSent",
+      "label": "cm_valid_blob_sidecar",
+      "weight": 2,
+      "description": "valid signed blob_sidecar baseline",
+      "action": {
+        "type": "ActInjectGossip",
+        "protocol": "blob_sidecar_0",
+        "payload": {
+          "kind": "builder",
+          "wrap": "raw",
+          "name": "buildValidBlobSidecar"
+        }
+      },
+      "oracle": {
+        "differential": true
+      }
+    },
+    {
+      "from": "CryptoReady",
+      "to": "CryptoSent",
+      "label": "cm_valid_bls_to_execution_change",
+      "weight": 2,
+      "description": "valid signed bls_to_execution_change baseline",
+      "action": {
+        "type": "ActInjectGossip",
+        "protocol": "bls_to_execution_change",
+        "payload": {
+          "kind": "builder",
+          "wrap": "raw",
+          "name": "buildValidBlsToExecutionChange"
+        }
+      },
+      "oracle": {
+        "differential": true
+      }
+    },
+    {
+      "from": "CryptoReady",
+      "to": "CryptoSent",
+      "label": "cm_valid_data_column_sidecar",
+      "weight": 2,
+      "description": "valid signed data_column_sidecar baseline",
+      "action": {
+        "type": "ActInjectGossip",
+        "protocol": "data_column_sidecar_0",
+        "payload": {
+          "kind": "builder",
+          "wrap": "raw",
+          "name": "buildValidDataColumnSidecar"
+        }
+      },
+      "oracle": {
+        "differential": true
+      }
+    },
+    {
+      "from": "CryptoReady",
+      "to": "CryptoSent",
+      "label": "cm_valid_proposer_slashing",
+      "weight": 2,
+      "description": "valid signed proposer_slashing baseline",
+      "action": {
+        "type": "ActInjectGossip",
+        "protocol": "proposer_slashing",
+        "payload": {
+          "kind": "builder",
+          "wrap": "raw",
+          "name": "buildValidProposerSlashing"
+        }
+      },
+      "oracle": {
+        "differential": true
+      }
+    },
+    {
+      "from": "CryptoReady",
+      "to": "CryptoSent",
+      "label": "cm_valid_sync_committee_contribution_and_proof",
+      "weight": 2,
+      "description": "valid signed sync_committee_contribution_and_proof baseline",
+      "action": {
+        "type": "ActInjectGossip",
+        "protocol": "sync_committee_contribution_and_proof",
+        "payload": {
+          "kind": "builder",
+          "wrap": "raw",
+          "name": "buildValidSyncCommitteeContributionAndProof"
+        }
+      },
+      "oracle": {
+        "differential": true
+      }
+    },
+    {
+      "from": "CryptoReady",
+      "to": "CryptoSent",
+      "label": "cm_valid_sync_committee_message",
+      "weight": 2,
+      "description": "valid signed sync_committee_message baseline",
+      "action": {
+        "type": "ActInjectGossip",
+        "protocol": "sync_committee_0",
+        "payload": {
+          "kind": "builder",
+          "wrap": "raw",
+          "name": "buildValidSyncCommitteeMessage"
+        }
+      },
+      "oracle": {
+        "differential": true
+      }
+    },
+    {
+      "from": "CryptoReady",
+      "to": "CryptoSent",
+      "label": "cm_valid_voluntary_exit",
+      "weight": 2,
+      "description": "valid signed voluntary_exit baseline",
+      "action": {
+        "type": "ActInjectGossip",
+        "protocol": "voluntary_exit",
+        "payload": {
+          "kind": "builder",
+          "wrap": "raw",
+          "name": "buildValidVoluntaryExit"
+        }
+      },
+      "oracle": {
+        "differential": true
+      }
+    },
+    {
+      "from": "CryptoReady",
+      "to": "CryptoSent",
+      "label": "cm_invalid_attester_slashing_field_equality_1e280f1d",
+      "weight": 10,
+      "description": "[IGNORE] At least one index in the intersection has not yet been seen [failure: len(new_indices) == 0]",
+      "condition_desc": "when len(new_indices) == 0",
+      "tags": [
+        "conditional"
+      ],
+      "spec_refs": [
+        "ATTESTER_SLASHING-IGNORE-647ecfb9"
+      ],
+      "action": {
+        "type": "ActInjectGossip",
+        "protocol": "attester_slashing",
+        "payload": {
+          "kind": "builder",
+          "wrap": "raw",
+          "name": "buildInvalidAttesterSlashingFieldEquality"
+        }
+      },
+      "oracle": {
+        "differential": true,
+        "expected": "REJECT",
+        "must_not": [
+          "CRASH",
+          "ACCEPT"
+        ],
+        "spec_predicate": "accepted == 0",
+        "strength": "MUST"
+      }
+    },
+    {
+      "from": "CryptoReady",
+      "to": "CryptoSent",
+      "label": "cm_invalid_beacon_attestation_target_root_consistent_db847d1b",
+      "weight": 10,
+      "description": "[IGNORE] The block being voted for has been seen (via gossip or non-gossip sources) (MAY be queued until block is retrieved) [failure: beacon_block_root not in store.blocks]",
+      "condition_desc": "until «block is retrieved»; when beacon_block_root not in store.blocks",
+      "tags": [
+        "temporal:until",
+        "conditional"
+      ],
+      "spec_refs": [
+        "BEACON_ATTESTATION-IGNORE-19a3a197"
+      ],
+      "action": {
+        "type": "ActInjectGossip",
+        "protocol": "beacon_attestation_0",
+        "payload": {
+          "kind": "builder",
+          "wrap": "raw",
+          "name": "buildInvalidBeaconAttestationTargetRootConsistent"
+        }
+      },
+      "oracle": {
+        "differential": true,
+        "expected": "REJECT",
+        "must_not": [
+          "CRASH",
+          "ACCEPT"
+        ],
+        "spec_predicate": "accepted == 0",
+        "strength": "MUST"
+      }
+    },
+    {
+      "from": "CryptoReady",
+      "to": "CryptoSent",
+      "label": "cm_invalid_beacon_attestation_slot_epoch_range_47df4217",
+      "weight": 10,
+      "description": "[IGNORE] The attestation's epoch is either the current or previous epoch [failure: not (is_previous_epoch_attestation or is_current_epoch_attestation)]",
+      "condition_desc": "when not (is_previous_epoch_attestation or is_current_epoch_attestation)",
+      "tags": [
+        "conditional"
+      ],
+      "spec_refs": [
+        "BEACON_ATTESTATION-IGNORE-493398b9"
+      ],
+      "action": {
+        "type": "ActInjectGossip",
+        "protocol": "beacon_attestation_0",
+        "payload": {
+          "kind": "builder",
+          "wrap": "raw",
+          "name": "buildInvalidBeaconAttestationSlotEpochRange"
+        }
+      },
+      "guard": {
+        "fork_gte": "deneb"
+      },
+      "oracle": {
+        "differential": true,
+        "expected": "REJECT",
+        "must_not": [
+          "CRASH",
+          "ACCEPT"
+        ],
+        "spec_predicate": "accepted == 0",
+        "strength": "MUST"
+      }
+    },
+    {
+      "from": "CryptoReady",
+      "to": "CryptoSent",
+      "label": "cm_invalid_beacon_attestation_slot_future_a5d282c3",
+      "weight": 10,
+      "description": "[IGNORE] The attestation's slot is not from a future slot (MAY be queued for processing at the appropriate slot) [failure: not is_not_from_future_slot(state, data.slot, current_time_ms)]",
+      "condition_desc": "when not is_not_from_future_slot(state, data.slot, current_time_ms)",
+      "tags": [
+        "conditional"
+      ],
+      "spec_refs": [
+        "BEACON_ATTESTATION-IGNORE-5da40ec3"
+      ],
+      "action": {
+        "type": "ActInjectGossip",
+        "protocol": "beacon_attestation_0",
+        "payload": {
+          "kind": "builder",
+          "wrap": "raw",
+          "name": "buildInvalidBeaconAttestationSlotFuture"
+        }
+      },
+      "guard": {
+        "fork_gte": "deneb"
+      },
+      "oracle": {
+        "differential": true,
+        "expected": "REJECT",
+        "must_not": [
+          "CRASH",
+          "ACCEPT"
+        ],
+        "spec_predicate": "accepted == 0",
+        "strength": "MUST"
+      }
+    },
+    {
+      "from": "CryptoReady",
+      "to": "CryptoSent",
+      "label": "cm_invalid_beacon_attestation_slot_epoch_range_1f0f2bbd",
+      "weight": 10,
+      "description": "[IGNORE] The attestation slot is within the propagation range (MAY be queued for processing at the appropriate slot) [failure: not is_within_slot_range( state, data.slot, ATTESTATION_PROPAGATION_SLOT_RANGE, current_time_ms )]",
+      "condition_desc": "when not is_within_slot_range( state, data.slot, ATTESTATION_PROPAGATION_SLOT_RANGE, current_time_ms )",
+      "tags": [
+        "conditional"
+      ],
+      "spec_refs": [
+        "BEACON_ATTESTATION-IGNORE-9dbc7051"
+      ],
+      "action": {
+        "type": "ActInjectGossip",
+        "protocol": "beacon_attestation_0",
+        "payload": {
+          "kind": "builder",
+          "wrap": "raw",
+          "name": "buildInvalidBeaconAttestationSlotEpochRange"
+        }
+      },
+      "oracle": {
+        "differential": true,
+        "expected": "REJECT",
+        "must_not": [
+          "CRASH",
+          "ACCEPT"
+        ],
+        "spec_predicate": "accepted == 0",
+        "strength": "MUST"
+      }
+    },
+    {
+      "from": "CryptoReady",
+      "to": "CryptoSent",
+      "label": "cm_invalid_beacon_attestation_finalized_ancestor_e6df7015",
+      "weight": 10,
+      "description": "[IGNORE] The current finalized_checkpoint is an ancestor of the block [failure: finalized_checkpoint_block != store.finalized_checkpoint.root]",
+      "condition_desc": "when finalized_checkpoint_block != store.finalized_checkpoint.root",
+      "tags": [
+        "conditional"
+      ],
+      "spec_refs": [
+        "BEACON_ATTESTATION-IGNORE-e55933f5"
+      ],
+      "action": {
+        "type": "ActInjectGossip",
+        "protocol": "beacon_attestation_0",
+        "payload": {
+          "kind": "builder",
+          "wrap": "raw",
+          "name": "buildInvalidBeaconAttestationFinalizedAncestor"
+        }
+      },
+      "oracle": {
+        "differential": true,
+        "expected": "REJECT",
+        "must_not": [
+          "CRASH",
+          "ACCEPT"
+        ],
+        "spec_predicate": "accepted == 0",
+        "strength": "MUST"
+      }
+    },
+    {
+      "from": "CryptoReady",
+      "to": "CryptoSent",
+      "label": "cm_invalid_beacon_attestation_index_oob_36a88aef",
+      "weight": 10,
+      "description": "[IGNORE] No other valid attestation seen for this validator and target epoch [failure: (participant_index, target_epoch) in seen.attestation_validator_epochs]",
+      "condition_desc": "when (participant_index, target_epoch) in seen.attestation_validator_epochs",
+      "tags": [
+        "conditional"
+      ],
+      "spec_refs": [
+        "BEACON_ATTESTATION-IGNORE-fa60d57c"
+      ],
+      "action": {
+        "type": "ActInjectGossip",
+        "protocol": "beacon_attestation_0",
+        "payload": {
+          "kind": "builder",
+          "wrap": "raw",
+          "name": "buildInvalidBeaconAttestationIndexOob"
+        }
+      },
+      "oracle": {
+        "differential": true,
+        "expected": "REJECT",
+        "must_not": [
+          "CRASH",
+          "ACCEPT"
+        ],
+        "spec_predicate": "accepted == 0",
+        "strength": "MUST"
+      }
+    },
+    {
+      "from": "CryptoReady",
+      "to": "CryptoSent",
+      "label": "cm_invalid_beacon_attestation_slot_epoch_range_24c59c27",
+      "weight": 10,
+      "description": "[REJECT] The attestation's epoch matches its target [failure: target_epoch != compute_epoch_at_slot(data.slot)]",
+      "condition_desc": "when target_epoch != compute_epoch_at_slot(data.slot)",
+      "tags": [
+        "conditional"
+      ],
+      "spec_refs": [
+        "BEACON_ATTESTATION-REJECT-2d8f2580"
+      ],
+      "action": {
+        "type": "ActInjectGossip",
+        "protocol": "beacon_attestation_0",
+        "payload": {
+          "kind": "builder",
+          "wrap": "raw",
+          "name": "buildInvalidBeaconAttestationSlotEpochRange"
+        }
+      },
+      "oracle": {
+        "differential": true,
+        "expected": "REJECT",
+        "must_not": [
+          "CRASH",
+          "ACCEPT"
+        ],
+        "spec_predicate": "accepted == 0",
+        "strength": "MUST"
+      }
+    },
+    {
+      "from": "CryptoReady",
+      "to": "CryptoSent",
+      "label": "cm_invalid_beacon_attestation_index_oob_a9e42939",
+      "weight": 10,
+      "description": "[REJECT] The attestation's data index is zero [failure: data.index != 0]",
+      "condition_desc": "when data.index != 0",
+      "tags": [
+        "conditional"
+      ],
+      "spec_refs": [
+        "BEACON_ATTESTATION-REJECT-36fd424b"
+      ],
+      "action": {
+        "type": "ActInjectGossip",
+        "protocol": "beacon_attestation_0",
+        "payload": {
+          "kind": "builder",
+          "wrap": "raw",
+          "name": "buildInvalidBeaconAttestationIndexOob"
+        }
+      },
+      "guard": {
+        "fork_gte": "electra"
+      },
+      "oracle": {
+        "differential": true,
+        "expected": "REJECT",
+        "must_not": [
+          "CRASH",
+          "ACCEPT"
+        ],
+        "spec_predicate": "accepted == 0",
+        "strength": "MUST"
+      }
+    },
+    {
+      "from": "CryptoReady",
+      "to": "CryptoSent",
+      "label": "cm_invalid_beacon_attestation_target_root_consistent_789d7bb1",
+      "weight": 10,
+      "description": "[REJECT] The block being voted for passes validation [failure: beacon_block_root not in store.block_states]",
+      "condition_desc": "when beacon_block_root not in store.block_states",
+      "tags": [
+        "conditional"
+      ],
+      "spec_refs": [
+        "BEACON_ATTESTATION-REJECT-544ecc21"
+      ],
+      "action": {
+        "type": "ActInjectGossip",
+        "protocol": "beacon_attestation_0",
+        "payload": {
+          "kind": "builder",
+          "wrap": "raw",
+          "name": "buildInvalidBeaconAttestationTargetRootConsistent"
+        }
+      },
+      "oracle": {
+        "differential": true,
+        "expected": "REJECT",
+        "must_not": [
+          "CRASH",
+          "ACCEPT"
+        ],
+        "spec_predicate": "accepted == 0",
+        "strength": "MUST"
+      }
+    },
+    {
+      "from": "CryptoReady",
+      "to": "CryptoSent",
+      "label": "cm_invalid_beacon_attestation_target_root_consistent_19fdd1c0",
+      "weight": 10,
+      "description": "[REJECT] The attestation's target block is an ancestor of the LMD vote block [failure: target_checkpoint_block != data.target.root]",
+      "condition_desc": "when target_checkpoint_block != data.target.root",
+      "tags": [
+        "conditional"
+      ],
+      "spec_refs": [
+        "BEACON_ATTESTATION-REJECT-cb7a1c7e"
+      ],
+      "action": {
+        "type": "ActInjectGossip",
+        "protocol": "beacon_attestation_0",
+        "payload": {
+          "kind": "builder",
+          "wrap": "raw",
+          "name": "buildInvalidBeaconAttestationTargetRootConsistent"
+        }
+      },
+      "oracle": {
+        "differential": true,
+        "expected": "REJECT",
+        "must_not": [
+          "CRASH",
+          "ACCEPT"
+        ],
+        "spec_predicate": "accepted == 0",
+        "strength": "MUST"
+      }
+    },
+    {
+      "from": "CryptoReady",
+      "to": "CryptoSent",
+      "label": "cm_invalid_beacon_attestation_sig_invalid_7f4a269d",
+      "weight": 10,
+      "description": "[REJECT] The attestation signature is valid [failure: not is_valid_indexed_attestation(state, indexed_attestation)]",
+      "condition_desc": "when not is_valid_indexed_attestation(state, indexed_attestation)",
+      "tags": [
+        "conditional"
+      ],
+      "spec_refs": [
+        "BEACON_ATTESTATION-REJECT-f7a87fa4"
+      ],
+      "action": {
+        "type": "ActInjectGossip",
+        "protocol": "beacon_attestation_0",
+        "payload": {
+          "kind": "builder",
+          "wrap": "raw",
+          "name": "buildInvalidBeaconAttestationSigInvalid"
+        }
+      },
+      "oracle": {
+        "differential": true,
+        "expected": "REJECT",
+        "must_not": [
+          "CRASH",
+          "ACCEPT"
+        ],
+        "spec_predicate": "accepted == 0",
+        "strength": "MUST"
+      }
+    },
+    {
+      "from": "CryptoReady",
+      "to": "CryptoSent",
+      "label": "cm_invalid_beacon_attestation_slot_epoch_range_1de08da6",
+      "weight": 10,
+      "description": "[REJECT] The committee index is within the expected range [failure: committee_index \u003e= committees_per_slot]",
+      "condition_desc": "when committee_index \u003e= committees_per_slot",
+      "tags": [
+        "conditional"
+      ],
+      "spec_refs": [
+        "BEACON_ATTESTATION-REJECT-fc3dd3a9"
+      ],
+      "action": {
+        "type": "ActInjectGossip",
+        "protocol": "beacon_attestation_0",
+        "payload": {
+          "kind": "builder",
+          "wrap": "raw",
+          "name": "buildInvalidBeaconAttestationSlotEpochRange"
+        }
+      },
+      "oracle": {
+        "differential": true,
+        "expected": "REJECT",
+        "must_not": [
+          "CRASH",
+          "ACCEPT"
+        ],
+        "spec_predicate": "accepted == 0",
+        "strength": "MUST"
+      }
+    },
+    {
+      "from": "CryptoReady",
+      "to": "CryptoSent",
+      "label": "cm_invalid_beacon_attestation_index_oob_cdea4051",
+      "weight": 10,
+      "description": "The topic now propagates SingleAttestation objects: the attesting validator's index is carried directly in the message, the committee index is read from attestation.committee_index, and attestation.data.index MUST be zero.",
+      "spec_refs": [
+        "BEACON_ATTESTATION_SUBNET_ID-MUST-454af71d"
+      ],
+      "action": {
+        "type": "ActInjectGossip",
+        "protocol": "beacon_attestation_0",
+        "payload": {
+          "kind": "builder",
+          "wrap": "raw",
+          "name": "buildInvalidBeaconAttestationIndexOob"
+        }
+      },
+      "guard": {
+        "fork_gte": "electra"
+      },
+      "oracle": {
+        "differential": true,
+        "expected": "REJECT",
+        "must_not": [
+          "CRASH",
+          "ACCEPT"
+        ],
+        "spec_predicate": "accepted == 0",
+        "strength": "MUST"
+      }
+    },
+    {
+      "from": "CryptoReady",
+      "to": "CryptoSent",
+      "label": "cm_invalid_beacon_block_parent_known_valid_e356b48a",
+      "weight": 10,
+      "description": "[IGNORE] The block's parent's execution payload passes validation [failure: is_execution_enabled(state, block.body) and parent_payload_status == PAYLOAD_STATUS_INVALIDATED]",
+      "condition_desc": "when is_execution_enabled(state, block.body) and parent_payload_status == PAYLOAD_STATUS_INVALIDATED",
+      "tags": [
+        "conditional"
+      ],
+      "spec_refs": [
+        "BEACON_BLOCK-IGNORE-04770bd3"
+      ],
+      "action": {
+        "type": "ActInjectGossip",
+        "protocol": "beacon_block",
+        "payload": {
+          "kind": "builder",
+          "wrap": "raw",
+          "name": "buildInvalidBeaconBlockParentKnownValid"
+        }
+      },
+      "guard": {
+        "fork_gte": "bellatrix"
+      },
+      "oracle": {
+        "differential": true,
+        "expected": "REJECT",
+        "must_not": [
+          "CRASH",
+          "ACCEPT"
+        ],
+        "spec_predicate": "accepted == 0",
+        "strength": "MUST"
+      }
+    },
+    {
+      "from": "CryptoReady",
+      "to": "CryptoSent",
+      "label": "cm_invalid_beacon_block_slot_future_70b6eea0",
+      "weight": 10,
+      "description": "[IGNORE] The block is not from a future slot (MAY be queued for processing at the appropriate slot) [failure: not is_not_from_future_slot(state, block.slot, current_time_ms)]",
+      "condition_desc": "when not is_not_from_future_slot(state, block.slot, current_time_ms)",
+      "tags": [
+        "conditional"
+      ],
+      "spec_refs": [
+        "BEACON_BLOCK-IGNORE-451f432d"
+      ],
+      "action": {
+        "type": "ActInjectGossip",
+        "protocol": "beacon_block",
+        "payload": {
+          "kind": "builder",
+          "wrap": "raw",
+          "name": "buildInvalidBeaconBlockSlotFuture"
+        }
+      },
+      "oracle": {
+        "differential": true,
+        "expected": "REJECT",
+        "must_not": [
+          "CRASH",
+          "ACCEPT"
+        ],
+        "spec_predicate": "accepted == 0",
+        "strength": "MUST"
+      }
+    },
+    {
+      "from": "CryptoReady",
+      "to": "CryptoSent",
+      "label": "cm_invalid_beacon_block_parent_known_valid_3d56b375",
+      "weight": 10,
+      "description": "[IGNORE] The block's parent has been seen (via gossip or non-gossip sources) (MAY be queued until parent is retrieved) [failure: block.parent_root not in store.blocks]",
+      "condition_desc": "until «parent is retrieved»; when block.parent_root not in store.blocks",
+      "tags": [
+        "temporal:until",
+        "conditional"
+      ],
+      "spec_refs": [
+        "BEACON_BLOCK-IGNORE-b127f4ef"
+      ],
+      "action": {
+        "type": "ActInjectGossip",
+        "protocol": "beacon_block",
+        "payload": {
+          "kind": "builder",
+          "wrap": "raw",
+          "name": "buildInvalidBeaconBlockParentKnownValid"
+        }
+      },
+      "oracle": {
+        "differential": true,
+        "expected": "REJECT",
+        "must_not": [
+          "CRASH",
+          "ACCEPT"
+        ],
+        "spec_predicate": "accepted == 0",
+        "strength": "MUST"
+      }
+    },
+    {
+      "from": "CryptoReady",
+      "to": "CryptoSent",
+      "label": "cm_invalid_beacon_block_parent_known_valid_2e2047cd",
+      "weight": 10,
+      "description": "[IGNORE] The block's parent passes validation [failure: is_execution_enabled(state, block.body) and block.parent_root not in store.block_states]",
+      "condition_desc": "when is_execution_enabled(state, block.body) and block.parent_root not in store.block_states",
+      "tags": [
+        "conditional"
+      ],
+      "spec_refs": [
+        "BEACON_BLOCK-IGNORE-da534e6d"
+      ],
+      "action": {
+        "type": "ActInjectGossip",
+        "protocol": "beacon_block",
+        "payload": {
+          "kind": "builder",
+          "wrap": "raw",
+          "name": "buildInvalidBeaconBlockParentKnownValid"
+        }
+      },
+      "guard": {
+        "fork_gte": "bellatrix"
+      },
+      "oracle": {
+        "differential": true,
+        "expected": "REJECT",
+        "must_not": [
+          "CRASH",
+          "ACCEPT"
+        ],
+        "spec_predicate": "accepted == 0",
+        "strength": "MUST"
+      }
+    },
+    {
+      "from": "CryptoReady",
+      "to": "CryptoSent",
+      "label": "cm_invalid_beacon_block_sig_invalid_a1c60af9",
+      "weight": 10,
+      "description": "[IGNORE] The block is the first block with valid signature received for the proposer for the slot [failure: (block.proposer_index, block.slot) in seen.proposer_slots]",
+      "condition_desc": "when (block.proposer_index, block.slot) in seen.proposer_slots",
+      "tags": [
+        "conditional"
+      ],
+      "spec_refs": [
+        "BEACON_BLOCK-IGNORE-f0952a23"
+      ],
+      "action": {
+        "type": "ActInjectGossip",
+        "protocol": "beacon_block",
+        "payload": {
+          "kind": "builder",
+          "wrap": "raw",
+          "name": "buildInvalidBeaconBlockSigInvalid"
+        }
+      },
+      "oracle": {
+        "differential": true,
+        "expected": "REJECT",
+        "must_not": [
+          "CRASH",
+          "ACCEPT"
+        ],
+        "spec_predicate": "accepted == 0",
+        "strength": "MUST"
+      }
+    },
+    {
+      "from": "CryptoReady",
+      "to": "CryptoSent",
+      "label": "cm_invalid_beacon_block_parent_known_valid_64ee9bf4",
+      "weight": 10,
+      "description": "[REJECT] The block is from a higher slot than its parent [failure: block.slot \u003c= store.blocks[block.parent_root].slot]",
+      "condition_desc": "when block.slot \u003c= store.blocks[block.parent_root].slot",
+      "tags": [
+        "conditional"
+      ],
+      "spec_refs": [
+        "BEACON_BLOCK-REJECT-33eeeb94"
+      ],
+      "action": {
+        "type": "ActInjectGossip",
+        "protocol": "beacon_block",
+        "payload": {
+          "kind": "builder",
+          "wrap": "raw",
+          "name": "buildInvalidBeaconBlockParentKnownValid"
+        }
+      },
+      "oracle": {
+        "differential": true,
+        "expected": "REJECT",
+        "must_not": [
+          "CRASH",
+          "ACCEPT"
+        ],
+        "spec_predicate": "accepted == 0",
+        "strength": "MUST"
+      }
+    },
+    {
+      "from": "CryptoReady",
+      "to": "CryptoSent",
+      "label": "cm_invalid_beacon_block_sig_invalid_a53414fc",
+      "weight": 10,
+      "description": "[REJECT] The proposer signature is valid [failure: not bls.Verify(proposer.pubkey, signing_root, signed_beacon_block.signature)]",
+      "condition_desc": "when not bls.Verify(proposer.pubkey, signing_root, signed_beacon_block.signature)",
+      "tags": [
+        "conditional"
+      ],
+      "spec_refs": [
+        "BEACON_BLOCK-REJECT-3fd28bdc"
+      ],
+      "action": {
+        "type": "ActInjectGossip",
+        "protocol": "beacon_block",
+        "payload": {
+          "kind": "builder",
+          "wrap": "raw",
+          "name": "buildInvalidBeaconBlockSigInvalid"
+        }
+      },
+      "oracle": {
+        "differential": true,
+        "expected": "REJECT",
+        "must_not": [
+          "CRASH",
+          "ACCEPT"
+        ],
+        "spec_predicate": "accepted == 0",
+        "strength": "MUST"
+      }
+    },
+    {
+      "from": "CryptoReady",
+      "to": "CryptoSent",
+      "label": "cm_invalid_beacon_block_parent_known_valid_fcde6bcc",
+      "weight": 10,
+      "description": "[REJECT] The block's parent passes validation [failure: block.parent_root not in store.block_states]",
+      "condition_desc": "when block.parent_root not in store.block_states",
+      "tags": [
+        "conditional"
+      ],
+      "spec_refs": [
+        "BEACON_BLOCK-REJECT-5f829684"
+      ],
+      "action": {
+        "type": "ActInjectGossip",
+        "protocol": "beacon_block",
+        "payload": {
+          "kind": "builder",
+          "wrap": "raw",
+          "name": "buildInvalidBeaconBlockParentKnownValid"
+        }
+      },
+      "oracle": {
+        "differential": true,
+        "expected": "REJECT",
+        "must_not": [
+          "CRASH",
+          "ACCEPT"
+        ],
+        "spec_predicate": "accepted == 0",
+        "strength": "MUST"
+      }
+    },
+    {
+      "from": "CryptoReady",
+      "to": "CryptoSent",
+      "label": "cm_invalid_beacon_block_parent_known_valid_a083817b",
+      "weight": 10,
+      "description": "[REJECT] The block's parent passes validation ([Modified in Bellatrix]) [failure: block.parent_root not in store.block_states]",
+      "condition_desc": "when block.parent_root not in store.block_states",
+      "tags": [
+        "conditional"
+      ],
+      "spec_refs": [
+        "BEACON_BLOCK-REJECT-823c7319"
+      ],
+      "action": {
+        "type": "ActInjectGossip",
+        "protocol": "beacon_block",
+        "payload": {
+          "kind": "builder",
+          "wrap": "raw",
+          "name": "buildInvalidBeaconBlockParentKnownValid"
+        }
+      },
+      "guard": {
+        "fork_gte": "bellatrix"
+      },
+      "oracle": {
+        "differential": true,
+        "expected": "REJECT",
+        "must_not": [
+          "CRASH",
+          "ACCEPT"
+        ],
+        "spec_predicate": "accepted == 0",
+        "strength": "MUST"
+      }
+    },
+    {
+      "from": "CryptoReady",
+      "to": "CryptoSent",
+      "label": "cm_invalid_blob_sidecar_kzg_proof_8bb11b06",
+      "weight": 10,
+      "description": "[REJECT] The sidecar's inclusion proof is valid as verified by verify_blob_sidecar_inclusion_proof [failure: not verify_blob_sidecar_inclusion_proof(blob_sidecar)]",
+      "condition_desc": "when not verify_blob_sidecar_inclusion_proof(blob_sidecar)",
+      "tags": [
+        "conditional"
+      ],
+      "spec_refs": [
+        "BLOB_SIDECAR-REJECT-124b7dda"
+      ],
+      "action": {
+        "type": "ActInjectGossip",
+        "protocol": "blob_sidecar_0",
+        "payload": {
+          "kind": "builder",
+          "wrap": "raw",
+          "name": "buildInvalidBlobSidecarKzgProof"
+        }
+      },
+      "guard": {
+        "fork_gte": "deneb"
+      },
+      "oracle": {
+        "differential": true,
+        "expected": "REJECT",
+        "must_not": [
+          "CRASH",
+          "ACCEPT"
+        ],
+        "spec_predicate": "accepted == 0",
+        "strength": "MUST"
+      }
+    },
+    {
+      "from": "CryptoReady",
+      "to": "CryptoSent",
+      "label": "cm_invalid_blob_sidecar_kzg_proof_e8ff9cf9",
+      "weight": 10,
+      "description": "[REJECT] The sidecar's blob is valid as verified by verify_blob_kzg_proof [failure: not verify_blob_kzg_proof( blob_sidecar.blob, blob_sidecar.kzg_commitment, blob_sidecar.kzg_proof )]",
+      "condition_desc": "when not verify_blob_kzg_proof( blob_sidecar.blob, blob_sidecar.kzg_commitment, blob_sidecar.kzg_proof )",
+      "tags": [
+        "conditional"
+      ],
+      "spec_refs": [
+        "BLOB_SIDECAR-REJECT-190a8460"
+      ],
+      "action": {
+        "type": "ActInjectGossip",
+        "protocol": "blob_sidecar_0",
+        "payload": {
+          "kind": "builder",
+          "wrap": "raw",
+          "name": "buildInvalidBlobSidecarKzgProof"
+        }
+      },
+      "guard": {
+        "fork_gte": "deneb"
+      },
+      "oracle": {
+        "differential": true,
+        "expected": "REJECT",
+        "must_not": [
+          "CRASH",
+          "ACCEPT"
+        ],
+        "spec_predicate": "accepted == 0",
+        "strength": "MUST"
+      }
+    },
+    {
+      "from": "CryptoReady",
+      "to": "CryptoSent",
+      "label": "cm_invalid_bls_to_execution_change_field_equality_f7b624ae",
+      "weight": 10,
+      "description": "[REJECT] The validator has BLS withdrawal credentials [failure: validator.withdrawal_credentials[:1] != BLS_WITHDRAWAL_PREFIX]",
+      "condition_desc": "when validator.withdrawal_credentials[:1] != BLS_WITHDRAWAL_PREFIX",
+      "tags": [
+        "conditional"
+      ],
+      "spec_refs": [
+        "BLS_TO_EXECUTION_CHANGE-REJECT-3869cf36"
+      ],
+      "action": {
+        "type": "ActInjectGossip",
+        "protocol": "bls_to_execution_change",
+        "payload": {
+          "kind": "builder",
+          "wrap": "raw",
+          "name": "buildInvalidBlsToExecutionChangeFieldEquality"
+        }
+      },
+      "guard": {
+        "fork_gte": "capella"
+      },
+      "oracle": {
+        "differential": true,
+        "expected": "REJECT",
+        "must_not": [
+          "CRASH",
+          "ACCEPT"
+        ],
+        "spec_predicate": "accepted == 0",
+        "strength": "MUST"
+      }
+    },
+    {
+      "from": "CryptoReady",
+      "to": "CryptoSent",
+      "label": "cm_invalid_bls_to_execution_change_field_equality_f16cc17f",
+      "weight": 10,
+      "description": "[REJECT] The bls_to_execution_change is for the validator's withdrawal pubkey [failure: validator.withdrawal_credentials[1:] != hash(bls_to_execution_change.from_bls_pubkey)[1:]]",
+      "condition_desc": "when validator.withdrawal_credentials[1:] != hash(bls_to_execution_change.from_bls_pubkey)[1:]",
+      "tags": [
+        "conditional"
+      ],
+      "spec_refs": [
+        "BLS_TO_EXECUTION_CHANGE-REJECT-c61b3034"
+      ],
+      "action": {
+        "type": "ActInjectGossip",
+        "protocol": "bls_to_execution_change",
+        "payload": {
+          "kind": "builder",
+          "wrap": "raw",
+          "name": "buildInvalidBlsToExecutionChangeFieldEquality"
+        }
+      },
+      "guard": {
+        "fork_gte": "capella"
+      },
+      "oracle": {
+        "differential": true,
+        "expected": "REJECT",
+        "must_not": [
+          "CRASH",
+          "ACCEPT"
+        ],
+        "spec_predicate": "accepted == 0",
+        "strength": "MUST"
+      }
+    },
+    {
+      "from": "CryptoReady",
+      "to": "CryptoSent",
+      "label": "cm_invalid_bls_to_execution_change_sig_invalid_9db269ec",
+      "weight": 10,
+      "description": "[REJECT] The signature is valid [failure: not bls.Verify( bls_to_execution_change.from_bls_pubkey, signing_root, signed_bls_to_execution_change.signature, )]",
+      "condition_desc": "when not bls.Verify( bls_to_execution_change.from_bls_pubkey, signing_root, signed_bls_to_execution_change.signature, )",
+      "tags": [
+        "conditional"
+      ],
+      "spec_refs": [
+        "BLS_TO_EXECUTION_CHANGE-REJECT-cc9547b7"
+      ],
+      "action": {
+        "type": "ActInjectGossip",
+        "protocol": "bls_to_execution_change",
+        "payload": {
+          "kind": "builder",
+          "wrap": "raw",
+          "name": "buildInvalidBlsToExecutionChangeSigInvalid"
+        }
+      },
+      "guard": {
+        "fork_gte": "capella"
+      },
+      "oracle": {
+        "differential": true,
+        "expected": "REJECT",
+        "must_not": [
+          "CRASH",
+          "ACCEPT"
+        ],
+        "spec_predicate": "accepted == 0",
+        "strength": "MUST"
+      }
+    },
+    {
+      "from": "CryptoReady",
+      "to": "CryptoSent",
+      "label": "cm_invalid_data_column_sidecar_kzg_proof_4b259137",
+      "weight": 10,
+      "description": "[REJECT] The sidecar is valid as verified by verify_data_column_sidecar [failure: not verify_data_column_sidecar(sidecar)]",
+      "condition_desc": "when not verify_data_column_sidecar(sidecar)",
+      "tags": [
+        "conditional"
+      ],
+      "spec_refs": [
+        "DATA_COLUMN_SIDECAR-REJECT-459b0d39"
+      ],
+      "action": {
+        "type": "ActInjectGossip",
+        "protocol": "data_column_sidecar_0",
+        "payload": {
+          "kind": "builder",
+          "wrap": "raw",
+          "name": "buildInvalidDataColumnSidecarKzgProof"
+        }
+      },
+      "guard": {
+        "fork_gte": "fulu"
+      },
+      "oracle": {
+        "differential": true,
+        "expected": "REJECT",
+        "must_not": [
+          "CRASH",
+          "ACCEPT"
+        ],
+        "spec_predicate": "accepted == 0",
+        "strength": "MUST"
+      }
+    },
+    {
+      "from": "CryptoReady",
+      "to": "CryptoSent",
+      "label": "cm_invalid_data_column_sidecar_kzg_proof_e36289ea",
+      "weight": 10,
+      "description": "[REJECT] The sidecar is valid as verified by verify_data_column_sidecar_inclusion_proof [failure: not verify_data_column_sidecar_inclusion_proof(sidecar)]",
+      "condition_desc": "when not verify_data_column_sidecar_inclusion_proof(sidecar)",
+      "tags": [
+        "conditional"
+      ],
+      "spec_refs": [
+        "DATA_COLUMN_SIDECAR-REJECT-9a465758"
+      ],
+      "action": {
+        "type": "ActInjectGossip",
+        "protocol": "data_column_sidecar_0",
+        "payload": {
+          "kind": "builder",
+          "wrap": "raw",
+          "name": "buildInvalidDataColumnSidecarKzgProof"
+        }
+      },
+      "guard": {
+        "fork_gte": "fulu"
+      },
+      "oracle": {
+        "differential": true,
+        "expected": "REJECT",
+        "must_not": [
+          "CRASH",
+          "ACCEPT"
+        ],
+        "spec_predicate": "accepted == 0",
+        "strength": "MUST"
+      }
+    },
+    {
+      "from": "CryptoReady",
+      "to": "CryptoSent",
+      "label": "cm_invalid_data_column_sidecar_kzg_proof_638be512",
+      "weight": 10,
+      "description": "[REJECT] The sidecar is valid as verified by verify_data_column_sidecar_kzg_proofs [failure: not verify_data_column_sidecar_kzg_proofs(sidecar)]",
+      "condition_desc": "when not verify_data_column_sidecar_kzg_proofs(sidecar)",
+      "tags": [
+        "conditional"
+      ],
+      "spec_refs": [
+        "DATA_COLUMN_SIDECAR-REJECT-f173b70c"
+      ],
+      "action": {
+        "type": "ActInjectGossip",
+        "protocol": "data_column_sidecar_0",
+        "payload": {
+          "kind": "builder",
+          "wrap": "raw",
+          "name": "buildInvalidDataColumnSidecarKzgProof"
+        }
+      },
+      "guard": {
+        "fork_gte": "fulu"
+      },
+      "oracle": {
+        "differential": true,
+        "expected": "REJECT",
+        "must_not": [
+          "CRASH",
+          "ACCEPT"
+        ],
+        "spec_predicate": "accepted == 0",
+        "strength": "MUST"
+      }
+    },
+    {
+      "from": "CryptoReady",
+      "to": "CryptoSent",
+      "label": "cm_invalid_proposer_slashing_index_oob_0b3ea4dd",
+      "weight": 10,
+      "description": "[IGNORE] The proposer slashing is the first valid proposer slashing received for this proposer [failure: proposer_index in seen.proposer_slashing_indices]",
+      "condition_desc": "when proposer_index in seen.proposer_slashing_indices",
+      "tags": [
+        "conditional"
+      ],
+      "spec_refs": [
+        "PROPOSER_SLASHING-IGNORE-a4a13783"
+      ],
+      "action": {
+        "type": "ActInjectGossip",
+        "protocol": "proposer_slashing",
+        "payload": {
+          "kind": "builder",
+          "wrap": "raw",
+          "name": "buildInvalidProposerSlashingIndexOob"
+        }
+      },
+      "oracle": {
+        "differential": true,
+        "expected": "REJECT",
+        "must_not": [
+          "CRASH",
+          "ACCEPT"
+        ],
+        "spec_predicate": "accepted == 0",
+        "strength": "MUST"
+      }
+    },
+    {
+      "from": "CryptoReady",
+      "to": "CryptoSent",
+      "label": "cm_invalid_proposer_slashing_field_equality_ea94b6bc",
+      "weight": 10,
+      "description": "[REJECT] The headers are different [failure: header_1 == header_2]",
+      "condition_desc": "when header_1 == header_2",
+      "tags": [
+        "conditional"
+      ],
+      "spec_refs": [
+        "PROPOSER_SLASHING-REJECT-1248d8f2"
+      ],
+      "action": {
+        "type": "ActInjectGossip",
+        "protocol": "proposer_slashing",
+        "payload": {
+          "kind": "builder",
+          "wrap": "raw",
+          "name": "buildInvalidProposerSlashingFieldEquality"
+        }
+      },
+      "oracle": {
+        "differential": true,
+        "expected": "REJECT",
+        "must_not": [
+          "CRASH",
+          "ACCEPT"
+        ],
+        "spec_predicate": "accepted == 0",
+        "strength": "MUST"
+      }
+    },
+    {
+      "from": "CryptoReady",
+      "to": "CryptoSent",
+      "label": "cm_invalid_proposer_slashing_sig_invalid_9c118ba8",
+      "weight": 10,
+      "description": "[REJECT] The signatures are valid [failure: not bls.Verify(proposer.pubkey, signing_root, signed_header.signature)]",
+      "condition_desc": "when not bls.Verify(proposer.pubkey, signing_root, signed_header.signature)",
+      "tags": [
+        "conditional"
+      ],
+      "spec_refs": [
+        "PROPOSER_SLASHING-REJECT-4e6c2331"
+      ],
+      "action": {
+        "type": "ActInjectGossip",
+        "protocol": "proposer_slashing",
+        "payload": {
+          "kind": "builder",
+          "wrap": "raw",
+          "name": "buildInvalidProposerSlashingSigInvalid"
+        }
+      },
+      "oracle": {
+        "differential": true,
+        "expected": "REJECT",
+        "must_not": [
+          "CRASH",
+          "ACCEPT"
+        ],
+        "spec_predicate": "accepted == 0",
+        "strength": "MUST"
+      }
+    },
+    {
+      "from": "CryptoReady",
+      "to": "CryptoSent",
+      "label": "cm_invalid_sync_committee_contribution_and_proof_index_oob_e26a9783",
+      "weight": 10,
+      "description": "[IGNORE] A valid sync committee contribution with equal slot, beacon_block_root (and subcommittee_index whose aggregation_bits is non-strict superset) (has not already been seen) [failure: is_non_strict_superset(seen_bits, contribution_bits)]",
+      "condition_desc": "when is_non_strict_superset(seen_bits, contribution_bits)",
+      "tags": [
+        "conditional"
+      ],
+      "spec_refs": [
+        "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-IGNORE-85bd91b0"
+      ],
+      "action": {
+        "type": "ActInjectGossip",
+        "protocol": "sync_committee_contribution_and_proof",
+        "payload": {
+          "kind": "builder",
+          "wrap": "raw",
+          "name": "buildInvalidSyncCommitteeContributionAndProofIndexOob"
+        }
+      },
+      "guard": {
+        "fork_gte": "altair"
+      },
+      "oracle": {
+        "differential": true,
+        "expected": "REJECT",
+        "must_not": [
+          "CRASH",
+          "ACCEPT"
+        ],
+        "spec_predicate": "accepted == 0",
+        "strength": "MUST"
+      }
+    },
+    {
+      "from": "CryptoReady",
+      "to": "CryptoSent",
+      "label": "cm_invalid_sync_committee_contribution_and_proof_index_oob_760e573b",
+      "weight": 10,
+      "description": "[IGNORE] The sync committee contribution is the first valid contribution received (for the aggregator with index contribution_and_proof.aggregator_index) (for the slot contribution.slot and subcommittee index contribution.subcommittee_index) [failure: aggregator_key in seen.sync_contribution_aggregator_slots]",
+      "condition_desc": "when aggregator_key in seen.sync_contribution_aggregator_slots",
+      "tags": [
+        "conditional"
+      ],
+      "spec_refs": [
+        "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-IGNORE-b4eb6360"
+      ],
+      "action": {
+        "type": "ActInjectGossip",
+        "protocol": "sync_committee_contribution_and_proof",
+        "payload": {
+          "kind": "builder",
+          "wrap": "raw",
+          "name": "buildInvalidSyncCommitteeContributionAndProofIndexOob"
+        }
+      },
+      "guard": {
+        "fork_gte": "altair"
+      },
+      "oracle": {
+        "differential": true,
+        "expected": "REJECT",
+        "must_not": [
+          "CRASH",
+          "ACCEPT"
+        ],
+        "spec_predicate": "accepted == 0",
+        "strength": "MUST"
+      }
+    },
+    {
+      "from": "CryptoReady",
+      "to": "CryptoSent",
+      "label": "cm_invalid_sync_committee_contribution_and_proof_sig_invalid_e5520746",
+      "weight": 10,
+      "description": "[REJECT] The aggregator signature, signed_contribution_and_proof.signature, is valid [failure: not bls.Verify(aggregator_pubkey, signing_root, signed_contribution_and_proof.signature)]",
+      "condition_desc": "when not bls.Verify(aggregator_pubkey, signing_root, signed_contribution_and_proof.signature)",
+      "tags": [
+        "conditional"
+      ],
+      "spec_refs": [
+        "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-08097fc1"
+      ],
+      "action": {
+        "type": "ActInjectGossip",
+        "protocol": "sync_committee_contribution_and_proof",
+        "payload": {
+          "kind": "builder",
+          "wrap": "raw",
+          "name": "buildInvalidSyncCommitteeContributionAndProofSigInvalid"
+        }
+      },
+      "guard": {
+        "fork_gte": "altair"
+      },
+      "oracle": {
+        "differential": true,
+        "expected": "REJECT",
+        "must_not": [
+          "CRASH",
+          "ACCEPT"
+        ],
+        "spec_predicate": "accepted == 0",
+        "strength": "MUST"
+      }
+    },
+    {
+      "from": "CryptoReady",
+      "to": "CryptoSent",
+      "label": "cm_invalid_sync_committee_contribution_and_proof_index_oob_b196caf6",
+      "weight": 10,
+      "description": "[REJECT] The aggregator index is valid [failure: contribution_and_proof.aggregator_index \u003e= len(state.validators)]",
+      "condition_desc": "when contribution_and_proof.aggregator_index \u003e= len(state.validators)",
+      "tags": [
+        "conditional"
+      ],
+      "spec_refs": [
+        "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-1d325814"
+      ],
+      "action": {
+        "type": "ActInjectGossip",
+        "protocol": "sync_committee_contribution_and_proof",
+        "payload": {
+          "kind": "builder",
+          "wrap": "raw",
+          "name": "buildInvalidSyncCommitteeContributionAndProofIndexOob"
+        }
+      },
+      "guard": {
+        "fork_gte": "altair"
+      },
+      "oracle": {
+        "differential": true,
+        "expected": "REJECT",
+        "must_not": [
+          "CRASH",
+          "ACCEPT"
+        ],
+        "spec_predicate": "accepted == 0",
+        "strength": "MUST"
+      }
+    },
+    {
+      "from": "CryptoReady",
+      "to": "CryptoSent",
+      "label": "cm_invalid_sync_committee_contribution_and_proof_sig_invalid_e65ba474",
+      "weight": 10,
+      "description": "[REJECT] The selection_proof selects the validator as an aggregator for the slot [failure: not is_sync_committee_aggregator(contribution_and_proof.selection_proof)]",
+      "condition_desc": "when not is_sync_committee_aggregator(contribution_and_proof.selection_proof)",
+      "tags": [
+        "conditional"
+      ],
+      "spec_refs": [
+        "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-52168aa3"
+      ],
+      "action": {
+        "type": "ActInjectGossip",
+        "protocol": "sync_committee_contribution_and_proof",
+        "payload": {
+          "kind": "builder",
+          "wrap": "raw",
+          "name": "buildInvalidSyncCommitteeContributionAndProofSigInvalid"
+        }
+      },
+      "guard": {
+        "fork_gte": "altair"
+      },
+      "oracle": {
+        "differential": true,
+        "expected": "REJECT",
+        "must_not": [
+          "CRASH",
+          "ACCEPT"
+        ],
+        "spec_predicate": "accepted == 0",
+        "strength": "MUST"
+      }
+    },
+    {
+      "from": "CryptoReady",
+      "to": "CryptoSent",
+      "label": "cm_invalid_sync_committee_contribution_and_proof_sig_invalid_8c92cd67",
+      "weight": 10,
+      "description": "[REJECT] The contribution_and_proof.selection_proof is a valid signature (of the SyncAggregatorSelectionData derived from the contribution) (by the validator with index contribution_and_proof.aggregator_index) [failure: not bls.Verify(aggregator_pubkey, signing_root, contribution_and_proof.selection_proof)]",
+      "condition_desc": "when not bls.Verify(aggregator_pubkey, signing_root, contribution_and_proof.selection_proof)",
+      "tags": [
+        "conditional"
+      ],
+      "spec_refs": [
+        "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-5448167e"
+      ],
+      "action": {
+        "type": "ActInjectGossip",
+        "protocol": "sync_committee_contribution_and_proof",
+        "payload": {
+          "kind": "builder",
+          "wrap": "raw",
+          "name": "buildInvalidSyncCommitteeContributionAndProofSigInvalid"
+        }
+      },
+      "guard": {
+        "fork_gte": "altair"
+      },
+      "oracle": {
+        "differential": true,
+        "expected": "REJECT",
+        "must_not": [
+          "CRASH",
+          "ACCEPT"
+        ],
+        "spec_predicate": "accepted == 0",
+        "strength": "MUST"
+      }
+    },
+    {
+      "from": "CryptoReady",
+      "to": "CryptoSent",
+      "label": "cm_invalid_sync_committee_contribution_and_proof_index_oob_4745d4f7",
+      "weight": 10,
+      "description": "[REJECT] The subcommittee index is in the allowed range [failure: contribution.subcommittee_index \u003e= SYNC_COMMITTEE_SUBNET_COUNT]",
+      "condition_desc": "when contribution.subcommittee_index \u003e= SYNC_COMMITTEE_SUBNET_COUNT",
+      "tags": [
+        "conditional"
+      ],
+      "spec_refs": [
+        "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-5bdbca46"
+      ],
+      "action": {
+        "type": "ActInjectGossip",
+        "protocol": "sync_committee_contribution_and_proof",
+        "payload": {
+          "kind": "builder",
+          "wrap": "raw",
+          "name": "buildInvalidSyncCommitteeContributionAndProofIndexOob"
+        }
+      },
+      "guard": {
+        "fork_gte": "altair"
+      },
+      "oracle": {
+        "differential": true,
+        "expected": "REJECT",
+        "must_not": [
+          "CRASH",
+          "ACCEPT"
+        ],
+        "spec_predicate": "accepted == 0",
+        "strength": "MUST"
+      }
+    },
+    {
+      "from": "CryptoReady",
+      "to": "CryptoSent",
+      "label": "cm_invalid_sync_committee_contribution_and_proof_sig_invalid_95bc9710",
+      "weight": 10,
+      "description": "[REJECT] The aggregate signature is valid for the message beacon_block_root (and aggregate pubkey derived from the participation info in aggregation_bits) (for the subcommittee specified by the contribution.subcommittee_index) [failure: not eth_fast_aggregate_verify(participant_pubkeys, signing_root, contribution.signature)]",
+      "condition_desc": "when not eth_fast_aggregate_verify(participant_pubkeys, signing_root, contribution.signature)",
+      "tags": [
+        "conditional"
+      ],
+      "spec_refs": [
+        "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-5dd820ac"
+      ],
+      "action": {
+        "type": "ActInjectGossip",
+        "protocol": "sync_committee_contribution_and_proof",
+        "payload": {
+          "kind": "builder",
+          "wrap": "raw",
+          "name": "buildInvalidSyncCommitteeContributionAndProofSigInvalid"
+        }
+      },
+      "guard": {
+        "fork_gte": "altair"
+      },
+      "oracle": {
+        "differential": true,
+        "expected": "REJECT",
+        "must_not": [
+          "CRASH",
+          "ACCEPT"
+        ],
+        "spec_predicate": "accepted == 0",
+        "strength": "MUST"
+      }
+    },
+    {
+      "from": "CryptoReady",
+      "to": "CryptoSent",
+      "label": "cm_invalid_sync_committee_contribution_and_proof_index_oob_9d2116ba",
+      "weight": 10,
+      "description": "[REJECT] The aggregator's validator index is in the declared subcommittee (of the current sync committee) [failure: aggregator_pubkey not in subcommittee_pubkeys]",
+      "condition_desc": "when aggregator_pubkey not in subcommittee_pubkeys",
+      "tags": [
+        "conditional"
+      ],
+      "spec_refs": [
+        "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-c33e885a"
+      ],
+      "action": {
+        "type": "ActInjectGossip",
+        "protocol": "sync_committee_contribution_and_proof",
+        "payload": {
+          "kind": "builder",
+          "wrap": "raw",
+          "name": "buildInvalidSyncCommitteeContributionAndProofIndexOob"
+        }
+      },
+      "guard": {
+        "fork_gte": "altair"
+      },
+      "oracle": {
+        "differential": true,
+        "expected": "REJECT",
+        "must_not": [
+          "CRASH",
+          "ACCEPT"
+        ],
+        "spec_predicate": "accepted == 0",
+        "strength": "MUST"
+      }
+    }
+  ]
+}

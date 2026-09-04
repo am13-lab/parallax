@@ -1,0 +1,4391 @@
+{
+  "version": 1,
+  "machines": [
+    {
+      "name": "ConnLifecycle",
+      "file": "connlifecycle.json",
+      "init_state": "Disconnected",
+      "states": [
+        {
+          "name": "Disconnected"
+        },
+        {
+          "name": "Connected"
+        },
+        {
+          "name": "StatusExchanged"
+        },
+        {
+          "name": "MetadataKnown"
+        },
+        {
+          "name": "SyncProbing"
+        },
+        {
+          "name": "GoodbyeSent"
+        },
+        {
+          "name": "Closed",
+          "terminal": true
+        }
+      ],
+      "transitions": [
+        {
+          "from": "Disconnected",
+          "to": "Connected",
+          "label": "sem_conn_connect",
+          "weight": 4,
+          "description": "reference backbone: active peer connection is available before protocol exchange",
+          "action": {
+            "type": "ActCheckConnected"
+          },
+          "oracle": {
+            "differential": true,
+            "must_not": [
+              "CRASH"
+            ],
+            "strength": "MUST"
+          }
+        },
+        {
+          "from": "Connected",
+          "to": "StatusExchanged",
+          "label": "sem_conn_status_baseline",
+          "weight": 8,
+          "description": "spec backbone: Status is the connection-level handshake request",
+          "action": {
+            "type": "ActSendStatus",
+            "protocol": "/eth2/beacon_chain/req/status/2/ssz_snappy",
+            "payload": {
+              "kind": "builder",
+              "wrap": "ssz_snappy",
+              "name": "buildStatusV2SSZ"
+            },
+            "timeout_ms": 5000
+          },
+          "oracle": {
+            "differential": true,
+            "expected": "SUCCESS",
+            "must_not": [
+              "CRASH"
+            ],
+            "strength": "MUST"
+          }
+        },
+        {
+          "from": "StatusExchanged",
+          "to": "MetadataKnown",
+          "label": "sem_conn_metadata_probe",
+          "weight": 5,
+          "description": "spec backbone: metadata versioning is queried after status/ping indicates a peer record may be stale",
+          "action": {
+            "type": "ActSendReqResp",
+            "protocol": "/eth2/beacon_chain/req/metadata/3/ssz_snappy",
+            "timeout_ms": 5000
+          },
+          "guard": {
+            "fork_gte": "fulu"
+          },
+          "oracle": {
+            "differential": true,
+            "must_not": [
+              "CRASH"
+            ],
+            "strength": "MAY"
+          }
+        },
+        {
+          "from": "MetadataKnown",
+          "to": "SyncProbing",
+          "label": "sem_conn_sync_probe",
+          "weight": 5,
+          "description": "spec backbone: after handshake, peers probe sync data using Req/Resp",
+          "action": {
+            "type": "ActSendReqResp",
+            "protocol": "/eth2/beacon_chain/req/beacon_blocks_by_range/2/ssz_snappy",
+            "payload": {
+              "kind": "builder",
+              "wrap": "ssz_snappy",
+              "name": "buildBeaconBlocksByRangeV2NearHead"
+            },
+            "timeout_ms": 10000
+          },
+          "oracle": {
+            "differential": true,
+            "must_not": [
+              "CRASH"
+            ],
+            "strength": "SHOULD"
+          }
+        },
+        {
+          "from": "StatusExchanged",
+          "to": "GoodbyeSent",
+          "label": "sem_conn_goodbye_baseline",
+          "weight": 3,
+          "description": "spec backbone: peers may send Goodbye before disconnecting",
+          "action": {
+            "type": "ActSendReqResp",
+            "protocol": "/eth2/beacon_chain/req/goodbye/1/ssz_snappy",
+            "payload": {
+              "kind": "fields",
+              "wrap": "ssz_snappy",
+              "fields": {
+                "reason": {
+                  "lit": 1
+                }
+              }
+            },
+            "timeout_ms": 3000
+          },
+          "oracle": {
+            "differential": true,
+            "must_not": [
+              "CRASH"
+            ],
+            "strength": "MAY"
+          }
+        },
+        {
+          "from": "SyncProbing",
+          "to": "StatusExchanged",
+          "label": "sem_conn_probe_reset",
+          "weight": 2,
+          "description": "reference backbone: repeat protocol probes while the connection remains live",
+          "action": {
+            "type": "ActCheckConnected"
+          }
+        },
+        {
+          "from": "GoodbyeSent",
+          "to": "Closed",
+          "label": "sem_conn_close_after_goodbye",
+          "weight": 4,
+          "description": "reference backbone: Goodbye terminates the connection lifecycle path",
+          "action": {
+            "type": "ActDisconnectPeer"
+          }
+        },
+        {
+          "from": "StatusExchanged",
+          "to": "Closed",
+          "label": "sem_conn_finish",
+          "weight": 1,
+          "description": "reference backbone: terminal path from an established protocol connection",
+          "action": {
+            "type": "ActCheckConnected"
+          }
+        }
+      ],
+      "bindings": [
+        {
+          "id": "status_handshake",
+          "match": {
+            "domain": "conn",
+            "execution_kind": "stateful",
+            "support_status": "supported",
+            "action": "ActSendStatus"
+          },
+          "from": "Connected",
+          "to": "StatusExchanged",
+          "label_prefix": "sem_conn_status_rule",
+          "description_prefix": "AST bind: Status exchange rule",
+          "tags": [
+            "semantic:status"
+          ]
+        },
+        {
+          "id": "metadata_refresh",
+          "match": {
+            "domain": "conn",
+            "execution_kind": "stateful",
+            "support_status": "supported",
+            "protocol_contains": "metadata"
+          },
+          "from": "StatusExchanged",
+          "to": "MetadataKnown",
+          "label_prefix": "sem_conn_metadata_rule",
+          "description_prefix": "AST bind: metadata refresh rule",
+          "tags": [
+            "semantic:metadata"
+          ]
+        },
+        {
+          "id": "goodbye_disconnect",
+          "match": {
+            "domain": "conn",
+            "execution_kind": "stateful",
+            "support_status": "supported",
+            "protocol_contains": "goodbye"
+          },
+          "from": "StatusExchanged",
+          "to": "GoodbyeSent",
+          "label_prefix": "sem_conn_goodbye_rule",
+          "description_prefix": "AST bind: goodbye/disconnection rule",
+          "tags": [
+            "semantic:goodbye"
+          ]
+        },
+        {
+          "id": "post_status_sync_probe",
+          "match": {
+            "domain": "conn",
+            "execution_kind": "stateful",
+            "support_status": "supported",
+            "protocol_contains": "beacon_blocks_by_range"
+          },
+          "from": "StatusExchanged",
+          "to": "SyncProbing",
+          "label_prefix": "sem_conn_sync_rule",
+          "description_prefix": "AST bind: post-handshake sync probe rule",
+          "tags": [
+            "semantic:sync"
+          ]
+        },
+        {
+          "id": "ping_liveness",
+          "match": {
+            "domain": "conn",
+            "execution_kind": "stateful",
+            "support_status": "supported",
+            "protocol_contains": "ping"
+          },
+          "from": "StatusExchanged",
+          "to": "StatusExchanged",
+          "label_prefix": "sem_conn_ping_rule",
+          "description_prefix": "AST bind: ping/liveness rule",
+          "tags": [
+            "semantic:ping"
+          ]
+        }
+      ],
+      "constructor": "NewConnLifecycleMachine"
+    },
+    {
+      "name": "ReqResp",
+      "file": "reqresp.json",
+      "init_state": "Idle",
+      "states": [
+        {
+          "name": "Idle"
+        },
+        {
+          "name": "StreamOpen"
+        },
+        {
+          "name": "RequestWritten"
+        },
+        {
+          "name": "RequestHalfClosed"
+        },
+        {
+          "name": "FirstChunkSeen"
+        },
+        {
+          "name": "ResponseComplete"
+        },
+        {
+          "name": "StreamReset"
+        },
+        {
+          "name": "Closed",
+          "terminal": true
+        }
+      ],
+      "transitions": [
+        {
+          "from": "Idle",
+          "to": "StreamOpen",
+          "label": "sem_rr_open_stream",
+          "weight": 5,
+          "description": "HTTP/2/QUIC-stream reference: request stream opens before bytes are written",
+          "action": {
+            "type": "ActOpenStream",
+            "protocol": "/eth2/beacon_chain/req/beacon_blocks_by_range/2/ssz_snappy",
+            "timeout_ms": 5000
+          }
+        },
+        {
+          "from": "StreamOpen",
+          "to": "RequestHalfClosed",
+          "label": "sem_rr_write_and_close",
+          "weight": 7,
+          "description": "spec backbone: requester writes the request then closes the write side",
+          "action": {
+            "type": "ActWriteAndClose",
+            "payload": {
+              "kind": "builder",
+              "wrap": "ssz_snappy",
+              "name": "buildBeaconBlocksByRangeV2NearHead"
+            },
+            "timeout_ms": 5000
+          },
+          "oracle": {
+            "differential": true,
+            "must_not": [
+              "CRASH"
+            ],
+            "strength": "MUST"
+          }
+        },
+        {
+          "from": "StreamOpen",
+          "to": "RequestWritten",
+          "label": "sem_rr_write_partial",
+          "weight": 3,
+          "description": "reference backbone: partial write leaves a resource-holding stream state",
+          "action": {
+            "type": "ActWritePartial",
+            "payload": {
+              "kind": "literal",
+              "wrap": "raw",
+              "size": 1
+            },
+            "timeout_ms": 1000
+          }
+        },
+        {
+          "from": "RequestWritten",
+          "to": "StreamReset",
+          "label": "sem_rr_read_half_open",
+          "weight": 3,
+          "description": "negative path: read while the write side remains open",
+          "action": {
+            "type": "ActReadResponse",
+            "timeout_ms": 1000,
+            "keep_write_open": true
+          },
+          "oracle": {
+            "differential": true,
+            "must_not": [
+              "CRASH",
+              "ACCEPT"
+            ],
+            "strength": "MUST"
+          }
+        },
+        {
+          "from": "RequestHalfClosed",
+          "to": "FirstChunkSeen",
+          "label": "sem_rr_read_response",
+          "weight": 6,
+          "description": "spec backbone: response consists of response_chunk entries after request EOF",
+          "action": {
+            "type": "ActReadResponse",
+            "timeout_ms": 10000
+          },
+          "oracle": {
+            "differential": true,
+            "must_not": [
+              "CRASH"
+            ],
+            "strength": "MUST"
+          }
+        },
+        {
+          "from": "FirstChunkSeen",
+          "to": "ResponseComplete",
+          "label": "sem_rr_response_complete",
+          "weight": 5,
+          "description": "reference backbone: full response consumed or stream ended",
+          "action": {
+            "type": "ActCheckConnected"
+          }
+        },
+        {
+          "from": "ResponseComplete",
+          "to": "Idle",
+          "label": "sem_rr_reset",
+          "weight": 2,
+          "description": "reference backbone: another independent stream can be opened",
+          "action": {
+            "type": "ActCheckConnected"
+          }
+        },
+        {
+          "from": "ResponseComplete",
+          "to": "Closed",
+          "label": "sem_rr_finish",
+          "weight": 1,
+          "description": "reference backbone: terminal path after a complete response",
+          "action": {
+            "type": "ActCheckConnected"
+          }
+        },
+        {
+          "from": "StreamReset",
+          "to": "Closed",
+          "label": "sem_rr_reset_to_closed",
+          "weight": 3,
+          "description": "reference backbone: reset/error paths close the stream",
+          "action": {
+            "type": "ActCheckConnected"
+          }
+        }
+      ],
+      "bindings": [
+        {
+          "id": "reqresp_response_rule",
+          "match": {
+            "domain": "reqresp",
+            "execution_kind": "stateful",
+            "support_status": "supported",
+            "action": "ActSendReqResp"
+          },
+          "from": "Idle",
+          "to": "ResponseComplete",
+          "label_prefix": "sem_rr_rule",
+          "description_prefix": "AST bind: Req/Resp response behavior",
+          "tags": [
+            "semantic:reqresp"
+          ]
+        },
+        {
+          "id": "reqresp_open_stream_rule",
+          "match": {
+            "domain": "reqresp",
+            "execution_kind": "stateful",
+            "support_status": "supported",
+            "action": "ActOpenStream"
+          },
+          "from": "Idle",
+          "to": "StreamOpen",
+          "label_prefix": "sem_rr_open_rule",
+          "description_prefix": "AST bind: Req/Resp stream negotiation rule",
+          "tags": [
+            "semantic:reqresp",
+            "semantic:stream"
+          ]
+        },
+        {
+          "id": "reqresp_write_close_rule",
+          "match": {
+            "domain": "reqresp",
+            "execution_kind": "stateful",
+            "support_status": "supported",
+            "action": "ActWriteAndClose"
+          },
+          "from": "StreamOpen",
+          "to": "RequestHalfClosed",
+          "label_prefix": "sem_rr_write_close_rule",
+          "description_prefix": "AST bind: Req/Resp request write/half-close rule",
+          "tags": [
+            "semantic:reqresp",
+            "semantic:stream"
+          ]
+        },
+        {
+          "id": "reqresp_read_response_rule",
+          "match": {
+            "domain": "reqresp",
+            "execution_kind": "stateful",
+            "support_status": "supported",
+            "action": "ActReadResponse"
+          },
+          "from": "RequestHalfClosed",
+          "to": "FirstChunkSeen",
+          "label_prefix": "sem_rr_read_rule",
+          "description_prefix": "AST bind: Req/Resp response-read rule",
+          "tags": [
+            "semantic:reqresp",
+            "semantic:response"
+          ]
+        },
+        {
+          "id": "reqresp_validate_response_rule",
+          "match": {
+            "domain": "reqresp",
+            "execution_kind": "stateful",
+            "support_status": "supported",
+            "action": "ActValidateResponseOrder"
+          },
+          "from": "Idle",
+          "to": "ResponseComplete",
+          "label_prefix": "sem_rr_validate_rule",
+          "description_prefix": "AST bind: Req/Resp response inspection rule",
+          "tags": [
+            "semantic:reqresp",
+            "semantic:response"
+          ]
+        }
+      ],
+      "constructor": "NewReqRespMachine"
+    },
+    {
+      "name": "GossipValidation",
+      "file": "gossip.json",
+      "init_state": "Unsubscribed",
+      "states": [
+        {
+          "name": "Unsubscribed"
+        },
+        {
+          "name": "Subscribed"
+        },
+        {
+          "name": "ValidSeen"
+        },
+        {
+          "name": "DuplicateSeen"
+        },
+        {
+          "name": "ConflictingSeen"
+        },
+        {
+          "name": "DeferredQueued"
+        },
+        {
+          "name": "PeerPenalized"
+        },
+        {
+          "name": "Closed",
+          "terminal": true
+        }
+      ],
+      "transitions": [
+        {
+          "from": "Unsubscribed",
+          "to": "Subscribed",
+          "label": "sem_gossip_subscribe",
+          "weight": 6,
+          "description": "spec backbone: topic participation begins with an active subscription",
+          "action": {
+            "type": "ActSwitchTopic",
+            "protocol": "beacon_block"
+          }
+        },
+        {
+          "from": "Subscribed",
+          "to": "ValidSeen",
+          "label": "sem_gossip_valid_block",
+          "weight": 8,
+          "description": "spec backbone: first valid message can be accepted and propagated",
+          "action": {
+            "type": "ActInjectGossip",
+            "protocol": "beacon_block",
+            "payload": {
+              "kind": "builder",
+              "wrap": "raw",
+              "name": "buildValidBeaconBlock"
+            }
+          },
+          "oracle": {
+            "differential": true,
+            "must_not": [
+              "CRASH"
+            ],
+            "strength": "MUST"
+          }
+        },
+        {
+          "from": "ValidSeen",
+          "to": "DuplicateSeen",
+          "label": "sem_gossip_duplicate_probe",
+          "weight": 4,
+          "description": "reference backbone: duplicate/seen-message validation is stateful",
+          "action": {
+            "type": "ActInjectGossip",
+            "protocol": "beacon_block",
+            "payload": {
+              "kind": "builder",
+              "wrap": "raw",
+              "name": "buildValidBeaconBlock"
+            }
+          },
+          "oracle": {
+            "differential": true,
+            "must_not": [
+              "CRASH"
+            ],
+            "strength": "MUST"
+          }
+        },
+        {
+          "from": "ValidSeen",
+          "to": "ConflictingSeen",
+          "label": "sem_gossip_conflict_probe",
+          "weight": 4,
+          "description": "reference backbone: conflicting messages require prior valid context",
+          "action": {
+            "type": "ActInjectGossip",
+            "protocol": "beacon_block",
+            "payload": {
+              "kind": "builder",
+              "wrap": "raw",
+              "name": "buildInvalidBeaconBlockParentKnownValid"
+            }
+          },
+          "oracle": {
+            "differential": true,
+            "must_not": [
+              "CRASH"
+            ],
+            "strength": "MUST"
+          }
+        },
+        {
+          "from": "ValidSeen",
+          "to": "DeferredQueued",
+          "label": "sem_gossip_deferred_data_column",
+          "weight": 3,
+          "description": "spec backbone: some gossip validation depends on deferred parent/header availability",
+          "action": {
+            "type": "ActInjectGossip",
+            "protocol": "data_column_sidecar_0",
+            "payload": {
+              "kind": "builder",
+              "wrap": "raw",
+              "name": "buildValidDataColumnSidecar"
+            }
+          },
+          "guard": {
+            "fork_gte": "fulu"
+          },
+          "oracle": {
+            "differential": true,
+            "must_not": [
+              "CRASH"
+            ],
+            "strength": "MUST"
+          }
+        },
+        {
+          "from": "DuplicateSeen",
+          "to": "PeerPenalized",
+          "label": "sem_gossip_duplicate_score_probe",
+          "weight": 3,
+          "description": "reference backbone: repeated invalid/duplicate behavior may affect scoring",
+          "action": {
+            "type": "ActCheckConnected"
+          }
+        },
+        {
+          "from": "ConflictingSeen",
+          "to": "PeerPenalized",
+          "label": "sem_gossip_conflict_score_probe",
+          "weight": 3,
+          "description": "reference backbone: equivocation/conflict paths feed peer scoring",
+          "action": {
+            "type": "ActCheckConnected"
+          }
+        },
+        {
+          "from": "DeferredQueued",
+          "to": "Subscribed",
+          "label": "sem_gossip_deferred_recover",
+          "weight": 2,
+          "description": "reference backbone: deferred work eventually returns to subscribed validation",
+          "action": {
+            "type": "ActCheckConnected"
+          }
+        },
+        {
+          "from": "PeerPenalized",
+          "to": "Closed",
+          "label": "sem_gossip_penalty_close",
+          "weight": 2,
+          "description": "reference backbone: severe peer-score outcomes can end the session",
+          "action": {
+            "type": "ActDisconnectPeer"
+          }
+        }
+      ],
+      "bindings": [
+        {
+          "id": "gossip_stateful_rule",
+          "match": {
+            "domain": "gossip",
+            "execution_kind": "stateful",
+            "support_status": "supported"
+          },
+          "from": "Subscribed",
+          "to": "ValidSeen",
+          "label_prefix": "sem_gossip_rule",
+          "description_prefix": "AST bind: stateful gossip validation rule",
+          "tags": [
+            "semantic:gossip"
+          ]
+        }
+      ],
+      "constructor": "NewGossipMachine"
+    },
+    {
+      "name": "PeerScoring",
+      "file": "peerscoring.json",
+      "init_state": "CleanPeer",
+      "states": [
+        {
+          "name": "CleanPeer"
+        },
+        {
+          "name": "BadResponse1"
+        },
+        {
+          "name": "BadResponse2"
+        },
+        {
+          "name": "BadResponse3"
+        },
+        {
+          "name": "BadResponse4"
+        },
+        {
+          "name": "BadResponse5"
+        },
+        {
+          "name": "Penalized"
+        },
+        {
+          "name": "Banned",
+          "terminal": true
+        },
+        {
+          "name": "Recovered",
+          "terminal": true
+        }
+      ],
+      "transitions": [
+        {
+          "from": "CleanPeer",
+          "to": "BadResponse1",
+          "label": "sem_score_bad_response_1",
+          "weight": 8,
+          "description": "reference backbone: first malformed response/gossip event starts score degradation",
+          "action": {
+            "type": "ActInjectGossip",
+            "protocol": "beacon_block",
+            "payload": {
+              "kind": "builder",
+              "wrap": "raw",
+              "name": "buildRandomGossip100"
+            },
+            "mutator": "gossip_random_bytes"
+          }
+        },
+        {
+          "from": "BadResponse1",
+          "to": "BadResponse2",
+          "label": "sem_score_bad_response_2",
+          "weight": 7,
+          "action": {
+            "type": "ActInjectGossip",
+            "protocol": "beacon_block",
+            "payload": {
+              "kind": "builder",
+              "wrap": "raw",
+              "name": "buildRandomGossip100"
+            },
+            "mutator": "gossip_random_bytes"
+          }
+        },
+        {
+          "from": "BadResponse2",
+          "to": "BadResponse3",
+          "label": "sem_score_bad_response_3",
+          "weight": 6,
+          "action": {
+            "type": "ActSendReqResp",
+            "protocol": "/eth2/beacon_chain/req/ping/1/ssz_snappy",
+            "payload": {
+              "kind": "literal",
+              "wrap": "raw",
+              "size": 8
+            },
+            "mutator": "random_bytes",
+            "timeout_ms": 5000
+          }
+        },
+        {
+          "from": "BadResponse3",
+          "to": "BadResponse4",
+          "label": "sem_score_bad_response_4",
+          "weight": 5,
+          "action": {
+            "type": "ActInjectGossip",
+            "protocol": "beacon_block",
+            "payload": {
+              "kind": "builder",
+              "wrap": "raw",
+              "name": "buildRandomGossip200"
+            },
+            "mutator": "gossip_append_garbage"
+          }
+        },
+        {
+          "from": "BadResponse4",
+          "to": "BadResponse5",
+          "label": "sem_score_bad_response_5",
+          "weight": 5,
+          "action": {
+            "type": "ActInjectGossip",
+            "protocol": "beacon_block",
+            "payload": {
+              "kind": "builder",
+              "wrap": "raw",
+              "name": "buildRandomGossip300"
+            },
+            "mutator": "gossip_truncate"
+          }
+        },
+        {
+          "from": "BadResponse5",
+          "to": "Penalized",
+          "label": "sem_score_penalized",
+          "weight": 5,
+          "description": "reference backbone: repeated bad behavior crosses a penalty threshold",
+          "action": {
+            "type": "ActCheckConnected",
+            "timeout_ms": 1000
+          },
+          "oracle": {
+            "differential": true,
+            "must_not": [
+              "CRASH"
+            ],
+            "strength": "MUST"
+          }
+        },
+        {
+          "from": "Penalized",
+          "to": "Banned",
+          "label": "sem_score_banned_probe",
+          "weight": 4,
+          "description": "reference backbone: reconnect may fail once the peer is banned",
+          "action": {
+            "type": "ActReconnect",
+            "timeout_ms": 5000
+          },
+          "oracle": {
+            "differential": true,
+            "must_not": [
+              "CRASH"
+            ],
+            "strength": "MUST"
+          }
+        },
+        {
+          "from": "Penalized",
+          "to": "Recovered",
+          "label": "sem_score_recovered_probe",
+          "weight": 1,
+          "description": "reference backbone: score decay/recovery path",
+          "action": {
+            "type": "ActSleep",
+            "timeout_ms": 1000
+          },
+          "oracle": {
+            "differential": true,
+            "must_not": [
+              "CRASH"
+            ],
+            "strength": "MAY"
+          }
+        }
+      ],
+      "constructor": "NewPeerScoringMachine"
+    },
+    {
+      "name": "ResourceExhaustion",
+      "file": "resourceexhaustion.json",
+      "init_state": "Baseline",
+      "states": [
+        {
+          "name": "Baseline"
+        },
+        {
+          "name": "UnderBurst"
+        },
+        {
+          "name": "Saturated"
+        },
+        {
+          "name": "Recovered",
+          "terminal": true
+        }
+      ],
+      "transitions": [
+        {
+          "from": "Baseline",
+          "to": "UnderBurst",
+          "label": "sem_res_ping_burst",
+          "weight": 8,
+          "description": "reference backbone: burst load enters a resource-holding state",
+          "action": {
+            "type": "ActSendReqResp",
+            "protocol": "/eth2/beacon_chain/req/ping/1/ssz_snappy",
+            "payload": {
+              "kind": "fields",
+              "wrap": "ssz_snappy",
+              "fields": {
+                "value": {
+                  "lit": 1
+                }
+              }
+            },
+            "timeout_ms": 5000,
+            "repeat_count": 50
+          },
+          "oracle": {
+            "resource_trend": {
+              "min_samples": 5,
+              "max_total_mem_growth_mb": 100,
+              "require_monotonic": true,
+              "max_amplification_ratio": 50
+            }
+          }
+        },
+        {
+          "from": "UnderBurst",
+          "to": "Saturated",
+          "label": "sem_res_topic_saturation",
+          "weight": 6,
+          "description": "reference backbone: sustained multi-topic load probes cache/resource saturation",
+          "action": {
+            "type": "ActInjectGossip",
+            "protocol": "__flood_distinct_topics__",
+            "payload": {
+              "kind": "builder",
+              "wrap": "raw",
+              "name": "buildRandomGossip100"
+            },
+            "repeat_count": 100
+          },
+          "oracle": {
+            "resource_trend": {
+              "min_samples": 5,
+              "max_total_mem_growth_mb": 150,
+              "require_monotonic": true
+            }
+          }
+        },
+        {
+          "from": "Saturated",
+          "to": "Recovered",
+          "label": "sem_res_recovered",
+          "weight": 4,
+          "description": "reference backbone: after the burst stops, the peer should remain live or recover",
+          "action": {
+            "type": "ActSleep",
+            "timeout_ms": 1000
+          },
+          "oracle": {
+            "differential": true,
+            "must_not": [
+              "CRASH"
+            ],
+            "strength": "MUST"
+          }
+        }
+      ],
+      "constructor": "NewResourceExhaustionMachine"
+    },
+    {
+      "name": "ForkTransition",
+      "file": "forktransition.json",
+      "init_state": "PreFork",
+      "states": [
+        {
+          "name": "PreFork"
+        },
+        {
+          "name": "Boundary"
+        },
+        {
+          "name": "PostFork"
+        },
+        {
+          "name": "LegacyCleanup"
+        },
+        {
+          "name": "Disconnected",
+          "terminal": true
+        }
+      ],
+      "transitions": [
+        {
+          "from": "PreFork",
+          "to": "Boundary",
+          "label": "sem_fork_status_current",
+          "weight": 8,
+          "description": "spec backbone: observe current fork digest before crossing a fork boundary",
+          "action": {
+            "type": "ActSendStatus",
+            "protocol": "/eth2/beacon_chain/req/status/2/ssz_snappy",
+            "payload": {
+              "kind": "builder",
+              "wrap": "ssz_snappy",
+              "name": "buildStatusV2SSZ"
+            },
+            "timeout_ms": 5000
+          },
+          "oracle": {
+            "differential": true,
+            "expected": "SUCCESS",
+            "must_not": [
+              "CRASH"
+            ],
+            "strength": "MUST"
+          }
+        },
+        {
+          "from": "Boundary",
+          "to": "PostFork",
+          "label": "sem_fork_wrong_digest_probe",
+          "weight": 6,
+          "description": "spec backbone: fork-digest mismatch is a boundary-sensitive connection behavior",
+          "action": {
+            "type": "ActSendStatus",
+            "protocol": "/eth2/beacon_chain/req/status/2/ssz_snappy",
+            "payload": {
+              "kind": "builder",
+              "wrap": "ssz_snappy",
+              "name": "buildStatusV2ForkFlipped"
+            },
+            "timeout_ms": 5000
+          },
+          "oracle": {
+            "differential": true,
+            "must_not": [
+              "CRASH"
+            ],
+            "strength": "SHOULD"
+          }
+        },
+        {
+          "from": "PostFork",
+          "to": "LegacyCleanup",
+          "label": "sem_fork_legacy_topic_probe",
+          "weight": 5,
+          "description": "spec backbone: deprecated pre-fork topics should be cleaned up after the boundary",
+          "action": {
+            "type": "ActInjectGossip",
+            "protocol": "blob_sidecar_0",
+            "payload": {
+              "kind": "builder",
+              "wrap": "raw",
+              "name": "buildRandomGossip200"
+            },
+            "mutator": "gossip_random_bytes"
+          },
+          "guard": {
+            "fork_gte": "fulu"
+          },
+          "oracle": {
+            "differential": true,
+            "must_not": [
+              "CRASH"
+            ],
+            "strength": "SHOULD"
+          }
+        },
+        {
+          "from": "LegacyCleanup",
+          "to": "Disconnected",
+          "label": "sem_fork_disconnect",
+          "weight": 3,
+          "description": "reference backbone: fork mismatch or cleanup can end the peer session",
+          "action": {
+            "type": "ActDisconnectPeer"
+          }
+        }
+      ],
+      "constructor": "NewForkTransitionMachine"
+    },
+    {
+      "name": "Discovery",
+      "file": "discovery.json",
+      "constructor": "NewDiscoveryMachine",
+      "init_state": "DiscBaseline",
+      "states": [
+        {
+          "name": "DiscBaseline"
+        },
+        {
+          "name": "DiscProbing"
+        },
+        {
+          "name": "DiscCompleted",
+          "terminal": true
+        }
+      ],
+      "transitions": [
+        {
+          "from": "DiscBaseline",
+          "to": "DiscProbing",
+          "label": "disc_baseline",
+          "weight": 1,
+          "description": "backbone: liveness check",
+          "action": {
+            "type": "ActCheckConnected"
+          }
+        },
+        {
+          "from": "DiscProbing",
+          "to": "DiscBaseline",
+          "label": "disc_reset",
+          "weight": 1,
+          "description": "backbone: cycle back",
+          "action": {
+            "type": "ActCheckConnected"
+          }
+        },
+        {
+          "from": "DiscProbing",
+          "to": "DiscCompleted",
+          "label": "disc_finish",
+          "weight": 1,
+          "description": "backbone: terminal path",
+          "action": {
+            "type": "ActCheckConnected"
+          }
+        },
+        {
+          "from": "DiscBaseline",
+          "to": "DiscProbing",
+          "label": "disc_discovery_ddb113a2",
+          "weight": 2,
+          "description": "If a node's MetaData.attnets is composed of all zeros, the ENR MAY optionally include the attnets entry or leave it out entirely.",
+          "condition_desc": "when a node's MetaData.attnets is composed of all zeros",
+          "tags": [
+            "conditional"
+          ],
+          "spec_refs": [
+            "PROSE-MAY-cd1cb27a"
+          ],
+          "action": {
+            "type": "ActVerifyENRBehavior",
+            "protocol": "attnets"
+          },
+          "oracle": {
+            "differential": true,
+            "must_not": [
+              "CRASH"
+            ],
+            "strength": "MAY"
+          }
+        },
+        {
+          "from": "DiscBaseline",
+          "to": "DiscProbing",
+          "label": "disc_discovery_01d7937b",
+          "weight": 2,
+          "description": "The ENR MAY contain the following entries:",
+          "spec_refs": [
+            "PROSE-MAY-f46586f6"
+          ],
+          "action": {
+            "type": "ActQueryENR"
+          },
+          "oracle": {
+            "differential": true,
+            "must_not": [
+              "CRASH"
+            ],
+            "strength": "MAY"
+          }
+        },
+        {
+          "from": "DiscBaseline",
+          "to": "DiscProbing",
+          "label": "disc_discovery_787b7688",
+          "weight": 10,
+          "description": "If a node's MetaData.attnets has any non-zero bit, the ENR MUST include the attnets entry with the same value as MetaData.attnets.",
+          "condition_desc": "when a node's MetaData.attnets has any non-zero bit",
+          "tags": [
+            "conditional"
+          ],
+          "spec_refs": [
+            "PROSE-MUST-0648388b"
+          ],
+          "action": {
+            "type": "ActVerifyENRBehavior",
+            "protocol": "attnets"
+          },
+          "oracle": {
+            "differential": true,
+            "must_not": [
+              "CRASH"
+            ],
+            "strength": "MUST"
+          }
+        },
+        {
+          "from": "DiscBaseline",
+          "to": "DiscProbing",
+          "label": "disc_discovery_33743108",
+          "weight": 10,
+          "description": "The Ethereum Node Record (ENR) for an Ethereum consensus client MUST be present in an ENR):",
+          "spec_refs": [
+            "PROSE-MUST-9812f11c"
+          ],
+          "action": {
+            "type": "ActQueryENR"
+          },
+          "oracle": {
+            "differential": true,
+            "must_not": [
+              "CRASH"
+            ],
+            "strength": "MUST"
+          }
+        },
+        {
+          "from": "DiscBaseline",
+          "to": "DiscProbing",
+          "label": "disc_discovery_237d0dce",
+          "weight": 10,
+          "description": "The Ethereum Node Record (ENR) for an Ethereum consensus client MUST contain the following entries (exclusive of the sequence number and signature, which",
+          "spec_refs": [
+            "PROSE-MUST-bdd581d1"
+          ],
+          "action": {
+            "type": "ActQueryENR"
+          },
+          "oracle": {
+            "differential": true,
+            "must_not": [
+              "CRASH"
+            ],
+            "strength": "MUST"
+          }
+        },
+        {
+          "from": "DiscBaseline",
+          "to": "DiscProbing",
+          "label": "disc_discovery_66a97424",
+          "weight": 10,
+          "description": "When discovering and interfacing with peers, nodes MUST evaluate nfd alongside their existing consideration of the ENRForkID::next_ fields under the eth2 key, to form a more accurate view of the peer's intended next fork for the purposes of sustained peering",
+          "condition_desc": "when discovering and interfacing with peers",
+          "tags": [
+            "conditional"
+          ],
+          "spec_refs": [
+            "PROSE-MUST-eb253094"
+          ],
+          "action": {
+            "type": "ActVerifyENRBehavior",
+            "protocol": "nfd"
+          },
+          "guard": {
+            "fork_gte": "fulu"
+          },
+          "oracle": {
+            "differential": true,
+            "must_not": [
+              "CRASH"
+            ],
+            "strength": "MUST"
+          }
+        }
+      ],
+      "bindings": [
+        {
+          "id": "discovery_stateful_rule",
+          "match": {
+            "domain": "discovery",
+            "execution_kind": "stateful",
+            "support_status": "supported"
+          },
+          "from": "DiscBaseline",
+          "to": "DiscProbing",
+          "label_prefix": "sem_disc_stateful_rule",
+          "description_prefix": "AST bind: discovery stateful rule",
+          "tags": [
+            "semantic:discovery"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "LightClient",
+      "file": "lightclient.json",
+      "constructor": "NewLightClientMachine",
+      "init_state": "LCConnected",
+      "states": [
+        {
+          "name": "LCConnected"
+        },
+        {
+          "name": "LCBootstrapped"
+        },
+        {
+          "name": "LCUpdating"
+        },
+        {
+          "name": "LCCompleted",
+          "terminal": true
+        },
+        {
+          "name": "LCErrorReceived"
+        },
+        {
+          "name": "LCDisconnected"
+        }
+      ],
+      "transitions": [
+        {
+          "from": "LCConnected",
+          "to": "LCBootstrapped",
+          "label": "lc_valid_bootstrap",
+          "weight": 10,
+          "action": {
+            "type": "ActSendReqResp",
+            "protocol": "/eth2/beacon_chain/req/light_client_bootstrap/1/ssz_snappy",
+            "payload": {
+              "kind": "fields",
+              "wrap": "ssz_snappy",
+              "fields": {
+                "block_root": {
+                  "ctx": "finalized_root"
+                }
+              }
+            },
+            "timeout_ms": 10000
+          },
+          "oracle": {
+            "expected": "SUCCESS_OR_UNAVAILABLE",
+            "differential": true
+          }
+        },
+        {
+          "from": "LCConnected",
+          "to": "LCErrorReceived",
+          "label": "lc_malformed_bootstrap",
+          "weight": 5,
+          "action": {
+            "type": "ActSendReqResp",
+            "protocol": "/eth2/beacon_chain/req/light_client_bootstrap/1/ssz_snappy",
+            "payload": {
+              "kind": "literal",
+              "size": 32,
+              "wrap": "raw"
+            },
+            "mutator": "random_bytes",
+            "timeout_ms": 10000
+          },
+          "oracle": {
+            "expected": "REJECT",
+            "must_not": [
+              "ACCEPT"
+            ],
+            "differential": true
+          }
+        },
+        {
+          "from": "LCConnected",
+          "to": "LCErrorReceived",
+          "label": "lc_bootstrap_truncated",
+          "weight": 4,
+          "action": {
+            "type": "ActSendReqResp",
+            "protocol": "/eth2/beacon_chain/req/light_client_bootstrap/1/ssz_snappy",
+            "payload": {
+              "kind": "literal",
+              "size": 32,
+              "wrap": "raw"
+            },
+            "mutator": "truncate_half",
+            "timeout_ms": 10000
+          }
+        },
+        {
+          "from": "LCConnected",
+          "to": "LCErrorReceived",
+          "label": "lc_bootstrap_broken_snappy",
+          "weight": 3,
+          "action": {
+            "type": "ActSendReqResp",
+            "protocol": "/eth2/beacon_chain/req/light_client_bootstrap/1/ssz_snappy",
+            "payload": {
+              "kind": "literal",
+              "size": 32,
+              "wrap": "raw"
+            },
+            "mutator": "break_snappy",
+            "timeout_ms": 10000
+          }
+        },
+        {
+          "from": "LCConnected",
+          "to": "LCErrorReceived",
+          "label": "lc_bootstrap_garbage_appended",
+          "weight": 3,
+          "action": {
+            "type": "ActSendReqResp",
+            "protocol": "/eth2/beacon_chain/req/light_client_bootstrap/1/ssz_snappy",
+            "payload": {
+              "kind": "literal",
+              "size": 32,
+              "wrap": "raw"
+            },
+            "mutator": "append_garbage",
+            "timeout_ms": 10000
+          }
+        },
+        {
+          "from": "LCBootstrapped",
+          "to": "LCUpdating",
+          "label": "lc_valid_updates_by_range",
+          "weight": 10,
+          "action": {
+            "type": "ActSendReqResp",
+            "protocol": "/eth2/beacon_chain/req/light_client_updates_by_range/1/ssz_snappy",
+            "payload": {
+              "kind": "builder",
+              "name": "buildLCUpdatesByRange1SSZ",
+              "wrap": "ssz_snappy"
+            },
+            "timeout_ms": 10000
+          },
+          "oracle": {
+            "expected": "SUCCESS",
+            "differential": true
+          }
+        },
+        {
+          "from": "LCBootstrapped",
+          "to": "LCErrorReceived",
+          "label": "lc_updates_count_zero",
+          "weight": 4,
+          "action": {
+            "type": "ActSendReqResp",
+            "protocol": "/eth2/beacon_chain/req/light_client_updates_by_range/1/ssz_snappy",
+            "payload": {
+              "kind": "literal",
+              "null": true,
+              "wrap": "raw"
+            },
+            "mutator": "count_zero",
+            "timeout_ms": 10000
+          }
+        },
+        {
+          "from": "LCBootstrapped",
+          "to": "LCErrorReceived",
+          "label": "lc_updates_count_over_max",
+          "weight": 4,
+          "action": {
+            "type": "ActSendReqResp",
+            "protocol": "/eth2/beacon_chain/req/light_client_updates_by_range/1/ssz_snappy",
+            "payload": {
+              "kind": "literal",
+              "null": true,
+              "wrap": "raw"
+            },
+            "mutator": "count_over_max",
+            "timeout_ms": 10000
+          }
+        },
+        {
+          "from": "LCBootstrapped",
+          "to": "LCErrorReceived",
+          "label": "lc_malformed_updates",
+          "weight": 4,
+          "action": {
+            "type": "ActSendReqResp",
+            "protocol": "/eth2/beacon_chain/req/light_client_updates_by_range/1/ssz_snappy",
+            "payload": {
+              "kind": "literal",
+              "size": 16,
+              "wrap": "raw"
+            },
+            "mutator": "random_bytes",
+            "timeout_ms": 10000
+          },
+          "oracle": {
+            "expected": "REJECT",
+            "must_not": [
+              "ACCEPT"
+            ],
+            "differential": true
+          }
+        },
+        {
+          "from": "LCBootstrapped",
+          "to": "LCCompleted",
+          "label": "lc_bootstrap_then_finality",
+          "weight": 3,
+          "action": {
+            "type": "ActSendReqResp",
+            "protocol": "/eth2/beacon_chain/req/light_client_finality_update/1/ssz_snappy",
+            "timeout_ms": 10000
+          }
+        },
+        {
+          "from": "LCBootstrapped",
+          "to": "LCCompleted",
+          "label": "lc_bootstrap_then_optimistic",
+          "weight": 3,
+          "action": {
+            "type": "ActSendReqResp",
+            "protocol": "/eth2/beacon_chain/req/light_client_optimistic_update/1/ssz_snappy",
+            "timeout_ms": 10000
+          }
+        },
+        {
+          "from": "LCUpdating",
+          "to": "LCCompleted",
+          "label": "lc_valid_finality_update",
+          "weight": 10,
+          "action": {
+            "type": "ActSendReqResp",
+            "protocol": "/eth2/beacon_chain/req/light_client_finality_update/1/ssz_snappy",
+            "timeout_ms": 10000
+          },
+          "oracle": {
+            "expected": "SUCCESS_OR_UNAVAILABLE",
+            "differential": true
+          }
+        },
+        {
+          "from": "LCUpdating",
+          "to": "LCCompleted",
+          "label": "lc_valid_optimistic_update",
+          "weight": 8,
+          "action": {
+            "type": "ActSendReqResp",
+            "protocol": "/eth2/beacon_chain/req/light_client_optimistic_update/1/ssz_snappy",
+            "timeout_ms": 10000
+          },
+          "oracle": {
+            "expected": "SUCCESS_OR_UNAVAILABLE",
+            "differential": true
+          }
+        },
+        {
+          "from": "LCUpdating",
+          "to": "LCErrorReceived",
+          "label": "lc_malformed_finality",
+          "weight": 4,
+          "action": {
+            "type": "ActSendReqResp",
+            "protocol": "/eth2/beacon_chain/req/light_client_finality_update/1/ssz_snappy",
+            "payload": {
+              "kind": "literal",
+              "size": 50,
+              "wrap": "raw"
+            },
+            "mutator": "random_bytes",
+            "timeout_ms": 10000
+          },
+          "oracle": {
+            "expected": "REJECT",
+            "must_not": [
+              "ACCEPT"
+            ],
+            "differential": true
+          }
+        },
+        {
+          "from": "LCUpdating",
+          "to": "LCErrorReceived",
+          "label": "lc_malformed_optimistic",
+          "weight": 4,
+          "action": {
+            "type": "ActSendReqResp",
+            "protocol": "/eth2/beacon_chain/req/light_client_optimistic_update/1/ssz_snappy",
+            "payload": {
+              "kind": "literal",
+              "size": 50,
+              "wrap": "raw"
+            },
+            "mutator": "random_bytes",
+            "timeout_ms": 10000
+          },
+          "oracle": {
+            "expected": "REJECT",
+            "must_not": [
+              "ACCEPT"
+            ],
+            "differential": true
+          }
+        },
+        {
+          "from": "LCUpdating",
+          "to": "LCUpdating",
+          "label": "lc_additional_updates",
+          "weight": 5,
+          "action": {
+            "type": "ActSendReqResp",
+            "protocol": "/eth2/beacon_chain/req/light_client_updates_by_range/1/ssz_snappy",
+            "payload": {
+              "kind": "builder",
+              "name": "buildLCAdditionalUpdatesSSZ",
+              "wrap": "ssz_snappy"
+            },
+            "timeout_ms": 10000
+          }
+        },
+        {
+          "from": "LCErrorReceived",
+          "to": "LCConnected",
+          "label": "lc_error_to_connected",
+          "weight": 10,
+          "action": {
+            "type": "ActSleep",
+            "timeout_ms": 100
+          }
+        },
+        {
+          "from": "LCConnected",
+          "to": "LCConnected",
+          "label": "lc_idle_delay",
+          "weight": 1,
+          "action": {
+            "type": "ActSleep",
+            "timeout_ms": 2000
+          }
+        },
+        {
+          "from": "LCConnected",
+          "to": "LCDisconnected",
+          "label": "lc_send_goodbye",
+          "weight": 1,
+          "action": {
+            "type": "ActSendReqResp",
+            "protocol": "/eth2/beacon_chain/req/goodbye/1/ssz_snappy",
+            "payload": {
+              "kind": "fields",
+              "wrap": "ssz_snappy",
+              "fields": {
+                "reason": {
+                  "lit": 1
+                }
+              }
+            },
+            "timeout_ms": 3000
+          }
+        },
+        {
+          "from": "LCDisconnected",
+          "to": "LCConnected",
+          "label": "lc_reconnect",
+          "weight": 10,
+          "action": {
+            "type": "ActReconnect",
+            "timeout_ms": 15000
+          }
+        },
+        {
+          "from": "LCDisconnected",
+          "to": "LCCompleted",
+          "label": "lc_end_after_disconnect",
+          "weight": 5,
+          "action": {
+            "type": "ActSleep",
+            "timeout_ms": 100
+          }
+        }
+      ]
+    },
+    {
+      "name": "SubnetSubscription",
+      "file": "subnet.json",
+      "constructor": "NewSubnetMachine",
+      "init_state": "SubENRProbe",
+      "states": [
+        {
+          "name": "SubENRProbe"
+        },
+        {
+          "name": "SubCustodyResolve"
+        },
+        {
+          "name": "SubCustodyInject"
+        },
+        {
+          "name": "SubNonCustodyInject"
+        },
+        {
+          "name": "SubBoundaryInject"
+        },
+        {
+          "name": "SubDisconnected"
+        },
+        {
+          "name": "SubCompleted",
+          "terminal": true
+        }
+      ],
+      "transitions": [
+        {
+          "from": "SubENRProbe",
+          "to": "SubENRProbe",
+          "label": "sub_query_enr",
+          "weight": 10,
+          "action": {
+            "type": "ActQueryENR"
+          }
+        },
+        {
+          "from": "SubENRProbe",
+          "to": "SubENRProbe",
+          "label": "sub_status_handshake",
+          "weight": 8,
+          "action": {
+            "type": "ActSendStatus",
+            "protocol": "/eth2/beacon_chain/req/status/2/ssz_snappy",
+            "payload": {
+              "kind": "builder",
+              "name": "buildStatusV2SSZ",
+              "wrap": "ssz_snappy"
+            },
+            "timeout_ms": 5000
+          }
+        },
+        {
+          "from": "SubENRProbe",
+          "to": "SubENRProbe",
+          "label": "sub_metadata_v3",
+          "weight": 6,
+          "action": {
+            "type": "ActSendReqResp",
+            "protocol": "/eth2/beacon_chain/req/metadata/3/ssz_snappy",
+            "timeout_ms": 5000
+          }
+        },
+        {
+          "from": "SubENRProbe",
+          "to": "SubCustodyResolve",
+          "label": "sub_resolve_subnets",
+          "weight": 10,
+          "condition_desc": "ENR snapshot is available",
+          "guard": {
+            "or": [
+              {
+                "generating_mode": true
+              },
+              {
+                "present": "enr_snapshot"
+              }
+            ]
+          },
+          "action": {
+            "type": "ActResolveSubnets"
+          }
+        },
+        {
+          "from": "SubENRProbe",
+          "to": "SubENRProbe",
+          "label": "sub_probe_idle",
+          "weight": 2,
+          "action": {
+            "type": "ActSleep",
+            "timeout_ms": 2000
+          }
+        },
+        {
+          "from": "SubCustodyResolve",
+          "to": "SubCustodyResolve",
+          "label": "sub_verify_attnets",
+          "weight": 6,
+          "action": {
+            "type": "ActVerifyENRBehavior",
+            "protocol": "attnets"
+          },
+          "spec_refs": [
+            "PROSE-MUST-0648388b"
+          ]
+        },
+        {
+          "from": "SubCustodyResolve",
+          "to": "SubCustodyResolve",
+          "label": "sub_verify_syncnets",
+          "weight": 5,
+          "action": {
+            "type": "ActVerifyENRBehavior",
+            "protocol": "syncnets"
+          }
+        },
+        {
+          "from": "SubCustodyResolve",
+          "to": "SubCustodyResolve",
+          "label": "sub_verify_cgc",
+          "weight": 6,
+          "action": {
+            "type": "ActVerifyENRBehavior",
+            "protocol": "cgc"
+          },
+          "spec_refs": [
+            "PROSE-MAY-99c5c95f",
+            "PROSE-MUST-56ec7740"
+          ]
+        },
+        {
+          "from": "SubCustodyResolve",
+          "to": "SubCustodyInject",
+          "label": "sub_resolve_to_custody_inject",
+          "weight": 8,
+          "condition_desc": "at least one custody subnet resolved",
+          "guard": {
+            "or": [
+              {
+                "generating_mode": true
+              },
+              {
+                "len": {
+                  "field": "subnet_custody_subnets",
+                  "op": ">",
+                  "value": 0
+                }
+              }
+            ]
+          },
+          "action": {
+            "type": "ActSleep",
+            "timeout_ms": 100
+          }
+        },
+        {
+          "from": "SubCustodyResolve",
+          "to": "SubNonCustodyInject",
+          "label": "sub_resolve_to_noncustody_inject",
+          "weight": 6,
+          "condition_desc": "at least one non-custody subnet resolved",
+          "guard": {
+            "or": [
+              {
+                "generating_mode": true
+              },
+              {
+                "len": {
+                  "field": "subnet_non_custody_subnets",
+                  "op": ">",
+                  "value": 0
+                }
+              }
+            ]
+          },
+          "action": {
+            "type": "ActSleep",
+            "timeout_ms": 100
+          }
+        },
+        {
+          "from": "SubCustodyInject",
+          "to": "SubCustodyInject",
+          "label": "sub_inject_custody_data_column",
+          "weight": 10,
+          "action": {
+            "type": "ActInjectGossip",
+            "payload": {
+              "kind": "builder",
+              "name": "buildSubInjectCustodyDataColumn",
+              "wrap": "raw"
+            },
+            "mutator": "gossip_random_bytes"
+          }
+        },
+        {
+          "from": "SubCustodyInject",
+          "to": "SubCustodyInject",
+          "label": "sub_inject_subscribed_attestation",
+          "weight": 8,
+          "action": {
+            "type": "ActInjectGossip",
+            "payload": {
+              "kind": "builder",
+              "name": "buildSubInjectSubscribedAttestation",
+              "wrap": "raw"
+            },
+            "mutator": "gossip_random_bytes"
+          }
+        },
+        {
+          "from": "SubCustodyInject",
+          "to": "SubCustodyInject",
+          "label": "sub_inject_subscribed_sync",
+          "weight": 6,
+          "action": {
+            "type": "ActInjectGossip",
+            "payload": {
+              "kind": "builder",
+              "name": "buildSubInjectSubscribedSync",
+              "wrap": "raw"
+            },
+            "mutator": "gossip_random_bytes"
+          }
+        },
+        {
+          "from": "SubCustodyInject",
+          "to": "SubCustodyInject",
+          "label": "sub_custody_check_connected",
+          "weight": 8,
+          "action": {
+            "type": "ActCheckConnected",
+            "timeout_ms": 200
+          }
+        },
+        {
+          "from": "SubCustodyInject",
+          "to": "SubCustodyInject",
+          "label": "sub_custody_burst_3",
+          "weight": 5,
+          "action": {
+            "type": "ActInjectGossip",
+            "payload": {
+              "kind": "builder",
+              "name": "buildSubInjectCustodyDataColumn",
+              "wrap": "raw"
+            },
+            "mutator": "gossip_random_bytes",
+            "timeout_ns": 3
+          }
+        },
+        {
+          "from": "SubCustodyInject",
+          "to": "SubNonCustodyInject",
+          "label": "sub_custody_to_noncustody",
+          "weight": 8,
+          "condition_desc": "at least two custody injections sent",
+          "guard": {
+            "or": [
+              {
+                "generating_mode": true
+              },
+              {
+                "count": {
+                  "field": "subnet_custody_injected",
+                  "op": ">=",
+                  "value": 2
+                }
+              }
+            ]
+          },
+          "action": {
+            "type": "ActSleep",
+            "timeout_ms": 100
+          }
+        },
+        {
+          "from": "SubCustodyInject",
+          "to": "SubBoundaryInject",
+          "label": "sub_custody_to_boundary",
+          "weight": 4,
+          "condition_desc": "at least one custody injection sent",
+          "guard": {
+            "or": [
+              {
+                "generating_mode": true
+              },
+              {
+                "count": {
+                  "field": "subnet_custody_injected",
+                  "op": ">=",
+                  "value": 1
+                }
+              }
+            ]
+          },
+          "action": {
+            "type": "ActSleep",
+            "timeout_ms": 100
+          }
+        },
+        {
+          "from": "SubCustodyInject",
+          "to": "SubDisconnected",
+          "label": "sub_custody_detected_disconnect",
+          "weight": 3,
+          "action": {
+            "type": "ActCheckConnected",
+            "timeout_ms": 500
+          }
+        },
+        {
+          "from": "SubNonCustodyInject",
+          "to": "SubNonCustodyInject",
+          "label": "sub_inject_noncustody_data_column",
+          "weight": 10,
+          "action": {
+            "type": "ActInjectGossip",
+            "payload": {
+              "kind": "builder",
+              "name": "buildSubInjectNonCustodyDataColumn",
+              "wrap": "raw"
+            },
+            "mutator": "gossip_random_bytes"
+          }
+        },
+        {
+          "from": "SubNonCustodyInject",
+          "to": "SubNonCustodyInject",
+          "label": "sub_inject_unsubscribed_attestation",
+          "weight": 8,
+          "action": {
+            "type": "ActInjectGossip",
+            "payload": {
+              "kind": "builder",
+              "name": "buildSubInjectUnsubscribedAttestation",
+              "wrap": "raw"
+            },
+            "mutator": "gossip_random_bytes"
+          }
+        },
+        {
+          "from": "SubNonCustodyInject",
+          "to": "SubNonCustodyInject",
+          "label": "sub_inject_unsubscribed_sync",
+          "weight": 6,
+          "action": {
+            "type": "ActInjectGossip",
+            "payload": {
+              "kind": "builder",
+              "name": "buildSubInjectUnsubscribedSync",
+              "wrap": "raw"
+            },
+            "mutator": "gossip_random_bytes"
+          }
+        },
+        {
+          "from": "SubNonCustodyInject",
+          "to": "SubNonCustodyInject",
+          "label": "sub_noncustody_check_connected",
+          "weight": 8,
+          "action": {
+            "type": "ActCheckConnected",
+            "timeout_ms": 200
+          }
+        },
+        {
+          "from": "SubNonCustodyInject",
+          "to": "SubNonCustodyInject",
+          "label": "sub_noncustody_burst_5",
+          "weight": 5,
+          "action": {
+            "type": "ActInjectGossip",
+            "payload": {
+              "kind": "builder",
+              "name": "buildSubInjectNonCustodyDataColumn",
+              "wrap": "raw"
+            },
+            "mutator": "gossip_random_bytes",
+            "timeout_ns": 5
+          }
+        },
+        {
+          "from": "SubNonCustodyInject",
+          "to": "SubBoundaryInject",
+          "label": "sub_noncustody_to_boundary",
+          "weight": 6,
+          "condition_desc": "at least two non-custody injections sent",
+          "guard": {
+            "or": [
+              {
+                "generating_mode": true
+              },
+              {
+                "count": {
+                  "field": "subnet_non_custody_injected",
+                  "op": ">=",
+                  "value": 2
+                }
+              }
+            ]
+          },
+          "action": {
+            "type": "ActSleep",
+            "timeout_ms": 100
+          }
+        },
+        {
+          "from": "SubNonCustodyInject",
+          "to": "SubDisconnected",
+          "label": "sub_noncustody_detected_disconnect",
+          "weight": 3,
+          "action": {
+            "type": "ActCheckConnected",
+            "timeout_ms": 500
+          }
+        },
+        {
+          "from": "SubBoundaryInject",
+          "to": "SubBoundaryInject",
+          "label": "sub_inject_attestation_64",
+          "weight": 8,
+          "action": {
+            "type": "ActInjectGossip",
+            "protocol": "beacon_attestation_64",
+            "payload": {
+              "kind": "builder",
+              "name": "buildSubBoundaryOutOfRange",
+              "wrap": "raw"
+            },
+            "mutator": "gossip_random_bytes"
+          },
+          "spec_refs": [
+            "BEACON_ATTESTATION-REJECT-02f714ed",
+            "BEACON_ATTESTATION_SUBNET_ID-MUST-454af71d"
+          ],
+          "oracle": {
+            "differential": true
+          }
+        },
+        {
+          "from": "SubBoundaryInject",
+          "to": "SubBoundaryInject",
+          "label": "sub_inject_data_column_128",
+          "weight": 8,
+          "action": {
+            "type": "ActInjectGossip",
+            "protocol": "data_column_sidecar_128",
+            "payload": {
+              "kind": "builder",
+              "name": "buildSubBoundaryOutOfRange",
+              "wrap": "raw"
+            },
+            "mutator": "gossip_random_bytes"
+          },
+          "spec_refs": [
+            "DATA_COLUMN_SIDECAR-REJECT-c094c7ea",
+            "DATA_COLUMN_SIDECAR-REJECT-459b0d39"
+          ],
+          "oracle": {
+            "differential": true
+          }
+        },
+        {
+          "from": "SubBoundaryInject",
+          "to": "SubBoundaryInject",
+          "label": "sub_inject_sync_committee_4",
+          "weight": 7,
+          "action": {
+            "type": "ActInjectGossip",
+            "protocol": "sync_committee_4",
+            "payload": {
+              "kind": "builder",
+              "name": "buildSubBoundaryOutOfRange",
+              "wrap": "raw"
+            },
+            "mutator": "gossip_random_bytes"
+          },
+          "spec_refs": [
+            "SYNC_COMMITTEE_MESSAGE-REJECT-c428cd4e"
+          ],
+          "oracle": {
+            "differential": true
+          }
+        },
+        {
+          "from": "SubBoundaryInject",
+          "to": "SubBoundaryInject",
+          "label": "sub_inject_deprecated_blob",
+          "weight": 6,
+          "action": {
+            "type": "ActInjectGossip",
+            "protocol": "blob_sidecar_0",
+            "payload": {
+              "kind": "builder",
+              "name": "buildSubBoundaryDeprecated",
+              "wrap": "raw"
+            },
+            "mutator": "gossip_random_bytes"
+          },
+          "spec_refs": [
+            "PROSE-MUST-9cd4be04",
+            "PROSE-MUST-4bfaa766"
+          ]
+        },
+        {
+          "from": "SubBoundaryInject",
+          "to": "SubBoundaryInject",
+          "label": "sub_inject_cross_type",
+          "weight": 6,
+          "action": {
+            "type": "ActInjectGossip",
+            "payload": {
+              "kind": "builder",
+              "name": "buildSubBoundaryCrossType",
+              "wrap": "raw"
+            },
+            "mutator": "gossip_cross_type"
+          }
+        },
+        {
+          "from": "SubBoundaryInject",
+          "to": "SubBoundaryInject",
+          "label": "sub_boundary_check_connected",
+          "weight": 7,
+          "action": {
+            "type": "ActCheckConnected",
+            "timeout_ms": 500
+          }
+        },
+        {
+          "from": "SubBoundaryInject",
+          "to": "SubDisconnected",
+          "label": "sub_boundary_detected_disconnect",
+          "weight": 4,
+          "action": {
+            "type": "ActCheckConnected",
+            "timeout_ms": 1000
+          }
+        },
+        {
+          "from": "SubDisconnected",
+          "to": "SubENRProbe",
+          "label": "sub_reconnect_full",
+          "weight": 10,
+          "action": {
+            "type": "ActReconnect",
+            "timeout_ms": 15000
+          }
+        },
+        {
+          "from": "SubDisconnected",
+          "to": "SubCompleted",
+          "label": "sub_end_after_disconnect",
+          "weight": 5,
+          "action": {
+            "type": "ActSleep",
+            "timeout_ms": 100
+          }
+        },
+        {
+          "from": "SubDisconnected",
+          "to": "SubENRProbe",
+          "label": "sub_wait_reconnect",
+          "weight": 3,
+          "action": {
+            "type": "ActSleep",
+            "timeout_ms": 5000
+          }
+        }
+      ]
+    },
+    {
+      "name": "Concurrent",
+      "file": "concurrent.json",
+      "constructor": "NewConcurrentMachine",
+      "init_state": "ConcIdle",
+      "states": [
+        {
+          "name": "ConcIdle"
+        },
+        {
+          "name": "ConcOneStream"
+        },
+        {
+          "name": "ConcMultiStream"
+        },
+        {
+          "name": "ConcAtLimit"
+        },
+        {
+          "name": "ConcOverLimit",
+          "terminal": true
+        },
+        {
+          "name": "ConcCompleted",
+          "terminal": true
+        }
+      ],
+      "transitions": [
+        {
+          "from": "ConcIdle",
+          "to": "ConcOneStream",
+          "label": "conc_open_ping_stream",
+          "weight": 10,
+          "action": {
+            "type": "ActOpenStream",
+            "protocol": "/eth2/beacon_chain/req/ping/1/ssz_snappy",
+            "payload": {
+              "kind": "fields",
+              "wrap": "ssz_snappy",
+              "fields": {
+                "value": {
+                  "lit": 1
+                }
+              }
+            },
+            "timeout_ms": 10000
+          }
+        },
+        {
+          "from": "ConcIdle",
+          "to": "ConcOneStream",
+          "label": "conc_open_bbr_stream",
+          "weight": 8,
+          "action": {
+            "type": "ActOpenStream",
+            "protocol": "/eth2/beacon_chain/req/beacon_blocks_by_range/2/ssz_snappy",
+            "payload": {
+              "kind": "fields",
+              "wrap": "ssz_snappy",
+              "fields": {
+                "start_slot": {
+                  "lit": 0
+                },
+                "count": {
+                  "lit": 1
+                }
+              }
+            },
+            "timeout_ms": 10000
+          }
+        },
+        {
+          "from": "ConcIdle",
+          "to": "ConcOneStream",
+          "label": "conc_open_metadata_stream",
+          "weight": 8,
+          "action": {
+            "type": "ActOpenStream",
+            "protocol": "/eth2/beacon_chain/req/metadata/3/ssz_snappy",
+            "timeout_ms": 10000
+          }
+        },
+        {
+          "from": "ConcOneStream",
+          "to": "ConcMultiStream",
+          "label": "conc_open_second_stream",
+          "weight": 10,
+          "action": {
+            "type": "ActOpenStream",
+            "protocol": "/eth2/beacon_chain/req/ping/1/ssz_snappy",
+            "payload": {
+              "kind": "fields",
+              "wrap": "ssz_snappy",
+              "fields": {
+                "value": {
+                  "lit": 2
+                }
+              }
+            },
+            "timeout_ms": 10000
+          }
+        },
+        {
+          "from": "ConcMultiStream",
+          "to": "ConcMultiStream",
+          "label": "conc_open_additional_stream",
+          "weight": 8,
+          "action": {
+            "type": "ActOpenStream",
+            "protocol": "/eth2/beacon_chain/req/ping/1/ssz_snappy",
+            "payload": {
+              "kind": "builder",
+              "name": "buildPingStreamCountSSZ",
+              "wrap": "ssz_snappy"
+            },
+            "timeout_ms": 10000
+          },
+          "condition_desc": "fewer than eight streams are currently open",
+          "guard": {
+            "len": {
+              "field": "open_streams",
+              "op": "<",
+              "value": 8
+            }
+          }
+        },
+        {
+          "from": "ConcMultiStream",
+          "to": "ConcAtLimit",
+          "label": "conc_fill_to_limit",
+          "weight": 6,
+          "action": {
+            "type": "ActOpenStream",
+            "protocol": "/eth2/beacon_chain/req/metadata/3/ssz_snappy",
+            "timeout_ms": 10000
+          },
+          "condition_desc": "at least three streams are currently open",
+          "guard": {
+            "len": {
+              "field": "open_streams",
+              "op": ">=",
+              "value": 3
+            }
+          },
+          "oracle": {
+            "resource_bounds": {
+              "max_fd_delta": 20
+            },
+            "differential": true
+          }
+        },
+        {
+          "from": "ConcAtLimit",
+          "to": "ConcOverLimit",
+          "label": "conc_exceed_limit",
+          "weight": 10,
+          "action": {
+            "type": "ActOpenStream",
+            "protocol": "/eth2/beacon_chain/req/ping/1/ssz_snappy",
+            "payload": {
+              "kind": "fields",
+              "wrap": "ssz_snappy",
+              "fields": {
+                "value": {
+                  "lit": 99
+                }
+              }
+            },
+            "timeout_ms": 5000
+          },
+          "spec_refs": [
+            "PROSE-MUST_NOT-305625f9",
+            "PROSE-MAY-c3746d81"
+          ],
+          "oracle": {
+            "expected": "REJECT",
+            "must_not": [
+              "ACCEPT"
+            ],
+            "spec_predicate": "accepted == 0",
+            "differential": true
+          }
+        },
+        {
+          "from": "ConcMultiStream",
+          "to": "ConcMultiStream",
+          "label": "conc_read_latest",
+          "weight": 6,
+          "action": {
+            "type": "ActReadResponse",
+            "timeout_ms": 10000
+          }
+        },
+        {
+          "from": "ConcOneStream",
+          "to": "ConcIdle",
+          "label": "conc_read_and_close",
+          "weight": 8,
+          "action": {
+            "type": "ActReadResponse",
+            "timeout_ms": 10000
+          }
+        },
+        {
+          "from": "ConcAtLimit",
+          "to": "ConcMultiStream",
+          "label": "conc_read_at_limit",
+          "weight": 6,
+          "action": {
+            "type": "ActReadResponse",
+            "timeout_ms": 10000
+          }
+        },
+        {
+          "from": "ConcMultiStream",
+          "to": "ConcMultiStream",
+          "label": "conc_interleave_bbr",
+          "weight": 5,
+          "action": {
+            "type": "ActOpenStream",
+            "protocol": "/eth2/beacon_chain/req/beacon_blocks_by_range/2/ssz_snappy",
+            "payload": {
+              "kind": "fields",
+              "wrap": "ssz_snappy",
+              "fields": {
+                "start_slot": {
+                  "lit": 0
+                },
+                "count": {
+                  "lit": 1
+                }
+              }
+            },
+            "timeout_ms": 10000
+          },
+          "condition_desc": "fewer than ten streams are currently open",
+          "guard": {
+            "len": {
+              "field": "open_streams",
+              "op": "<",
+              "value": 10
+            }
+          }
+        },
+        {
+          "from": "ConcMultiStream",
+          "to": "ConcMultiStream",
+          "label": "conc_normal_ping_while_open",
+          "weight": 4,
+          "action": {
+            "type": "ActSendReqResp",
+            "protocol": "/eth2/beacon_chain/req/ping/1/ssz_snappy",
+            "payload": {
+              "kind": "fields",
+              "wrap": "ssz_snappy",
+              "fields": {
+                "value": {
+                  "lit": 42
+                }
+              }
+            },
+            "timeout_ms": 5000
+          }
+        },
+        {
+          "from": "ConcMultiStream",
+          "to": "ConcMultiStream",
+          "label": "conc_check_connected",
+          "weight": 2,
+          "action": {
+            "type": "ActCheckConnected",
+            "timeout_ms": 5000
+          }
+        },
+        {
+          "from": "ConcAtLimit",
+          "to": "ConcAtLimit",
+          "label": "conc_check_at_limit",
+          "weight": 3,
+          "action": {
+            "type": "ActCheckConnected",
+            "timeout_ms": 5000
+          }
+        },
+        {
+          "from": "ConcIdle",
+          "to": "ConcCompleted",
+          "label": "conc_idle_to_completed",
+          "weight": 5,
+          "action": {
+            "type": "ActSleep",
+            "timeout_ms": 100
+          }
+        },
+        {
+          "from": "ConcMultiStream",
+          "to": "ConcCompleted",
+          "label": "conc_multi_to_completed",
+          "weight": 3,
+          "action": {
+            "type": "ActSleep",
+            "timeout_ms": 100
+          }
+        },
+        {
+          "from": "ConcMultiStream",
+          "to": "ConcIdle",
+          "label": "conc_drain_to_idle",
+          "weight": 4,
+          "action": {
+            "type": "ActReadResponse",
+            "timeout_ms": 10000
+          },
+          "condition_desc": "exactly one stream is currently open",
+          "guard": {
+            "len": {
+              "field": "open_streams",
+              "op": "==",
+              "value": 1
+            }
+          }
+        },
+        {
+          "from": "ConcIdle",
+          "to": "ConcIdle",
+          "label": "conc_idle_delay",
+          "weight": 3,
+          "action": {
+            "type": "ActSleep",
+            "timeout_ms": 500
+          }
+        },
+        {
+          "from": "ConcOneStream",
+          "to": "ConcOneStream",
+          "label": "conc_write_without_close",
+          "weight": 4,
+          "action": {
+            "type": "ActWritePartial",
+            "protocol": "/eth2/beacon_chain/req/ping/1/ssz_snappy",
+            "payload": {
+              "kind": "fields",
+              "wrap": "ssz_snappy",
+              "fields": {
+                "value": {
+                  "lit": 1
+                }
+              }
+            },
+            "timeout_ms": 3000
+          },
+          "spec_refs": [
+            "PROSE-MUST-faaebe5c"
+          ]
+        },
+        {
+          "from": "ConcOneStream",
+          "to": "ConcCompleted",
+          "label": "conc_read_without_write_close",
+          "weight": 3,
+          "action": {
+            "type": "ActReadResponse",
+            "timeout_ms": 5000,
+            "keep_write_open": true
+          },
+          "spec_refs": [
+            "PROSE-MUST-faaebe5c"
+          ]
+        },
+        {
+          "from": "ConcMultiStream",
+          "to": "ConcMultiStream",
+          "label": "conc_per_protocol_limit",
+          "weight": 4,
+          "action": {
+            "type": "ActOpenStream",
+            "protocol": "/eth2/beacon_chain/req/ping/1/ssz_snappy",
+            "timeout_ms": 5000
+          },
+          "spec_refs": [
+            "PROSE-MUST_NOT-305625f9",
+            "PROSE-MAY-c3746d81"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "CryptoMsg",
+      "file": "cryptomsg.json",
+      "constructor": "NewCryptoMsgMachine",
+      "init_state": "CryptoReady",
+      "states": [
+        {
+          "name": "CryptoReady"
+        },
+        {
+          "name": "CryptoSent"
+        },
+        {
+          "name": "CryptoCompleted",
+          "terminal": true
+        }
+      ],
+      "transitions": [
+        {
+          "from": "CryptoReady",
+          "to": "CryptoSent",
+          "label": "cm_baseline",
+          "weight": 1,
+          "description": "backbone: liveness check",
+          "action": {
+            "type": "ActCheckConnected"
+          }
+        },
+        {
+          "from": "CryptoSent",
+          "to": "CryptoReady",
+          "label": "cm_reset",
+          "weight": 1,
+          "description": "backbone: cycle back",
+          "action": {
+            "type": "ActCheckConnected"
+          }
+        },
+        {
+          "from": "CryptoSent",
+          "to": "CryptoCompleted",
+          "label": "cm_finish",
+          "weight": 1,
+          "description": "backbone: terminal path",
+          "action": {
+            "type": "ActCheckConnected"
+          }
+        },
+        {
+          "from": "CryptoReady",
+          "to": "CryptoSent",
+          "label": "cm_valid_attester_slashing",
+          "weight": 2,
+          "description": "valid signed attester_slashing baseline",
+          "action": {
+            "type": "ActInjectGossip",
+            "protocol": "attester_slashing",
+            "payload": {
+              "kind": "builder",
+              "wrap": "raw",
+              "name": "buildValidAttesterSlashing"
+            }
+          },
+          "oracle": {
+            "differential": true
+          }
+        },
+        {
+          "from": "CryptoReady",
+          "to": "CryptoSent",
+          "label": "cm_valid_beacon_aggregate_and_proof",
+          "weight": 2,
+          "description": "valid signed beacon_aggregate_and_proof baseline",
+          "action": {
+            "type": "ActInjectGossip",
+            "protocol": "beacon_aggregate_and_proof",
+            "payload": {
+              "kind": "builder",
+              "wrap": "raw",
+              "name": "buildValidBeaconAggregateAndProof"
+            }
+          },
+          "oracle": {
+            "differential": true
+          }
+        },
+        {
+          "from": "CryptoReady",
+          "to": "CryptoSent",
+          "label": "cm_valid_beacon_attestation",
+          "weight": 2,
+          "description": "valid signed beacon_attestation baseline",
+          "action": {
+            "type": "ActInjectGossip",
+            "protocol": "beacon_attestation_0",
+            "payload": {
+              "kind": "builder",
+              "wrap": "raw",
+              "name": "buildValidBeaconAttestation"
+            }
+          },
+          "oracle": {
+            "differential": true
+          }
+        },
+        {
+          "from": "CryptoReady",
+          "to": "CryptoSent",
+          "label": "cm_valid_beacon_block",
+          "weight": 2,
+          "description": "valid signed beacon_block baseline",
+          "action": {
+            "type": "ActInjectGossip",
+            "protocol": "beacon_block",
+            "payload": {
+              "kind": "builder",
+              "wrap": "raw",
+              "name": "buildValidBeaconBlock"
+            }
+          },
+          "oracle": {
+            "differential": true
+          }
+        },
+        {
+          "from": "CryptoReady",
+          "to": "CryptoSent",
+          "label": "cm_valid_blob_sidecar",
+          "weight": 2,
+          "description": "valid signed blob_sidecar baseline",
+          "action": {
+            "type": "ActInjectGossip",
+            "protocol": "blob_sidecar_0",
+            "payload": {
+              "kind": "builder",
+              "wrap": "raw",
+              "name": "buildValidBlobSidecar"
+            }
+          },
+          "oracle": {
+            "differential": true
+          }
+        },
+        {
+          "from": "CryptoReady",
+          "to": "CryptoSent",
+          "label": "cm_valid_bls_to_execution_change",
+          "weight": 2,
+          "description": "valid signed bls_to_execution_change baseline",
+          "action": {
+            "type": "ActInjectGossip",
+            "protocol": "bls_to_execution_change",
+            "payload": {
+              "kind": "builder",
+              "wrap": "raw",
+              "name": "buildValidBlsToExecutionChange"
+            }
+          },
+          "oracle": {
+            "differential": true
+          }
+        },
+        {
+          "from": "CryptoReady",
+          "to": "CryptoSent",
+          "label": "cm_valid_data_column_sidecar",
+          "weight": 2,
+          "description": "valid signed data_column_sidecar baseline",
+          "action": {
+            "type": "ActInjectGossip",
+            "protocol": "data_column_sidecar_0",
+            "payload": {
+              "kind": "builder",
+              "wrap": "raw",
+              "name": "buildValidDataColumnSidecar"
+            }
+          },
+          "oracle": {
+            "differential": true
+          }
+        },
+        {
+          "from": "CryptoReady",
+          "to": "CryptoSent",
+          "label": "cm_valid_proposer_slashing",
+          "weight": 2,
+          "description": "valid signed proposer_slashing baseline",
+          "action": {
+            "type": "ActInjectGossip",
+            "protocol": "proposer_slashing",
+            "payload": {
+              "kind": "builder",
+              "wrap": "raw",
+              "name": "buildValidProposerSlashing"
+            }
+          },
+          "oracle": {
+            "differential": true
+          }
+        },
+        {
+          "from": "CryptoReady",
+          "to": "CryptoSent",
+          "label": "cm_valid_sync_committee_contribution_and_proof",
+          "weight": 2,
+          "description": "valid signed sync_committee_contribution_and_proof baseline",
+          "action": {
+            "type": "ActInjectGossip",
+            "protocol": "sync_committee_contribution_and_proof",
+            "payload": {
+              "kind": "builder",
+              "wrap": "raw",
+              "name": "buildValidSyncCommitteeContributionAndProof"
+            }
+          },
+          "oracle": {
+            "differential": true
+          }
+        },
+        {
+          "from": "CryptoReady",
+          "to": "CryptoSent",
+          "label": "cm_valid_sync_committee_message",
+          "weight": 2,
+          "description": "valid signed sync_committee_message baseline",
+          "action": {
+            "type": "ActInjectGossip",
+            "protocol": "sync_committee_0",
+            "payload": {
+              "kind": "builder",
+              "wrap": "raw",
+              "name": "buildValidSyncCommitteeMessage"
+            }
+          },
+          "oracle": {
+            "differential": true
+          }
+        },
+        {
+          "from": "CryptoReady",
+          "to": "CryptoSent",
+          "label": "cm_valid_voluntary_exit",
+          "weight": 2,
+          "description": "valid signed voluntary_exit baseline",
+          "action": {
+            "type": "ActInjectGossip",
+            "protocol": "voluntary_exit",
+            "payload": {
+              "kind": "builder",
+              "wrap": "raw",
+              "name": "buildValidVoluntaryExit"
+            }
+          },
+          "oracle": {
+            "differential": true
+          }
+        },
+        {
+          "from": "CryptoReady",
+          "to": "CryptoSent",
+          "label": "cm_invalid_attester_slashing_field_equality_1e280f1d",
+          "weight": 10,
+          "description": "[IGNORE] At least one index in the intersection has not yet been seen [failure: len(new_indices) == 0]",
+          "condition_desc": "when len(new_indices) == 0",
+          "tags": [
+            "conditional"
+          ],
+          "spec_refs": [
+            "ATTESTER_SLASHING-IGNORE-647ecfb9"
+          ],
+          "action": {
+            "type": "ActInjectGossip",
+            "protocol": "attester_slashing",
+            "payload": {
+              "kind": "builder",
+              "wrap": "raw",
+              "name": "buildInvalidAttesterSlashingFieldEquality"
+            }
+          },
+          "oracle": {
+            "differential": true,
+            "expected": "REJECT",
+            "must_not": [
+              "CRASH",
+              "ACCEPT"
+            ],
+            "spec_predicate": "accepted == 0",
+            "strength": "MUST"
+          }
+        },
+        {
+          "from": "CryptoReady",
+          "to": "CryptoSent",
+          "label": "cm_invalid_beacon_attestation_target_root_consistent_db847d1b",
+          "weight": 10,
+          "description": "[IGNORE] The block being voted for has been seen (via gossip or non-gossip sources) (MAY be queued until block is retrieved) [failure: beacon_block_root not in store.blocks]",
+          "condition_desc": "until \u00abblock is retrieved\u00bb; when beacon_block_root not in store.blocks",
+          "tags": [
+            "temporal:until",
+            "conditional"
+          ],
+          "spec_refs": [
+            "BEACON_ATTESTATION-IGNORE-19a3a197"
+          ],
+          "action": {
+            "type": "ActInjectGossip",
+            "protocol": "beacon_attestation_0",
+            "payload": {
+              "kind": "builder",
+              "wrap": "raw",
+              "name": "buildInvalidBeaconAttestationTargetRootConsistent"
+            }
+          },
+          "oracle": {
+            "differential": true,
+            "expected": "REJECT",
+            "must_not": [
+              "CRASH",
+              "ACCEPT"
+            ],
+            "spec_predicate": "accepted == 0",
+            "strength": "MUST"
+          }
+        },
+        {
+          "from": "CryptoReady",
+          "to": "CryptoSent",
+          "label": "cm_invalid_beacon_attestation_slot_epoch_range_47df4217",
+          "weight": 10,
+          "description": "[IGNORE] The attestation's epoch is either the current or previous epoch [failure: not (is_previous_epoch_attestation or is_current_epoch_attestation)]",
+          "condition_desc": "when not (is_previous_epoch_attestation or is_current_epoch_attestation)",
+          "tags": [
+            "conditional"
+          ],
+          "spec_refs": [
+            "BEACON_ATTESTATION-IGNORE-493398b9"
+          ],
+          "action": {
+            "type": "ActInjectGossip",
+            "protocol": "beacon_attestation_0",
+            "payload": {
+              "kind": "builder",
+              "wrap": "raw",
+              "name": "buildInvalidBeaconAttestationSlotEpochRange"
+            }
+          },
+          "guard": {
+            "fork_gte": "deneb"
+          },
+          "oracle": {
+            "differential": true,
+            "expected": "REJECT",
+            "must_not": [
+              "CRASH",
+              "ACCEPT"
+            ],
+            "spec_predicate": "accepted == 0",
+            "strength": "MUST"
+          }
+        },
+        {
+          "from": "CryptoReady",
+          "to": "CryptoSent",
+          "label": "cm_invalid_beacon_attestation_slot_future_a5d282c3",
+          "weight": 10,
+          "description": "[IGNORE] The attestation's slot is not from a future slot (MAY be queued for processing at the appropriate slot) [failure: not is_not_from_future_slot(state, data.slot, current_time_ms)]",
+          "condition_desc": "when not is_not_from_future_slot(state, data.slot, current_time_ms)",
+          "tags": [
+            "conditional"
+          ],
+          "spec_refs": [
+            "BEACON_ATTESTATION-IGNORE-5da40ec3"
+          ],
+          "action": {
+            "type": "ActInjectGossip",
+            "protocol": "beacon_attestation_0",
+            "payload": {
+              "kind": "builder",
+              "wrap": "raw",
+              "name": "buildInvalidBeaconAttestationSlotFuture"
+            }
+          },
+          "guard": {
+            "fork_gte": "deneb"
+          },
+          "oracle": {
+            "differential": true,
+            "expected": "REJECT",
+            "must_not": [
+              "CRASH",
+              "ACCEPT"
+            ],
+            "spec_predicate": "accepted == 0",
+            "strength": "MUST"
+          }
+        },
+        {
+          "from": "CryptoReady",
+          "to": "CryptoSent",
+          "label": "cm_invalid_beacon_attestation_slot_epoch_range_1f0f2bbd",
+          "weight": 10,
+          "description": "[IGNORE] The attestation slot is within the propagation range (MAY be queued for processing at the appropriate slot) [failure: not is_within_slot_range( state, data.slot, ATTESTATION_PROPAGATION_SLOT_RANGE, current_time_ms )]",
+          "condition_desc": "when not is_within_slot_range( state, data.slot, ATTESTATION_PROPAGATION_SLOT_RANGE, current_time_ms )",
+          "tags": [
+            "conditional"
+          ],
+          "spec_refs": [
+            "BEACON_ATTESTATION-IGNORE-9dbc7051"
+          ],
+          "action": {
+            "type": "ActInjectGossip",
+            "protocol": "beacon_attestation_0",
+            "payload": {
+              "kind": "builder",
+              "wrap": "raw",
+              "name": "buildInvalidBeaconAttestationSlotEpochRange"
+            }
+          },
+          "oracle": {
+            "differential": true,
+            "expected": "REJECT",
+            "must_not": [
+              "CRASH",
+              "ACCEPT"
+            ],
+            "spec_predicate": "accepted == 0",
+            "strength": "MUST"
+          }
+        },
+        {
+          "from": "CryptoReady",
+          "to": "CryptoSent",
+          "label": "cm_invalid_beacon_attestation_finalized_ancestor_e6df7015",
+          "weight": 10,
+          "description": "[IGNORE] The current finalized_checkpoint is an ancestor of the block [failure: finalized_checkpoint_block != store.finalized_checkpoint.root]",
+          "condition_desc": "when finalized_checkpoint_block != store.finalized_checkpoint.root",
+          "tags": [
+            "conditional"
+          ],
+          "spec_refs": [
+            "BEACON_ATTESTATION-IGNORE-e55933f5"
+          ],
+          "action": {
+            "type": "ActInjectGossip",
+            "protocol": "beacon_attestation_0",
+            "payload": {
+              "kind": "builder",
+              "wrap": "raw",
+              "name": "buildInvalidBeaconAttestationFinalizedAncestor"
+            }
+          },
+          "oracle": {
+            "differential": true,
+            "expected": "REJECT",
+            "must_not": [
+              "CRASH",
+              "ACCEPT"
+            ],
+            "spec_predicate": "accepted == 0",
+            "strength": "MUST"
+          }
+        },
+        {
+          "from": "CryptoReady",
+          "to": "CryptoSent",
+          "label": "cm_invalid_beacon_attestation_index_oob_36a88aef",
+          "weight": 10,
+          "description": "[IGNORE] No other valid attestation seen for this validator and target epoch [failure: (participant_index, target_epoch) in seen.attestation_validator_epochs]",
+          "condition_desc": "when (participant_index, target_epoch) in seen.attestation_validator_epochs",
+          "tags": [
+            "conditional"
+          ],
+          "spec_refs": [
+            "BEACON_ATTESTATION-IGNORE-fa60d57c"
+          ],
+          "action": {
+            "type": "ActInjectGossip",
+            "protocol": "beacon_attestation_0",
+            "payload": {
+              "kind": "builder",
+              "wrap": "raw",
+              "name": "buildInvalidBeaconAttestationIndexOob"
+            }
+          },
+          "oracle": {
+            "differential": true,
+            "expected": "REJECT",
+            "must_not": [
+              "CRASH",
+              "ACCEPT"
+            ],
+            "spec_predicate": "accepted == 0",
+            "strength": "MUST"
+          }
+        },
+        {
+          "from": "CryptoReady",
+          "to": "CryptoSent",
+          "label": "cm_invalid_beacon_attestation_slot_epoch_range_24c59c27",
+          "weight": 10,
+          "description": "[REJECT] The attestation's epoch matches its target [failure: target_epoch != compute_epoch_at_slot(data.slot)]",
+          "condition_desc": "when target_epoch != compute_epoch_at_slot(data.slot)",
+          "tags": [
+            "conditional"
+          ],
+          "spec_refs": [
+            "BEACON_ATTESTATION-REJECT-2d8f2580"
+          ],
+          "action": {
+            "type": "ActInjectGossip",
+            "protocol": "beacon_attestation_0",
+            "payload": {
+              "kind": "builder",
+              "wrap": "raw",
+              "name": "buildInvalidBeaconAttestationSlotEpochRange"
+            }
+          },
+          "oracle": {
+            "differential": true,
+            "expected": "REJECT",
+            "must_not": [
+              "CRASH",
+              "ACCEPT"
+            ],
+            "spec_predicate": "accepted == 0",
+            "strength": "MUST"
+          }
+        },
+        {
+          "from": "CryptoReady",
+          "to": "CryptoSent",
+          "label": "cm_invalid_beacon_attestation_index_oob_a9e42939",
+          "weight": 10,
+          "description": "[REJECT] The attestation's data index is zero [failure: data.index != 0]",
+          "condition_desc": "when data.index != 0",
+          "tags": [
+            "conditional"
+          ],
+          "spec_refs": [
+            "BEACON_ATTESTATION-REJECT-36fd424b"
+          ],
+          "action": {
+            "type": "ActInjectGossip",
+            "protocol": "beacon_attestation_0",
+            "payload": {
+              "kind": "builder",
+              "wrap": "raw",
+              "name": "buildInvalidBeaconAttestationIndexOob"
+            }
+          },
+          "guard": {
+            "fork_gte": "electra"
+          },
+          "oracle": {
+            "differential": true,
+            "expected": "REJECT",
+            "must_not": [
+              "CRASH",
+              "ACCEPT"
+            ],
+            "spec_predicate": "accepted == 0",
+            "strength": "MUST"
+          }
+        },
+        {
+          "from": "CryptoReady",
+          "to": "CryptoSent",
+          "label": "cm_invalid_beacon_attestation_target_root_consistent_789d7bb1",
+          "weight": 10,
+          "description": "[REJECT] The block being voted for passes validation [failure: beacon_block_root not in store.block_states]",
+          "condition_desc": "when beacon_block_root not in store.block_states",
+          "tags": [
+            "conditional"
+          ],
+          "spec_refs": [
+            "BEACON_ATTESTATION-REJECT-544ecc21"
+          ],
+          "action": {
+            "type": "ActInjectGossip",
+            "protocol": "beacon_attestation_0",
+            "payload": {
+              "kind": "builder",
+              "wrap": "raw",
+              "name": "buildInvalidBeaconAttestationTargetRootConsistent"
+            }
+          },
+          "oracle": {
+            "differential": true,
+            "expected": "REJECT",
+            "must_not": [
+              "CRASH",
+              "ACCEPT"
+            ],
+            "spec_predicate": "accepted == 0",
+            "strength": "MUST"
+          }
+        },
+        {
+          "from": "CryptoReady",
+          "to": "CryptoSent",
+          "label": "cm_invalid_beacon_attestation_target_root_consistent_19fdd1c0",
+          "weight": 10,
+          "description": "[REJECT] The attestation's target block is an ancestor of the LMD vote block [failure: target_checkpoint_block != data.target.root]",
+          "condition_desc": "when target_checkpoint_block != data.target.root",
+          "tags": [
+            "conditional"
+          ],
+          "spec_refs": [
+            "BEACON_ATTESTATION-REJECT-cb7a1c7e"
+          ],
+          "action": {
+            "type": "ActInjectGossip",
+            "protocol": "beacon_attestation_0",
+            "payload": {
+              "kind": "builder",
+              "wrap": "raw",
+              "name": "buildInvalidBeaconAttestationTargetRootConsistent"
+            }
+          },
+          "oracle": {
+            "differential": true,
+            "expected": "REJECT",
+            "must_not": [
+              "CRASH",
+              "ACCEPT"
+            ],
+            "spec_predicate": "accepted == 0",
+            "strength": "MUST"
+          }
+        },
+        {
+          "from": "CryptoReady",
+          "to": "CryptoSent",
+          "label": "cm_invalid_beacon_attestation_sig_invalid_7f4a269d",
+          "weight": 10,
+          "description": "[REJECT] The attestation signature is valid [failure: not is_valid_indexed_attestation(state, indexed_attestation)]",
+          "condition_desc": "when not is_valid_indexed_attestation(state, indexed_attestation)",
+          "tags": [
+            "conditional"
+          ],
+          "spec_refs": [
+            "BEACON_ATTESTATION-REJECT-f7a87fa4"
+          ],
+          "action": {
+            "type": "ActInjectGossip",
+            "protocol": "beacon_attestation_0",
+            "payload": {
+              "kind": "builder",
+              "wrap": "raw",
+              "name": "buildInvalidBeaconAttestationSigInvalid"
+            }
+          },
+          "oracle": {
+            "differential": true,
+            "expected": "REJECT",
+            "must_not": [
+              "CRASH",
+              "ACCEPT"
+            ],
+            "spec_predicate": "accepted == 0",
+            "strength": "MUST"
+          }
+        },
+        {
+          "from": "CryptoReady",
+          "to": "CryptoSent",
+          "label": "cm_invalid_beacon_attestation_slot_epoch_range_1de08da6",
+          "weight": 10,
+          "description": "[REJECT] The committee index is within the expected range [failure: committee_index >= committees_per_slot]",
+          "condition_desc": "when committee_index >= committees_per_slot",
+          "tags": [
+            "conditional"
+          ],
+          "spec_refs": [
+            "BEACON_ATTESTATION-REJECT-fc3dd3a9"
+          ],
+          "action": {
+            "type": "ActInjectGossip",
+            "protocol": "beacon_attestation_0",
+            "payload": {
+              "kind": "builder",
+              "wrap": "raw",
+              "name": "buildInvalidBeaconAttestationSlotEpochRange"
+            }
+          },
+          "oracle": {
+            "differential": true,
+            "expected": "REJECT",
+            "must_not": [
+              "CRASH",
+              "ACCEPT"
+            ],
+            "spec_predicate": "accepted == 0",
+            "strength": "MUST"
+          }
+        },
+        {
+          "from": "CryptoReady",
+          "to": "CryptoSent",
+          "label": "cm_invalid_beacon_attestation_index_oob_cdea4051",
+          "weight": 10,
+          "description": "The topic now propagates SingleAttestation objects: the attesting validator's index is carried directly in the message, the committee index is read from attestation.committee_index, and attestation.data.index MUST be zero.",
+          "spec_refs": [
+            "BEACON_ATTESTATION_SUBNET_ID-MUST-454af71d"
+          ],
+          "action": {
+            "type": "ActInjectGossip",
+            "protocol": "beacon_attestation_0",
+            "payload": {
+              "kind": "builder",
+              "wrap": "raw",
+              "name": "buildInvalidBeaconAttestationIndexOob"
+            }
+          },
+          "guard": {
+            "fork_gte": "electra"
+          },
+          "oracle": {
+            "differential": true,
+            "expected": "REJECT",
+            "must_not": [
+              "CRASH",
+              "ACCEPT"
+            ],
+            "spec_predicate": "accepted == 0",
+            "strength": "MUST"
+          }
+        },
+        {
+          "from": "CryptoReady",
+          "to": "CryptoSent",
+          "label": "cm_invalid_beacon_block_parent_known_valid_e356b48a",
+          "weight": 10,
+          "description": "[IGNORE] The block's parent's execution payload passes validation [failure: is_execution_enabled(state, block.body) and parent_payload_status == PAYLOAD_STATUS_INVALIDATED]",
+          "condition_desc": "when is_execution_enabled(state, block.body) and parent_payload_status == PAYLOAD_STATUS_INVALIDATED",
+          "tags": [
+            "conditional"
+          ],
+          "spec_refs": [
+            "BEACON_BLOCK-IGNORE-04770bd3"
+          ],
+          "action": {
+            "type": "ActInjectGossip",
+            "protocol": "beacon_block",
+            "payload": {
+              "kind": "builder",
+              "wrap": "raw",
+              "name": "buildInvalidBeaconBlockParentKnownValid"
+            }
+          },
+          "guard": {
+            "fork_gte": "bellatrix"
+          },
+          "oracle": {
+            "differential": true,
+            "expected": "REJECT",
+            "must_not": [
+              "CRASH",
+              "ACCEPT"
+            ],
+            "spec_predicate": "accepted == 0",
+            "strength": "MUST"
+          }
+        },
+        {
+          "from": "CryptoReady",
+          "to": "CryptoSent",
+          "label": "cm_invalid_beacon_block_slot_future_70b6eea0",
+          "weight": 10,
+          "description": "[IGNORE] The block is not from a future slot (MAY be queued for processing at the appropriate slot) [failure: not is_not_from_future_slot(state, block.slot, current_time_ms)]",
+          "condition_desc": "when not is_not_from_future_slot(state, block.slot, current_time_ms)",
+          "tags": [
+            "conditional"
+          ],
+          "spec_refs": [
+            "BEACON_BLOCK-IGNORE-451f432d"
+          ],
+          "action": {
+            "type": "ActInjectGossip",
+            "protocol": "beacon_block",
+            "payload": {
+              "kind": "builder",
+              "wrap": "raw",
+              "name": "buildInvalidBeaconBlockSlotFuture"
+            }
+          },
+          "oracle": {
+            "differential": true,
+            "expected": "REJECT",
+            "must_not": [
+              "CRASH",
+              "ACCEPT"
+            ],
+            "spec_predicate": "accepted == 0",
+            "strength": "MUST"
+          }
+        },
+        {
+          "from": "CryptoReady",
+          "to": "CryptoSent",
+          "label": "cm_invalid_beacon_block_parent_known_valid_3d56b375",
+          "weight": 10,
+          "description": "[IGNORE] The block's parent has been seen (via gossip or non-gossip sources) (MAY be queued until parent is retrieved) [failure: block.parent_root not in store.blocks]",
+          "condition_desc": "until \u00abparent is retrieved\u00bb; when block.parent_root not in store.blocks",
+          "tags": [
+            "temporal:until",
+            "conditional"
+          ],
+          "spec_refs": [
+            "BEACON_BLOCK-IGNORE-b127f4ef"
+          ],
+          "action": {
+            "type": "ActInjectGossip",
+            "protocol": "beacon_block",
+            "payload": {
+              "kind": "builder",
+              "wrap": "raw",
+              "name": "buildInvalidBeaconBlockParentKnownValid"
+            }
+          },
+          "oracle": {
+            "differential": true,
+            "expected": "REJECT",
+            "must_not": [
+              "CRASH",
+              "ACCEPT"
+            ],
+            "spec_predicate": "accepted == 0",
+            "strength": "MUST"
+          }
+        },
+        {
+          "from": "CryptoReady",
+          "to": "CryptoSent",
+          "label": "cm_invalid_beacon_block_parent_known_valid_2e2047cd",
+          "weight": 10,
+          "description": "[IGNORE] The block's parent passes validation [failure: is_execution_enabled(state, block.body) and block.parent_root not in store.block_states]",
+          "condition_desc": "when is_execution_enabled(state, block.body) and block.parent_root not in store.block_states",
+          "tags": [
+            "conditional"
+          ],
+          "spec_refs": [
+            "BEACON_BLOCK-IGNORE-da534e6d"
+          ],
+          "action": {
+            "type": "ActInjectGossip",
+            "protocol": "beacon_block",
+            "payload": {
+              "kind": "builder",
+              "wrap": "raw",
+              "name": "buildInvalidBeaconBlockParentKnownValid"
+            }
+          },
+          "guard": {
+            "fork_gte": "bellatrix"
+          },
+          "oracle": {
+            "differential": true,
+            "expected": "REJECT",
+            "must_not": [
+              "CRASH",
+              "ACCEPT"
+            ],
+            "spec_predicate": "accepted == 0",
+            "strength": "MUST"
+          }
+        },
+        {
+          "from": "CryptoReady",
+          "to": "CryptoSent",
+          "label": "cm_invalid_beacon_block_sig_invalid_a1c60af9",
+          "weight": 10,
+          "description": "[IGNORE] The block is the first block with valid signature received for the proposer for the slot [failure: (block.proposer_index, block.slot) in seen.proposer_slots]",
+          "condition_desc": "when (block.proposer_index, block.slot) in seen.proposer_slots",
+          "tags": [
+            "conditional"
+          ],
+          "spec_refs": [
+            "BEACON_BLOCK-IGNORE-f0952a23"
+          ],
+          "action": {
+            "type": "ActInjectGossip",
+            "protocol": "beacon_block",
+            "payload": {
+              "kind": "builder",
+              "wrap": "raw",
+              "name": "buildInvalidBeaconBlockSigInvalid"
+            }
+          },
+          "oracle": {
+            "differential": true,
+            "expected": "REJECT",
+            "must_not": [
+              "CRASH",
+              "ACCEPT"
+            ],
+            "spec_predicate": "accepted == 0",
+            "strength": "MUST"
+          }
+        },
+        {
+          "from": "CryptoReady",
+          "to": "CryptoSent",
+          "label": "cm_invalid_beacon_block_parent_known_valid_64ee9bf4",
+          "weight": 10,
+          "description": "[REJECT] The block is from a higher slot than its parent [failure: block.slot <= store.blocks[block.parent_root].slot]",
+          "condition_desc": "when block.slot <= store.blocks[block.parent_root].slot",
+          "tags": [
+            "conditional"
+          ],
+          "spec_refs": [
+            "BEACON_BLOCK-REJECT-33eeeb94"
+          ],
+          "action": {
+            "type": "ActInjectGossip",
+            "protocol": "beacon_block",
+            "payload": {
+              "kind": "builder",
+              "wrap": "raw",
+              "name": "buildInvalidBeaconBlockParentKnownValid"
+            }
+          },
+          "oracle": {
+            "differential": true,
+            "expected": "REJECT",
+            "must_not": [
+              "CRASH",
+              "ACCEPT"
+            ],
+            "spec_predicate": "accepted == 0",
+            "strength": "MUST"
+          }
+        },
+        {
+          "from": "CryptoReady",
+          "to": "CryptoSent",
+          "label": "cm_invalid_beacon_block_sig_invalid_a53414fc",
+          "weight": 10,
+          "description": "[REJECT] The proposer signature is valid [failure: not bls.Verify(proposer.pubkey, signing_root, signed_beacon_block.signature)]",
+          "condition_desc": "when not bls.Verify(proposer.pubkey, signing_root, signed_beacon_block.signature)",
+          "tags": [
+            "conditional"
+          ],
+          "spec_refs": [
+            "BEACON_BLOCK-REJECT-3fd28bdc"
+          ],
+          "action": {
+            "type": "ActInjectGossip",
+            "protocol": "beacon_block",
+            "payload": {
+              "kind": "builder",
+              "wrap": "raw",
+              "name": "buildInvalidBeaconBlockSigInvalid"
+            }
+          },
+          "oracle": {
+            "differential": true,
+            "expected": "REJECT",
+            "must_not": [
+              "CRASH",
+              "ACCEPT"
+            ],
+            "spec_predicate": "accepted == 0",
+            "strength": "MUST"
+          }
+        },
+        {
+          "from": "CryptoReady",
+          "to": "CryptoSent",
+          "label": "cm_invalid_beacon_block_parent_known_valid_fcde6bcc",
+          "weight": 10,
+          "description": "[REJECT] The block's parent passes validation [failure: block.parent_root not in store.block_states]",
+          "condition_desc": "when block.parent_root not in store.block_states",
+          "tags": [
+            "conditional"
+          ],
+          "spec_refs": [
+            "BEACON_BLOCK-REJECT-5f829684"
+          ],
+          "action": {
+            "type": "ActInjectGossip",
+            "protocol": "beacon_block",
+            "payload": {
+              "kind": "builder",
+              "wrap": "raw",
+              "name": "buildInvalidBeaconBlockParentKnownValid"
+            }
+          },
+          "oracle": {
+            "differential": true,
+            "expected": "REJECT",
+            "must_not": [
+              "CRASH",
+              "ACCEPT"
+            ],
+            "spec_predicate": "accepted == 0",
+            "strength": "MUST"
+          }
+        },
+        {
+          "from": "CryptoReady",
+          "to": "CryptoSent",
+          "label": "cm_invalid_beacon_block_parent_known_valid_a083817b",
+          "weight": 10,
+          "description": "[REJECT] The block's parent passes validation ([Modified in Bellatrix]) [failure: block.parent_root not in store.block_states]",
+          "condition_desc": "when block.parent_root not in store.block_states",
+          "tags": [
+            "conditional"
+          ],
+          "spec_refs": [
+            "BEACON_BLOCK-REJECT-823c7319"
+          ],
+          "action": {
+            "type": "ActInjectGossip",
+            "protocol": "beacon_block",
+            "payload": {
+              "kind": "builder",
+              "wrap": "raw",
+              "name": "buildInvalidBeaconBlockParentKnownValid"
+            }
+          },
+          "guard": {
+            "fork_gte": "bellatrix"
+          },
+          "oracle": {
+            "differential": true,
+            "expected": "REJECT",
+            "must_not": [
+              "CRASH",
+              "ACCEPT"
+            ],
+            "spec_predicate": "accepted == 0",
+            "strength": "MUST"
+          }
+        },
+        {
+          "from": "CryptoReady",
+          "to": "CryptoSent",
+          "label": "cm_invalid_blob_sidecar_kzg_proof_8bb11b06",
+          "weight": 10,
+          "description": "[REJECT] The sidecar's inclusion proof is valid as verified by verify_blob_sidecar_inclusion_proof [failure: not verify_blob_sidecar_inclusion_proof(blob_sidecar)]",
+          "condition_desc": "when not verify_blob_sidecar_inclusion_proof(blob_sidecar)",
+          "tags": [
+            "conditional"
+          ],
+          "spec_refs": [
+            "BLOB_SIDECAR-REJECT-124b7dda"
+          ],
+          "action": {
+            "type": "ActInjectGossip",
+            "protocol": "blob_sidecar_0",
+            "payload": {
+              "kind": "builder",
+              "wrap": "raw",
+              "name": "buildInvalidBlobSidecarKzgProof"
+            }
+          },
+          "guard": {
+            "fork_gte": "deneb"
+          },
+          "oracle": {
+            "differential": true,
+            "expected": "REJECT",
+            "must_not": [
+              "CRASH",
+              "ACCEPT"
+            ],
+            "spec_predicate": "accepted == 0",
+            "strength": "MUST"
+          }
+        },
+        {
+          "from": "CryptoReady",
+          "to": "CryptoSent",
+          "label": "cm_invalid_blob_sidecar_kzg_proof_e8ff9cf9",
+          "weight": 10,
+          "description": "[REJECT] The sidecar's blob is valid as verified by verify_blob_kzg_proof [failure: not verify_blob_kzg_proof( blob_sidecar.blob, blob_sidecar.kzg_commitment, blob_sidecar.kzg_proof )]",
+          "condition_desc": "when not verify_blob_kzg_proof( blob_sidecar.blob, blob_sidecar.kzg_commitment, blob_sidecar.kzg_proof )",
+          "tags": [
+            "conditional"
+          ],
+          "spec_refs": [
+            "BLOB_SIDECAR-REJECT-190a8460"
+          ],
+          "action": {
+            "type": "ActInjectGossip",
+            "protocol": "blob_sidecar_0",
+            "payload": {
+              "kind": "builder",
+              "wrap": "raw",
+              "name": "buildInvalidBlobSidecarKzgProof"
+            }
+          },
+          "guard": {
+            "fork_gte": "deneb"
+          },
+          "oracle": {
+            "differential": true,
+            "expected": "REJECT",
+            "must_not": [
+              "CRASH",
+              "ACCEPT"
+            ],
+            "spec_predicate": "accepted == 0",
+            "strength": "MUST"
+          }
+        },
+        {
+          "from": "CryptoReady",
+          "to": "CryptoSent",
+          "label": "cm_invalid_bls_to_execution_change_field_equality_f7b624ae",
+          "weight": 10,
+          "description": "[REJECT] The validator has BLS withdrawal credentials [failure: validator.withdrawal_credentials[:1] != BLS_WITHDRAWAL_PREFIX]",
+          "condition_desc": "when validator.withdrawal_credentials[:1] != BLS_WITHDRAWAL_PREFIX",
+          "tags": [
+            "conditional"
+          ],
+          "spec_refs": [
+            "BLS_TO_EXECUTION_CHANGE-REJECT-3869cf36"
+          ],
+          "action": {
+            "type": "ActInjectGossip",
+            "protocol": "bls_to_execution_change",
+            "payload": {
+              "kind": "builder",
+              "wrap": "raw",
+              "name": "buildInvalidBlsToExecutionChangeFieldEquality"
+            }
+          },
+          "guard": {
+            "fork_gte": "capella"
+          },
+          "oracle": {
+            "differential": true,
+            "expected": "REJECT",
+            "must_not": [
+              "CRASH",
+              "ACCEPT"
+            ],
+            "spec_predicate": "accepted == 0",
+            "strength": "MUST"
+          }
+        },
+        {
+          "from": "CryptoReady",
+          "to": "CryptoSent",
+          "label": "cm_invalid_bls_to_execution_change_field_equality_f16cc17f",
+          "weight": 10,
+          "description": "[REJECT] The bls_to_execution_change is for the validator's withdrawal pubkey [failure: validator.withdrawal_credentials[1:] != hash(bls_to_execution_change.from_bls_pubkey)[1:]]",
+          "condition_desc": "when validator.withdrawal_credentials[1:] != hash(bls_to_execution_change.from_bls_pubkey)[1:]",
+          "tags": [
+            "conditional"
+          ],
+          "spec_refs": [
+            "BLS_TO_EXECUTION_CHANGE-REJECT-c61b3034"
+          ],
+          "action": {
+            "type": "ActInjectGossip",
+            "protocol": "bls_to_execution_change",
+            "payload": {
+              "kind": "builder",
+              "wrap": "raw",
+              "name": "buildInvalidBlsToExecutionChangeFieldEquality"
+            }
+          },
+          "guard": {
+            "fork_gte": "capella"
+          },
+          "oracle": {
+            "differential": true,
+            "expected": "REJECT",
+            "must_not": [
+              "CRASH",
+              "ACCEPT"
+            ],
+            "spec_predicate": "accepted == 0",
+            "strength": "MUST"
+          }
+        },
+        {
+          "from": "CryptoReady",
+          "to": "CryptoSent",
+          "label": "cm_invalid_bls_to_execution_change_sig_invalid_9db269ec",
+          "weight": 10,
+          "description": "[REJECT] The signature is valid [failure: not bls.Verify( bls_to_execution_change.from_bls_pubkey, signing_root, signed_bls_to_execution_change.signature, )]",
+          "condition_desc": "when not bls.Verify( bls_to_execution_change.from_bls_pubkey, signing_root, signed_bls_to_execution_change.signature, )",
+          "tags": [
+            "conditional"
+          ],
+          "spec_refs": [
+            "BLS_TO_EXECUTION_CHANGE-REJECT-cc9547b7"
+          ],
+          "action": {
+            "type": "ActInjectGossip",
+            "protocol": "bls_to_execution_change",
+            "payload": {
+              "kind": "builder",
+              "wrap": "raw",
+              "name": "buildInvalidBlsToExecutionChangeSigInvalid"
+            }
+          },
+          "guard": {
+            "fork_gte": "capella"
+          },
+          "oracle": {
+            "differential": true,
+            "expected": "REJECT",
+            "must_not": [
+              "CRASH",
+              "ACCEPT"
+            ],
+            "spec_predicate": "accepted == 0",
+            "strength": "MUST"
+          }
+        },
+        {
+          "from": "CryptoReady",
+          "to": "CryptoSent",
+          "label": "cm_invalid_data_column_sidecar_kzg_proof_4b259137",
+          "weight": 10,
+          "description": "[REJECT] The sidecar is valid as verified by verify_data_column_sidecar [failure: not verify_data_column_sidecar(sidecar)]",
+          "condition_desc": "when not verify_data_column_sidecar(sidecar)",
+          "tags": [
+            "conditional"
+          ],
+          "spec_refs": [
+            "DATA_COLUMN_SIDECAR-REJECT-459b0d39"
+          ],
+          "action": {
+            "type": "ActInjectGossip",
+            "protocol": "data_column_sidecar_0",
+            "payload": {
+              "kind": "builder",
+              "wrap": "raw",
+              "name": "buildInvalidDataColumnSidecarKzgProof"
+            }
+          },
+          "guard": {
+            "fork_gte": "fulu"
+          },
+          "oracle": {
+            "differential": true,
+            "expected": "REJECT",
+            "must_not": [
+              "CRASH",
+              "ACCEPT"
+            ],
+            "spec_predicate": "accepted == 0",
+            "strength": "MUST"
+          }
+        },
+        {
+          "from": "CryptoReady",
+          "to": "CryptoSent",
+          "label": "cm_invalid_data_column_sidecar_kzg_proof_e36289ea",
+          "weight": 10,
+          "description": "[REJECT] The sidecar is valid as verified by verify_data_column_sidecar_inclusion_proof [failure: not verify_data_column_sidecar_inclusion_proof(sidecar)]",
+          "condition_desc": "when not verify_data_column_sidecar_inclusion_proof(sidecar)",
+          "tags": [
+            "conditional"
+          ],
+          "spec_refs": [
+            "DATA_COLUMN_SIDECAR-REJECT-9a465758"
+          ],
+          "action": {
+            "type": "ActInjectGossip",
+            "protocol": "data_column_sidecar_0",
+            "payload": {
+              "kind": "builder",
+              "wrap": "raw",
+              "name": "buildInvalidDataColumnSidecarKzgProof"
+            }
+          },
+          "guard": {
+            "fork_gte": "fulu"
+          },
+          "oracle": {
+            "differential": true,
+            "expected": "REJECT",
+            "must_not": [
+              "CRASH",
+              "ACCEPT"
+            ],
+            "spec_predicate": "accepted == 0",
+            "strength": "MUST"
+          }
+        },
+        {
+          "from": "CryptoReady",
+          "to": "CryptoSent",
+          "label": "cm_invalid_data_column_sidecar_kzg_proof_638be512",
+          "weight": 10,
+          "description": "[REJECT] The sidecar is valid as verified by verify_data_column_sidecar_kzg_proofs [failure: not verify_data_column_sidecar_kzg_proofs(sidecar)]",
+          "condition_desc": "when not verify_data_column_sidecar_kzg_proofs(sidecar)",
+          "tags": [
+            "conditional"
+          ],
+          "spec_refs": [
+            "DATA_COLUMN_SIDECAR-REJECT-f173b70c"
+          ],
+          "action": {
+            "type": "ActInjectGossip",
+            "protocol": "data_column_sidecar_0",
+            "payload": {
+              "kind": "builder",
+              "wrap": "raw",
+              "name": "buildInvalidDataColumnSidecarKzgProof"
+            }
+          },
+          "guard": {
+            "fork_gte": "fulu"
+          },
+          "oracle": {
+            "differential": true,
+            "expected": "REJECT",
+            "must_not": [
+              "CRASH",
+              "ACCEPT"
+            ],
+            "spec_predicate": "accepted == 0",
+            "strength": "MUST"
+          }
+        },
+        {
+          "from": "CryptoReady",
+          "to": "CryptoSent",
+          "label": "cm_invalid_proposer_slashing_index_oob_0b3ea4dd",
+          "weight": 10,
+          "description": "[IGNORE] The proposer slashing is the first valid proposer slashing received for this proposer [failure: proposer_index in seen.proposer_slashing_indices]",
+          "condition_desc": "when proposer_index in seen.proposer_slashing_indices",
+          "tags": [
+            "conditional"
+          ],
+          "spec_refs": [
+            "PROPOSER_SLASHING-IGNORE-a4a13783"
+          ],
+          "action": {
+            "type": "ActInjectGossip",
+            "protocol": "proposer_slashing",
+            "payload": {
+              "kind": "builder",
+              "wrap": "raw",
+              "name": "buildInvalidProposerSlashingIndexOob"
+            }
+          },
+          "oracle": {
+            "differential": true,
+            "expected": "REJECT",
+            "must_not": [
+              "CRASH",
+              "ACCEPT"
+            ],
+            "spec_predicate": "accepted == 0",
+            "strength": "MUST"
+          }
+        },
+        {
+          "from": "CryptoReady",
+          "to": "CryptoSent",
+          "label": "cm_invalid_proposer_slashing_field_equality_ea94b6bc",
+          "weight": 10,
+          "description": "[REJECT] The headers are different [failure: header_1 == header_2]",
+          "condition_desc": "when header_1 == header_2",
+          "tags": [
+            "conditional"
+          ],
+          "spec_refs": [
+            "PROPOSER_SLASHING-REJECT-1248d8f2"
+          ],
+          "action": {
+            "type": "ActInjectGossip",
+            "protocol": "proposer_slashing",
+            "payload": {
+              "kind": "builder",
+              "wrap": "raw",
+              "name": "buildInvalidProposerSlashingFieldEquality"
+            }
+          },
+          "oracle": {
+            "differential": true,
+            "expected": "REJECT",
+            "must_not": [
+              "CRASH",
+              "ACCEPT"
+            ],
+            "spec_predicate": "accepted == 0",
+            "strength": "MUST"
+          }
+        },
+        {
+          "from": "CryptoReady",
+          "to": "CryptoSent",
+          "label": "cm_invalid_proposer_slashing_sig_invalid_9c118ba8",
+          "weight": 10,
+          "description": "[REJECT] The signatures are valid [failure: not bls.Verify(proposer.pubkey, signing_root, signed_header.signature)]",
+          "condition_desc": "when not bls.Verify(proposer.pubkey, signing_root, signed_header.signature)",
+          "tags": [
+            "conditional"
+          ],
+          "spec_refs": [
+            "PROPOSER_SLASHING-REJECT-4e6c2331"
+          ],
+          "action": {
+            "type": "ActInjectGossip",
+            "protocol": "proposer_slashing",
+            "payload": {
+              "kind": "builder",
+              "wrap": "raw",
+              "name": "buildInvalidProposerSlashingSigInvalid"
+            }
+          },
+          "oracle": {
+            "differential": true,
+            "expected": "REJECT",
+            "must_not": [
+              "CRASH",
+              "ACCEPT"
+            ],
+            "spec_predicate": "accepted == 0",
+            "strength": "MUST"
+          }
+        },
+        {
+          "from": "CryptoReady",
+          "to": "CryptoSent",
+          "label": "cm_invalid_sync_committee_contribution_and_proof_index_oob_e26a9783",
+          "weight": 10,
+          "description": "[IGNORE] A valid sync committee contribution with equal slot, beacon_block_root (and subcommittee_index whose aggregation_bits is non-strict superset) (has not already been seen) [failure: is_non_strict_superset(seen_bits, contribution_bits)]",
+          "condition_desc": "when is_non_strict_superset(seen_bits, contribution_bits)",
+          "tags": [
+            "conditional"
+          ],
+          "spec_refs": [
+            "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-IGNORE-85bd91b0"
+          ],
+          "action": {
+            "type": "ActInjectGossip",
+            "protocol": "sync_committee_contribution_and_proof",
+            "payload": {
+              "kind": "builder",
+              "wrap": "raw",
+              "name": "buildInvalidSyncCommitteeContributionAndProofIndexOob"
+            }
+          },
+          "guard": {
+            "fork_gte": "altair"
+          },
+          "oracle": {
+            "differential": true,
+            "expected": "REJECT",
+            "must_not": [
+              "CRASH",
+              "ACCEPT"
+            ],
+            "spec_predicate": "accepted == 0",
+            "strength": "MUST"
+          }
+        },
+        {
+          "from": "CryptoReady",
+          "to": "CryptoSent",
+          "label": "cm_invalid_sync_committee_contribution_and_proof_index_oob_760e573b",
+          "weight": 10,
+          "description": "[IGNORE] The sync committee contribution is the first valid contribution received (for the aggregator with index contribution_and_proof.aggregator_index) (for the slot contribution.slot and subcommittee index contribution.subcommittee_index) [failure: aggregator_key in seen.sync_contribution_aggregator_slots]",
+          "condition_desc": "when aggregator_key in seen.sync_contribution_aggregator_slots",
+          "tags": [
+            "conditional"
+          ],
+          "spec_refs": [
+            "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-IGNORE-b4eb6360"
+          ],
+          "action": {
+            "type": "ActInjectGossip",
+            "protocol": "sync_committee_contribution_and_proof",
+            "payload": {
+              "kind": "builder",
+              "wrap": "raw",
+              "name": "buildInvalidSyncCommitteeContributionAndProofIndexOob"
+            }
+          },
+          "guard": {
+            "fork_gte": "altair"
+          },
+          "oracle": {
+            "differential": true,
+            "expected": "REJECT",
+            "must_not": [
+              "CRASH",
+              "ACCEPT"
+            ],
+            "spec_predicate": "accepted == 0",
+            "strength": "MUST"
+          }
+        },
+        {
+          "from": "CryptoReady",
+          "to": "CryptoSent",
+          "label": "cm_invalid_sync_committee_contribution_and_proof_sig_invalid_e5520746",
+          "weight": 10,
+          "description": "[REJECT] The aggregator signature, signed_contribution_and_proof.signature, is valid [failure: not bls.Verify(aggregator_pubkey, signing_root, signed_contribution_and_proof.signature)]",
+          "condition_desc": "when not bls.Verify(aggregator_pubkey, signing_root, signed_contribution_and_proof.signature)",
+          "tags": [
+            "conditional"
+          ],
+          "spec_refs": [
+            "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-08097fc1"
+          ],
+          "action": {
+            "type": "ActInjectGossip",
+            "protocol": "sync_committee_contribution_and_proof",
+            "payload": {
+              "kind": "builder",
+              "wrap": "raw",
+              "name": "buildInvalidSyncCommitteeContributionAndProofSigInvalid"
+            }
+          },
+          "guard": {
+            "fork_gte": "altair"
+          },
+          "oracle": {
+            "differential": true,
+            "expected": "REJECT",
+            "must_not": [
+              "CRASH",
+              "ACCEPT"
+            ],
+            "spec_predicate": "accepted == 0",
+            "strength": "MUST"
+          }
+        },
+        {
+          "from": "CryptoReady",
+          "to": "CryptoSent",
+          "label": "cm_invalid_sync_committee_contribution_and_proof_index_oob_b196caf6",
+          "weight": 10,
+          "description": "[REJECT] The aggregator index is valid [failure: contribution_and_proof.aggregator_index >= len(state.validators)]",
+          "condition_desc": "when contribution_and_proof.aggregator_index >= len(state.validators)",
+          "tags": [
+            "conditional"
+          ],
+          "spec_refs": [
+            "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-1d325814"
+          ],
+          "action": {
+            "type": "ActInjectGossip",
+            "protocol": "sync_committee_contribution_and_proof",
+            "payload": {
+              "kind": "builder",
+              "wrap": "raw",
+              "name": "buildInvalidSyncCommitteeContributionAndProofIndexOob"
+            }
+          },
+          "guard": {
+            "fork_gte": "altair"
+          },
+          "oracle": {
+            "differential": true,
+            "expected": "REJECT",
+            "must_not": [
+              "CRASH",
+              "ACCEPT"
+            ],
+            "spec_predicate": "accepted == 0",
+            "strength": "MUST"
+          }
+        },
+        {
+          "from": "CryptoReady",
+          "to": "CryptoSent",
+          "label": "cm_invalid_sync_committee_contribution_and_proof_sig_invalid_e65ba474",
+          "weight": 10,
+          "description": "[REJECT] The selection_proof selects the validator as an aggregator for the slot [failure: not is_sync_committee_aggregator(contribution_and_proof.selection_proof)]",
+          "condition_desc": "when not is_sync_committee_aggregator(contribution_and_proof.selection_proof)",
+          "tags": [
+            "conditional"
+          ],
+          "spec_refs": [
+            "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-52168aa3"
+          ],
+          "action": {
+            "type": "ActInjectGossip",
+            "protocol": "sync_committee_contribution_and_proof",
+            "payload": {
+              "kind": "builder",
+              "wrap": "raw",
+              "name": "buildInvalidSyncCommitteeContributionAndProofSigInvalid"
+            }
+          },
+          "guard": {
+            "fork_gte": "altair"
+          },
+          "oracle": {
+            "differential": true,
+            "expected": "REJECT",
+            "must_not": [
+              "CRASH",
+              "ACCEPT"
+            ],
+            "spec_predicate": "accepted == 0",
+            "strength": "MUST"
+          }
+        },
+        {
+          "from": "CryptoReady",
+          "to": "CryptoSent",
+          "label": "cm_invalid_sync_committee_contribution_and_proof_sig_invalid_8c92cd67",
+          "weight": 10,
+          "description": "[REJECT] The contribution_and_proof.selection_proof is a valid signature (of the SyncAggregatorSelectionData derived from the contribution) (by the validator with index contribution_and_proof.aggregator_index) [failure: not bls.Verify(aggregator_pubkey, signing_root, contribution_and_proof.selection_proof)]",
+          "condition_desc": "when not bls.Verify(aggregator_pubkey, signing_root, contribution_and_proof.selection_proof)",
+          "tags": [
+            "conditional"
+          ],
+          "spec_refs": [
+            "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-5448167e"
+          ],
+          "action": {
+            "type": "ActInjectGossip",
+            "protocol": "sync_committee_contribution_and_proof",
+            "payload": {
+              "kind": "builder",
+              "wrap": "raw",
+              "name": "buildInvalidSyncCommitteeContributionAndProofSigInvalid"
+            }
+          },
+          "guard": {
+            "fork_gte": "altair"
+          },
+          "oracle": {
+            "differential": true,
+            "expected": "REJECT",
+            "must_not": [
+              "CRASH",
+              "ACCEPT"
+            ],
+            "spec_predicate": "accepted == 0",
+            "strength": "MUST"
+          }
+        },
+        {
+          "from": "CryptoReady",
+          "to": "CryptoSent",
+          "label": "cm_invalid_sync_committee_contribution_and_proof_index_oob_4745d4f7",
+          "weight": 10,
+          "description": "[REJECT] The subcommittee index is in the allowed range [failure: contribution.subcommittee_index >= SYNC_COMMITTEE_SUBNET_COUNT]",
+          "condition_desc": "when contribution.subcommittee_index >= SYNC_COMMITTEE_SUBNET_COUNT",
+          "tags": [
+            "conditional"
+          ],
+          "spec_refs": [
+            "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-5bdbca46"
+          ],
+          "action": {
+            "type": "ActInjectGossip",
+            "protocol": "sync_committee_contribution_and_proof",
+            "payload": {
+              "kind": "builder",
+              "wrap": "raw",
+              "name": "buildInvalidSyncCommitteeContributionAndProofIndexOob"
+            }
+          },
+          "guard": {
+            "fork_gte": "altair"
+          },
+          "oracle": {
+            "differential": true,
+            "expected": "REJECT",
+            "must_not": [
+              "CRASH",
+              "ACCEPT"
+            ],
+            "spec_predicate": "accepted == 0",
+            "strength": "MUST"
+          }
+        },
+        {
+          "from": "CryptoReady",
+          "to": "CryptoSent",
+          "label": "cm_invalid_sync_committee_contribution_and_proof_sig_invalid_95bc9710",
+          "weight": 10,
+          "description": "[REJECT] The aggregate signature is valid for the message beacon_block_root (and aggregate pubkey derived from the participation info in aggregation_bits) (for the subcommittee specified by the contribution.subcommittee_index) [failure: not eth_fast_aggregate_verify(participant_pubkeys, signing_root, contribution.signature)]",
+          "condition_desc": "when not eth_fast_aggregate_verify(participant_pubkeys, signing_root, contribution.signature)",
+          "tags": [
+            "conditional"
+          ],
+          "spec_refs": [
+            "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-5dd820ac"
+          ],
+          "action": {
+            "type": "ActInjectGossip",
+            "protocol": "sync_committee_contribution_and_proof",
+            "payload": {
+              "kind": "builder",
+              "wrap": "raw",
+              "name": "buildInvalidSyncCommitteeContributionAndProofSigInvalid"
+            }
+          },
+          "guard": {
+            "fork_gte": "altair"
+          },
+          "oracle": {
+            "differential": true,
+            "expected": "REJECT",
+            "must_not": [
+              "CRASH",
+              "ACCEPT"
+            ],
+            "spec_predicate": "accepted == 0",
+            "strength": "MUST"
+          }
+        },
+        {
+          "from": "CryptoReady",
+          "to": "CryptoSent",
+          "label": "cm_invalid_sync_committee_contribution_and_proof_index_oob_9d2116ba",
+          "weight": 10,
+          "description": "[REJECT] The aggregator's validator index is in the declared subcommittee (of the current sync committee) [failure: aggregator_pubkey not in subcommittee_pubkeys]",
+          "condition_desc": "when aggregator_pubkey not in subcommittee_pubkeys",
+          "tags": [
+            "conditional"
+          ],
+          "spec_refs": [
+            "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-c33e885a"
+          ],
+          "action": {
+            "type": "ActInjectGossip",
+            "protocol": "sync_committee_contribution_and_proof",
+            "payload": {
+              "kind": "builder",
+              "wrap": "raw",
+              "name": "buildInvalidSyncCommitteeContributionAndProofIndexOob"
+            }
+          },
+          "guard": {
+            "fork_gte": "altair"
+          },
+          "oracle": {
+            "differential": true,
+            "expected": "REJECT",
+            "must_not": [
+              "CRASH",
+              "ACCEPT"
+            ],
+            "spec_predicate": "accepted == 0",
+            "strength": "MUST"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,574 @@
+{
+  "name": "SubnetSubscription",
+  "constructor": "NewSubnetMachine",
+  "init_state": "SubENRProbe",
+  "states": [
+    {
+      "name": "SubENRProbe"
+    },
+    {
+      "name": "SubCustodyResolve"
+    },
+    {
+      "name": "SubCustodyInject"
+    },
+    {
+      "name": "SubNonCustodyInject"
+    },
+    {
+      "name": "SubBoundaryInject"
+    },
+    {
+      "name": "SubDisconnected"
+    },
+    {
+      "name": "SubCompleted",
+      "terminal": true
+    }
+  ],
+  "transitions": [
+    {
+      "from": "SubENRProbe",
+      "to": "SubENRProbe",
+      "label": "sub_query_enr",
+      "weight": 10,
+      "action": {
+        "type": "ActQueryENR"
+      }
+    },
+    {
+      "from": "SubENRProbe",
+      "to": "SubENRProbe",
+      "label": "sub_status_handshake",
+      "weight": 8,
+      "action": {
+        "type": "ActSendStatus",
+        "protocol": "/eth2/beacon_chain/req/status/2/ssz_snappy",
+        "payload": {
+          "kind": "builder",
+          "wrap": "ssz_snappy",
+          "name": "buildStatusV2SSZ"
+        },
+        "timeout_ms": 5000
+      }
+    },
+    {
+      "from": "SubENRProbe",
+      "to": "SubENRProbe",
+      "label": "sub_metadata_v3",
+      "weight": 6,
+      "action": {
+        "type": "ActSendReqResp",
+        "protocol": "/eth2/beacon_chain/req/metadata/3/ssz_snappy",
+        "timeout_ms": 5000
+      }
+    },
+    {
+      "from": "SubENRProbe",
+      "to": "SubCustodyResolve",
+      "label": "sub_resolve_subnets",
+      "weight": 10,
+      "condition_desc": "ENR snapshot is available",
+      "action": {
+        "type": "ActResolveSubnets"
+      },
+      "guard": {
+        "or": [
+          {
+            "generating_mode": true
+          },
+          {
+            "present": "enr_snapshot"
+          }
+        ]
+      }
+    },
+    {
+      "from": "SubENRProbe",
+      "to": "SubENRProbe",
+      "label": "sub_probe_idle",
+      "weight": 2,
+      "action": {
+        "type": "ActSleep",
+        "timeout_ms": 2000
+      }
+    },
+    {
+      "from": "SubCustodyResolve",
+      "to": "SubCustodyResolve",
+      "label": "sub_verify_attnets",
+      "weight": 6,
+      "spec_refs": [
+        "PROSE-MUST-0648388b"
+      ],
+      "action": {
+        "type": "ActVerifyENRBehavior",
+        "protocol": "attnets"
+      }
+    },
+    {
+      "from": "SubCustodyResolve",
+      "to": "SubCustodyResolve",
+      "label": "sub_verify_syncnets",
+      "weight": 5,
+      "action": {
+        "type": "ActVerifyENRBehavior",
+        "protocol": "syncnets"
+      }
+    },
+    {
+      "from": "SubCustodyResolve",
+      "to": "SubCustodyResolve",
+      "label": "sub_verify_cgc",
+      "weight": 6,
+      "spec_refs": [
+        "PROSE-MAY-99c5c95f",
+        "PROSE-MUST-56ec7740"
+      ],
+      "action": {
+        "type": "ActVerifyENRBehavior",
+        "protocol": "cgc"
+      }
+    },
+    {
+      "from": "SubCustodyResolve",
+      "to": "SubCustodyInject",
+      "label": "sub_resolve_to_custody_inject",
+      "weight": 8,
+      "condition_desc": "at least one custody subnet resolved",
+      "action": {
+        "type": "ActSleep",
+        "timeout_ms": 100
+      },
+      "guard": {
+        "or": [
+          {
+            "generating_mode": true
+          },
+          {
+            "len": {
+              "field": "subnet_custody_subnets",
+              "op": "\u003e",
+              "value": 0
+            }
+          }
+        ]
+      }
+    },
+    {
+      "from": "SubCustodyResolve",
+      "to": "SubNonCustodyInject",
+      "label": "sub_resolve_to_noncustody_inject",
+      "weight": 6,
+      "condition_desc": "at least one non-custody subnet resolved",
+      "action": {
+        "type": "ActSleep",
+        "timeout_ms": 100
+      },
+      "guard": {
+        "or": [
+          {
+            "generating_mode": true
+          },
+          {
+            "len": {
+              "field": "subnet_non_custody_subnets",
+              "op": "\u003e",
+              "value": 0
+            }
+          }
+        ]
+      }
+    },
+    {
+      "from": "SubCustodyInject",
+      "to": "SubCustodyInject",
+      "label": "sub_inject_custody_data_column",
+      "weight": 10,
+      "action": {
+        "type": "ActInjectGossip",
+        "payload": {
+          "kind": "builder",
+          "wrap": "raw",
+          "name": "buildSubInjectCustodyDataColumn"
+        },
+        "mutator": "gossip_random_bytes"
+      }
+    },
+    {
+      "from": "SubCustodyInject",
+      "to": "SubCustodyInject",
+      "label": "sub_inject_subscribed_attestation",
+      "weight": 8,
+      "action": {
+        "type": "ActInjectGossip",
+        "payload": {
+          "kind": "builder",
+          "wrap": "raw",
+          "name": "buildSubInjectSubscribedAttestation"
+        },
+        "mutator": "gossip_random_bytes"
+      }
+    },
+    {
+      "from": "SubCustodyInject",
+      "to": "SubCustodyInject",
+      "label": "sub_inject_subscribed_sync",
+      "weight": 6,
+      "action": {
+        "type": "ActInjectGossip",
+        "payload": {
+          "kind": "builder",
+          "wrap": "raw",
+          "name": "buildSubInjectSubscribedSync"
+        },
+        "mutator": "gossip_random_bytes"
+      }
+    },
+    {
+      "from": "SubCustodyInject",
+      "to": "SubCustodyInject",
+      "label": "sub_custody_check_connected",
+      "weight": 8,
+      "action": {
+        "type": "ActCheckConnected",
+        "timeout_ms": 200
+      }
+    },
+    {
+      "from": "SubCustodyInject",
+      "to": "SubCustodyInject",
+      "label": "sub_custody_burst_3",
+      "weight": 5,
+      "action": {
+        "type": "ActInjectGossip",
+        "payload": {
+          "kind": "builder",
+          "wrap": "raw",
+          "name": "buildSubInjectCustodyDataColumn"
+        },
+        "timeout_ns": 3,
+        "mutator": "gossip_random_bytes"
+      }
+    },
+    {
+      "from": "SubCustodyInject",
+      "to": "SubNonCustodyInject",
+      "label": "sub_custody_to_noncustody",
+      "weight": 8,
+      "condition_desc": "at least two custody injections sent",
+      "action": {
+        "type": "ActSleep",
+        "timeout_ms": 100
+      },
+      "guard": {
+        "or": [
+          {
+            "generating_mode": true
+          },
+          {
+            "count": {
+              "field": "subnet_custody_injected",
+              "op": "\u003e=",
+              "value": 2
+            }
+          }
+        ]
+      }
+    },
+    {
+      "from": "SubCustodyInject",
+      "to": "SubBoundaryInject",
+      "label": "sub_custody_to_boundary",
+      "weight": 4,
+      "condition_desc": "at least one custody injection sent",
+      "action": {
+        "type": "ActSleep",
+        "timeout_ms": 100
+      },
+      "guard": {
+        "or": [
+          {
+            "generating_mode": true
+          },
+          {
+            "count": {
+              "field": "subnet_custody_injected",
+              "op": "\u003e=",
+              "value": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "from": "SubCustodyInject",
+      "to": "SubDisconnected",
+      "label": "sub_custody_detected_disconnect",
+      "weight": 3,
+      "action": {
+        "type": "ActCheckConnected",
+        "timeout_ms": 500
+      }
+    },
+    {
+      "from": "SubNonCustodyInject",
+      "to": "SubNonCustodyInject",
+      "label": "sub_inject_noncustody_data_column",
+      "weight": 10,
+      "action": {
+        "type": "ActInjectGossip",
+        "payload": {
+          "kind": "builder",
+          "wrap": "raw",
+          "name": "buildSubInjectNonCustodyDataColumn"
+        },
+        "mutator": "gossip_random_bytes"
+      }
+    },
+    {
+      "from": "SubNonCustodyInject",
+      "to": "SubNonCustodyInject",
+      "label": "sub_inject_unsubscribed_attestation",
+      "weight": 8,
+      "action": {
+        "type": "ActInjectGossip",
+        "payload": {
+          "kind": "builder",
+          "wrap": "raw",
+          "name": "buildSubInjectUnsubscribedAttestation"
+        },
+        "mutator": "gossip_random_bytes"
+      }
+    },
+    {
+      "from": "SubNonCustodyInject",
+      "to": "SubNonCustodyInject",
+      "label": "sub_inject_unsubscribed_sync",
+      "weight": 6,
+      "action": {
+        "type": "ActInjectGossip",
+        "payload": {
+          "kind": "builder",
+          "wrap": "raw",
+          "name": "buildSubInjectUnsubscribedSync"
+        },
+        "mutator": "gossip_random_bytes"
+      }
+    },
+    {
+      "from": "SubNonCustodyInject",
+      "to": "SubNonCustodyInject",
+      "label": "sub_noncustody_check_connected",
+      "weight": 8,
+      "action": {
+        "type": "ActCheckConnected",
+        "timeout_ms": 200
+      }
+    },
+    {
+      "from": "SubNonCustodyInject",
+      "to": "SubNonCustodyInject",
+      "label": "sub_noncustody_burst_5",
+      "weight": 5,
+      "action": {
+        "type": "ActInjectGossip",
+        "payload": {
+          "kind": "builder",
+          "wrap": "raw",
+          "name": "buildSubInjectNonCustodyDataColumn"
+        },
+        "timeout_ns": 5,
+        "mutator": "gossip_random_bytes"
+      }
+    },
+    {
+      "from": "SubNonCustodyInject",
+      "to": "SubBoundaryInject",
+      "label": "sub_noncustody_to_boundary",
+      "weight": 6,
+      "condition_desc": "at least two non-custody injections sent",
+      "action": {
+        "type": "ActSleep",
+        "timeout_ms": 100
+      },
+      "guard": {
+        "or": [
+          {
+            "generating_mode": true
+          },
+          {
+            "count": {
+              "field": "subnet_non_custody_injected",
+              "op": "\u003e=",
+              "value": 2
+            }
+          }
+        ]
+      }
+    },
+    {
+      "from": "SubNonCustodyInject",
+      "to": "SubDisconnected",
+      "label": "sub_noncustody_detected_disconnect",
+      "weight": 3,
+      "action": {
+        "type": "ActCheckConnected",
+        "timeout_ms": 500
+      }
+    },
+    {
+      "from": "SubBoundaryInject",
+      "to": "SubBoundaryInject",
+      "label": "sub_inject_attestation_64",
+      "weight": 8,
+      "spec_refs": [
+        "BEACON_ATTESTATION-REJECT-02f714ed",
+        "BEACON_ATTESTATION_SUBNET_ID-MUST-454af71d"
+      ],
+      "action": {
+        "type": "ActInjectGossip",
+        "protocol": "beacon_attestation_64",
+        "payload": {
+          "kind": "builder",
+          "wrap": "raw",
+          "name": "buildSubBoundaryOutOfRange"
+        },
+        "mutator": "gossip_random_bytes"
+      },
+      "oracle": {
+        "differential": true
+      }
+    },
+    {
+      "from": "SubBoundaryInject",
+      "to": "SubBoundaryInject",
+      "label": "sub_inject_data_column_128",
+      "weight": 8,
+      "spec_refs": [
+        "DATA_COLUMN_SIDECAR-REJECT-c094c7ea",
+        "DATA_COLUMN_SIDECAR-REJECT-459b0d39"
+      ],
+      "action": {
+        "type": "ActInjectGossip",
+        "protocol": "data_column_sidecar_128",
+        "payload": {
+          "kind": "builder",
+          "wrap": "raw",
+          "name": "buildSubBoundaryOutOfRange"
+        },
+        "mutator": "gossip_random_bytes"
+      },
+      "oracle": {
+        "differential": true
+      }
+    },
+    {
+      "from": "SubBoundaryInject",
+      "to": "SubBoundaryInject",
+      "label": "sub_inject_sync_committee_4",
+      "weight": 7,
+      "spec_refs": [
+        "SYNC_COMMITTEE_MESSAGE-REJECT-c428cd4e"
+      ],
+      "action": {
+        "type": "ActInjectGossip",
+        "protocol": "sync_committee_4",
+        "payload": {
+          "kind": "builder",
+          "wrap": "raw",
+          "name": "buildSubBoundaryOutOfRange"
+        },
+        "mutator": "gossip_random_bytes"
+      },
+      "oracle": {
+        "differential": true
+      }
+    },
+    {
+      "from": "SubBoundaryInject",
+      "to": "SubBoundaryInject",
+      "label": "sub_inject_deprecated_blob",
+      "weight": 6,
+      "spec_refs": [
+        "PROSE-MUST-9cd4be04",
+        "PROSE-MUST-4bfaa766"
+      ],
+      "action": {
+        "type": "ActInjectGossip",
+        "protocol": "blob_sidecar_0",
+        "payload": {
+          "kind": "builder",
+          "wrap": "raw",
+          "name": "buildSubBoundaryDeprecated"
+        },
+        "mutator": "gossip_random_bytes"
+      }
+    },
+    {
+      "from": "SubBoundaryInject",
+      "to": "SubBoundaryInject",
+      "label": "sub_inject_cross_type",
+      "weight": 6,
+      "action": {
+        "type": "ActInjectGossip",
+        "payload": {
+          "kind": "builder",
+          "wrap": "raw",
+          "name": "buildSubBoundaryCrossType"
+        },
+        "mutator": "gossip_cross_type"
+      }
+    },
+    {
+      "from": "SubBoundaryInject",
+      "to": "SubBoundaryInject",
+      "label": "sub_boundary_check_connected",
+      "weight": 7,
+      "action": {
+        "type": "ActCheckConnected",
+        "timeout_ms": 500
+      }
+    },
+    {
+      "from": "SubBoundaryInject",
+      "to": "SubDisconnected",
+      "label": "sub_boundary_detected_disconnect",
+      "weight": 4,
+      "action": {
+        "type": "ActCheckConnected",
+        "timeout_ms": 1000
+      }
+    },
+    {
+      "from": "SubDisconnected",
+      "to": "SubENRProbe",
+      "label": "sub_reconnect_full",
+      "weight": 10,
+      "action": {
+        "type": "ActReconnect",
+        "timeout_ms": 15000
+      }
+    },
+    {
+      "from": "SubDisconnected",
+      "to": "SubCompleted",
+      "label": "sub_end_after_disconnect",
+      "weight": 5,
+      "action": {
+        "type": "ActSleep",
+        "timeout_ms": 100
+      }
+    },
+    {
+      "from": "SubDisconnected",
+      "to": "SubENRProbe",
+      "label": "sub_wait_reconnect",
+      "weight": 3,
+      "action": {
+        "type": "ActSleep",
+        "timeout_ms": 5000
+      }
+    }
+  ]
+}

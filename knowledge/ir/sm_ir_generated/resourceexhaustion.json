@@ -1,0 +1,94 @@
+{
+  "name": "ResourceExhaustion",
+  "constructor": "NewResourceExhaustionMachine",
+  "init_state": "Baseline",
+  "states": [
+    {
+      "name": "Baseline"
+    },
+    {
+      "name": "UnderBurst"
+    },
+    {
+      "name": "Saturated"
+    },
+    {
+      "name": "Recovered",
+      "terminal": true
+    }
+  ],
+  "transitions": [
+    {
+      "from": "Baseline",
+      "to": "UnderBurst",
+      "label": "sem_res_ping_burst",
+      "weight": 8,
+      "description": "reference backbone: burst load enters a resource-holding state",
+      "action": {
+        "type": "ActSendReqResp",
+        "protocol": "/eth2/beacon_chain/req/ping/1/ssz_snappy",
+        "payload": {
+          "kind": "fields",
+          "wrap": "ssz_snappy",
+          "fields": {
+            "value": {
+              "lit": 1
+            }
+          }
+        },
+        "timeout_ms": 5000,
+        "repeat_count": 50
+      },
+      "oracle": {
+        "resource_trend": {
+          "min_samples": 5,
+          "max_total_mem_growth_mb": 100,
+          "require_monotonic": true,
+          "max_amplification_ratio": 50
+        }
+      }
+    },
+    {
+      "from": "UnderBurst",
+      "to": "Saturated",
+      "label": "sem_res_topic_saturation",
+      "weight": 6,
+      "description": "reference backbone: sustained multi-topic load probes cache/resource saturation",
+      "action": {
+        "type": "ActInjectGossip",
+        "protocol": "__flood_distinct_topics__",
+        "payload": {
+          "kind": "builder",
+          "wrap": "raw",
+          "name": "buildRandomGossip100"
+        },
+        "repeat_count": 100
+      },
+      "oracle": {
+        "resource_trend": {
+          "min_samples": 5,
+          "max_total_mem_growth_mb": 150,
+          "require_monotonic": true
+        }
+      }
+    },
+    {
+      "from": "Saturated",
+      "to": "Recovered",
+      "label": "sem_res_recovered",
+      "weight": 4,
+      "description": "reference backbone: after the burst stops, the peer should remain live or recover",
+      "action": {
+        "type": "ActSleep",
+        "timeout_ms": 1000
+      },
+      "oracle": {
+        "differential": true,
+        "must_not": [
+          "CRASH"
+        ],
+        "strength": "MUST"
+      }
+    }
+  ]
+}

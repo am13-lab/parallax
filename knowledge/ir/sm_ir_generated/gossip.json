@@ -1,0 +1,804 @@
+{
+  "name": "GossipValidation",
+  "constructor": "NewGossipMachine",
+  "init_state": "Unsubscribed",
+  "states": [
+    {
+      "name": "Unsubscribed"
+    },
+    {
+      "name": "Subscribed"
+    },
+    {
+      "name": "ValidSeen"
+    },
+    {
+      "name": "DuplicateSeen"
+    },
+    {
+      "name": "ConflictingSeen"
+    },
+    {
+      "name": "DeferredQueued"
+    },
+    {
+      "name": "PeerPenalized"
+    },
+    {
+      "name": "Closed",
+      "terminal": true
+    }
+  ],
+  "transitions": [
+    {
+      "from": "Unsubscribed",
+      "to": "Subscribed",
+      "label": "sem_gossip_subscribe",
+      "weight": 6,
+      "description": "spec backbone: topic participation begins with an active subscription",
+      "action": {
+        "type": "ActSwitchTopic",
+        "protocol": "beacon_block"
+      }
+    },
+    {
+      "from": "Subscribed",
+      "to": "ValidSeen",
+      "label": "sem_gossip_valid_block",
+      "weight": 8,
+      "description": "spec backbone: first valid message can be accepted and propagated",
+      "action": {
+        "type": "ActInjectGossip",
+        "protocol": "beacon_block",
+        "payload": {
+          "kind": "builder",
+          "wrap": "raw",
+          "name": "buildValidBeaconBlock"
+        }
+      },
+      "oracle": {
+        "differential": true,
+        "must_not": [
+          "CRASH"
+        ],
+        "strength": "MUST"
+      }
+    },
+    {
+      "from": "ValidSeen",
+      "to": "DuplicateSeen",
+      "label": "sem_gossip_duplicate_probe",
+      "weight": 4,
+      "description": "reference backbone: duplicate/seen-message validation is stateful",
+      "action": {
+        "type": "ActInjectGossip",
+        "protocol": "beacon_block",
+        "payload": {
+          "kind": "builder",
+          "wrap": "raw",
+          "name": "buildValidBeaconBlock"
+        }
+      },
+      "oracle": {
+        "differential": true,
+        "must_not": [
+          "CRASH"
+        ],
+        "strength": "MUST"
+      }
+    },
+    {
+      "from": "ValidSeen",
+      "to": "ConflictingSeen",
+      "label": "sem_gossip_conflict_probe",
+      "weight": 4,
+      "description": "reference backbone: conflicting messages require prior valid context",
+      "action": {
+        "type": "ActInjectGossip",
+        "protocol": "beacon_block",
+        "payload": {
+          "kind": "builder",
+          "wrap": "raw",
+          "name": "buildInvalidBeaconBlockParentKnownValid"
+        }
+      },
+      "oracle": {
+        "differential": true,
+        "must_not": [
+          "CRASH"
+        ],
+        "strength": "MUST"
+      }
+    },
+    {
+      "from": "ValidSeen",
+      "to": "DeferredQueued",
+      "label": "sem_gossip_deferred_data_column",
+      "weight": 3,
+      "description": "spec backbone: some gossip validation depends on deferred parent/header availability",
+      "action": {
+        "type": "ActInjectGossip",
+        "protocol": "data_column_sidecar_0",
+        "payload": {
+          "kind": "builder",
+          "wrap": "raw",
+          "name": "buildValidDataColumnSidecar"
+        }
+      },
+      "guard": {
+        "fork_gte": "fulu"
+      },
+      "oracle": {
+        "differential": true,
+        "must_not": [
+          "CRASH"
+        ],
+        "strength": "MUST"
+      }
+    },
+    {
+      "from": "DuplicateSeen",
+      "to": "PeerPenalized",
+      "label": "sem_gossip_duplicate_score_probe",
+      "weight": 3,
+      "description": "reference backbone: repeated invalid/duplicate behavior may affect scoring",
+      "action": {
+        "type": "ActCheckConnected"
+      }
+    },
+    {
+      "from": "ConflictingSeen",
+      "to": "PeerPenalized",
+      "label": "sem_gossip_conflict_score_probe",
+      "weight": 3,
+      "description": "reference backbone: equivocation/conflict paths feed peer scoring",
+      "action": {
+        "type": "ActCheckConnected"
+      }
+    },
+    {
+      "from": "DeferredQueued",
+      "to": "Subscribed",
+      "label": "sem_gossip_deferred_recover",
+      "weight": 2,
+      "description": "reference backbone: deferred work eventually returns to subscribed validation",
+      "action": {
+        "type": "ActCheckConnected"
+      }
+    },
+    {
+      "from": "PeerPenalized",
+      "to": "Closed",
+      "label": "sem_gossip_penalty_close",
+      "weight": 2,
+      "description": "reference backbone: severe peer-score outcomes can end the session",
+      "action": {
+        "type": "ActDisconnectPeer"
+      }
+    },
+    {
+      "from": "Subscribed",
+      "to": "ValidSeen",
+      "label": "sem_gossip_rule_eth2_1215feaa",
+      "weight": 5,
+      "description": "AST bind: stateful gossip validation rule: After genesis values are known, the bootnodes SHOULD update ENRs to participate in normal discovery operations.",
+      "condition_desc": "after «genesis values are known»",
+      "tags": [
+        "temporal:after",
+        "semantic:GossipValidation",
+        "binding:gossip_stateful_rule",
+        "semantic:gossip"
+      ],
+      "spec_refs": [
+        "ETH2-SHOULD-50cecb99"
+      ],
+      "action": {
+        "type": "ActQueryENR"
+      },
+      "oracle": {
+        "differential": true,
+        "must_not": [
+          "CRASH"
+        ],
+        "strength": "SHOULD"
+      }
+    },
+    {
+      "from": "Subscribed",
+      "to": "ValidSeen",
+      "label": "sem_gossip_rule_eth2_9a9f1916",
+      "weight": 5,
+      "description": "AST bind: stateful gossip validation rule: Due to this, clients SHOULD_NOT form ENRs and begin peer discovery until genesis values are known",
+      "condition_desc": "until «genesis values are known»",
+      "tags": [
+        "temporal:until",
+        "semantic:GossipValidation",
+        "binding:gossip_stateful_rule",
+        "semantic:gossip"
+      ],
+      "spec_refs": [
+        "ETH2-SHOULD_NOT-5cba6dbb"
+      ],
+      "action": {
+        "type": "ActQueryENR"
+      },
+      "oracle": {
+        "differential": true,
+        "must_not": [
+          "CRASH"
+        ],
+        "strength": "SHOULD"
+      }
+    },
+    {
+      "from": "Subscribed",
+      "to": "ValidSeen",
+      "label": "sem_gossip_rule_light_client_finality_update_sig_invalid_d0875b45",
+      "weight": 10,
+      "description": "AST bind: stateful gossip validation rule: [IGNORE] The `finality_update` is received after the block at `signature_slot` was given enough time to propagate through the network -- i.e. validatate that `get_sync_message_due_ms()` milliseconds (with a `MAXIMUM_GOSSIP_CLOCK_DISPARITY` allowance) has transpired since the start of `signature_slot`",
+      "condition_desc": "after «the block at signature_slot was given enough time to propagate through the network -- i.e»",
+      "tags": [
+        "temporal:after",
+        "semantic:GossipValidation",
+        "binding:gossip_stateful_rule",
+        "semantic:gossip"
+      ],
+      "spec_refs": [
+        "LIGHT_CLIENT_FINALITY_UPDATE-IGNORE-fa13328c"
+      ],
+      "action": {
+        "type": "ActInjectGossip",
+        "protocol": "light_client_finality_update",
+        "payload": {
+          "kind": "builder",
+          "wrap": "raw",
+          "name": "buildRandomGossip100"
+        },
+        "mutator": "gossip_random_bytes"
+      },
+      "guard": {
+        "fork_gte": "altair"
+      },
+      "oracle": {
+        "differential": true,
+        "must_not": [
+          "CRASH"
+        ],
+        "strength": "MUST"
+      }
+    },
+    {
+      "from": "Subscribed",
+      "to": "ValidSeen",
+      "label": "sem_gossip_rule_light_client_finality_update_b6d816f5",
+      "weight": 10,
+      "description": "AST bind: stateful gossip validation rule: For light clients, the following validations MUST additionally pass before forwarding the finality_update on the network.",
+      "condition_desc": "before «forwarding the finality_update on the network»",
+      "tags": [
+        "temporal:before",
+        "semantic:GossipValidation",
+        "binding:gossip_stateful_rule",
+        "semantic:gossip"
+      ],
+      "spec_refs": [
+        "LIGHT_CLIENT_FINALITY_UPDATE-MUST-2146fea4"
+      ],
+      "action": {
+        "type": "ActInjectGossip",
+        "protocol": "light_client_finality_update",
+        "payload": {
+          "kind": "builder",
+          "wrap": "raw",
+          "name": "buildRandomGossip100"
+        },
+        "mutator": "gossip_random_bytes"
+      },
+      "guard": {
+        "fork_gte": "altair"
+      },
+      "oracle": {
+        "differential": true,
+        "must_not": [
+          "CRASH"
+        ],
+        "strength": "MUST"
+      }
+    },
+    {
+      "from": "Subscribed",
+      "to": "ValidSeen",
+      "label": "sem_gossip_rule_light_client_finality_update_1dbfcd38",
+      "weight": 10,
+      "description": "AST bind: stateful gossip validation rule: For full nodes, the following validations MUST additionally pass before forwarding the finality_update on the network.",
+      "condition_desc": "before «forwarding the finality_update on the network»",
+      "tags": [
+        "temporal:before",
+        "semantic:GossipValidation",
+        "binding:gossip_stateful_rule",
+        "semantic:gossip"
+      ],
+      "spec_refs": [
+        "LIGHT_CLIENT_FINALITY_UPDATE-MUST-379dc991"
+      ],
+      "action": {
+        "type": "ActInjectGossip",
+        "protocol": "light_client_finality_update",
+        "payload": {
+          "kind": "builder",
+          "wrap": "raw",
+          "name": "buildRandomGossip100"
+        },
+        "mutator": "gossip_random_bytes"
+      },
+      "guard": {
+        "fork_gte": "altair"
+      },
+      "oracle": {
+        "differential": true,
+        "must_not": [
+          "CRASH"
+        ],
+        "strength": "MUST"
+      }
+    },
+    {
+      "from": "Subscribed",
+      "to": "ValidSeen",
+      "label": "sem_gossip_rule_light_client_finality_update_8c2c3fe8",
+      "weight": 10,
+      "description": "AST bind: stateful gossip validation rule: The following validations MUST pass before forwarding the finality_update on the network.",
+      "condition_desc": "before «forwarding the finality_update on the network»",
+      "tags": [
+        "temporal:before",
+        "semantic:GossipValidation",
+        "binding:gossip_stateful_rule",
+        "semantic:gossip"
+      ],
+      "spec_refs": [
+        "LIGHT_CLIENT_FINALITY_UPDATE-MUST-a934795f"
+      ],
+      "action": {
+        "type": "ActInjectGossip",
+        "protocol": "light_client_finality_update",
+        "payload": {
+          "kind": "builder",
+          "wrap": "raw",
+          "name": "buildRandomGossip100"
+        },
+        "mutator": "gossip_random_bytes"
+      },
+      "guard": {
+        "fork_gte": "altair"
+      },
+      "oracle": {
+        "differential": true,
+        "must_not": [
+          "CRASH"
+        ],
+        "strength": "MUST"
+      }
+    },
+    {
+      "from": "Subscribed",
+      "to": "ValidSeen",
+      "label": "sem_gossip_rule_light_client_optimistic_update_sig_invalid_e5863b23",
+      "weight": 10,
+      "description": "AST bind: stateful gossip validation rule: [IGNORE] The `optimistic_update` is received after the block at `signature_slot` was given enough time to propagate through the network -- i.e. validatate that `get_sync_message_due_ms()` milliseconds (with a `MAXIMUM_GOSSIP_CLOCK_DISPARITY` allowance) has transpired since the start of `optimistic_update.signature_slot`",
+      "condition_desc": "after «the block at signature_slot was given enough time to propagate through the network -- i.e»",
+      "tags": [
+        "temporal:after",
+        "semantic:GossipValidation",
+        "binding:gossip_stateful_rule",
+        "semantic:gossip"
+      ],
+      "spec_refs": [
+        "LIGHT_CLIENT_OPTIMISTIC_UPDATE-IGNORE-e21f1587"
+      ],
+      "action": {
+        "type": "ActInjectGossip",
+        "protocol": "light_client_optimistic_update",
+        "payload": {
+          "kind": "builder",
+          "wrap": "raw",
+          "name": "buildRandomGossip100"
+        },
+        "mutator": "gossip_random_bytes"
+      },
+      "guard": {
+        "fork_gte": "altair"
+      },
+      "oracle": {
+        "differential": true,
+        "must_not": [
+          "CRASH"
+        ],
+        "strength": "MUST"
+      }
+    },
+    {
+      "from": "Subscribed",
+      "to": "ValidSeen",
+      "label": "sem_gossip_rule_light_client_optimistic_update_9edd5ca7",
+      "weight": 10,
+      "description": "AST bind: stateful gossip validation rule: For light clients, the following validations MUST additionally pass before forwarding the optimistic_update on the network.",
+      "condition_desc": "before «forwarding the optimistic_update on the network»",
+      "tags": [
+        "temporal:before",
+        "semantic:GossipValidation",
+        "binding:gossip_stateful_rule",
+        "semantic:gossip"
+      ],
+      "spec_refs": [
+        "LIGHT_CLIENT_OPTIMISTIC_UPDATE-MUST-409d5940"
+      ],
+      "action": {
+        "type": "ActInjectGossip",
+        "protocol": "light_client_optimistic_update",
+        "payload": {
+          "kind": "builder",
+          "wrap": "raw",
+          "name": "buildRandomGossip100"
+        },
+        "mutator": "gossip_random_bytes"
+      },
+      "guard": {
+        "fork_gte": "altair"
+      },
+      "oracle": {
+        "differential": true,
+        "must_not": [
+          "CRASH"
+        ],
+        "strength": "MUST"
+      }
+    },
+    {
+      "from": "Subscribed",
+      "to": "ValidSeen",
+      "label": "sem_gossip_rule_light_client_optimistic_update_fcd7b860",
+      "weight": 10,
+      "description": "AST bind: stateful gossip validation rule: The following validations MUST pass before forwarding the optimistic_update on the network.",
+      "condition_desc": "before «forwarding the optimistic_update on the network»",
+      "tags": [
+        "temporal:before",
+        "semantic:GossipValidation",
+        "binding:gossip_stateful_rule",
+        "semantic:gossip"
+      ],
+      "spec_refs": [
+        "LIGHT_CLIENT_OPTIMISTIC_UPDATE-MUST-4aa31c50"
+      ],
+      "action": {
+        "type": "ActInjectGossip",
+        "protocol": "light_client_optimistic_update",
+        "payload": {
+          "kind": "builder",
+          "wrap": "raw",
+          "name": "buildRandomGossip100"
+        },
+        "mutator": "gossip_random_bytes"
+      },
+      "guard": {
+        "fork_gte": "altair"
+      },
+      "oracle": {
+        "differential": true,
+        "must_not": [
+          "CRASH"
+        ],
+        "strength": "MUST"
+      }
+    },
+    {
+      "from": "Subscribed",
+      "to": "ValidSeen",
+      "label": "sem_gossip_rule_light_client_optimistic_update_c77aecd4",
+      "weight": 10,
+      "description": "AST bind: stateful gossip validation rule: For full nodes, the following validations MUST additionally pass before forwarding the optimistic_update on the network.",
+      "condition_desc": "before «forwarding the optimistic_update on the network»",
+      "tags": [
+        "temporal:before",
+        "semantic:GossipValidation",
+        "binding:gossip_stateful_rule",
+        "semantic:gossip"
+      ],
+      "spec_refs": [
+        "LIGHT_CLIENT_OPTIMISTIC_UPDATE-MUST-d8f98e64"
+      ],
+      "action": {
+        "type": "ActInjectGossip",
+        "protocol": "light_client_optimistic_update",
+        "payload": {
+          "kind": "builder",
+          "wrap": "raw",
+          "name": "buildRandomGossip100"
+        },
+        "mutator": "gossip_random_bytes"
+      },
+      "guard": {
+        "fork_gte": "altair"
+      },
+      "oracle": {
+        "differential": true,
+        "must_not": [
+          "CRASH"
+        ],
+        "strength": "MUST"
+      }
+    },
+    {
+      "from": "Subscribed",
+      "to": "ValidSeen",
+      "label": "sem_gossip_rule_partial_data_column_sidecar_parent_known_valid_2b5ad403",
+      "weight": 10,
+      "description": "AST bind: stateful gossip validation rule: [IGNORE] The header's block's parent has been seen (MAY be queued for processing once the parent block is retrieved) [failure: has_header and block_header.parent_root not in store.blocks]",
+      "condition_desc": "once «the parent block is retrieved»; when has_header and block_header.parent_root not in store.blocks",
+      "tags": [
+        "temporal:once",
+        "conditional",
+        "semantic:GossipValidation",
+        "binding:gossip_stateful_rule",
+        "semantic:gossip"
+      ],
+      "spec_refs": [
+        "PARTIAL_DATA_COLUMN_SIDECAR-IGNORE-4b3745fd"
+      ],
+      "action": {
+        "type": "ActInjectGossip",
+        "protocol": "data_column_sidecar_0",
+        "payload": {
+          "kind": "builder",
+          "wrap": "raw",
+          "name": "buildValidPartialDataColumnSidecar"
+        }
+      },
+      "guard": {
+        "fork_gte": "fulu"
+      },
+      "oracle": {
+        "differential": true,
+        "must_not": [
+          "CRASH"
+        ],
+        "strength": "MUST"
+      }
+    },
+    {
+      "from": "Subscribed",
+      "to": "ValidSeen",
+      "label": "sem_gossip_rule_partial_data_column_sidecar_dedup_first_seen_6bce87a5",
+      "weight": 10,
+      "description": "AST bind: stateful gossip validation rule: [IGNORE] A valid corresponding PartialDataColumnHeader has been seen [failure: has_cells and header is None]",
+      "condition_desc": "when has_cells and header is None",
+      "tags": [
+        "conditional",
+        "semantic:GossipValidation",
+        "binding:gossip_stateful_rule",
+        "semantic:gossip"
+      ],
+      "spec_refs": [
+        "PARTIAL_DATA_COLUMN_SIDECAR-IGNORE-ac743680"
+      ],
+      "action": {
+        "type": "ActRequestCustodyColumns",
+        "protocol": "custody",
+        "timeout_ms": 10000
+      },
+      "guard": {
+        "fork_gte": "fulu"
+      },
+      "oracle": {
+        "differential": true,
+        "must_not": [
+          "CRASH"
+        ],
+        "strength": "MUST"
+      }
+    },
+    {
+      "from": "Subscribed",
+      "to": "ValidSeen",
+      "label": "sem_gossip_rule_partial_data_column_sidecar_dedup_first_seen_d2cc93dc",
+      "weight": 10,
+      "description": "AST bind: stateful gossip validation rule: [REJECT] The received header MUST equal any previously validated header for this block [failure: has_header and prior_header is not None and prior_header != header]",
+      "condition_desc": "when has_header and prior_header is not None and prior_header != header",
+      "tags": [
+        "conditional",
+        "semantic:GossipValidation",
+        "binding:gossip_stateful_rule",
+        "semantic:gossip"
+      ],
+      "spec_refs": [
+        "PARTIAL_DATA_COLUMN_SIDECAR-REJECT-8ab8add3"
+      ],
+      "action": {
+        "type": "ActInjectGossip",
+        "protocol": "data_column_sidecar_0",
+        "payload": {
+          "kind": "builder",
+          "wrap": "raw",
+          "name": "buildValidPartialDataColumnSidecar"
+        }
+      },
+      "guard": {
+        "fork_gte": "fulu"
+      },
+      "oracle": {
+        "differential": true,
+        "must_not": [
+          "CRASH"
+        ],
+        "strength": "MUST"
+      }
+    },
+    {
+      "from": "Subscribed",
+      "to": "ValidSeen",
+      "label": "sem_gossip_rule_beacon_block_3a86bbdf",
+      "weight": 5,
+      "description": "AST bind: stateful gossip validation rule: Honest nodes SHOULD query engine_getBlobsV2 as soon as they receive a valid beacon_block or data_column_sidecar from gossip",
+      "condition_desc": "upon «they receive a valid beacon_block or data_column_sidecar from gossip»",
+      "tags": [
+        "temporal:upon",
+        "semantic:GossipValidation",
+        "binding:gossip_stateful_rule",
+        "semantic:gossip"
+      ],
+      "spec_refs": [
+        "PROSE-SHOULD-8423471c"
+      ],
+      "action": {
+        "type": "ActInjectGossip",
+        "protocol": "beacon_block",
+        "payload": {
+          "kind": "builder",
+          "wrap": "raw",
+          "name": "buildValidBeaconBlock"
+        }
+      },
+      "guard": {
+        "fork_gte": "fulu"
+      },
+      "oracle": {
+        "differential": true,
+        "must_not": [
+          "CRASH"
+        ],
+        "strength": "SHOULD"
+      }
+    },
+    {
+      "from": "Subscribed",
+      "to": "ValidSeen",
+      "label": "sem_gossip_rule_gossip_51832d94",
+      "weight": 5,
+      "description": "AST bind: stateful gossip validation rule: Two epochs after the fork, pre-fork topics SHOULD be unsubscribed from. This is well after the configured seen_ttl.",
+      "condition_desc": "after «the fork»",
+      "tags": [
+        "temporal:after",
+        "semantic:GossipValidation",
+        "binding:gossip_stateful_rule",
+        "semantic:gossip"
+      ],
+      "spec_refs": [
+        "PROSE-SHOULD-ba897e5b"
+      ],
+      "action": {
+        "type": "ActInjectGossip",
+        "protocol": "blob_sidecar_0",
+        "payload": {
+          "kind": "builder",
+          "wrap": "raw",
+          "name": "buildRandomGossip200"
+        },
+        "mutator": "gossip_random_bytes"
+      },
+      "guard": {
+        "fork_gte": "altair"
+      },
+      "oracle": {
+        "differential": true,
+        "must_not": [
+          "CRASH"
+        ],
+        "strength": "SHOULD"
+      }
+    },
+    {
+      "from": "Subscribed",
+      "to": "ValidSeen",
+      "label": "sem_gossip_rule_gossip_e08ceb3b",
+      "weight": 5,
+      "description": "AST bind: stateful gossip validation rule: Clients SHOULD request cells from peers after validating a PartialDataColumnHeader, even if the corresponding block has not been seen yet.",
+      "condition_desc": "after «validating a PartialDataColumnHeader»; when the corresponding block has not been seen yet.",
+      "tags": [
+        "temporal:after",
+        "conditional",
+        "semantic:GossipValidation",
+        "binding:gossip_stateful_rule",
+        "semantic:gossip"
+      ],
+      "spec_refs": [
+        "PROSE-SHOULD-e1ee5362"
+      ],
+      "action": {
+        "type": "ActRequestCustodyColumns",
+        "protocol": "custody",
+        "timeout_ms": 10000
+      },
+      "guard": {
+        "fork_gte": "fulu"
+      },
+      "oracle": {
+        "differential": true,
+        "must_not": [
+          "CRASH"
+        ],
+        "strength": "SHOULD"
+      }
+    },
+    {
+      "from": "Subscribed",
+      "to": "ValidSeen",
+      "label": "sem_gossip_rule_gossip_4983c108",
+      "weight": 5,
+      "description": "AST bind: stateful gossip validation rule: Honest nodes SHOULD query engine_getBlobsV1 as soon as they receive a valid gossip block that contains data, and import the returned blobs.",
+      "condition_desc": "upon «they receive a valid gossip block that contains data»",
+      "tags": [
+        "temporal:upon",
+        "semantic:GossipValidation",
+        "binding:gossip_stateful_rule",
+        "semantic:gossip"
+      ],
+      "spec_refs": [
+        "PROSE-SHOULD-f3d9ce33"
+      ],
+      "action": {
+        "type": "ActInjectGossip",
+        "protocol": "beacon_block",
+        "payload": {
+          "kind": "builder",
+          "wrap": "raw",
+          "name": "buildValidBeaconBlock"
+        }
+      },
+      "guard": {
+        "fork_gte": "deneb"
+      },
+      "oracle": {
+        "differential": true,
+        "must_not": [
+          "CRASH"
+        ],
+        "strength": "SHOULD"
+      }
+    },
+    {
+      "from": "Subscribed",
+      "to": "ValidSeen",
+      "label": "sem_gossip_rule_gossip_1cfa0765",
+      "weight": 5,
+      "description": "AST bind: stateful gossip validation rule: Due to this, clients SHOULD_NOT subscribe to gossipsub topics until these genesis values are known.",
+      "condition_desc": "until «these genesis values are known»",
+      "tags": [
+        "temporal:until",
+        "semantic:GossipValidation",
+        "binding:gossip_stateful_rule",
+        "semantic:gossip"
+      ],
+      "spec_refs": [
+        "PROSE-SHOULD_NOT-c1b17ff2"
+      ],
+      "action": {
+        "type": "ActQueryENR"
+      },
+      "oracle": {
+        "differential": true,
+        "must_not": [
+          "CRASH"
+        ],
+        "strength": "SHOULD"
+      }
+    }
+  ]
+}

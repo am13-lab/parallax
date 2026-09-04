@@ -2,74 +2,187 @@
   "description": "Protocol Model (SM-IR Layer 0): entity-centric typed inventory of Ethereum CL Req/Resp methods. Drives the validator's payload type-check (gate 3) and the smgen fields-kind payload codegen. Request 'container' is one of: fixed (all-fixed-size SSZ fields, fields-codegen supported), variable (offset-encoded SSZ list/variable container, use a named builder), none (no request body). Bare-scalar requests (Ping/Goodbye) are modelled as single-field fixed containers. Cross-check protocol IDs against internal/constants/spec.go.",
   "source": "consensus-specs/specs/{phase0,altair,...,gloas}/p2p-interface.md + internal/constants/spec.go",
   "availability": {
-    "/eth2/beacon_chain/req/status/1/ssz_snappy": { "introduced_fork": "phase0" },
-    "/eth2/beacon_chain/req/goodbye/1/ssz_snappy": { "introduced_fork": "phase0" },
-    "/eth2/beacon_chain/req/ping/1/ssz_snappy": { "introduced_fork": "phase0" },
-    "/eth2/beacon_chain/req/metadata/1/ssz_snappy": { "introduced_fork": "phase0" },
-    "/eth2/beacon_chain/req/beacon_blocks_by_range/1/ssz_snappy": { "introduced_fork": "phase0" },
-    "/eth2/beacon_chain/req/beacon_blocks_by_root/1/ssz_snappy": { "introduced_fork": "phase0" },
-    "/eth2/beacon_chain/req/metadata/2/ssz_snappy": { "introduced_fork": "altair" },
-    "/eth2/beacon_chain/req/beacon_blocks_by_range/2/ssz_snappy": { "introduced_fork": "altair" },
-    "/eth2/beacon_chain/req/beacon_blocks_by_root/2/ssz_snappy": { "introduced_fork": "altair" },
-    "/eth2/beacon_chain/req/light_client_bootstrap/1/ssz_snappy": { "introduced_fork": "altair" },
-    "/eth2/beacon_chain/req/light_client_updates_by_range/1/ssz_snappy": { "introduced_fork": "altair" },
-    "/eth2/beacon_chain/req/light_client_finality_update/1/ssz_snappy": { "introduced_fork": "altair" },
-    "/eth2/beacon_chain/req/light_client_optimistic_update/1/ssz_snappy": { "introduced_fork": "altair" },
-    "/eth2/beacon_chain/req/blob_sidecars_by_range/1/ssz_snappy": { "introduced_fork": "deneb" },
-    "/eth2/beacon_chain/req/blob_sidecars_by_root/1/ssz_snappy": { "introduced_fork": "deneb" },
-    "/eth2/beacon_chain/req/status/2/ssz_snappy": { "introduced_fork": "fulu" },
-    "/eth2/beacon_chain/req/metadata/3/ssz_snappy": { "introduced_fork": "fulu" },
-    "/eth2/beacon_chain/req/beacon_blocks_by_head/1/ssz_snappy": { "introduced_fork": "fulu" },
-    "/eth2/beacon_chain/req/data_column_sidecars_by_range/1/ssz_snappy": { "introduced_fork": "fulu" },
-    "/eth2/beacon_chain/req/data_column_sidecars_by_root/1/ssz_snappy": { "introduced_fork": "fulu" },
-    "/eth2/beacon_chain/req/execution_payload_envelopes_by_range/1/ssz_snappy": { "introduced_fork": "gloas" },
-    "/eth2/beacon_chain/req/execution_payload_envelopes_by_root/1/ssz_snappy": { "introduced_fork": "gloas" },
-    "/eth2/beacon_chain/req/inclusion_list_by_committee_indices/1/ssz_snappy": { "introduced_fork": "heze" }
+    "/eth2/beacon_chain/req/beacon_blocks_by_head/1/ssz_snappy": {
+      "introduced_fork": "fulu"
+    },
+    "/eth2/beacon_chain/req/beacon_blocks_by_range/1/ssz_snappy": {
+      "introduced_fork": "phase0"
+    },
+    "/eth2/beacon_chain/req/beacon_blocks_by_range/2/ssz_snappy": {
+      "introduced_fork": "altair"
+    },
+    "/eth2/beacon_chain/req/beacon_blocks_by_root/1/ssz_snappy": {
+      "introduced_fork": "phase0"
+    },
+    "/eth2/beacon_chain/req/beacon_blocks_by_root/2/ssz_snappy": {
+      "introduced_fork": "altair"
+    },
+    "/eth2/beacon_chain/req/blob_sidecars_by_range/1/ssz_snappy": {
+      "introduced_fork": "deneb"
+    },
+    "/eth2/beacon_chain/req/blob_sidecars_by_root/1/ssz_snappy": {
+      "introduced_fork": "deneb"
+    },
+    "/eth2/beacon_chain/req/data_column_sidecars_by_range/1/ssz_snappy": {
+      "introduced_fork": "fulu"
+    },
+    "/eth2/beacon_chain/req/data_column_sidecars_by_root/1/ssz_snappy": {
+      "introduced_fork": "fulu"
+    },
+    "/eth2/beacon_chain/req/execution_payload_envelopes_by_range/1/ssz_snappy": {
+      "introduced_fork": "gloas"
+    },
+    "/eth2/beacon_chain/req/execution_payload_envelopes_by_root/1/ssz_snappy": {
+      "introduced_fork": "gloas"
+    },
+    "/eth2/beacon_chain/req/goodbye/1/ssz_snappy": {
+      "introduced_fork": "phase0"
+    },
+    "/eth2/beacon_chain/req/inclusion_list_by_committee_indices/1/ssz_snappy": {
+      "introduced_fork": "heze"
+    },
+    "/eth2/beacon_chain/req/inclusion_lists_by_indices/1/ssz_snappy": {
+      "introduced_fork": "heze"
+    },
+    "/eth2/beacon_chain/req/light_client_bootstrap/1/ssz_snappy": {
+      "introduced_fork": "altair"
+    },
+    "/eth2/beacon_chain/req/light_client_finality_update/1/ssz_snappy": {
+      "introduced_fork": "altair"
+    },
+    "/eth2/beacon_chain/req/light_client_optimistic_update/1/ssz_snappy": {
+      "introduced_fork": "altair"
+    },
+    "/eth2/beacon_chain/req/light_client_updates_by_range/1/ssz_snappy": {
+      "introduced_fork": "altair"
+    },
+    "/eth2/beacon_chain/req/metadata/1/ssz_snappy": {
+      "introduced_fork": "phase0"
+    },
+    "/eth2/beacon_chain/req/metadata/2/ssz_snappy": {
+      "introduced_fork": "altair"
+    },
+    "/eth2/beacon_chain/req/metadata/3/ssz_snappy": {
+      "introduced_fork": "fulu"
+    },
+    "/eth2/beacon_chain/req/ping/1/ssz_snappy": {
+      "introduced_fork": "phase0"
+    },
+    "/eth2/beacon_chain/req/status/1/ssz_snappy": {
+      "introduced_fork": "phase0"
+    },
+    "/eth2/beacon_chain/req/status/2/ssz_snappy": {
+      "introduced_fork": "fulu"
+    }
   },
   "methods": [
     {
       "name": "Status",
-      "protocol_ids": ["/eth2/beacon_chain/req/status/1/ssz_snappy"],
+      "protocol_ids": [
+        "/eth2/beacon_chain/req/status/1/ssz_snappy"
+      ],
       "request": {
         "container": "fixed",
         "fields": [
-          { "name": "fork_digest", "type": "bytes", "size": 4 },
-          { "name": "finalized_root", "type": "bytes", "size": 32 },
-          { "name": "finalized_epoch", "type": "uint64", "size": 8 },
-          { "name": "head_root", "type": "bytes", "size": 32 },
-          { "name": "head_slot", "type": "uint64", "size": 8 }
+          {
+            "name": "fork_digest",
+            "type": "bytes",
+            "size": 4
+          },
+          {
+            "name": "finalized_root",
+            "type": "bytes",
+            "size": 32
+          },
+          {
+            "name": "finalized_epoch",
+            "type": "uint64",
+            "size": 8
+          },
+          {
+            "name": "head_root",
+            "type": "bytes",
+            "size": 32
+          },
+          {
+            "name": "head_slot",
+            "type": "uint64",
+            "size": 8
+          }
         ]
       }
     },
     {
       "name": "StatusV2",
-      "protocol_ids": ["/eth2/beacon_chain/req/status/2/ssz_snappy"],
+      "protocol_ids": [
+        "/eth2/beacon_chain/req/status/2/ssz_snappy"
+      ],
       "request": {
         "container": "fixed",
         "fields": [
-          { "name": "fork_digest", "type": "bytes", "size": 4 },
-          { "name": "finalized_root", "type": "bytes", "size": 32 },
-          { "name": "finalized_epoch", "type": "uint64", "size": 8 },
-          { "name": "head_root", "type": "bytes", "size": 32 },
-          { "name": "head_slot", "type": "uint64", "size": 8 },
-          { "name": "earliest_available_slot", "type": "uint64", "size": 8 }
+          {
+            "name": "fork_digest",
+            "type": "bytes",
+            "size": 4
+          },
+          {
+            "name": "finalized_root",
+            "type": "bytes",
+            "size": 32
+          },
+          {
+            "name": "finalized_epoch",
+            "type": "uint64",
+            "size": 8
+          },
+          {
+            "name": "head_root",
+            "type": "bytes",
+            "size": 32
+          },
+          {
+            "name": "head_slot",
+            "type": "uint64",
+            "size": 8
+          },
+          {
+            "name": "earliest_available_slot",
+            "type": "uint64",
+            "size": 8
+          }
         ]
       }
     },
     {
       "name": "Goodbye",
-      "protocol_ids": ["/eth2/beacon_chain/req/goodbye/1/ssz_snappy"],
+      "protocol_ids": [
+        "/eth2/beacon_chain/req/goodbye/1/ssz_snappy"
+      ],
       "request": {
         "container": "fixed",
-        "fields": [{ "name": "reason", "type": "uint64", "size": 8 }]
+        "fields": [
+          {
+            "name": "reason",
+            "type": "uint64",
+            "size": 8
+          }
+        ]
       }
     },
     {
       "name": "Ping",
-      "protocol_ids": ["/eth2/beacon_chain/req/ping/1/ssz_snappy"],
+      "protocol_ids": [
+        "/eth2/beacon_chain/req/ping/1/ssz_snappy"
+      ],
       "request": {
         "container": "fixed",
-        "fields": [{ "name": "value", "type": "uint64", "size": 8 }]
+        "fields": [
+          {
+            "name": "value",
+            "type": "uint64",
+            "size": 8
+          }
+        ]
       }
     },
     {
@@ -79,7 +192,9 @@
         "/eth2/beacon_chain/req/metadata/2/ssz_snappy",
         "/eth2/beacon_chain/req/metadata/3/ssz_snappy"
       ],
-      "request": { "container": "none" }
+      "request": {
+        "container": "none"
+      }
     },
     {
       "name": "BeaconBlocksByRange",
@@ -90,8 +205,16 @@
       "request": {
         "container": "fixed",
         "fields": [
-          { "name": "start_slot", "type": "uint64", "size": 8 },
-          { "name": "count", "type": "uint64", "size": 8 }
+          {
+            "name": "start_slot",
+            "type": "uint64",
+            "size": 8
+          },
+          {
+            "name": "count",
+            "type": "uint64",
+            "size": 8
+          }
         ]
       }
     },
@@ -101,94 +224,178 @@
         "/eth2/beacon_chain/req/beacon_blocks_by_root/1/ssz_snappy",
         "/eth2/beacon_chain/req/beacon_blocks_by_root/2/ssz_snappy"
       ],
-      "request": { "container": "variable", "note": "List[Root] — offset-encoded; use a named builder" }
+      "request": {
+        "container": "variable",
+        "note": "List[Root] — offset-encoded; use a named builder"
+      }
     },
     {
       "name": "BeaconBlocksByHead",
-      "protocol_ids": ["/eth2/beacon_chain/req/beacon_blocks_by_head/1/ssz_snappy"],
+      "protocol_ids": [
+        "/eth2/beacon_chain/req/beacon_blocks_by_head/1/ssz_snappy"
+      ],
       "request": {
         "container": "fixed",
         "fields": [
-          { "name": "beacon_root", "type": "bytes", "size": 32 },
-          { "name": "count", "type": "uint64", "size": 8 }
+          {
+            "name": "beacon_root",
+            "type": "bytes",
+            "size": 32
+          },
+          {
+            "name": "count",
+            "type": "uint64",
+            "size": 8
+          }
         ]
       }
     },
     {
       "name": "BlobSidecarsByRange",
-      "protocol_ids": ["/eth2/beacon_chain/req/blob_sidecars_by_range/1/ssz_snappy"],
+      "protocol_ids": [
+        "/eth2/beacon_chain/req/blob_sidecars_by_range/1/ssz_snappy"
+      ],
       "request": {
         "container": "fixed",
         "fields": [
-          { "name": "start_slot", "type": "uint64", "size": 8 },
-          { "name": "count", "type": "uint64", "size": 8 }
+          {
+            "name": "start_slot",
+            "type": "uint64",
+            "size": 8
+          },
+          {
+            "name": "count",
+            "type": "uint64",
+            "size": 8
+          }
         ]
       }
     },
     {
       "name": "BlobSidecarsByRoot",
-      "protocol_ids": ["/eth2/beacon_chain/req/blob_sidecars_by_root/1/ssz_snappy"],
-      "request": { "container": "variable", "note": "List[BlobIdentifier] — use a named builder" }
+      "protocol_ids": [
+        "/eth2/beacon_chain/req/blob_sidecars_by_root/1/ssz_snappy"
+      ],
+      "request": {
+        "container": "variable",
+        "note": "List[BlobIdentifier] — use a named builder"
+      }
     },
     {
       "name": "DataColumnSidecarsByRange",
-      "protocol_ids": ["/eth2/beacon_chain/req/data_column_sidecars_by_range/1/ssz_snappy"],
-      "request": { "container": "variable", "note": "{start_slot, count, columns: List[uint64]} — variable; use a named builder" }
+      "protocol_ids": [
+        "/eth2/beacon_chain/req/data_column_sidecars_by_range/1/ssz_snappy"
+      ],
+      "request": {
+        "container": "variable",
+        "note": "{start_slot, count, columns: List[uint64]} — variable; use a named builder"
+      }
     },
     {
       "name": "DataColumnSidecarsByRoot",
-      "protocol_ids": ["/eth2/beacon_chain/req/data_column_sidecars_by_root/1/ssz_snappy"],
-      "request": { "container": "variable", "note": "List[DataColumnIdentifier] — use a named builder" }
+      "protocol_ids": [
+        "/eth2/beacon_chain/req/data_column_sidecars_by_root/1/ssz_snappy"
+      ],
+      "request": {
+        "container": "variable",
+        "note": "List[DataColumnIdentifier] — use a named builder"
+      }
     },
     {
       "name": "LightClientBootstrap",
-      "protocol_ids": ["/eth2/beacon_chain/req/light_client_bootstrap/1/ssz_snappy"],
+      "protocol_ids": [
+        "/eth2/beacon_chain/req/light_client_bootstrap/1/ssz_snappy"
+      ],
       "request": {
         "container": "fixed",
-        "fields": [{ "name": "block_root", "type": "bytes", "size": 32 }]
+        "fields": [
+          {
+            "name": "block_root",
+            "type": "bytes",
+            "size": 32
+          }
+        ]
       }
     },
     {
       "name": "LightClientUpdatesByRange",
-      "protocol_ids": ["/eth2/beacon_chain/req/light_client_updates_by_range/1/ssz_snappy"],
+      "protocol_ids": [
+        "/eth2/beacon_chain/req/light_client_updates_by_range/1/ssz_snappy"
+      ],
       "request": {
         "container": "fixed",
         "fields": [
-          { "name": "start_period", "type": "uint64", "size": 8 },
-          { "name": "count", "type": "uint64", "size": 8 }
+          {
+            "name": "start_period",
+            "type": "uint64",
+            "size": 8
+          },
+          {
+            "name": "count",
+            "type": "uint64",
+            "size": 8
+          }
         ]
       }
     },
     {
       "name": "LightClientFinalityUpdate",
-      "protocol_ids": ["/eth2/beacon_chain/req/light_client_finality_update/1/ssz_snappy"],
-      "request": { "container": "none" }
+      "protocol_ids": [
+        "/eth2/beacon_chain/req/light_client_finality_update/1/ssz_snappy"
+      ],
+      "request": {
+        "container": "none"
+      }
     },
     {
       "name": "LightClientOptimisticUpdate",
-      "protocol_ids": ["/eth2/beacon_chain/req/light_client_optimistic_update/1/ssz_snappy"],
-      "request": { "container": "none" }
+      "protocol_ids": [
+        "/eth2/beacon_chain/req/light_client_optimistic_update/1/ssz_snappy"
+      ],
+      "request": {
+        "container": "none"
+      }
     },
     {
       "name": "ExecutionPayloadEnvelopesByRange",
-      "protocol_ids": ["/eth2/beacon_chain/req/execution_payload_envelopes_by_range/1/ssz_snappy"],
+      "protocol_ids": [
+        "/eth2/beacon_chain/req/execution_payload_envelopes_by_range/1/ssz_snappy"
+      ],
       "request": {
         "container": "fixed",
         "fields": [
-          { "name": "start_slot", "type": "uint64", "size": 8 },
-          { "name": "count", "type": "uint64", "size": 8 }
+          {
+            "name": "start_slot",
+            "type": "uint64",
+            "size": 8
+          },
+          {
+            "name": "count",
+            "type": "uint64",
+            "size": 8
+          }
         ]
       }
     },
     {
       "name": "ExecutionPayloadEnvelopesByRoot",
-      "protocol_ids": ["/eth2/beacon_chain/req/execution_payload_envelopes_by_root/1/ssz_snappy"],
-      "request": { "container": "variable", "note": "List[Root] — use a named builder" }
+      "protocol_ids": [
+        "/eth2/beacon_chain/req/execution_payload_envelopes_by_root/1/ssz_snappy"
+      ],
+      "request": {
+        "container": "variable",
+        "note": "List[Root] — use a named builder"
+      }
     },
     {
       "name": "InclusionListByCommitteeIndices",
-      "protocol_ids": ["/eth2/beacon_chain/req/inclusion_list_by_committee_indices/1/ssz_snappy"],
-      "request": { "container": "variable", "note": "{slot, committee_indices: Bitvector[INCLUSION_LIST_COMMITTEE_SIZE]} — future Heze; use a named builder if enabled" }
+      "protocol_ids": [
+        "/eth2/beacon_chain/req/inclusion_list_by_committee_indices/1/ssz_snappy"
+      ],
+      "request": {
+        "container": "variable",
+        "note": "{slot, committee_indices: Bitvector[INCLUSION_LIST_COMMITTEE_SIZE]} — future Heze; use a named builder if enabled"
+      }
     }
   ]
 }

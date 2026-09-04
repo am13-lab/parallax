@@ -1,0 +1,174 @@
+{
+  "name": "PeerScoring",
+  "constructor": "NewPeerScoringMachine",
+  "init_state": "CleanPeer",
+  "states": [
+    {
+      "name": "CleanPeer"
+    },
+    {
+      "name": "BadResponse1"
+    },
+    {
+      "name": "BadResponse2"
+    },
+    {
+      "name": "BadResponse3"
+    },
+    {
+      "name": "BadResponse4"
+    },
+    {
+      "name": "BadResponse5"
+    },
+    {
+      "name": "Penalized"
+    },
+    {
+      "name": "Banned",
+      "terminal": true
+    },
+    {
+      "name": "Recovered",
+      "terminal": true
+    }
+  ],
+  "transitions": [
+    {
+      "from": "CleanPeer",
+      "to": "BadResponse1",
+      "label": "sem_score_bad_response_1",
+      "weight": 8,
+      "description": "reference backbone: first malformed response/gossip event starts score degradation",
+      "action": {
+        "type": "ActInjectGossip",
+        "protocol": "beacon_block",
+        "payload": {
+          "kind": "builder",
+          "wrap": "raw",
+          "name": "buildRandomGossip100"
+        },
+        "mutator": "gossip_random_bytes"
+      }
+    },
+    {
+      "from": "BadResponse1",
+      "to": "BadResponse2",
+      "label": "sem_score_bad_response_2",
+      "weight": 7,
+      "action": {
+        "type": "ActInjectGossip",
+        "protocol": "beacon_block",
+        "payload": {
+          "kind": "builder",
+          "wrap": "raw",
+          "name": "buildRandomGossip100"
+        },
+        "mutator": "gossip_random_bytes"
+      }
+    },
+    {
+      "from": "BadResponse2",
+      "to": "BadResponse3",
+      "label": "sem_score_bad_response_3",
+      "weight": 6,
+      "action": {
+        "type": "ActSendReqResp",
+        "protocol": "/eth2/beacon_chain/req/ping/1/ssz_snappy",
+        "payload": {
+          "kind": "literal",
+          "wrap": "raw",
+          "size": 8
+        },
+        "timeout_ms": 5000,
+        "mutator": "random_bytes"
+      }
+    },
+    {
+      "from": "BadResponse3",
+      "to": "BadResponse4",
+      "label": "sem_score_bad_response_4",
+      "weight": 5,
+      "action": {
+        "type": "ActInjectGossip",
+        "protocol": "beacon_block",
+        "payload": {
+          "kind": "builder",
+          "wrap": "raw",
+          "name": "buildRandomGossip200"
+        },
+        "mutator": "gossip_append_garbage"
+      }
+    },
+    {
+      "from": "BadResponse4",
+      "to": "BadResponse5",
+      "label": "sem_score_bad_response_5",
+      "weight": 5,
+      "action": {
+        "type": "ActInjectGossip",
+        "protocol": "beacon_block",
+        "payload": {
+          "kind": "builder",
+          "wrap": "raw",
+          "name": "buildRandomGossip300"
+        },
+        "mutator": "gossip_truncate"
+      }
+    },
+    {
+      "from": "BadResponse5",
+      "to": "Penalized",
+      "label": "sem_score_penalized",
+      "weight": 5,
+      "description": "reference backbone: repeated bad behavior crosses a penalty threshold",
+      "action": {
+        "type": "ActCheckConnected",
+        "timeout_ms": 1000
+      },
+      "oracle": {
+        "differential": true,
+        "must_not": [
+          "CRASH"
+        ],
+        "strength": "MUST"
+      }
+    },
+    {
+      "from": "Penalized",
+      "to": "Banned",
+      "label": "sem_score_banned_probe",
+      "weight": 4,
+      "description": "reference backbone: reconnect may fail once the peer is banned",
+      "action": {
+        "type": "ActReconnect",
+        "timeout_ms": 5000
+      },
+      "oracle": {
+        "differential": true,
+        "must_not": [
+          "CRASH"
+        ],
+        "strength": "MUST"
+      }
+    },
+    {
+      "from": "Penalized",
+      "to": "Recovered",
+      "label": "sem_score_recovered_probe",
+      "weight": 1,
+      "description": "reference backbone: score decay/recovery path",
+      "action": {
+        "type": "ActSleep",
+        "timeout_ms": 1000
+      },
+      "oracle": {
+        "differential": true,
+        "must_not": [
+          "CRASH"
+        ],
+        "strength": "MAY"
+      }
+    }
+  ]
+}

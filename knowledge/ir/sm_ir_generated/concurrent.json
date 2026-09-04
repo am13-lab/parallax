@@ -1,0 +1,385 @@
+{
+  "name": "Concurrent",
+  "constructor": "NewConcurrentMachine",
+  "init_state": "ConcIdle",
+  "states": [
+    {
+      "name": "ConcIdle"
+    },
+    {
+      "name": "ConcOneStream"
+    },
+    {
+      "name": "ConcMultiStream"
+    },
+    {
+      "name": "ConcAtLimit"
+    },
+    {
+      "name": "ConcOverLimit",
+      "terminal": true
+    },
+    {
+      "name": "ConcCompleted",
+      "terminal": true
+    }
+  ],
+  "transitions": [
+    {
+      "from": "ConcIdle",
+      "to": "ConcOneStream",
+      "label": "conc_open_ping_stream",
+      "weight": 10,
+      "action": {
+        "type": "ActOpenStream",
+        "protocol": "/eth2/beacon_chain/req/ping/1/ssz_snappy",
+        "payload": {
+          "kind": "fields",
+          "wrap": "ssz_snappy",
+          "fields": {
+            "value": {
+              "lit": 1
+            }
+          }
+        },
+        "timeout_ms": 10000
+      }
+    },
+    {
+      "from": "ConcIdle",
+      "to": "ConcOneStream",
+      "label": "conc_open_bbr_stream",
+      "weight": 8,
+      "action": {
+        "type": "ActOpenStream",
+        "protocol": "/eth2/beacon_chain/req/beacon_blocks_by_range/2/ssz_snappy",
+        "payload": {
+          "kind": "fields",
+          "wrap": "ssz_snappy",
+          "fields": {
+            "count": {
+              "lit": 1
+            },
+            "start_slot": {
+              "lit": 0
+            }
+          }
+        },
+        "timeout_ms": 10000
+      }
+    },
+    {
+      "from": "ConcIdle",
+      "to": "ConcOneStream",
+      "label": "conc_open_metadata_stream",
+      "weight": 8,
+      "action": {
+        "type": "ActOpenStream",
+        "protocol": "/eth2/beacon_chain/req/metadata/3/ssz_snappy",
+        "timeout_ms": 10000
+      }
+    },
+    {
+      "from": "ConcOneStream",
+      "to": "ConcMultiStream",
+      "label": "conc_open_second_stream",
+      "weight": 10,
+      "action": {
+        "type": "ActOpenStream",
+        "protocol": "/eth2/beacon_chain/req/ping/1/ssz_snappy",
+        "payload": {
+          "kind": "fields",
+          "wrap": "ssz_snappy",
+          "fields": {
+            "value": {
+              "lit": 2
+            }
+          }
+        },
+        "timeout_ms": 10000
+      }
+    },
+    {
+      "from": "ConcMultiStream",
+      "to": "ConcMultiStream",
+      "label": "conc_open_additional_stream",
+      "weight": 8,
+      "condition_desc": "fewer than eight streams are currently open",
+      "action": {
+        "type": "ActOpenStream",
+        "protocol": "/eth2/beacon_chain/req/ping/1/ssz_snappy",
+        "payload": {
+          "kind": "builder",
+          "wrap": "ssz_snappy",
+          "name": "buildPingStreamCountSSZ"
+        },
+        "timeout_ms": 10000
+      },
+      "guard": {
+        "len": {
+          "field": "open_streams",
+          "op": "\u003c",
+          "value": 8
+        }
+      }
+    },
+    {
+      "from": "ConcMultiStream",
+      "to": "ConcAtLimit",
+      "label": "conc_fill_to_limit",
+      "weight": 6,
+      "condition_desc": "at least three streams are currently open",
+      "action": {
+        "type": "ActOpenStream",
+        "protocol": "/eth2/beacon_chain/req/metadata/3/ssz_snappy",
+        "timeout_ms": 10000
+      },
+      "guard": {
+        "len": {
+          "field": "open_streams",
+          "op": "\u003e=",
+          "value": 3
+        }
+      },
+      "oracle": {
+        "differential": true,
+        "resource_bounds": {
+          "max_fd_delta": 20
+        }
+      }
+    },
+    {
+      "from": "ConcAtLimit",
+      "to": "ConcOverLimit",
+      "label": "conc_exceed_limit",
+      "weight": 10,
+      "spec_refs": [
+        "PROSE-MUST_NOT-305625f9",
+        "PROSE-MAY-c3746d81"
+      ],
+      "action": {
+        "type": "ActOpenStream",
+        "protocol": "/eth2/beacon_chain/req/ping/1/ssz_snappy",
+        "payload": {
+          "kind": "fields",
+          "wrap": "ssz_snappy",
+          "fields": {
+            "value": {
+              "lit": 99
+            }
+          }
+        },
+        "timeout_ms": 5000
+      },
+      "oracle": {
+        "differential": true,
+        "expected": "REJECT",
+        "must_not": [
+          "ACCEPT"
+        ],
+        "spec_predicate": "accepted == 0"
+      }
+    },
+    {
+      "from": "ConcMultiStream",
+      "to": "ConcMultiStream",
+      "label": "conc_read_latest",
+      "weight": 6,
+      "action": {
+        "type": "ActReadResponse",
+        "timeout_ms": 10000
+      }
+    },
+    {
+      "from": "ConcOneStream",
+      "to": "ConcIdle",
+      "label": "conc_read_and_close",
+      "weight": 8,
+      "action": {
+        "type": "ActReadResponse",
+        "timeout_ms": 10000
+      }
+    },
+    {
+      "from": "ConcAtLimit",
+      "to": "ConcMultiStream",
+      "label": "conc_read_at_limit",
+      "weight": 6,
+      "action": {
+        "type": "ActReadResponse",
+        "timeout_ms": 10000
+      }
+    },
+    {
+      "from": "ConcMultiStream",
+      "to": "ConcMultiStream",
+      "label": "conc_interleave_bbr",
+      "weight": 5,
+      "condition_desc": "fewer than ten streams are currently open",
+      "action": {
+        "type": "ActOpenStream",
+        "protocol": "/eth2/beacon_chain/req/beacon_blocks_by_range/2/ssz_snappy",
+        "payload": {
+          "kind": "fields",
+          "wrap": "ssz_snappy",
+          "fields": {
+            "count": {
+              "lit": 1
+            },
+            "start_slot": {
+              "lit": 0
+            }
+          }
+        },
+        "timeout_ms": 10000
+      },
+      "guard": {
+        "len": {
+          "field": "open_streams",
+          "op": "\u003c",
+          "value": 10
+        }
+      }
+    },
+    {
+      "from": "ConcMultiStream",
+      "to": "ConcMultiStream",
+      "label": "conc_normal_ping_while_open",
+      "weight": 4,
+      "action": {
+        "type": "ActSendReqResp",
+        "protocol": "/eth2/beacon_chain/req/ping/1/ssz_snappy",
+        "payload": {
+          "kind": "fields",
+          "wrap": "ssz_snappy",
+          "fields": {
+            "value": {
+              "lit": 42
+            }
+          }
+        },
+        "timeout_ms": 5000
+      }
+    },
+    {
+      "from": "ConcMultiStream",
+      "to": "ConcMultiStream",
+      "label": "conc_check_connected",
+      "weight": 2,
+      "action": {
+        "type": "ActCheckConnected",
+        "timeout_ms": 5000
+      }
+    },
+    {
+      "from": "ConcAtLimit",
+      "to": "ConcAtLimit",
+      "label": "conc_check_at_limit",
+      "weight": 3,
+      "action": {
+        "type": "ActCheckConnected",
+        "timeout_ms": 5000
+      }
+    },
+    {
+      "from": "ConcIdle",
+      "to": "ConcCompleted",
+      "label": "conc_idle_to_completed",
+      "weight": 5,
+      "action": {
+        "type": "ActSleep",
+        "timeout_ms": 100
+      }
+    },
+    {
+      "from": "ConcMultiStream",
+      "to": "ConcCompleted",
+      "label": "conc_multi_to_completed",
+      "weight": 3,
+      "action": {
+        "type": "ActSleep",
+        "timeout_ms": 100
+      }
+    },
+    {
+      "from": "ConcMultiStream",
+      "to": "ConcIdle",
+      "label": "conc_drain_to_idle",
+      "weight": 4,
+      "condition_desc": "exactly one stream is currently open",
+      "action": {
+        "type": "ActReadResponse",
+        "timeout_ms": 10000
+      },
+      "guard": {
+        "len": {
+          "field": "open_streams",
+          "op": "==",
+          "value": 1
+        }
+      }
+    },
+    {
+      "from": "ConcIdle",
+      "to": "ConcIdle",
+      "label": "conc_idle_delay",
+      "weight": 3,
+      "action": {
+        "type": "ActSleep",
+        "timeout_ms": 500
+      }
+    },
+    {
+      "from": "ConcOneStream",
+      "to": "ConcOneStream",
+      "label": "conc_write_without_close",
+      "weight": 4,
+      "spec_refs": [
+        "PROSE-MUST-faaebe5c"
+      ],
+      "action": {
+        "type": "ActWritePartial",
+        "protocol": "/eth2/beacon_chain/req/ping/1/ssz_snappy",
+        "payload": {
+          "kind": "fields",
+          "wrap": "ssz_snappy",
+          "fields": {
+            "value": {
+              "lit": 1
+            }
+          }
+        },
+        "timeout_ms": 3000
+      }
+    },
+    {
+      "from": "ConcOneStream",
+      "to": "ConcCompleted",
+      "label": "conc_read_without_write_close",
+      "weight": 3,
+      "spec_refs": [
+        "PROSE-MUST-faaebe5c"
+      ],
+      "action": {
+        "type": "ActReadResponse",
+        "timeout_ms": 5000,
+        "keep_write_open": true
+      }
+    },
+    {
+      "from": "ConcMultiStream",
+      "to": "ConcMultiStream",
+      "label": "conc_per_protocol_limit",
+      "weight": 4,
+      "spec_refs": [
+        "PROSE-MUST_NOT-305625f9",
+        "PROSE-MAY-c3746d81"
+      ],
+      "action": {
+        "type": "ActOpenStream",
+        "protocol": "/eth2/beacon_chain/req/ping/1/ssz_snappy",
+        "timeout_ms": 5000
+      }
+    }
+  ]
+}

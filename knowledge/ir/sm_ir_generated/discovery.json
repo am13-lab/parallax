@@ -1,0 +1,313 @@
+{
+  "name": "Discovery",
+  "constructor": "NewDiscoveryMachine",
+  "init_state": "DiscBaseline",
+  "states": [
+    {
+      "name": "DiscBaseline"
+    },
+    {
+      "name": "DiscProbing"
+    },
+    {
+      "name": "DiscCompleted",
+      "terminal": true
+    }
+  ],
+  "transitions": [
+    {
+      "from": "DiscBaseline",
+      "to": "DiscProbing",
+      "label": "disc_baseline",
+      "weight": 1,
+      "description": "backbone: liveness check",
+      "action": {
+        "type": "ActCheckConnected"
+      }
+    },
+    {
+      "from": "DiscProbing",
+      "to": "DiscBaseline",
+      "label": "disc_reset",
+      "weight": 1,
+      "description": "backbone: cycle back",
+      "action": {
+        "type": "ActCheckConnected"
+      }
+    },
+    {
+      "from": "DiscProbing",
+      "to": "DiscCompleted",
+      "label": "disc_finish",
+      "weight": 1,
+      "description": "backbone: terminal path",
+      "action": {
+        "type": "ActCheckConnected"
+      }
+    },
+    {
+      "from": "DiscBaseline",
+      "to": "DiscProbing",
+      "label": "disc_discovery_ddb113a2",
+      "weight": 2,
+      "description": "If a node's MetaData.attnets is composed of all zeros, the ENR MAY optionally include the attnets entry or leave it out entirely.",
+      "condition_desc": "when a node's MetaData.attnets is composed of all zeros",
+      "tags": [
+        "conditional"
+      ],
+      "spec_refs": [
+        "PROSE-MAY-cd1cb27a"
+      ],
+      "action": {
+        "type": "ActVerifyENRBehavior",
+        "protocol": "attnets"
+      },
+      "oracle": {
+        "differential": true,
+        "must_not": [
+          "CRASH"
+        ],
+        "strength": "MAY"
+      }
+    },
+    {
+      "from": "DiscBaseline",
+      "to": "DiscProbing",
+      "label": "disc_discovery_01d7937b",
+      "weight": 2,
+      "description": "The ENR MAY contain the following entries:",
+      "spec_refs": [
+        "PROSE-MAY-f46586f6"
+      ],
+      "action": {
+        "type": "ActQueryENR"
+      },
+      "oracle": {
+        "differential": true,
+        "must_not": [
+          "CRASH"
+        ],
+        "strength": "MAY"
+      }
+    },
+    {
+      "from": "DiscBaseline",
+      "to": "DiscProbing",
+      "label": "disc_discovery_787b7688",
+      "weight": 10,
+      "description": "If a node's MetaData.attnets has any non-zero bit, the ENR MUST include the attnets entry with the same value as MetaData.attnets.",
+      "condition_desc": "when a node's MetaData.attnets has any non-zero bit",
+      "tags": [
+        "conditional"
+      ],
+      "spec_refs": [
+        "PROSE-MUST-0648388b"
+      ],
+      "action": {
+        "type": "ActVerifyENRBehavior",
+        "protocol": "attnets"
+      },
+      "oracle": {
+        "differential": true,
+        "must_not": [
+          "CRASH"
+        ],
+        "strength": "MUST"
+      }
+    },
+    {
+      "from": "DiscBaseline",
+      "to": "DiscProbing",
+      "label": "disc_discovery_33743108",
+      "weight": 10,
+      "description": "The Ethereum Node Record (ENR) for an Ethereum consensus client MUST be present in an ENR):",
+      "spec_refs": [
+        "PROSE-MUST-9812f11c"
+      ],
+      "action": {
+        "type": "ActQueryENR"
+      },
+      "oracle": {
+        "differential": true,
+        "must_not": [
+          "CRASH"
+        ],
+        "strength": "MUST"
+      }
+    },
+    {
+      "from": "DiscBaseline",
+      "to": "DiscProbing",
+      "label": "disc_discovery_237d0dce",
+      "weight": 10,
+      "description": "The Ethereum Node Record (ENR) for an Ethereum consensus client MUST contain the following entries (exclusive of the sequence number and signature, which",
+      "spec_refs": [
+        "PROSE-MUST-bdd581d1"
+      ],
+      "action": {
+        "type": "ActQueryENR"
+      },
+      "oracle": {
+        "differential": true,
+        "must_not": [
+          "CRASH"
+        ],
+        "strength": "MUST"
+      }
+    },
+    {
+      "from": "DiscBaseline",
+      "to": "DiscProbing",
+      "label": "disc_discovery_66a97424",
+      "weight": 10,
+      "description": "When discovering and interfacing with peers, nodes MUST evaluate nfd alongside their existing consideration of the ENRForkID::next_ fields under the eth2 key, to form a more accurate view of the peer's intended next fork for the purposes of sustained peering",
+      "condition_desc": "when discovering and interfacing with peers",
+      "tags": [
+        "conditional"
+      ],
+      "spec_refs": [
+        "PROSE-MUST-eb253094"
+      ],
+      "action": {
+        "type": "ActVerifyENRBehavior",
+        "protocol": "nfd"
+      },
+      "guard": {
+        "fork_gte": "fulu"
+      },
+      "oracle": {
+        "differential": true,
+        "must_not": [
+          "CRASH"
+        ],
+        "strength": "MUST"
+      }
+    },
+    {
+      "from": "DiscBaseline",
+      "to": "DiscProbing",
+      "label": "sem_disc_stateful_rule_discovery_d32fee72",
+      "weight": 2,
+      "description": "AST bind: discovery stateful rule: If there is a mismatch, the node MAY disconnect at/after the fork boundary.",
+      "condition_desc": "after «the fork boundary»; when there is a mismatch",
+      "tags": [
+        "temporal:after",
+        "conditional",
+        "semantic:Discovery",
+        "binding:discovery_stateful_rule",
+        "semantic:discovery"
+      ],
+      "spec_refs": [
+        "PROSE-MAY-0f4bcdc9"
+      ],
+      "action": {
+        "type": "ActVerifyENRBehavior",
+        "protocol": "nfd"
+      },
+      "guard": {
+        "fork_gte": "fulu"
+      },
+      "oracle": {
+        "differential": true,
+        "must_not": [
+          "CRASH"
+        ],
+        "strength": "MAY"
+      }
+    },
+    {
+      "from": "DiscBaseline",
+      "to": "DiscProbing",
+      "label": "sem_disc_stateful_rule_discovery_f2c50aaa",
+      "weight": 10,
+      "description": "AST bind: discovery stateful rule: This new entry MUST be added once FULU_FORK_EPOCH is assigned any value other than FAR_FUTURE_EPOCH",
+      "condition_desc": "once «FULU_FORK_EPOCH is assigned any value other than FAR_FUTURE_EPOCH»",
+      "tags": [
+        "temporal:once",
+        "semantic:Discovery",
+        "binding:discovery_stateful_rule",
+        "semantic:discovery"
+      ],
+      "spec_refs": [
+        "PROSE-MUST-3bacaa86"
+      ],
+      "action": {
+        "type": "ActVerifyENRBehavior",
+        "protocol": "nfd"
+      },
+      "guard": {
+        "fork_gte": "fulu"
+      },
+      "oracle": {
+        "differential": true,
+        "must_not": [
+          "CRASH"
+        ],
+        "strength": "MUST"
+      }
+    },
+    {
+      "from": "DiscBaseline",
+      "to": "DiscProbing",
+      "label": "sem_disc_stateful_rule_discovery_f965b782",
+      "weight": 10,
+      "description": "AST bind: discovery stateful rule: This new field MUST be added once FULU_FORK_EPOCH is assigned any value other than FAR_FUTURE_EPOCH.",
+      "condition_desc": "once «FULU_FORK_EPOCH is assigned any value other than FAR_FUTURE_EPOCH»",
+      "tags": [
+        "temporal:once",
+        "semantic:Discovery",
+        "binding:discovery_stateful_rule",
+        "semantic:discovery"
+      ],
+      "spec_refs": [
+        "PROSE-MUST-56ec7740"
+      ],
+      "action": {
+        "type": "ActVerifyENRBehavior",
+        "protocol": "cgc"
+      },
+      "guard": {
+        "fork_gte": "fulu"
+      },
+      "oracle": {
+        "differential": true,
+        "must_not": [
+          "CRASH"
+        ],
+        "strength": "MUST"
+      }
+    },
+    {
+      "from": "DiscBaseline",
+      "to": "DiscProbing",
+      "label": "sem_disc_stateful_rule_discovery_5e1c7747",
+      "weight": 10,
+      "description": "AST bind: discovery stateful rule: If there is a mismatch, the node MUST_NOT disconnect before the fork boundary, but it",
+      "condition_desc": "before «the fork boundary»; when there is a mismatch",
+      "tags": [
+        "temporal:before",
+        "conditional",
+        "semantic:Discovery",
+        "binding:discovery_stateful_rule",
+        "semantic:discovery"
+      ],
+      "spec_refs": [
+        "PROSE-MUST_NOT-774c52cc"
+      ],
+      "action": {
+        "type": "ActVerifyENRBehavior",
+        "protocol": "nfd"
+      },
+      "guard": {
+        "fork_gte": "fulu"
+      },
+      "oracle": {
+        "differential": true,
+        "must_not": [
+          "CRASH"
+        ],
+        "strength": "MUST"
+      }
+    }
+  ]
+}

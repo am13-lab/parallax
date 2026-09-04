@@ -1,0 +1,381 @@
+{
+  "name": "LightClient",
+  "constructor": "NewLightClientMachine",
+  "init_state": "LCConnected",
+  "states": [
+    {
+      "name": "LCConnected"
+    },
+    {
+      "name": "LCBootstrapped"
+    },
+    {
+      "name": "LCUpdating"
+    },
+    {
+      "name": "LCCompleted",
+      "terminal": true
+    },
+    {
+      "name": "LCErrorReceived"
+    },
+    {
+      "name": "LCDisconnected"
+    }
+  ],
+  "transitions": [
+    {
+      "from": "LCConnected",
+      "to": "LCBootstrapped",
+      "label": "lc_valid_bootstrap",
+      "weight": 10,
+      "action": {
+        "type": "ActSendReqResp",
+        "protocol": "/eth2/beacon_chain/req/light_client_bootstrap/1/ssz_snappy",
+        "payload": {
+          "kind": "fields",
+          "wrap": "ssz_snappy",
+          "fields": {
+            "block_root": {
+              "ctx": "finalized_root"
+            }
+          }
+        },
+        "timeout_ms": 10000
+      },
+      "oracle": {
+        "differential": true,
+        "expected": "SUCCESS_OR_UNAVAILABLE"
+      }
+    },
+    {
+      "from": "LCConnected",
+      "to": "LCErrorReceived",
+      "label": "lc_malformed_bootstrap",
+      "weight": 5,
+      "action": {
+        "type": "ActSendReqResp",
+        "protocol": "/eth2/beacon_chain/req/light_client_bootstrap/1/ssz_snappy",
+        "payload": {
+          "kind": "literal",
+          "wrap": "raw",
+          "size": 32
+        },
+        "timeout_ms": 10000,
+        "mutator": "random_bytes"
+      },
+      "oracle": {
+        "differential": true,
+        "expected": "REJECT",
+        "must_not": [
+          "ACCEPT"
+        ]
+      }
+    },
+    {
+      "from": "LCConnected",
+      "to": "LCErrorReceived",
+      "label": "lc_bootstrap_truncated",
+      "weight": 4,
+      "action": {
+        "type": "ActSendReqResp",
+        "protocol": "/eth2/beacon_chain/req/light_client_bootstrap/1/ssz_snappy",
+        "payload": {
+          "kind": "literal",
+          "wrap": "raw",
+          "size": 32
+        },
+        "timeout_ms": 10000,
+        "mutator": "truncate_half"
+      }
+    },
+    {
+      "from": "LCConnected",
+      "to": "LCErrorReceived",
+      "label": "lc_bootstrap_broken_snappy",
+      "weight": 3,
+      "action": {
+        "type": "ActSendReqResp",
+        "protocol": "/eth2/beacon_chain/req/light_client_bootstrap/1/ssz_snappy",
+        "payload": {
+          "kind": "literal",
+          "wrap": "raw",
+          "size": 32
+        },
+        "timeout_ms": 10000,
+        "mutator": "break_snappy"
+      }
+    },
+    {
+      "from": "LCConnected",
+      "to": "LCErrorReceived",
+      "label": "lc_bootstrap_garbage_appended",
+      "weight": 3,
+      "action": {
+        "type": "ActSendReqResp",
+        "protocol": "/eth2/beacon_chain/req/light_client_bootstrap/1/ssz_snappy",
+        "payload": {
+          "kind": "literal",
+          "wrap": "raw",
+          "size": 32
+        },
+        "timeout_ms": 10000,
+        "mutator": "append_garbage"
+      }
+    },
+    {
+      "from": "LCBootstrapped",
+      "to": "LCUpdating",
+      "label": "lc_valid_updates_by_range",
+      "weight": 10,
+      "action": {
+        "type": "ActSendReqResp",
+        "protocol": "/eth2/beacon_chain/req/light_client_updates_by_range/1/ssz_snappy",
+        "payload": {
+          "kind": "builder",
+          "wrap": "ssz_snappy",
+          "name": "buildLCUpdatesByRange1SSZ"
+        },
+        "timeout_ms": 10000
+      },
+      "oracle": {
+        "differential": true,
+        "expected": "SUCCESS"
+      }
+    },
+    {
+      "from": "LCBootstrapped",
+      "to": "LCErrorReceived",
+      "label": "lc_updates_count_zero",
+      "weight": 4,
+      "action": {
+        "type": "ActSendReqResp",
+        "protocol": "/eth2/beacon_chain/req/light_client_updates_by_range/1/ssz_snappy",
+        "payload": {
+          "kind": "literal",
+          "wrap": "raw",
+          "null": true
+        },
+        "timeout_ms": 10000,
+        "mutator": "count_zero"
+      }
+    },
+    {
+      "from": "LCBootstrapped",
+      "to": "LCErrorReceived",
+      "label": "lc_updates_count_over_max",
+      "weight": 4,
+      "action": {
+        "type": "ActSendReqResp",
+        "protocol": "/eth2/beacon_chain/req/light_client_updates_by_range/1/ssz_snappy",
+        "payload": {
+          "kind": "literal",
+          "wrap": "raw",
+          "null": true
+        },
+        "timeout_ms": 10000,
+        "mutator": "count_over_max"
+      }
+    },
+    {
+      "from": "LCBootstrapped",
+      "to": "LCErrorReceived",
+      "label": "lc_malformed_updates",
+      "weight": 4,
+      "action": {
+        "type": "ActSendReqResp",
+        "protocol": "/eth2/beacon_chain/req/light_client_updates_by_range/1/ssz_snappy",
+        "payload": {
+          "kind": "literal",
+          "wrap": "raw",
+          "size": 16
+        },
+        "timeout_ms": 10000,
+        "mutator": "random_bytes"
+      },
+      "oracle": {
+        "differential": true,
+        "expected": "REJECT",
+        "must_not": [
+          "ACCEPT"
+        ]
+      }
+    },
+    {
+      "from": "LCBootstrapped",
+      "to": "LCCompleted",
+      "label": "lc_bootstrap_then_finality",
+      "weight": 3,
+      "action": {
+        "type": "ActSendReqResp",
+        "protocol": "/eth2/beacon_chain/req/light_client_finality_update/1/ssz_snappy",
+        "timeout_ms": 10000
+      }
+    },
+    {
+      "from": "LCBootstrapped",
+      "to": "LCCompleted",
+      "label": "lc_bootstrap_then_optimistic",
+      "weight": 3,
+      "action": {
+        "type": "ActSendReqResp",
+        "protocol": "/eth2/beacon_chain/req/light_client_optimistic_update/1/ssz_snappy",
+        "timeout_ms": 10000
+      }
+    },
+    {
+      "from": "LCUpdating",
+      "to": "LCCompleted",
+      "label": "lc_valid_finality_update",
+      "weight": 10,
+      "action": {
+        "type": "ActSendReqResp",
+        "protocol": "/eth2/beacon_chain/req/light_client_finality_update/1/ssz_snappy",
+        "timeout_ms": 10000
+      },
+      "oracle": {
+        "differential": true,
+        "expected": "SUCCESS_OR_UNAVAILABLE"
+      }
+    },
+    {
+      "from": "LCUpdating",
+      "to": "LCCompleted",
+      "label": "lc_valid_optimistic_update",
+      "weight": 8,
+      "action": {
+        "type": "ActSendReqResp",
+        "protocol": "/eth2/beacon_chain/req/light_client_optimistic_update/1/ssz_snappy",
+        "timeout_ms": 10000
+      },
+      "oracle": {
+        "differential": true,
+        "expected": "SUCCESS_OR_UNAVAILABLE"
+      }
+    },
+    {
+      "from": "LCUpdating",
+      "to": "LCErrorReceived",
+      "label": "lc_malformed_finality",
+      "weight": 4,
+      "action": {
+        "type": "ActSendReqResp",
+        "protocol": "/eth2/beacon_chain/req/light_client_finality_update/1/ssz_snappy",
+        "payload": {
+          "kind": "literal",
+          "wrap": "raw",
+          "size": 50
+        },
+        "timeout_ms": 10000,
+        "mutator": "random_bytes"
+      },
+      "oracle": {
+        "differential": true,
+        "expected": "REJECT",
+        "must_not": [
+          "ACCEPT"
+        ]
+      }
+    },
+    {
+      "from": "LCUpdating",
+      "to": "LCErrorReceived",
+      "label": "lc_malformed_optimistic",
+      "weight": 4,
+      "action": {
+        "type": "ActSendReqResp",
+        "protocol": "/eth2/beacon_chain/req/light_client_optimistic_update/1/ssz_snappy",
+        "payload": {
+          "kind": "literal",
+          "wrap": "raw",
+          "size": 50
+        },
+        "timeout_ms": 10000,
+        "mutator": "random_bytes"
+      },
+      "oracle": {
+        "differential": true,
+        "expected": "REJECT",
+        "must_not": [
+          "ACCEPT"
+        ]
+      }
+    },
+    {
+      "from": "LCUpdating",
+      "to": "LCUpdating",
+      "label": "lc_additional_updates",
+      "weight": 5,
+      "action": {
+        "type": "ActSendReqResp",
+        "protocol": "/eth2/beacon_chain/req/light_client_updates_by_range/1/ssz_snappy",
+        "payload": {
+          "kind": "builder",
+          "wrap": "ssz_snappy",
+          "name": "buildLCAdditionalUpdatesSSZ"
+        },
+        "timeout_ms": 10000
+      }
+    },
+    {
+      "from": "LCErrorReceived",
+      "to": "LCConnected",
+      "label": "lc_error_to_connected",
+      "weight": 10,
+      "action": {
+        "type": "ActSleep",
+        "timeout_ms": 100
+      }
+    },
+    {
+      "from": "LCConnected",
+      "to": "LCConnected",
+      "label": "lc_idle_delay",
+      "weight": 1,
+      "action": {
+        "type": "ActSleep",
+        "timeout_ms": 2000
+      }
+    },
+    {
+      "from": "LCConnected",
+      "to": "LCDisconnected",
+      "label": "lc_send_goodbye",
+      "weight": 1,
+      "action": {
+        "type": "ActSendReqResp",
+        "protocol": "/eth2/beacon_chain/req/goodbye/1/ssz_snappy",
+        "payload": {
+          "kind": "fields",
+          "wrap": "ssz_snappy",
+          "fields": {
+            "reason": {
+              "lit": 1
+            }
+          }
+        },
+        "timeout_ms": 3000
+      }
+    },
+    {
+      "from": "LCDisconnected",
+      "to": "LCConnected",
+      "label": "lc_reconnect",
+      "weight": 10,
+      "action": {
+        "type": "ActReconnect",
+        "timeout_ms": 15000
+      }
+    },
+    {
+      "from": "LCDisconnected",
+      "to": "LCCompleted",
+      "label": "lc_end_after_disconnect",
+      "weight": 5,
+      "action": {
+        "type": "ActSleep",
+        "timeout_ms": 100
+      }
+    }
+  ]
+}

@@ -1,0 +1,111 @@
+{
+  "name": "ForkTransition",
+  "constructor": "NewForkTransitionMachine",
+  "init_state": "PreFork",
+  "states": [
+    {
+      "name": "PreFork"
+    },
+    {
+      "name": "Boundary"
+    },
+    {
+      "name": "PostFork"
+    },
+    {
+      "name": "LegacyCleanup"
+    },
+    {
+      "name": "Disconnected",
+      "terminal": true
+    }
+  ],
+  "transitions": [
+    {
+      "from": "PreFork",
+      "to": "Boundary",
+      "label": "sem_fork_status_current",
+      "weight": 8,
+      "description": "spec backbone: observe current fork digest before crossing a fork boundary",
+      "action": {
+        "type": "ActSendStatus",
+        "protocol": "/eth2/beacon_chain/req/status/2/ssz_snappy",
+        "payload": {
+          "kind": "builder",
+          "wrap": "ssz_snappy",
+          "name": "buildStatusV2SSZ"
+        },
+        "timeout_ms": 5000
+      },
+      "oracle": {
+        "differential": true,
+        "expected": "SUCCESS",
+        "must_not": [
+          "CRASH"
+        ],
+        "strength": "MUST"
+      }
+    },
+    {
+      "from": "Boundary",
+      "to": "PostFork",
+      "label": "sem_fork_wrong_digest_probe",
+      "weight": 6,
+      "description": "spec backbone: fork-digest mismatch is a boundary-sensitive connection behavior",
+      "action": {
+        "type": "ActSendStatus",
+        "protocol": "/eth2/beacon_chain/req/status/2/ssz_snappy",
+        "payload": {
+          "kind": "builder",
+          "wrap": "ssz_snappy",
+          "name": "buildStatusV2ForkFlipped"
+        },
+        "timeout_ms": 5000
+      },
+      "oracle": {
+        "differential": true,
+        "must_not": [
+          "CRASH"
+        ],
+        "strength": "SHOULD"
+      }
+    },
+    {
+      "from": "PostFork",
+      "to": "LegacyCleanup",
+      "label": "sem_fork_legacy_topic_probe",
+      "weight": 5,
+      "description": "spec backbone: deprecated pre-fork topics should be cleaned up after the boundary",
+      "action": {
+        "type": "ActInjectGossip",
+        "protocol": "blob_sidecar_0",
+        "payload": {
+          "kind": "builder",
+          "wrap": "raw",
+          "name": "buildRandomGossip200"
+        },
+        "mutator": "gossip_random_bytes"
+      },
+      "guard": {
+        "fork_gte": "fulu"
+      },
+      "oracle": {
+        "differential": true,
+        "must_not": [
+          "CRASH"
+        ],
+        "strength": "SHOULD"
+      }
+    },
+    {
+      "from": "LegacyCleanup",
+      "to": "Disconnected",
+      "label": "sem_fork_disconnect",
+      "weight": 3,
+      "description": "reference backbone: fork mismatch or cleanup can end the peer session",
+      "action": {
+        "type": "ActDisconnectPeer"
+      }
+    }
+  ]
+}

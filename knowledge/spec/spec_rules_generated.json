@@ -1,6 +1,6 @@
 {
-  "description": "Structured catalog of testable P2P behavioral rules from the consensus spec (Phase0 through Gloas)",
-  "source": "consensus-specs/specs/{phase0,altair,bellatrix,capella,deneb,electra,fulu,gloas}/p2p-interface.md",
+  "description": "Derived debug projection of AST rules joined with test_overlay.json",
+  "source": "knowledge/spec/rule_ast.json + knowledge/spec/test_overlay.json",
   "rules": [
     {
       "id": "ATTESTER_SLASHING-IGNORE-647ecfb9",
@@ -186,6 +186,23 @@
       "transitions": []
     },
     {
+      "id": "BEACON_AGGREGATE_AND_PROOF-IGNORE-451423f6",
+      "text": "[IGNORE] When `aggregate.data.index == 1` (payload present for a past block), the corresponding execution payload for `block` has been fully imported, including its data -- i.e. `is_payload_verified(store, aggregate.data.beacon_block_root)` returns `True` (a client MAY queue attestations for processing until the payload is imported and SHOULD request the payload envelope via `ExecutionPayloadEnvelopesByRoot` using `aggregate.data.beacon_block_root`)",
+      "strength": "MUST",
+      "protocol": "beacon_aggregate_and_proof",
+      "rule_type": "ordering",
+      "observable_in_traffic": false,
+      "formalized": "",
+      "test_ids": [],
+      "invariant_ids": [],
+      "testability": "direct",
+      "coverage_status": "untested",
+      "fork_introduced": "gloas",
+      "current_status": "local_candidate",
+      "state_machine": "gossip",
+      "transitions": []
+    },
+    {
       "id": "BEACON_AGGREGATE_AND_PROOF-IGNORE-67149835",
       "legacy_ids": [
         "SPEC-AGG-002"
@@ -248,28 +265,6 @@
       "current_status": "active",
       "state_machine": "gossip",
       "transitions": []
-    },
-    {
-      "id": "BEACON_AGGREGATE_AND_PROOF-IGNORE-bbde83d3",
-      "legacy_ids": [
-        "SPEC-GLOAS-AGG-005",
-        "SPEC-GLOAS-ATT-005"
-      ],
-      "text": "[IGNORE] When `aggregate.data.index == 1` (payload present for a past block), the corresponding execution payload for `block` has been seen (a client MAY queue attestations for processing once the payload is retrieved and SHOULD request the payload envelope via `ExecutionPayloadEnvelopesByRoot` using `aggregate.data.beacon_block_root`)",
-      "strength": "MUST",
-      "protocol": "beacon_aggregate_and_proof",
-      "rule_type": "ordering",
-      "observable_in_traffic": false,
-      "formalized": "",
-      "test_ids": [],
-      "invariant_ids": [],
-      "testability": "direct",
-      "coverage_status": "untested",
-      "fork_introduced": "gloas",
-      "current_status": "active",
-      "state_machine": "gossip",
-      "transitions": [],
-      "known_bugs": "Lighthouse MISSING"
     },
     {
       "id": "BEACON_AGGREGATE_AND_PROOF-IGNORE-dc38af01",
@@ -1056,11 +1051,8 @@
       "transitions": []
     },
     {
-      "id": "BEACON_ATTESTATION_SUBNET_ID-IGNORE-adbaa5bc",
-      "legacy_ids": [
-        "SPEC-GLOAS-ATT-005"
-      ],
-      "text": "[IGNORE] When `attestation.data.index == 1` (payload present for a past block), the execution payload for `block` has been seen (a client MAY queue attestations for processing once the payload is retrieved and SHOULD request the payload envelope via `ExecutionPayloadEnvelopesByRoot` using `attestation.data.beacon_block_root`)",
+      "id": "BEACON_ATTESTATION_SUBNET_ID-IGNORE-25955806",
+      "text": "[IGNORE] When `attestation.data.index == 1` (payload present for a past block), the execution payload for `block` has been fully imported, including its data -- i.e. `is_payload_verified(store, attestation.data.beacon_block_root)` returns `True` (a client MAY queue attestations for processing until the payload is imported and SHOULD request the payload envelope via `ExecutionPayloadEnvelopesByRoot` using `attestation.data.beacon_block_root`)",
       "strength": "MUST",
       "protocol": "beacon_attestation_{subnet_id}",
       "rule_type": "ordering",
@@ -1071,10 +1063,9 @@
       "testability": "direct",
       "coverage_status": "untested",
       "fork_introduced": "gloas",
-      "current_status": "active",
+      "current_status": "local_candidate",
       "state_machine": "gossip",
-      "transitions": [],
-      "known_bugs": "Lighthouse MISSING"
+      "transitions": []
     },
     {
       "id": "BEACON_ATTESTATION_SUBNET_ID-MUST-454af71d",
@@ -1441,6 +1432,23 @@
       "transitions": []
     },
     {
+      "id": "BEACON_BLOCK-REJECT-48c14af0",
+      "text": "[REJECT] The count of `block.body.parent_execution_requests.sweep_thresholds` is within its limit -- i.e. validate that `len(block.body.parent_execution_requests.sweep_thresholds) \u003c= MAX_SET_SWEEP_THRESHOLD_REQUESTS_PER_PAYLOAD`",
+      "strength": "MUST",
+      "protocol": "beacon_block",
+      "rule_type": "behavioral",
+      "observable_in_traffic": false,
+      "formalized": "",
+      "test_ids": [],
+      "invariant_ids": [],
+      "testability": "direct",
+      "coverage_status": "untested",
+      "fork_introduced": "_features",
+      "current_status": "local_candidate",
+      "state_machine": "gossip",
+      "transitions": []
+    },
+    {
       "id": "BEACON_BLOCK-REJECT-4df28963",
       "legacy_ids": [
         "SPEC-BLOCK-004",
@@ -1480,6 +1488,23 @@
       "fork_introduced": "phase0",
       "fork_modified": "bellatrix,capella,deneb,electra,fulu",
       "current_status": "active",
+      "state_machine": "gossip",
+      "transitions": []
+    },
+    {
+      "id": "BEACON_BLOCK-REJECT-7f0fa8f0",
+      "text": "[REJECT] The counts of the block body operations are within their respective limits -- i.e. validate that `len(block.body.proposer_slashings) \u003c= MAX_PROPOSER_SLASHINGS`, `len(block.body.attester_slashings) \u003c= MAX_ATTESTER_SLASHINGS_ELECTRA`, `len(block.body.attestations) \u003c= MAX_ATTESTATIONS_ELECTRA`, `len(block.body.deposits) == 0`, `len(block.body.voluntary_exits) \u003c= MAX_VOLUNTARY_EXITS`, `len(block.body.bls_to_execution_changes) \u003c= MAX_BLS_TO_EXECUTION_CHANGES`, and `len(block.body.payload_attestations) \u003c= MAX_PAYLOAD_ATTESTATIONS`",
+      "strength": "MUST",
+      "protocol": "beacon_block",
+      "rule_type": "behavioral",
+      "observable_in_traffic": false,
+      "formalized": "",
+      "test_ids": [],
+      "invariant_ids": [],
+      "testability": "direct",
+      "coverage_status": "untested",
+      "fork_introduced": "gloas",
+      "current_status": "local_candidate",
       "state_machine": "gossip",
       "transitions": []
     },
@@ -1588,6 +1613,23 @@
       "fork_introduced": "phase0",
       "fork_modified": "bellatrix,capella,deneb,electra,fulu",
       "current_status": "active",
+      "state_machine": "gossip",
+      "transitions": []
+    },
+    {
+      "id": "BEACON_BLOCK-REJECT-e5f7dd56",
+      "text": "[REJECT] The counts of `block.body.parent_execution_requests` are within their respective limits -- i.e. validate that `len(block.body.parent_execution_requests.withdrawals) \u003c= MAX_WITHDRAWAL_REQUESTS_PER_PAYLOAD`, `len(block.body.parent_execution_requests.consolidations) \u003c= MAX_CONSOLIDATION_REQUESTS_PER_PAYLOAD`, `len(block.body.parent_execution_requests.builder_deposits) \u003c= MAX_BUILDER_DEPOSIT_REQUESTS_PER_PAYLOAD`, and `len(block.body.parent_execution_requests.builder_exits) \u003c= MAX_BUILDER_EXIT_REQUESTS_PER_PAYLOAD`",
+      "strength": "MUST",
+      "protocol": "beacon_block",
+      "rule_type": "behavioral",
+      "observable_in_traffic": false,
+      "formalized": "",
+      "test_ids": [],
+      "invariant_ids": [],
+      "testability": "direct",
+      "coverage_status": "untested",
+      "fork_introduced": "gloas",
+      "current_status": "local_candidate",
       "state_machine": "gossip",
       "transitions": []
     },
@@ -2618,7 +2660,8 @@
       "invariant_ids": [],
       "testability": "direct",
       "coverage_status": "untested",
-      "fork_introduced": "gloas",
+      "fork_introduced": "fulu",
+      "fork_modified": "gloas",
       "current_status": "active",
       "state_machine": "gossip",
       "transitions": []
@@ -3196,8 +3239,8 @@
       "transitions": []
     },
     {
-      "id": "EXECUTION_PAYLOAD-MUST-5b9646ec",
-      "text": "The following validations MUST pass before forwarding the signed_execution_payload_envelope on the network, assuming the alias envelope = signed_execution_payload_envelope.message, payload = envelope.payload:",
+      "id": "EXECUTION_PAYLOAD-MUST-3a7f7330",
+      "text": "The following validations MUST pass before forwarding the signed_execution_payload_envelope on the network, assuming the alias envelope = signed_execution_payload_envelope.message, payload = envelope.payload, execution_requests = envelope.execution_requests:",
       "strength": "MUST",
       "protocol": "execution_payload",
       "rule_type": "ordering",
@@ -3208,6 +3251,40 @@
       "testability": "direct",
       "coverage_status": "untested",
       "fork_introduced": "gloas",
+      "current_status": "local_candidate",
+      "state_machine": "gossip",
+      "transitions": []
+    },
+    {
+      "id": "EXECUTION_PAYLOAD-REJECT-0d81a1e6",
+      "text": "[REJECT] The number of withdrawals is within the limit -- i.e. validate that `len(payload.withdrawals) \u003c= MAX_WITHDRAWALS_PER_PAYLOAD`",
+      "strength": "MUST",
+      "protocol": "execution_payload",
+      "rule_type": "behavioral",
+      "observable_in_traffic": false,
+      "formalized": "",
+      "test_ids": [],
+      "invariant_ids": [],
+      "testability": "direct",
+      "coverage_status": "untested",
+      "fork_introduced": "gloas",
+      "current_status": "local_candidate",
+      "state_machine": "gossip",
+      "transitions": []
+    },
+    {
+      "id": "EXECUTION_PAYLOAD-REJECT-2118166d",
+      "text": "[REJECT] The count of `execution_requests.sweep_thresholds` is within its limit -- i.e. validate that `len(execution_requests.sweep_thresholds) \u003c= MAX_SET_SWEEP_THRESHOLD_REQUESTS_PER_PAYLOAD`, with the alias `execution_requests = envelope.execution_requests`",
+      "strength": "MUST",
+      "protocol": "execution_payload",
+      "rule_type": "behavioral",
+      "observable_in_traffic": false,
+      "formalized": "",
+      "test_ids": [],
+      "invariant_ids": [],
+      "testability": "direct",
+      "coverage_status": "untested",
+      "fork_introduced": "_features",
       "current_status": "local_candidate",
       "state_machine": "gossip",
       "transitions": []
@@ -3335,6 +3412,23 @@
       "transitions": []
     },
     {
+      "id": "EXECUTION_PAYLOAD-REJECT-e825885e",
+      "text": "[REJECT] The counts of `execution_requests` are within their respective limits -- i.e. validate that `len(execution_requests.withdrawals) \u003c= MAX_WITHDRAWAL_REQUESTS_PER_PAYLOAD`, `len(execution_requests.consolidations) \u003c= MAX_CONSOLIDATION_REQUESTS_PER_PAYLOAD`, `len(execution_requests.builder_deposits) \u003c= MAX_BUILDER_DEPOSIT_REQUESTS_PER_PAYLOAD`, and `len(execution_requests.builder_exits) \u003c= MAX_BUILDER_EXIT_REQUESTS_PER_PAYLOAD`",
+      "strength": "MUST",
+      "protocol": "execution_payload",
+      "rule_type": "behavioral",
+      "observable_in_traffic": false,
+      "formalized": "",
+      "test_ids": [],
+      "invariant_ids": [],
+      "testability": "direct",
+      "coverage_status": "untested",
+      "fork_introduced": "gloas",
+      "current_status": "local_candidate",
+      "state_machine": "gossip",
+      "transitions": []
+    },
+    {
       "id": "EXECUTION_PAYLOAD_BID-IGNORE-2ad71c19",
       "legacy_ids": [
         "SPEC-GLOAS-BID-002",
@@ -3353,6 +3447,23 @@
       "coverage_status": "untested",
       "fork_introduced": "gloas",
       "current_status": "active",
+      "state_machine": "gossip",
+      "transitions": []
+    },
+    {
+      "id": "EXECUTION_PAYLOAD_BID-IGNORE-2d05a4e2",
+      "text": "[IGNORE] `bid.inclusion_list_bits` is inclusive of the node's view of inclusion lists for the slot preceding the bid's slot -- i.e. `is_inclusion_list_bits_inclusive(get_inclusion_list_store(), state, Slot(bid.slot - 1), bid.inclusion_list_bits, only_timely=False)` returns `True`, where `state` is the head state corresponding to processing the block up to the current slot as determined by the fork choice",
+      "strength": "MUST",
+      "protocol": "execution_payload_bid",
+      "rule_type": "behavioral",
+      "observable_in_traffic": false,
+      "formalized": "",
+      "test_ids": [],
+      "invariant_ids": [],
+      "testability": "direct",
+      "coverage_status": "untested",
+      "fork_introduced": "heze",
+      "current_status": "local_candidate",
       "state_machine": "gossip",
       "transitions": []
     },
@@ -3460,6 +3571,23 @@
       "transitions": []
     },
     {
+      "id": "EXECUTION_PAYLOAD_BID-IGNORE-de5e961a",
+      "text": "[IGNORE] `bid.fee_recipient == proposer_preferences.fee_recipient`",
+      "strength": "MUST",
+      "protocol": "execution_payload_bid",
+      "rule_type": "conditional",
+      "observable_in_traffic": false,
+      "formalized": "not (bid.fee_recipient == proposer_preferences.fee_recipient)",
+      "test_ids": [],
+      "invariant_ids": [],
+      "testability": "direct",
+      "coverage_status": "untested",
+      "fork_introduced": "gloas",
+      "current_status": "local_candidate",
+      "state_machine": "gossip",
+      "transitions": []
+    },
+    {
       "id": "EXECUTION_PAYLOAD_BID-IGNORE-fbe8d000",
       "legacy_ids": [
         "SPEC-GLOAS-BID-009",
@@ -3481,8 +3609,8 @@
       "transitions": []
     },
     {
-      "id": "EXECUTION_PAYLOAD_BID-MUST-46981b1a",
-      "text": "The following validations MUST pass before forwarding the signed_execution_payload_bid on the network, assuming the alias bid = signed_execution_payload_bid.message, the alias signed_proposer_preferences for the validated SignedProposerPreferences whose message.proposal_slot is bid.slot and message.dependent_root is get_proposer_dependent_root(parent_state, compute_epoch_at_slot(bid.slot)), where parent_state is the post-state of bid.parent_block_root, and the alias proposer_preferences = signed_proposer_preferences.message:",
+      "id": "EXECUTION_PAYLOAD_BID-MUST-38f32c68",
+      "text": "The following validations MUST pass before forwarding the signed_execution_payload_bid on the network, assuming the alias bid = signed_execution_payload_bid.message, the alias signed_proposer_preferences for the validated SignedProposerPreferences whose message.proposal_slot is bid.slot and message.dependent_root is get_shuffling_dependent_root(store, bid.parent_block_root, compute_epoch_at_slot(bid.slot)), where store is the fork choice store, and the alias proposer_preferences = signed_proposer_preferences.message:",
       "strength": "MUST",
       "protocol": "execution_payload_bid",
       "rule_type": "ordering",
@@ -3562,6 +3690,23 @@
       "known_bugs": "Prysm uses WRONG signing domain"
     },
     {
+      "id": "EXECUTION_PAYLOAD_BID-REJECT-9d6a8d96",
+      "text": "[REJECT] The builder version is `PAYLOAD_BUILDER_VERSION` -- i.e. `state.builders[bid.builder_index].version == PAYLOAD_BUILDER_VERSION`",
+      "strength": "MUST",
+      "protocol": "execution_payload_bid",
+      "rule_type": "conditional",
+      "observable_in_traffic": false,
+      "formalized": "not (state.builders[bid.builder_index].version == PAYLOAD_BUILDER_VERSION)",
+      "test_ids": [],
+      "invariant_ids": [],
+      "testability": "direct",
+      "coverage_status": "untested",
+      "fork_introduced": "gloas",
+      "current_status": "local_candidate",
+      "state_machine": "gossip",
+      "transitions": []
+    },
+    {
       "id": "EXECUTION_PAYLOAD_BID-REJECT-afc6a4f2",
       "legacy_ids": [
         "SPEC-GLOAS-BID-003"
@@ -3582,26 +3727,21 @@
       "transitions": []
     },
     {
-      "id": "EXECUTION_PAYLOAD_BID-REJECT-ce45577d",
-      "legacy_ids": [
-        "SPEC-GLOAS-BID-005",
-        "SPEC-GLOAS-BID-007"
-      ],
-      "text": "[REJECT] `bid.fee_recipient == proposer_preferences.fee_recipient`",
+      "id": "EXECUTION_PAYLOAD_BID-REJECT-bcea76bc",
+      "text": "[REJECT] `bid.prev_randao` is the correct RANDAO mix -- i.e. validate that `bid.prev_randao == get_randao_mix(parent_state, get_current_epoch(parent_state))`",
       "strength": "MUST",
       "protocol": "execution_payload_bid",
-      "rule_type": "conditional",
+      "rule_type": "behavioral",
       "observable_in_traffic": false,
-      "formalized": "not (bid.fee_recipient == proposer_preferences.fee_recipient)",
+      "formalized": "",
       "test_ids": [],
       "invariant_ids": [],
       "testability": "direct",
       "coverage_status": "untested",
       "fork_introduced": "gloas",
-      "current_status": "active",
+      "current_status": "local_candidate",
       "state_machine": "gossip",
-      "transitions": [],
-      "known_bugs": "Nimbus MISSING this check; Teku/Lodestar TODO"
+      "transitions": []
     },
     {
       "id": "EXECUTION_PAYLOAD_BID-REJECT-f0a43188",
@@ -4467,6 +4607,23 @@
       "transitions": []
     },
     {
+      "id": "PARTIAL_DATA_COLUMN_SIDECAR-REJECT-2484bd3e",
+      "text": "[REJECT] The cell count equals the number of set bits in the bitmap",
+      "strength": "MUST",
+      "protocol": "partial_data_column_sidecar",
+      "rule_type": "conditional",
+      "observable_in_traffic": false,
+      "formalized": "len(sidecar.partial_column) != num_cells_present",
+      "test_ids": [],
+      "invariant_ids": [],
+      "testability": "direct",
+      "coverage_status": "untested",
+      "fork_introduced": "fulu",
+      "current_status": "local_candidate",
+      "state_machine": "gossip",
+      "transitions": []
+    },
+    {
       "id": "PARTIAL_DATA_COLUMN_SIDECAR-REJECT-47e00126",
       "legacy_ids": [
         "SPEC-FULU-PARTIAL-001",
@@ -4511,30 +4668,13 @@
       "transitions": []
     },
     {
-      "id": "PARTIAL_DATA_COLUMN_SIDECAR-REJECT-546fb947",
-      "text": "[REJECT] The proof count equals the number of bits set in cells_present_bitmap",
+      "id": "PARTIAL_DATA_COLUMN_SIDECAR-REJECT-57824d85",
+      "text": "[REJECT] The cells present bitmap length equals the number of header commitments",
       "strength": "MUST",
       "protocol": "partial_data_column_sidecar",
       "rule_type": "conditional",
       "observable_in_traffic": false,
-      "formalized": "len(sidecar.kzg_proofs) != num_cells_present",
-      "test_ids": [],
-      "invariant_ids": [],
-      "testability": "direct",
-      "coverage_status": "untested",
-      "fork_introduced": "fulu",
-      "current_status": "local_candidate",
-      "state_machine": "gossip",
-      "transitions": []
-    },
-    {
-      "id": "PARTIAL_DATA_COLUMN_SIDECAR-REJECT-6fbaf09f",
-      "text": "[REJECT] The cell count equals the number of bits set in cells_present_bitmap",
-      "strength": "MUST",
-      "protocol": "partial_data_column_sidecar",
-      "rule_type": "conditional",
-      "observable_in_traffic": false,
-      "formalized": "len(sidecar.partial_column) != num_cells_present",
+      "formalized": "has_cells and len(sidecar.cells_present_bitmap) != len(header.kzg_commitments)",
       "test_ids": [],
       "invariant_ids": [],
       "testability": "direct",
@@ -4615,27 +4755,7 @@
       "protocol": "partial_data_column_sidecar",
       "rule_type": "conditional",
       "observable_in_traffic": false,
-      "formalized": "has_header and hash_tree_root(block_header) != block_root",
-      "test_ids": [],
-      "invariant_ids": [],
-      "testability": "direct",
-      "coverage_status": "untested",
-      "fork_introduced": "fulu",
-      "current_status": "active",
-      "state_machine": "gossip",
-      "transitions": []
-    },
-    {
-      "id": "PARTIAL_DATA_COLUMN_SIDECAR-REJECT-9dcea1ee",
-      "legacy_ids": [
-        "SPEC-FULU-PARTIAL-008"
-      ],
-      "text": "[REJECT] The cells_present_bitmap length equals the number of header kzg_commitments",
-      "strength": "MUST",
-      "protocol": "partial_data_column_sidecar",
-      "rule_type": "conditional",
-      "observable_in_traffic": false,
-      "formalized": "has_cells and len(sidecar.cells_present_bitmap) != len(header.kzg_commitments)",
+      "formalized": "has_header and hash_tree_root(block_header) != group_id.beacon_block_root",
       "test_ids": [],
       "invariant_ids": [],
       "testability": "direct",
@@ -4688,19 +4808,8 @@
       "transitions": []
     },
     {
-      "id": "PARTIAL_DATA_COLUMN_SIDECAR-REJECT-d3e82f5b",
-      "legacy_ids": [
-        "SPEC-FULU-PARTIAL-001",
-        "SPEC-FULU-PARTIAL-002",
-        "SPEC-FULU-PARTIAL-003",
-        "SPEC-FULU-PARTIAL-006",
-        "SPEC-FULU-PARTIAL-007",
-        "SPEC-FULU-PARTIAL-009",
-        "SPEC-FULU-PARTIAL-010",
-        "SPEC-FULU-PARTIAL-022",
-        "SPEC-GLOAS-PARTIAL-006"
-      ],
-      "text": "[REJECT] The sidecar's cell and proof data is valid",
+      "id": "PARTIAL_DATA_COLUMN_SIDECAR-REJECT-c43b3ecc",
+      "text": "[REJECT] The sidecar's cell and proof data passes KZG verification",
       "strength": "MUST",
       "protocol": "partial_data_column_sidecar",
       "rule_type": "conditional",
@@ -4711,7 +4820,24 @@
       "testability": "direct",
       "coverage_status": "untested",
       "fork_introduced": "fulu",
-      "current_status": "active",
+      "current_status": "local_candidate",
+      "state_machine": "gossip",
+      "transitions": []
+    },
+    {
+      "id": "PARTIAL_DATA_COLUMN_SIDECAR-REJECT-f1ae7ba2",
+      "text": "[REJECT] The proof count equals the number of set bits in the bitmap",
+      "strength": "MUST",
+      "protocol": "partial_data_column_sidecar",
+      "rule_type": "conditional",
+      "observable_in_traffic": false,
+      "formalized": "len(sidecar.kzg_proofs) != num_cells_present",
+      "test_ids": [],
+      "invariant_ids": [],
+      "testability": "direct",
+      "coverage_status": "untested",
+      "fork_introduced": "fulu",
+      "current_status": "local_candidate",
       "state_machine": "gossip",
       "transitions": []
     },
@@ -5264,23 +5390,6 @@
       "transitions": []
     },
     {
-      "id": "PROSE-MAY-1521ab08",
-      "text": "All implementations MAY support the QUIC (UDP) libp2p transport, and",
-      "strength": "MAY",
-      "protocol": "",
-      "rule_type": "behavioral",
-      "observable_in_traffic": false,
-      "formalized": "implementation.support(the QUIC (UDP) libp2p transport, and)",
-      "test_ids": [],
-      "invariant_ids": [],
-      "testability": "direct",
-      "coverage_status": "untested",
-      "fork_introduced": "phase0",
-      "current_status": "local_candidate",
-      "state_machine": "",
-      "transitions": []
-    },
-    {
       "id": "PROSE-MAY-17810911",
       "text": "When processing incoming gossip, clients MAY descore or disconnect peers who fail to observe these constraints.",
       "strength": "MAY",
@@ -5384,6 +5493,40 @@
       "testability": "direct",
       "coverage_status": "untested",
       "fork_introduced": "fulu",
+      "current_status": "local_candidate",
+      "state_machine": "",
+      "transitions": []
+    },
+    {
+      "id": "PROSE-MAY-3b39283c",
+      "text": "Clients that support the TCP transport MAY support [yamux](https://github.com/libp2p/specs/blob/master/yamux/README.md)",
+      "strength": "MAY",
+      "protocol": "",
+      "rule_type": "behavioral",
+      "observable_in_traffic": false,
+      "formalized": "client.support([yamux](https://github.com/libp2p/specs/blob/master/yamux/README.md))",
+      "test_ids": [],
+      "invariant_ids": [],
+      "testability": "direct",
+      "coverage_status": "untested",
+      "fork_introduced": "phase0",
+      "current_status": "local_candidate",
+      "state_machine": "",
+      "transitions": []
+    },
+    {
+      "id": "PROSE-MAY-3bbd51be",
+      "text": "If slot in the request content references a slot earlier than minimum_request_slot, peers MAY respond with error code 3: ResourceUnavailable or not include the inclusion lists in the response.",
+      "strength": "MAY",
+      "protocol": "",
+      "rule_type": "conditional",
+      "observable_in_traffic": false,
+      "formalized": "peer.respond(with error code 3: ResourceUnavailable or not include the inclusion lists in the)",
+      "test_ids": [],
+      "invariant_ids": [],
+      "testability": "direct",
+      "coverage_status": "untested",
+      "fork_introduced": "heze",
       "current_status": "local_candidate",
       "state_machine": "",
       "transitions": []
@@ -5527,23 +5670,6 @@
       "transitions": []
     },
     {
-      "id": "PROSE-MAY-6e00e88a",
-      "text": "Clients MAY support [yamux](https://github.com/libp2p/specs/blob/master/yamux/README.md)",
-      "strength": "MAY",
-      "protocol": "",
-      "rule_type": "behavioral",
-      "observable_in_traffic": false,
-      "formalized": "client.support([yamux](https://github.com/libp2p/specs/blob/master/yamux/README.md))",
-      "test_ids": [],
-      "invariant_ids": [],
-      "testability": "direct",
-      "coverage_status": "untested",
-      "fork_introduced": "phase0",
-      "current_status": "local_candidate",
-      "state_machine": "",
-      "transitions": []
-    },
-    {
       "id": "PROSE-MAY-6eb8c500",
       "legacy_ids": [
         "SPEC-CONN-001",
@@ -5571,6 +5697,23 @@
         "send_goodbye_reserved",
         "send_goodbye_custom"
       ]
+    },
+    {
+      "id": "PROSE-MAY-6f1d0b9b",
+      "text": "Clients MAY limit the number of inclusion lists in the response.",
+      "strength": "MAY",
+      "protocol": "",
+      "rule_type": "behavioral",
+      "observable_in_traffic": false,
+      "formalized": "client.limit(the number of inclusion lists in the response.)",
+      "test_ids": [],
+      "invariant_ids": [],
+      "testability": "direct",
+      "coverage_status": "untested",
+      "fork_introduced": "heze",
+      "current_status": "local_candidate",
+      "state_machine": "",
+      "transitions": []
     },
     {
       "id": "PROSE-MAY-71e2aa1d",
@@ -6316,6 +6459,23 @@
       "transitions": []
     },
     {
+      "id": "PROSE-MUST-0ca61a01",
+      "text": "The version byte MUST be 0x00",
+      "strength": "MUST",
+      "protocol": "",
+      "rule_type": "behavioral",
+      "observable_in_traffic": false,
+      "formalized": "receiver.be(0x00)",
+      "test_ids": [],
+      "invariant_ids": [],
+      "testability": "direct",
+      "coverage_status": "untested",
+      "fork_introduced": "fulu",
+      "current_status": "local_candidate",
+      "state_machine": "",
+      "transitions": []
+    },
+    {
       "id": "PROSE-MUST-0d90dd75",
       "text": "Clients MUST support [multistream-select 1.0](https://github.com/multiformats/multistream-select/) and",
       "strength": "MUST",
@@ -6391,23 +6551,6 @@
       "transitions": [
         "status_wrong_finalized"
       ]
-    },
-    {
-      "id": "PROSE-MUST-202742ab",
-      "text": "All implementations MUST support the TCP libp2p transport,",
-      "strength": "MUST",
-      "protocol": "",
-      "rule_type": "behavioral",
-      "observable_in_traffic": false,
-      "formalized": "implementation.support(the TCP libp2p transport,)",
-      "test_ids": [],
-      "invariant_ids": [],
-      "testability": "direct",
-      "coverage_status": "untested",
-      "fork_introduced": "phase0",
-      "current_status": "local_candidate",
-      "state_machine": "",
-      "transitions": []
     },
     {
       "id": "PROSE-MUST-248defda",
@@ -6490,6 +6633,23 @@
       "testability": "direct",
       "coverage_status": "untested",
       "fork_introduced": "altair",
+      "current_status": "local_candidate",
+      "state_machine": "",
+      "transitions": []
+    },
+    {
+      "id": "PROSE-MUST-2714d3bd",
+      "text": "Any supported transport MUST be enabled for both dialing and listening (i.e. outbound and inbound connections)",
+      "strength": "MUST",
+      "protocol": "",
+      "rule_type": "behavioral",
+      "observable_in_traffic": false,
+      "formalized": "client.be(enabled for both dialing and listening (i.e. outbound and inbound connections))",
+      "test_ids": [],
+      "invariant_ids": [],
+      "testability": "direct",
+      "coverage_status": "untested",
+      "fork_introduced": "phase0",
       "current_status": "local_candidate",
       "state_machine": "",
       "transitions": []
@@ -6594,6 +6754,23 @@
         "disc_query_enr_baseline",
         "valid_metadata_v3"
       ]
+    },
+    {
+      "id": "PROSE-MUST-34bf34cf",
+      "text": "Clients MUST respond with at least one inclusion list, if they have it",
+      "strength": "MUST",
+      "protocol": "",
+      "rule_type": "conditional",
+      "observable_in_traffic": false,
+      "formalized": "client.respond(with at least one inclusion list, if they have it)",
+      "test_ids": [],
+      "invariant_ids": [],
+      "testability": "direct",
+      "coverage_status": "untested",
+      "fork_introduced": "heze",
+      "current_status": "local_candidate",
+      "state_machine": "",
+      "transitions": []
     },
     {
       "id": "PROSE-MUST-35b3af29",
@@ -6858,6 +7035,23 @@
       "transitions": []
     },
     {
+      "id": "PROSE-MUST-54c4eead",
+      "text": "Each successful response_chunk MUST contain a single SignedInclusionList payload.",
+      "strength": "MUST",
+      "protocol": "",
+      "rule_type": "behavioral",
+      "observable_in_traffic": false,
+      "formalized": "client.contain(a single SignedInclusionList payload.)",
+      "test_ids": [],
+      "invariant_ids": [],
+      "testability": "direct",
+      "coverage_status": "untested",
+      "fork_introduced": "heze",
+      "current_status": "local_candidate",
+      "state_machine": "",
+      "transitions": []
+    },
+    {
       "id": "PROSE-MUST-56ec7740",
       "legacy_ids": [
         "SPEC-DISC-002"
@@ -6895,7 +7089,7 @@
       "testability": "direct",
       "coverage_status": "untested",
       "fork_introduced": "phase0",
-      "fork_modified": "altair,deneb,fulu,gloas,_features",
+      "fork_modified": "altair,deneb,fulu,gloas,heze,_features",
       "current_status": "local_candidate",
       "state_machine": "",
       "transitions": []
@@ -7354,6 +7548,23 @@
       "transitions": []
     },
     {
+      "id": "PROSE-MUST-90413d1b",
+      "text": "Clients MUST support requesting inclusion lists since minimum_request_slot, where minimum_request_slot = max(current_slot - MIN_SLOTS_FOR_INCLUSION_LISTS_REQUESTS, compute_start_slot_at_epoch(HEZE_FORK_EPOCH))",
+      "strength": "MUST",
+      "protocol": "",
+      "rule_type": "behavioral",
+      "observable_in_traffic": false,
+      "formalized": "client.support(requesting inclusion lists since minimum_request_slot, where minimum_request_slo)",
+      "test_ids": [],
+      "invariant_ids": [],
+      "testability": "direct",
+      "coverage_status": "untested",
+      "fork_introduced": "heze",
+      "current_status": "local_candidate",
+      "state_machine": "",
+      "transitions": []
+    },
+    {
       "id": "PROSE-MUST-94d78412",
       "text": "The request MUST be encoded according to the encoding strategy.",
       "strength": "MUST",
@@ -7498,6 +7709,23 @@
       "transitions": []
     },
     {
+      "id": "PROSE-MUST-9eeec856",
+      "text": "Implementations MUST ignore unknown versions",
+      "strength": "MUST",
+      "protocol": "",
+      "rule_type": "behavioral",
+      "observable_in_traffic": false,
+      "formalized": "implementation.ignore(unknown versions)",
+      "test_ids": [],
+      "invariant_ids": [],
+      "testability": "direct",
+      "coverage_status": "untested",
+      "fork_introduced": "fulu",
+      "current_status": "local_candidate",
+      "state_machine": "",
+      "transitions": []
+    },
+    {
       "id": "PROSE-MUST-a0fadbab",
       "text": "Clients MUST treat as valid any byte sequences.",
       "strength": "MUST",
@@ -7555,23 +7783,6 @@
       "transitions": []
     },
     {
-      "id": "PROSE-MUST-a3c716f8",
-      "text": "When sending a partial message, the gossipsub group ID MUST be the block root prefixed by a single byte used for versioning",
-      "strength": "MUST",
-      "protocol": "",
-      "rule_type": "conditional",
-      "observable_in_traffic": false,
-      "formalized": "receiver.be(the block root prefixed by a single byte used for versioning)",
-      "test_ids": [],
-      "invariant_ids": [],
-      "testability": "direct",
-      "coverage_status": "untested",
-      "fork_introduced": "fulu",
-      "current_status": "local_candidate",
-      "state_machine": "",
-      "transitions": []
-    },
-    {
       "id": "PROSE-MUST-a43e7b78",
       "text": "Clients MUST respond with blocks from their view of the current fork choice -- that is, blocks from the single chain defined by the current head",
       "strength": "MUST",
@@ -7618,6 +7829,23 @@
       "testability": "direct",
       "coverage_status": "untested",
       "fork_introduced": "altair",
+      "current_status": "local_candidate",
+      "state_machine": "",
+      "transitions": []
+    },
+    {
+      "id": "PROSE-MUST-aac67f8c",
+      "text": "All implementations MUST support the QUIC (UDP) libp2p transport and the TCP libp2p transport",
+      "strength": "MUST",
+      "protocol": "",
+      "rule_type": "behavioral",
+      "observable_in_traffic": false,
+      "formalized": "implementation.support(the QUIC (UDP) libp2p transport and the TCP libp2p transport)",
+      "test_ids": [],
+      "invariant_ids": [],
+      "testability": "direct",
+      "coverage_status": "untested",
+      "fork_introduced": "phase0",
       "current_status": "local_candidate",
       "state_machine": "",
       "transitions": []
@@ -7677,25 +7905,20 @@
       "transitions": []
     },
     {
-      "id": "PROSE-MUST-b6f01228",
-      "legacy_ids": [
-        "SPEC-FULU-PARTIAL-001",
-        "SPEC-FULU-PARTIAL-021",
-        "SPEC-GLOAS-PARTIAL-001"
-      ],
-      "text": "The version byte MUST be zero",
+      "id": "PROSE-MUST-b2b9fb45",
+      "text": "Clients that support the TCP transport MUST support [mplex](https://github.com/libp2p/specs/tree/master/mplex) and",
       "strength": "MUST",
       "protocol": "",
       "rule_type": "behavioral",
       "observable_in_traffic": false,
-      "formalized": "receiver.be(zero)",
+      "formalized": "client.support([mplex](https://github.com/libp2p/specs/tree/master/mplex) and)",
       "test_ids": [],
       "invariant_ids": [],
       "testability": "direct",
       "coverage_status": "untested",
-      "fork_introduced": "fulu",
-      "current_status": "active",
-      "state_machine": "gossip",
+      "fork_introduced": "phase0",
+      "current_status": "local_candidate",
+      "state_machine": "",
       "transitions": []
     },
     {
@@ -7869,7 +8092,7 @@
       "testability": "direct",
       "coverage_status": "untested",
       "fork_introduced": "phase0",
-      "fork_modified": "altair,deneb,fulu",
+      "fork_modified": "altair,deneb,fulu,heze",
       "current_status": "local_candidate",
       "state_machine": "",
       "transitions": []
@@ -7912,6 +8135,23 @@
       "testability": "direct",
       "coverage_status": "untested",
       "fork_introduced": "phase0",
+      "current_status": "local_candidate",
+      "state_machine": "",
+      "transitions": []
+    },
+    {
+      "id": "PROSE-MUST-c299df01",
+      "text": "When sending a partial message, the gossipsub group ID MUST be the SSZ encoded PartialDataColumnGroupID prefixed with a single version byte",
+      "strength": "MUST",
+      "protocol": "",
+      "rule_type": "conditional",
+      "observable_in_traffic": false,
+      "formalized": "receiver.be(the SSZ encoded PartialDataColumnGroupID prefixed with a single version byte)",
+      "test_ids": [],
+      "invariant_ids": [],
+      "testability": "direct",
+      "coverage_status": "untested",
+      "fork_introduced": "fulu",
       "current_status": "local_candidate",
       "state_machine": "",
       "transitions": []
@@ -7966,23 +8206,6 @@
       "rule_type": "behavioral",
       "observable_in_traffic": false,
       "formalized": "responder.deserialize(the expected type, and process the request)",
-      "test_ids": [],
-      "invariant_ids": [],
-      "testability": "direct",
-      "coverage_status": "untested",
-      "fork_introduced": "phase0",
-      "current_status": "local_candidate",
-      "state_machine": "",
-      "transitions": []
-    },
-    {
-      "id": "PROSE-MUST-c8606797",
-      "text": "All implementations MUST be enabled for both dialing and listening (i.e. outbound and inbound connections)",
-      "strength": "MUST",
-      "protocol": "",
-      "rule_type": "behavioral",
-      "observable_in_traffic": false,
-      "formalized": "implementation.be(enabled for both dialing and listening (i.e. outbound and inbound connections))",
       "test_ids": [],
       "invariant_ids": [],
       "testability": "direct",
@@ -8122,23 +8345,6 @@
       "rule_type": "conditional",
       "observable_in_traffic": false,
       "formalized": "client.ignore(the response, the response MUST be considered bad server behavior)",
-      "test_ids": [],
-      "invariant_ids": [],
-      "testability": "direct",
-      "coverage_status": "untested",
-      "fork_introduced": "phase0",
-      "current_status": "local_candidate",
-      "state_machine": "",
-      "transitions": []
-    },
-    {
-      "id": "PROSE-MUST-dbf93360",
-      "text": "Clients MUST support [mplex](https://github.com/libp2p/specs/tree/master/mplex) and",
-      "strength": "MUST",
-      "protocol": "",
-      "rule_type": "behavioral",
-      "observable_in_traffic": false,
-      "formalized": "client.support([mplex](https://github.com/libp2p/specs/tree/master/mplex) and)",
       "test_ids": [],
       "invariant_ids": [],
       "testability": "direct",
@@ -8811,6 +9017,23 @@
       "transitions": []
     },
     {
+      "id": "PROSE-SHOULD-21223408",
+      "text": "Clients SHOULD include an inclusion list in the response as soon as it passes the gossip validation rules",
+      "strength": "SHOULD",
+      "protocol": "",
+      "rule_type": "ordering",
+      "observable_in_traffic": false,
+      "formalized": "client.include(an inclusion list in the response as soon as it passes the gossip validation rul)",
+      "test_ids": [],
+      "invariant_ids": [],
+      "testability": "direct",
+      "coverage_status": "untested",
+      "fork_introduced": "heze",
+      "current_status": "local_candidate",
+      "state_machine": "",
+      "transitions": []
+    },
+    {
       "id": "PROSE-SHOULD-229661ef",
       "text": "Clients SHOULD reset the stream immediately",
       "strength": "SHOULD",
@@ -9220,6 +9443,23 @@
       "testability": "direct",
       "coverage_status": "untested",
       "fork_introduced": "fulu",
+      "current_status": "local_candidate",
+      "state_machine": "",
+      "transitions": []
+    },
+    {
+      "id": "PROSE-SHOULD-aae18768",
+      "text": "When a peer is reachable over both TCP and QUIC, clients SHOULD prioritise peer's QUIC addresses.",
+      "strength": "SHOULD",
+      "protocol": "",
+      "rule_type": "conditional",
+      "observable_in_traffic": false,
+      "formalized": "peer.prioritise(peer's QUIC addresses.)",
+      "test_ids": [],
+      "invariant_ids": [],
+      "testability": "direct",
+      "coverage_status": "untested",
+      "fork_introduced": "phase0",
       "current_status": "local_candidate",
       "state_machine": "",
       "transitions": []
@@ -9673,6 +9913,23 @@
       "transitions": []
     },
     {
+      "id": "PROSE-SHOULD_NOT-36015157",
+      "text": "Clients SHOULD_NOT respond with inclusion lists that fail the gossip validation rules",
+      "strength": "SHOULD",
+      "protocol": "",
+      "rule_type": "behavioral",
+      "observable_in_traffic": false,
+      "formalized": "client.respond(with inclusion lists that fail the gossip validation rules)",
+      "test_ids": [],
+      "invariant_ids": [],
+      "testability": "direct",
+      "coverage_status": "untested",
+      "fork_introduced": "heze",
+      "current_status": "local_candidate",
+      "state_machine": "",
+      "transitions": []
+    },
+    {
       "id": "PROSE-SHOULD_NOT-38845239",
       "legacy_ids": [
         "SPEC-REQRESP-003"
@@ -9817,6 +10074,23 @@
       "fork_modified": "fulu",
       "current_status": "active",
       "state_machine": "gossip",
+      "transitions": []
+    },
+    {
+      "id": "PROSE-SHOULD_NOT-f107f7dc",
+      "text": "Clients SHOULD_NOT respond with inclusion lists from equivocators for the requested slot and inclusion_list_committee_root.",
+      "strength": "SHOULD",
+      "protocol": "",
+      "rule_type": "behavioral",
+      "observable_in_traffic": false,
+      "formalized": "client.respond(with inclusion lists from equivocators for the requested slot and inclusion_list)",
+      "test_ids": [],
+      "invariant_ids": [],
+      "testability": "direct",
+      "coverage_status": "untested",
+      "fork_introduced": "heze",
+      "current_status": "local_candidate",
+      "state_machine": "",
       "transitions": []
     },
     {

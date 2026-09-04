@@ -1,0 +1,435 @@
+{
+  "version": 1,
+  "source": "cmd/irderive",
+  "total_rules": 6,
+  "cases": [
+    {
+      "id": "cryptomsg.generated_sequence.beacon_aggregate_and_proof.duplicate_first_seen.18d71276",
+      "category": "cryptomsg",
+      "domain": "cryptomsg",
+      "surface": "beacon_aggregate_and_proof",
+      "template": "duplicate_first_seen",
+      "rule_ids": [
+        "BEACON_AGGREGATE_AND_PROOF-IGNORE-7c1a7594"
+      ],
+      "steps": [
+        {
+          "role": "setup",
+          "transition": {
+            "from": "CryptoReady",
+            "to": "CryptoPrimed",
+            "label": "cm_sequence_beacon_aggregate_and_proof_duplicate_first_seen_setup_18d71276",
+            "description": "sequence setup: valid signed beacon_aggregate_and_proof baseline",
+            "action": {
+              "type": "ActInjectGossip",
+              "protocol": "beacon_aggregate_and_proof",
+              "payload": {
+                "kind": "builder",
+                "wrap": "raw",
+                "name": "buildLiveValidBeaconAggregateAndProof",
+                "cache_store": "seq_beacon_aggregate_and_proof_duplicate_first_seen"
+              }
+            },
+            "oracle": {
+              "differential": true
+            }
+          }
+        },
+        {
+          "role": "probe",
+          "transition": {
+            "from": "CryptoPrimed",
+            "to": "CryptoDone",
+            "label": "cm_sequence_beacon_aggregate_and_proof_duplicate_first_seen_probe_18d71276",
+            "weight": 10,
+            "description": "generated sequence probe for BEACON_AGGREGATE_AND_PROOF-IGNORE-7c1a7594",
+            "spec_refs": [
+              "BEACON_AGGREGATE_AND_PROOF-IGNORE-7c1a7594"
+            ],
+            "action": {
+              "type": "ActInjectGossip",
+              "protocol": "beacon_aggregate_and_proof",
+              "payload": {
+                "kind": "builder",
+                "wrap": "raw",
+                "name": "buildLiveValidBeaconAggregateAndProof",
+                "cache_load": "seq_beacon_aggregate_and_proof_duplicate_first_seen"
+              }
+            },
+            "oracle": {
+              "differential": true,
+              "expected": "REJECT",
+              "must_not": [
+                "CRASH",
+                "ACCEPT"
+              ],
+              "spec_predicate": "accepted == 0",
+              "strength": "MUST"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "cryptomsg.generated_sequence.blob_sidecar.duplicate_first_seen.d6ec61bd",
+      "category": "cryptomsg",
+      "domain": "cryptomsg",
+      "surface": "blob_sidecar",
+      "template": "duplicate_first_seen",
+      "rule_ids": [
+        "BLOB_SIDECAR-IGNORE-ed3428e1"
+      ],
+      "steps": [
+        {
+          "role": "setup",
+          "transition": {
+            "from": "CryptoReady",
+            "to": "CryptoPrimed",
+            "label": "cm_sequence_blob_sidecar_duplicate_first_seen_setup_d6ec61bd",
+            "description": "sequence setup: valid signed blob_sidecar baseline",
+            "action": {
+              "type": "ActInjectGossip",
+              "protocol": "blob_sidecar_0",
+              "payload": {
+                "kind": "builder",
+                "wrap": "raw",
+                "name": "buildLiveValidBlobSidecar",
+                "cache_store": "seq_blob_sidecar_duplicate_first_seen"
+              }
+            },
+            "guard": {
+              "fork_gte": "deneb"
+            },
+            "oracle": {
+              "differential": true
+            }
+          }
+        },
+        {
+          "role": "probe",
+          "transition": {
+            "from": "CryptoPrimed",
+            "to": "CryptoDone",
+            "label": "cm_sequence_blob_sidecar_duplicate_first_seen_probe_d6ec61bd",
+            "weight": 10,
+            "description": "generated sequence probe for BLOB_SIDECAR-IGNORE-ed3428e1",
+            "spec_refs": [
+              "BLOB_SIDECAR-IGNORE-ed3428e1"
+            ],
+            "action": {
+              "type": "ActInjectGossip",
+              "protocol": "blob_sidecar_0",
+              "payload": {
+                "kind": "builder",
+                "wrap": "raw",
+                "name": "buildLiveValidBlobSidecar",
+                "cache_load": "seq_blob_sidecar_duplicate_first_seen"
+              }
+            },
+            "guard": {
+              "fork_gte": "deneb"
+            },
+            "oracle": {
+              "differential": true,
+              "expected": "REJECT",
+              "must_not": [
+                "CRASH",
+                "ACCEPT"
+              ],
+              "spec_predicate": "accepted == 0",
+              "strength": "MUST"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "cryptomsg.generated_sequence.bls_to_execution_change.duplicate_first_seen.83850e08",
+      "category": "cryptomsg",
+      "domain": "cryptomsg",
+      "surface": "bls_to_execution_change",
+      "template": "duplicate_first_seen",
+      "rule_ids": [
+        "BLS_TO_EXECUTION_CHANGE-IGNORE-b226c668"
+      ],
+      "steps": [
+        {
+          "role": "setup",
+          "transition": {
+            "from": "CryptoReady",
+            "to": "CryptoPrimed",
+            "label": "cm_sequence_bls_to_execution_change_duplicate_first_seen_setup_83850e08",
+            "description": "sequence setup: valid signed bls_to_execution_change baseline",
+            "action": {
+              "type": "ActInjectGossip",
+              "protocol": "bls_to_execution_change",
+              "payload": {
+                "kind": "builder",
+                "wrap": "raw",
+                "name": "buildLiveValidBlsToExecutionChange",
+                "cache_store": "seq_bls_to_execution_change_duplicate_first_seen"
+              }
+            },
+            "guard": {
+              "fork_gte": "capella"
+            },
+            "oracle": {
+              "differential": true
+            }
+          }
+        },
+        {
+          "role": "probe",
+          "transition": {
+            "from": "CryptoPrimed",
+            "to": "CryptoDone",
+            "label": "cm_sequence_bls_to_execution_change_duplicate_first_seen_probe_83850e08",
+            "weight": 10,
+            "description": "generated sequence probe for BLS_TO_EXECUTION_CHANGE-IGNORE-b226c668",
+            "spec_refs": [
+              "BLS_TO_EXECUTION_CHANGE-IGNORE-b226c668"
+            ],
+            "action": {
+              "type": "ActInjectGossip",
+              "protocol": "bls_to_execution_change",
+              "payload": {
+                "kind": "builder",
+                "wrap": "raw",
+                "name": "buildLiveValidBlsToExecutionChange",
+                "cache_load": "seq_bls_to_execution_change_duplicate_first_seen"
+              },
+              "pool_delta": true
+            },
+            "guard": {
+              "fork_gte": "capella"
+            },
+            "oracle": {
+              "differential": true,
+              "expected": "REJECT",
+              "must_not": [
+                "CRASH",
+                "ACCEPT"
+              ],
+              "spec_predicate": "accepted == 0",
+              "strength": "MUST"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "cryptomsg.generated_sequence.data_column_sidecar.duplicate_first_seen.51d0f050",
+      "category": "cryptomsg",
+      "domain": "cryptomsg",
+      "surface": "data_column_sidecar",
+      "template": "duplicate_first_seen",
+      "rule_ids": [
+        "DATA_COLUMN_SIDECAR-IGNORE-869c65a5"
+      ],
+      "steps": [
+        {
+          "role": "setup",
+          "transition": {
+            "from": "CryptoReady",
+            "to": "CryptoPrimed",
+            "label": "cm_sequence_data_column_sidecar_duplicate_first_seen_setup_51d0f050",
+            "description": "sequence setup: valid signed data_column_sidecar baseline",
+            "action": {
+              "type": "ActInjectGossip",
+              "protocol": "data_column_sidecar_0",
+              "payload": {
+                "kind": "builder",
+                "wrap": "raw",
+                "name": "buildLiveValidDataColumnSidecar",
+                "cache_store": "seq_data_column_sidecar_duplicate_first_seen"
+              }
+            },
+            "guard": {
+              "fork_gte": "fulu"
+            },
+            "oracle": {
+              "differential": true
+            }
+          }
+        },
+        {
+          "role": "probe",
+          "transition": {
+            "from": "CryptoPrimed",
+            "to": "CryptoDone",
+            "label": "cm_sequence_data_column_sidecar_duplicate_first_seen_probe_51d0f050",
+            "weight": 10,
+            "description": "generated sequence probe for DATA_COLUMN_SIDECAR-IGNORE-869c65a5",
+            "spec_refs": [
+              "DATA_COLUMN_SIDECAR-IGNORE-869c65a5"
+            ],
+            "action": {
+              "type": "ActInjectGossip",
+              "protocol": "data_column_sidecar_0",
+              "payload": {
+                "kind": "builder",
+                "wrap": "raw",
+                "name": "buildLiveValidDataColumnSidecar",
+                "cache_load": "seq_data_column_sidecar_duplicate_first_seen"
+              }
+            },
+            "guard": {
+              "fork_gte": "fulu"
+            },
+            "oracle": {
+              "differential": true,
+              "expected": "REJECT",
+              "must_not": [
+                "CRASH",
+                "ACCEPT"
+              ],
+              "spec_predicate": "accepted == 0",
+              "strength": "MUST"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "cryptomsg.generated_sequence.sync_committee_message.duplicate_first_seen.95e865c7",
+      "category": "cryptomsg",
+      "domain": "cryptomsg",
+      "surface": "sync_committee_message",
+      "template": "duplicate_first_seen",
+      "rule_ids": [
+        "SYNC_COMMITTEE_MESSAGE-IGNORE-7708bbcf"
+      ],
+      "steps": [
+        {
+          "role": "setup",
+          "transition": {
+            "from": "CryptoReady",
+            "to": "CryptoPrimed",
+            "label": "cm_sequence_sync_committee_message_duplicate_first_seen_setup_95e865c7",
+            "description": "sequence setup: valid signed sync_committee_message baseline",
+            "action": {
+              "type": "ActInjectGossip",
+              "protocol": "sync_committee_0",
+              "payload": {
+                "kind": "builder",
+                "wrap": "raw",
+                "name": "buildLiveValidSyncCommitteeMessage",
+                "cache_store": "seq_sync_committee_message_duplicate_first_seen"
+              }
+            },
+            "guard": {
+              "fork_gte": "altair"
+            },
+            "oracle": {
+              "differential": true
+            }
+          }
+        },
+        {
+          "role": "probe",
+          "transition": {
+            "from": "CryptoPrimed",
+            "to": "CryptoDone",
+            "label": "cm_sequence_sync_committee_message_duplicate_first_seen_probe_95e865c7",
+            "weight": 10,
+            "description": "generated sequence probe for SYNC_COMMITTEE_MESSAGE-IGNORE-7708bbcf",
+            "spec_refs": [
+              "SYNC_COMMITTEE_MESSAGE-IGNORE-7708bbcf"
+            ],
+            "action": {
+              "type": "ActInjectGossip",
+              "protocol": "sync_committee_0",
+              "payload": {
+                "kind": "builder",
+                "wrap": "raw",
+                "name": "buildLiveValidSyncCommitteeMessage",
+                "cache_load": "seq_sync_committee_message_duplicate_first_seen"
+              }
+            },
+            "guard": {
+              "fork_gte": "altair"
+            },
+            "oracle": {
+              "differential": true,
+              "expected": "REJECT",
+              "must_not": [
+                "CRASH",
+                "ACCEPT"
+              ],
+              "spec_predicate": "accepted == 0",
+              "strength": "MUST"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "cryptomsg.generated_sequence.voluntary_exit.duplicate_first_seen.67af2c41",
+      "category": "cryptomsg",
+      "domain": "cryptomsg",
+      "surface": "voluntary_exit",
+      "template": "duplicate_first_seen",
+      "rule_ids": [
+        "VOLUNTARY_EXIT-IGNORE-c9db1ebe"
+      ],
+      "steps": [
+        {
+          "role": "setup",
+          "transition": {
+            "from": "CryptoReady",
+            "to": "CryptoPrimed",
+            "label": "cm_sequence_voluntary_exit_duplicate_first_seen_setup_67af2c41",
+            "description": "sequence setup: valid signed voluntary_exit baseline",
+            "action": {
+              "type": "ActInjectGossip",
+              "protocol": "voluntary_exit",
+              "payload": {
+                "kind": "builder",
+                "wrap": "raw",
+                "name": "buildLiveValidVoluntaryExit",
+                "cache_store": "seq_voluntary_exit_duplicate_first_seen"
+              }
+            },
+            "oracle": {
+              "differential": true
+            }
+          }
+        },
+        {
+          "role": "probe",
+          "transition": {
+            "from": "CryptoPrimed",
+            "to": "CryptoDone",
+            "label": "cm_sequence_voluntary_exit_duplicate_first_seen_probe_67af2c41",
+            "weight": 10,
+            "description": "generated sequence probe for VOLUNTARY_EXIT-IGNORE-c9db1ebe",
+            "spec_refs": [
+              "VOLUNTARY_EXIT-IGNORE-c9db1ebe"
+            ],
+            "action": {
+              "type": "ActInjectGossip",
+              "protocol": "voluntary_exit",
+              "payload": {
+                "kind": "builder",
+                "wrap": "raw",
+                "name": "buildLiveValidVoluntaryExit",
+                "cache_load": "seq_voluntary_exit_duplicate_first_seen"
+              },
+              "pool_delta": true
+            },
+            "oracle": {
+              "differential": true,
+              "expected": "REJECT",
+              "must_not": [
+                "CRASH",
+                "ACCEPT"
+              ],
+              "spec_predicate": "accepted == 0",
+              "strength": "MUST"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
