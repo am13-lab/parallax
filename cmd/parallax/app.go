@@ -27,6 +27,10 @@ type RunConfig struct {
 	Enclave    string
 	ArgsFile   string
 	Attach     bool
+	// Clients 逗号分隔的客户端名子串过滤（空 = 全部）。
+	Clients string
+	// scheduling
+	Parallel int // concurrent specs per wave (1 = serial)
 
 	// selection
 	TestIDList   string
@@ -59,6 +63,7 @@ func runRun(ctx context.Context, cfg RunConfig) error {
 	if err != nil {
 		return err
 	}
+	endpoints = filterEndpoints(endpoints, cfg.Clients)
 
 	var clients []runner.Client
 	for _, ep := range endpoints {
@@ -83,6 +88,12 @@ func runRun(ctx context.Context, cfg RunConfig) error {
 	fmt.Fprintf(cfg.Stdout, "chain: preset=%s fork_digest=%x clients=%d\n",
 		chain.Preset, chain.ForkDigest, len(clients))
 
+	// Per-test progress lines: one line per finished test, so a run is never
+	// silent about whether it is advancing.
+	cfg.Progress = func(r runner.TestResult) {
+		fmt.Fprintf(cfg.Stdout, "[test] %-58s %-10s %s\n", r.TestID, r.Status, r.Elapsed)
+	}
+
 	specs := cases.All()
 	rep := runner.Run(ctx, specs, clients, envr, chain, runner.Options{
 		Seed:           cfg.Seed,
@@ -97,11 +108,30 @@ func runRun(ctx context.Context, cfg RunConfig) error {
 		Progress:       cfg.Progress,
 	})
 
+	rep.Command = strings.Join(os.Args, " ")
 	if err := writeOutputs(cfg.OutputDir, rep); err != nil {
 		return err
 	}
 	printSummary(cfg.Stdout, rep)
 	return nil
+}
+
+// filterEndpoints keeps only endpoints whose Name contains one of the
+// comma-separated substrings in pattern (empty pattern keeps all).
+func filterEndpoints(eps []env.Endpoint, pattern string) []env.Endpoint {
+	if strings.TrimSpace(pattern) == "" {
+		return eps
+	}
+	var out []env.Endpoint
+	for _, ep := range eps {
+		for _, want := range strings.Split(pattern, ",") {
+			if want = strings.TrimSpace(want); want != "" && strings.Contains(ep.Name, want) {
+				out = append(out, ep)
+				break
+			}
+		}
+	}
+	return out
 }
 
 func splitComma(s string) []string {
@@ -185,7 +215,13 @@ func writeOutputs(outputDir string, rep *runner.Report) error {
 	if err != nil {
 		return err
 	}
-	return os.WriteFile(outputDir+"/junit.xml", junit, 0o644)
+	if err := os.WriteFile(outputDir+"/junit.xml", junit, 0o644); err != nil {
+		return err
+	}
+	if err := report.ArchiveRun(rep); err != nil {
+		fmt.Fprintf(os.Stderr, "warn: archive run: %v\n", err)
+	}
+	return nil
 }
 
 func printSummary(w io.Writer, rep *runner.Report) {
@@ -204,6 +240,8 @@ type AnalyzeConfig struct {
 	ReportPath    string
 	AllowlistPath string
 	Legacy        bool
+	HTML          bool
+	JUnitOut      string
 }
 
 // runAnalyze executes the `analyze` subcommand.
@@ -241,6 +279,48 @@ func runAnalyze(cfg AnalyzeConfig, stdout io.Writer) error {
 			f.ID, f.Type, f.Severity, f.RootCause, f.OutlierClients, f.EvidenceCount)
 	}
 	fmt.Fprintf(stdout, "\n%d finding(s), %d suppressed\n", len(findings), len(findings)-active)
+
+	if cfg.JUnitOut != "" {
+		junit, err := report.WriteJUnit(&rep)
+		if err != nil {
+			return fmt.Errorf("render junit: %w", err)
+		}
+		if err := os.WriteFile(cfg.JUnitOut, junit, 0o644); err != nil {
+			return err
+		}
+		fmt.Fprintf(stdout, "junit report: %s\n", cfg.JUnitOut)
+	}
+
+	if cfg.HTML {
+		historyDir, err := report.HistoryDir()
+		if err != nil {
+			historyDir = ""
+		}
+		runs, err := report.CollectRuns(&rep, findings, historyDir, 20)
+		if err != nil {
+			return fmt.Errorf("collect history: %w", err)
+		}
+		htmlData, err := report.WriteHTMLRuns(runs, 0)
+		if err != nil {
+			return fmt.Errorf("render html: %w", err)
+		}
+		htmlPath := strings.TrimSuffix(cfg.ReportPath, ".json") + ".html"
+		if err := os.WriteFile(htmlPath, htmlData, 0o644); err != nil {
+			return err
+		}
+		fmt.Fprintf(stdout, "html report: %s (%d runs)\n", htmlPath, len(runs))
+	}
+
+	if cfg.JUnitOut != "" {
+		junit, err := report.WriteJUnit(&rep)
+		if err != nil {
+			return fmt.Errorf("render junit: %w", err)
+		}
+		if err := os.WriteFile(cfg.JUnitOut, junit, 0o644); err != nil {
+			return err
+		}
+		fmt.Fprintf(stdout, "junit report: %s\n", cfg.JUnitOut)
+	}
 
 	if cfg.Legacy {
 		legacy, err := report.LegacyShape(&rep)
@@ -282,6 +362,8 @@ func parseRunArgs(fs *flag.FlagSet, cfg *RunConfig, args []string) error {
 	fs.IntVar(&cfg.RotateEvery, "rotate-every", 10, "rotate probe identities every N tests (0 disables)")
 	fs.DurationVar(&cfg.PerTestTimeout, "test-timeout", 2*time.Minute, "per-test timeout")
 	fs.StringVar(&cfg.Preset, "preset", "mainnet", "chain preset label")
+	fs.StringVar(&cfg.Clients, "clients", "", "comma-separated client name substrings to include (empty = all)")
+	fs.IntVar(&cfg.Parallel, "parallel", 4, "concurrent specs per wave (1 = serial)")
 	fs.StringVar(&cfg.OutputDir, "out", "results", "output directory")
 	if err := fs.Parse(args); err != nil {
 		return err

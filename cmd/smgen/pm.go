@@ -9,12 +9,17 @@ import (
 // by gate 3 (payload type-check) and by fields-kind payload codegen.
 type ProtocolModel struct {
 	Methods []PMMethod `json:"methods"`
+	// Forks lists every fork the spec scan observed, including feature forks
+	// (specs/_features/<feature>, named by feature). gate7 accepts forks from
+	// this list in addition to the hardcoded forkRank ordering.
+	Forks []string `json:"forks,omitempty"`
 	// Availability maps a protocol ID to its fork window. It lets gate 7 check
 	// that every protocol used by the IR has known fork availability and that
 	// the named forks are valid.
 	Availability map[string]PMAvailability `json:"availability,omitempty"`
 
 	byProto map[string]*PMMethod // protocol ID -> method (built on load)
+	forkSet map[string]bool      // forks listed in Forks (built on load)
 }
 
 // PMAvailability is the fork window in which a protocol ID is valid.
@@ -65,12 +70,25 @@ func loadProtocolModel(path string) (*ProtocolModel, error) {
 		return nil, err
 	}
 	pm.byProto = map[string]*PMMethod{}
+	pm.forkSet = map[string]bool{}
+	for _, f := range pm.Forks {
+		pm.forkSet[f] = true
+	}
 	for i := range pm.Methods {
 		for _, id := range pm.Methods[i].ProtocolIDs {
 			pm.byProto[id] = &pm.Methods[i]
 		}
 	}
 	return &pm, nil
+}
+
+// knownModelFork reports whether name is a fork the protocol model declares
+// (hardcoded forkRank ordering plus feature forks from the spec scan).
+func (pm *ProtocolModel) knownModelFork(name string) bool {
+	if knownFork(name) {
+		return true
+	}
+	return pm.forkSet[name]
 }
 
 // method returns the method serving the given protocol ID.

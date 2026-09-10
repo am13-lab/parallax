@@ -187,6 +187,7 @@
       "weight": 6,
       "action": {
         "type": "ActReadResponse",
+        "protocol": "/eth2/beacon_chain/req/ping/1/ssz_snappy",
         "timeout_ms": 10000
       }
     },
@@ -197,6 +198,7 @@
       "weight": 8,
       "action": {
         "type": "ActReadResponse",
+        "protocol": "/eth2/beacon_chain/req/ping/1/ssz_snappy",
         "timeout_ms": 10000
       }
     },
@@ -207,6 +209,7 @@
       "weight": 6,
       "action": {
         "type": "ActReadResponse",
+        "protocol": "/eth2/beacon_chain/req/ping/1/ssz_snappy",
         "timeout_ms": 10000
       }
     },
@@ -309,6 +312,7 @@
       "condition_desc": "exactly one stream is currently open",
       "action": {
         "type": "ActReadResponse",
+        "protocol": "/eth2/beacon_chain/req/ping/1/ssz_snappy",
         "timeout_ms": 10000
       },
       "guard": {
@@ -362,6 +366,7 @@
       ],
       "action": {
         "type": "ActReadResponse",
+        "protocol": "/eth2/beacon_chain/req/ping/1/ssz_snappy",
         "timeout_ms": 5000,
         "keep_write_open": true
       }

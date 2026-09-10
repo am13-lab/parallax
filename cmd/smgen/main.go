@@ -91,6 +91,27 @@ func main() {
 	}
 }
 
+// dropUnresolvedSpecRefs removes SpecRefs that no longer resolve in the rule
+// catalog (e.g. rules from skipped _features forks) so stale references do
+// not block generation. Each drop is printed as a note.
+func dropUnresolvedSpecRefs(f string, m *Machine, refs refIndex) {
+	if refs.specRules == nil {
+		return
+	}
+	for i := range m.Transitions {
+		t := &m.Transitions[i]
+		kept := make([]string, 0, len(t.SpecRefs))
+		for _, ref := range t.SpecRefs {
+			if refs.specRules[ref] {
+				kept = append(kept, ref)
+				continue
+			}
+			fmt.Printf("  note %s (machine %q): dropped unresolved spec rule %q\n", f, m.Name, ref)
+		}
+		t.SpecRefs = kept
+	}
+}
+
 // runGenerate validates SM-IR files and, if they pass, compiles each eligible
 // transition into a runner.Spec case. irPath may be a file or a directory; the
 // output is a single Go file defining irMachineSpecs() []runner.Spec. Returns
@@ -108,6 +129,7 @@ func runGenerate(irPath, outDir, pkg string, refs refIndex) int {
 			fmt.Printf("FAIL %s\n  [gate1] %v\n", f, err)
 			return 1
 		}
+		dropUnresolvedSpecRefs(f, m, refs)
 		r := validateMachine(m, refs)
 		if !r.OK() {
 			fmt.Printf("FAIL %s (machine %q): refusing to generate from invalid IR\n", f, m.Name)

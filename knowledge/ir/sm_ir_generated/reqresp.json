@@ -50,6 +50,7 @@
       "description": "spec backbone: requester writes the request then closes the write side",
       "action": {
         "type": "ActWriteAndClose",
+        "protocol": "/eth2/beacon_chain/req/ping/1/ssz_snappy",
         "payload": {
           "kind": "builder",
           "wrap": "ssz_snappy",
@@ -73,6 +74,7 @@
       "description": "reference backbone: partial write leaves a resource-holding stream state",
       "action": {
         "type": "ActWritePartial",
+        "protocol": "/eth2/beacon_chain/req/ping/1/ssz_snappy",
         "payload": {
           "kind": "literal",
           "wrap": "raw",
@@ -89,6 +91,7 @@
       "description": "negative path: read while the write side remains open",
       "action": {
         "type": "ActReadResponse",
+        "protocol": "/eth2/beacon_chain/req/ping/1/ssz_snappy",
         "timeout_ms": 1000,
         "keep_write_open": true
       },
@@ -109,6 +112,7 @@
       "description": "spec backbone: response consists of response_chunk entries after request EOF",
       "action": {
         "type": "ActReadResponse",
+        "protocol": "/eth2/beacon_chain/req/ping/1/ssz_snappy",
         "timeout_ms": 10000
       },
       "oracle": {

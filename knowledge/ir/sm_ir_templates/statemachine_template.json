@@ -318,7 +318,8 @@
               "wrap": "ssz_snappy",
               "name": "buildBeaconBlocksByRangeV2NearHead"
             },
-            "timeout_ms": 5000
+            "timeout_ms": 5000,
+            "protocol": "/eth2/beacon_chain/req/ping/1/ssz_snappy"
           },
           "oracle": {
             "differential": true,
@@ -341,7 +342,8 @@
               "wrap": "raw",
               "size": 1
             },
-            "timeout_ms": 1000
+            "timeout_ms": 1000,
+            "protocol": "/eth2/beacon_chain/req/ping/1/ssz_snappy"
           }
         },
         {
@@ -353,7 +355,8 @@
           "action": {
             "type": "ActReadResponse",
             "timeout_ms": 1000,
-            "keep_write_open": true
+            "keep_write_open": true,
+            "protocol": "/eth2/beacon_chain/req/ping/1/ssz_snappy"
           },
           "oracle": {
             "differential": true,
@@ -372,7 +375,8 @@
           "description": "spec backbone: response consists of response_chunk entries after request EOF",
           "action": {
             "type": "ActReadResponse",
-            "timeout_ms": 10000
+            "timeout_ms": 10000,
+            "protocol": "/eth2/beacon_chain/req/ping/1/ssz_snappy"
           },
           "oracle": {
             "differential": true,
@@ -2443,7 +2447,8 @@
           "weight": 6,
           "action": {
             "type": "ActReadResponse",
-            "timeout_ms": 10000
+            "timeout_ms": 10000,
+            "protocol": "/eth2/beacon_chain/req/ping/1/ssz_snappy"
           }
         },
         {
@@ -2453,7 +2458,8 @@
           "weight": 8,
           "action": {
             "type": "ActReadResponse",
-            "timeout_ms": 10000
+            "timeout_ms": 10000,
+            "protocol": "/eth2/beacon_chain/req/ping/1/ssz_snappy"
           }
         },
         {
@@ -2463,7 +2469,8 @@
           "weight": 6,
           "action": {
             "type": "ActReadResponse",
-            "timeout_ms": 10000
+            "timeout_ms": 10000,
+            "protocol": "/eth2/beacon_chain/req/ping/1/ssz_snappy"
           }
         },
         {
@@ -2564,7 +2571,8 @@
           "weight": 4,
           "action": {
             "type": "ActReadResponse",
-            "timeout_ms": 10000
+            "timeout_ms": 10000,
+            "protocol": "/eth2/beacon_chain/req/ping/1/ssz_snappy"
           },
           "condition_desc": "exactly one stream is currently open",
           "guard": {
@@ -2616,7 +2624,8 @@
           "action": {
             "type": "ActReadResponse",
             "timeout_ms": 5000,
-            "keep_write_open": true
+            "keep_write_open": true,
+            "protocol": "/eth2/beacon_chain/req/ping/1/ssz_snappy"
           },
           "spec_refs": [
             "PROSE-MUST-faaebe5c"
@@ -2935,7 +2944,7 @@
           "label": "cm_invalid_beacon_attestation_target_root_consistent_db847d1b",
           "weight": 10,
           "description": "[IGNORE] The block being voted for has been seen (via gossip or non-gossip sources) (MAY be queued until block is retrieved) [failure: beacon_block_root not in store.blocks]",
-          "condition_desc": "until \u00abblock is retrieved\u00bb; when beacon_block_root not in store.blocks",
+          "condition_desc": "until «block is retrieved»; when beacon_block_root not in store.blocks",
           "tags": [
             "temporal:until",
             "conditional"
@@ -3442,7 +3451,7 @@
           "label": "cm_invalid_beacon_block_parent_known_valid_3d56b375",
           "weight": 10,
           "description": "[IGNORE] The block's parent has been seen (via gossip or non-gossip sources) (MAY be queued until parent is retrieved) [failure: block.parent_root not in store.blocks]",
-          "condition_desc": "until \u00abparent is retrieved\u00bb; when block.parent_root not in store.blocks",
+          "condition_desc": "until «parent is retrieved»; when block.parent_root not in store.blocks",
           "tags": [
             "temporal:until",
             "conditional"

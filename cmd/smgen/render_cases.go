@@ -23,6 +23,12 @@ var caseActionFamilies = map[string]string{
 	"ActReconnect":             "reconnect",
 	"ActQueryENR":              "statequery",
 	"ActVerifyENRBehavior":     "statequery",
+	"ActSleep":                 "sleep",
+	"ActOpenStream":            "openstream",
+	"ActReadResponse":          "reqresp",
+	"ActWritePartial":          "writepartial",
+	"ActSwitchTopic":           "switchtopic",
+	"ActResolveSubnets":        "resolvesubnets",
 	"ActWriteAndClose":         "sendonly",
 	"ActValidateResponseOrder": "ordercheck",
 	"ActDisconnectPeer":        "disconnect",
@@ -162,7 +168,7 @@ func caseSkip(t *Transition) string {
 				return "builder " + p.Name + " not ported"
 			}
 		case "fields":
-			if _, ok := caseActionFamilies[t.Action.Type]; !ok || caseActionFamilies[t.Action.Type] != "reqresp" {
+			if fam := caseActionFamilies[t.Action.Type]; fam != "reqresp" && fam != "openstream" && fam != "writepartial" {
 				return "fields payload on non-reqresp action"
 			}
 		case "literal":
@@ -177,7 +183,7 @@ func caseSkip(t *Transition) string {
 // caseNeedsIctx reports whether the generated Run closure references ictx.
 func caseNeedsIctx(t *Transition) bool {
 	fam := caseActionFamilies[t.Action.Type]
-	if fam == "gossip" || fam == "custody" || fam == "ordercheck" {
+	if fam == "gossip" || fam == "custody" || fam == "ordercheck" || fam == "switchtopic" {
 		return true
 	}
 	if t.Action.Mutator != "" {
@@ -409,6 +415,53 @@ func renderCaseRun(b *strings.Builder, t *Transition, category string, pm *Proto
 		emitReconnectBody(b)
 	case "statequery":
 		emitStateQueryBody(b)
+	case "sleep":
+		renderTimeout(b, t.Action.TimeoutMs)
+		fmt.Fprintf(b, "\t\t\t\ttime.Sleep(timeout)\n")
+		fmt.Fprintf(b, "\t\t\t\tresults := map[string]string{}\n")
+		fmt.Fprintf(b, "\t\t\t\tfor _, c := range te.Clients {\n")
+		fmt.Fprintf(b, "\t\t\t\t\tif c.Health(ctx) != nil {\n\t\t\t\t\t\tresults[c.Name()] = \"dropped\"\n\t\t\t\t\t} else {\n\t\t\t\t\t\tresults[c.Name()] = \"connected\"\n\t\t\t\t\t}\n\t\t\t\t}\n")
+	case "openstream":
+		proto := t.Action.Protocol
+		if proto == "" {
+			return fmt.Errorf("openstream action has no protocol")
+		}
+		timeoutMs := t.Action.TimeoutMs
+		if timeoutMs <= 0 {
+			timeoutMs = 5000
+		}
+		fmt.Fprintf(b, "\t\t\t\tctx, cancel := context.WithTimeout(ctx, %d*time.Millisecond)\n", timeoutMs)
+		fmt.Fprintf(b, "\t\t\t\tdefer cancel()\n")
+		if err := renderPayloadBody(b, &t.Action, "body", pm); err != nil {
+			return err
+		}
+		fmt.Fprintf(b, "\t\t\t\tresults := map[string]string{}\n")
+		fmt.Fprintf(b, "\t\t\t\tfor _, c := range te.Clients {\n")
+		fmt.Fprintf(b, "\t\t\t\t\tir, err := c.OpenStream(ctx, %q)\n", proto)
+		fmt.Fprintf(b, "\t\t\t\t\tif err != nil {\n\t\t\t\t\t\tresults[c.Name()] = \"other:\" + err.Error()\n\t\t\t\t\t\tcontinue\n\t\t\t\t\t}\n")
+		fmt.Fprintf(b, "\t\t\t\t\tif len(body) > 0 {\n\t\t\t\t\t\tif werr := ir.WriteChunk(body, false); werr != nil {\n\t\t\t\t\t\t\tresults[c.Name()] = \"other:\" + werr.Error()\n\t\t\t\t\t\t\tcontinue\n\t\t\t\t\t\t}\n\t\t\t\t\t\tresults[c.Name()] = \"written\"\n\t\t\t\t\t} else {\n\t\t\t\t\t\tresults[c.Name()] = \"opened\"\n\t\t\t\t\t}\n\t\t\t\t\tir.Close()\n\t\t\t\t}\n")
+	case "writepartial":
+		proto := t.Action.Protocol
+		if proto == "" {
+			return fmt.Errorf("writepartial action has no protocol")
+		}
+		if err := renderPayloadBody(b, &t.Action, "body", pm); err != nil {
+			return err
+		}
+		fmt.Fprintf(b, "\t\t\t\tresults := map[string]string{}\n")
+		fmt.Fprintf(b, "\t\t\t\tfor _, c := range te.Clients {\n")
+		fmt.Fprintf(b, "\t\t\t\t\thalf := body\n\t\t\t\t\tif len(body) > 1 {\n\t\t\t\t\t\thalf = body[:len(body)/2]\n\t\t\t\t\t}\n")
+		fmt.Fprintf(b, "\t\t\t\t\tif err := c.SendOnly(ctx, %q, half); err != nil {\n", proto)
+		fmt.Fprintf(b, "\t\t\t\t\t\tresults[c.Name()] = \"other:\" + err.Error()\n\t\t\t\t\t} else {\n\t\t\t\t\t\tresults[c.Name()] = \"sent_partial\"\n\t\t\t\t\t}\n\t\t\t\t}\n")
+	case "switchtopic":
+		fmt.Fprintf(b, "\t\t\t\ttopic := irFullGossipTopic(ictx, %q)\n", t.Action.Protocol)
+		fmt.Fprintf(b, "\t\t\t\tresults := map[string]string{}\n")
+		fmt.Fprintf(b, "\t\t\t\tfor _, c := range te.Clients {\n")
+		fmt.Fprintf(b, "\t\t\t\t\tif err := c.PrepareGossipTopic(ctx, topic); err != nil {\n\t\t\t\t\t\tresults[c.Name()] = \"other:\" + err.Error()\n\t\t\t\t\t} else {\n\t\t\t\t\t\tresults[c.Name()] = \"subscribed\"\n\t\t\t\t\t}\n\t\t\t\t}\n")
+	case "resolvesubnets":
+		fmt.Fprintf(b, "\t\t\t\tresults := map[string]string{}\n")
+		fmt.Fprintf(b, "\t\t\t\tfor _, c := range te.Clients {\n")
+		fmt.Fprintf(b, "\t\t\t\t\tif _, err := c.State(ctx); err != nil {\n\t\t\t\t\t\tresults[c.Name()] = \"other:\" + err.Error()\n\t\t\t\t\t} else {\n\t\t\t\t\t\tresults[c.Name()] = \"resolved\"\n\t\t\t\t\t}\n\t\t\t\t}\n")
 	}
 	emitDivergeTail(b, category)
 	return nil

@@ -50,7 +50,7 @@ func run(p paths) error {
 	}); err != nil {
 		return fmt.Errorf("write spec rules: %w", err)
 	}
-	if err := updateProtocolModel(p.model, ast.Surfaces); err != nil {
+	if err := updateProtocolModel(p.model, ast); err != nil {
 		return fmt.Errorf("write protocol model: %w", err)
 	}
 	fmt.Printf("generated %d rules, %d surfaces\n", len(ast.Rules), len(ast.Surfaces))

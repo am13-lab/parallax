@@ -38,11 +38,12 @@ func statusBoundarySpec(label string, setHead, setFinalized, setEarliest bool) r
 		},
 		Preflight: requireChainState,
 		Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
-			results := map[string]string{}
+			results, details := map[string]string{}, map[string]string{}
 			for _, c := range te.Clients {
 				state, err := c.State(ctx)
 				if err != nil || state == nil || !state.Valid {
 					results[c.Name()] = "other:no state"
+					details[c.Name()] = "no valid node state available"
 					continue
 				}
 				ssz := buildStatusV2(state)
@@ -57,12 +58,14 @@ func statusBoundarySpec(label string, setHead, setFinalized, setEarliest bool) r
 				}
 				res, err := c.ReqResp(ctx, statusV2, wire.BuildSSZSnappy(ssz), reqTimeout)
 				out := outcome(res, err)
+				details[c.Name()] = detail(res, err)
 				if !stillConnected(ctx, c) {
 					out = "reject" // peer dropped us after the boundary values
+					details[c.Name()] += "; peer dropped the connection after the exchange"
 				}
 				results[c.Name()] = out
 			}
-			return diverge(fmt.Sprintf("reqresp.status.boundary.%s", label), "reqresp", te.Meta, results)
+			return diverge(fmt.Sprintf("reqresp.status.boundary.%s", label), "reqresp", te.Meta, results, details)
 		},
 	}
 }
@@ -99,11 +102,12 @@ func statusMismatchSpec(id, description string, mutator func(ssz []byte, state *
 		},
 		Preflight: requireChainState,
 		Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
-			results := map[string]string{}
+			results, details := map[string]string{}, map[string]string{}
 			for _, c := range te.Clients {
 				state, err := c.State(ctx)
 				if err != nil || state == nil || !state.Valid {
 					results[c.Name()] = "other:no state"
+					details[c.Name()] = "no valid node state available"
 					continue
 				}
 				ssz := buildStatusV2(state)
@@ -115,7 +119,7 @@ func statusMismatchSpec(id, description string, mutator func(ssz []byte, state *
 				}
 				results[c.Name()] = out
 			}
-			return diverge(id, "reqresp", te.Meta, results)
+			return diverge(id, "reqresp", te.Meta, results, details)
 		},
 	}
 }

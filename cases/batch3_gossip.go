@@ -50,12 +50,12 @@ func gossipVerdictCase(id, rule string, runClass runner.RunClass,
 		Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 			topicStr := topic(te)
 			payload := buildPayload(te)
-			results := map[string]string{}
+			results, details := map[string]string{}, map[string]string{}
 			for _, c := range te.Clients {
 				verdict, err := c.ObserveGossip(ctx, topicStr, payload, gossipWait)
-				results[c.Name()] = gossipOutcome(verdict, err)
+				recordGossipOutcome(results, details, c.Name(), verdict, err)
 			}
-			return diverge(id, "gossip", te.Meta, results)
+			return diverge(id, "gossip", te.Meta, results, details)
 		},
 	}
 }
@@ -229,13 +229,13 @@ func gossipSpecs3() []runner.Spec {
 			// Uniform by construction; the observable is the target's
 			// post-flood verdict on one more invalid message.
 			time.Sleep(time.Second)
-			verdicts := map[string]string{}
+			verdicts, verdictDetails := map[string]string{}, map[string]string{}
 			for _, c := range te.Clients {
 				v, err := c.ObserveGossip(ctx, topicStr,
 					wire.GossipSnappyEncode([]byte("post flood probe")), gossipWait)
-				verdicts[c.Name()] = gossipOutcome(v, err)
+				recordGossipOutcome(verdicts, verdictDetails, c.Name(), v, err)
 			}
-			return diverge("gossipsub.invalid_flood", "gossip", te.Meta, verdicts)
+			return diverge("gossipsub.invalid_flood", "gossip", te.Meta, verdicts, verdictDetails)
 		},
 	})
 	return specs

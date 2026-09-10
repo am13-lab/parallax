@@ -1,7 +1,25 @@
 {
   "description": "Protocol Model (SM-IR Layer 0): entity-centric typed inventory of Ethereum CL Req/Resp methods. Drives the validator's payload type-check (gate 3) and the smgen fields-kind payload codegen. Request 'container' is one of: fixed (all-fixed-size SSZ fields, fields-codegen supported), variable (offset-encoded SSZ list/variable container, use a named builder), none (no request body). Bare-scalar requests (Ping/Goodbye) are modelled as single-field fixed containers. Cross-check protocol IDs against internal/constants/spec.go.",
   "source": "consensus-specs/specs/{phase0,altair,...,gloas}/p2p-interface.md + internal/constants/spec.go",
+  "forks": [
+    "altair",
+    "bellatrix",
+    "capella",
+    "deneb",
+    "eip8025",
+    "eip8148",
+    "eip8205",
+    "eip8321",
+    "electra",
+    "fulu",
+    "gloas",
+    "heze",
+    "phase0"
+  ],
   "availability": {
+    "/eth2/446a7232/beacon_aggregate_and_proof/ssz_snappy": {
+      "introduced_fork": "phase0"
+    },
     "/eth2/beacon_chain/req/beacon_blocks_by_head/1/ssz_snappy": {
       "introduced_fork": "fulu"
     },

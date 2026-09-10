@@ -61,6 +61,9 @@ func anchor(path []string) string { return strings.Join(path, " > ") }
 
 // discoverSpecFiles returns every p2p-interface.md under specsRoot, ordered by
 // fork (forkOrder) and then path so nested feature files follow their fork.
+// Feature forks live under specs/_features/<feature>/; forkOf maps them to the
+// feature name so their protocols and rules stay in the catalog under a
+// stable, named fork instead of leaking the literal "_features" segment.
 func discoverSpecFiles(specsRoot string) ([]string, error) {
 	var all []string
 	err := filepath.WalkDir(specsRoot, func(p string, d os.DirEntry, err error) error {
@@ -101,10 +104,15 @@ func discoverSpecFiles(specsRoot string) ([]string, error) {
 
 // forkOf extracts the fork name from a spec path like
 // ".../specs/<fork>/p2p-interface.md" or ".../specs/<fork>/<feature>/p2p-interface.md".
+// Feature forks are stored under specs/_features/<feature>/ and are named by
+// their feature (e.g. "eip8025") so downstream tools see a real fork name.
 func forkOf(path string) string {
 	parts := strings.Split(filepath.ToSlash(path), "/")
 	for i, p := range parts {
 		if p == "specs" && i+1 < len(parts) {
+			if parts[i+1] == "_features" && i+2 < len(parts) {
+				return parts[i+2]
+			}
 			return parts[i+1]
 		}
 	}

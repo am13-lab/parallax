@@ -14,9 +14,15 @@ func hash8(s string) string {
 
 var nonLabelRe = regexp.MustCompile(`[^a-z0-9]+`)
 
+// camelRe inserts a separator before each capital so CamelCase words stay
+// readable after lowercasing (ActInjectGossip -> act_inject_gossip).
+var camelRe = regexp.MustCompile(`([a-z0-9])([A-Z])`)
+
 // sanitizeLabel lowercases and reduces to [a-z0-9_], for readable stable labels.
 func sanitizeLabel(s string) string {
-	s = strings.ToLower(strings.TrimSpace(s))
+	s = strings.TrimSpace(s)
+	s = camelRe.ReplaceAllString(s, "${1}_${2}")
+	s = strings.ToLower(s)
 	s = nonLabelRe.ReplaceAllString(s, "_")
 	return strings.Trim(s, "_")
 }

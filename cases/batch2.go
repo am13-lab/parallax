@@ -69,7 +69,7 @@ func exchangeSpec(id, protocol string, buildBody func(te runner.TestEnv) []byte,
 		Metadata: runner.Metadata{SpecRules: []string{"reqresp:" + familyOf(id)}},
 		Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 			body := buildBody(te)
-			results := map[string]string{}
+			results, details := map[string]string{}, map[string]string{}
 			for _, c := range te.Clients {
 				res, err := c.ReqResp(ctx, protocol, body, reqTimeout)
 				out := outcome(res, err)
@@ -78,7 +78,7 @@ func exchangeSpec(id, protocol string, buildBody func(te runner.TestEnv) []byte,
 				}
 				results[c.Name()] = out
 			}
-			return diverge(id, "reqresp", te.Meta, results)
+			return diverge(id, "reqresp", te.Meta, results, details)
 		},
 	}
 }
@@ -289,10 +289,10 @@ func batch2Specs() []runner.Spec {
 	return specs
 }
 
-// normalizeGoodbye maps reset to accept: clients may disconnect on goodbye
-// without answering, which is compliant.
+// normalizeGoodbye maps any reject variant to accept: clients may disconnect
+// on goodbye without answering, which is compliant.
 func normalizeGoodbye(out string) string {
-	if out == "reject" {
+	if strings.HasPrefix(out, "reject") {
 		return "accept"
 	}
 	return out

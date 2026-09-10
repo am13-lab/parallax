@@ -27,7 +27,7 @@ func stillConnectedAfter(ctx context.Context, c runner.Client) string {
 
 func outcomeConn(err error) string {
 	if err != nil {
-		return "reject"
+		return "reject:" + rejectReason(err.Error())
 	}
 	return "accept"
 }
@@ -75,7 +75,7 @@ func transportAbuseSpecProtocol(id string, runClass runner.RunClass, knowledge [
 			RunClass:     runClass,
 		},
 		Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
-			results := map[string]string{}
+			results, details := map[string]string{}, map[string]string{}
 			for _, c := range te.Clients {
 				err := c.SendOnly(ctx, protocol, buildBody(te))
 				out := outcomeConn(err)
@@ -84,7 +84,7 @@ func transportAbuseSpecProtocol(id string, runClass runner.RunClass, knowledge [
 				}
 				results[c.Name()] = out
 			}
-			return diverge(id, "transport", te.Meta, results)
+			return diverge(id, "transport", te.Meta, results, details)
 		},
 	}
 }
@@ -158,7 +158,7 @@ func transportSpecs3() []runner.Spec {
 				KnowledgeIDs: []string{"CL-2026-02"},
 			},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
-				results := map[string]string{}
+				results, details := map[string]string{}, map[string]string{}
 				for _, c := range te.Clients {
 					if err := c.Connect(ctx, runner.ConnectNoStatus); err != nil {
 						results[c.Name()] = "reject"
@@ -167,7 +167,7 @@ func transportSpecs3() []runner.Spec {
 					time.Sleep(500 * time.Millisecond)
 					results[c.Name()] = verdict(c.Health(ctx) == nil)
 				}
-				return diverge("transporttest.handshake.stalled_no_stream", "transport", te.Meta, results)
+				return diverge("transporttest.handshake.stalled_no_stream", "transport", te.Meta, results, details)
 			},
 		},
 		transportAbuseSpecProtocol("transporttest.identify.push_malformed", runner.RunClassHeavy,
@@ -185,13 +185,13 @@ func transportSpecs3() []runner.Spec {
 				RunClass:  runner.RunClassHeavy,
 			},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
-				results := map[string]string{}
+				results, details := map[string]string{}, map[string]string{}
 				for _, c := range te.Clients {
 					_, err := c.SendSlowly(ctx, "/ipfs/id/1.0.0", []byte{0x0a, 0x04, 0x01, 0x02, 0x03, 0x04},
 						50*time.Millisecond, 10*time.Second)
-					results[c.Name()] = outcomeConn(err)
+					recordConnOutcome(results, details, c.Name(), outcomeConn(err))
 				}
-				return diverge("transporttest.identify.slow_stream", "transport", te.Meta, results)
+				return diverge("transporttest.identify.slow_stream", "transport", te.Meta, results, details)
 			},
 		},
 	}
@@ -211,12 +211,12 @@ func exhaustedSpecs() []runner.Spec {
 			},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				body := wire.BuildSSZSnappy(wire.Uint64ToSSZ(1))
-				results := map[string]string{}
+				results, details := map[string]string{}, map[string]string{}
 				for _, c := range te.Clients {
 					_, err := c.SendSlowly(ctx, pingV1, body, 100*time.Millisecond, 10*time.Second)
-					results[c.Name()] = outcomeConn(err)
+					recordConnOutcome(results, details, c.Name(), outcomeConn(err))
 				}
-				return diverge("reqresp.exhaustion.slow_request", "reqresp", te.Meta, results)
+				return diverge("reqresp.exhaustion.slow_request", "reqresp", te.Meta, results, details)
 			},
 		},
 		{
@@ -230,11 +230,11 @@ func exhaustedSpecs() []runner.Spec {
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				full := wire.BuildSSZSnappy(wire.Uint64ToSSZ(1))
 				half := full[:len(full)/2]
-				results := map[string]string{}
+				results, details := map[string]string{}, map[string]string{}
 				for _, c := range te.Clients {
-					results[c.Name()] = outcomeConn(c.SendOnly(ctx, pingV1, half))
+					recordConnOutcome(results, details, c.Name(), outcomeConn(c.SendOnly(ctx, pingV1, half)))
 				}
-				return diverge("reqresp.exhaustion.half_open_stream", "reqresp", te.Meta, results)
+				return diverge("reqresp.exhaustion.half_open_stream", "reqresp", te.Meta, results, details)
 			},
 		},
 		{
@@ -246,11 +246,11 @@ func exhaustedSpecs() []runner.Spec {
 				RunClass:  runner.RunClassHeavy,
 			},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
-				results := map[string]string{}
+				results, details := map[string]string{}, map[string]string{}
 				for _, c := range te.Clients {
-					results[c.Name()] = outcomeConn(c.SendOnly(ctx, pingV1, wire.BuildSSZSnappy(wire.Uint64ToSSZ(1))))
+					recordConnOutcome(results, details, c.Name(), outcomeConn(c.SendOnly(ctx, pingV1, wire.BuildSSZSnappy(wire.Uint64ToSSZ(1)))))
 				}
-				return diverge("reqresp.exhaustion.never_read_response", "reqresp", te.Meta, results)
+				return diverge("reqresp.exhaustion.never_read_response", "reqresp", te.Meta, results, details)
 			},
 		},
 		{

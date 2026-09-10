@@ -9,7 +9,16 @@ import (
 	"parallax/wire"
 )
 
-const gossipWait = 8 * time.Second
+// gossipWait is the gossip re-propagation confirmation window: how long we
+// wait for the target to forward a message before concluding it did not.
+// 1500ms matches p2p-testing's statemachine executor window. The
+// simulation overrides it (in-memory test nodes relay within
+// milliseconds), see SetGossipWait.
+var gossipWait = 1500 * time.Millisecond
+
+// SetGossipWait overrides the propagation window. For in-memory node
+// environments (simulation, tests) only.
+func SetGossipWait(d time.Duration) { gossipWait = d }
 
 // gossipSpecs returns the gossip seed cases.
 func gossipSpecs() []runner.Spec {
@@ -31,7 +40,7 @@ func gossipSpecs() []runner.Spec {
 				te.RNG.Read(nonce)
 				payload := wire.GossipSnappyEncode(append([]byte("malformed block "), nonce...))
 
-				results := map[string]string{}
+				results, details := map[string]string{}, map[string]string{}
 				for _, c := range te.Clients {
 					verdict, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
 					if err != nil {
@@ -47,7 +56,7 @@ func gossipSpecs() []runner.Spec {
 						results[c.Name()] = "other:unknown verdict"
 					}
 				}
-				return diverge("gossip.block.malformed", "gossip", te.Meta, results)
+				return diverge("gossip.block.malformed", "gossip", te.Meta, results, details)
 			},
 		},
 	}
@@ -121,7 +130,7 @@ func transportSpecs() []runner.Spec {
 				SpecRules: []string{"transport:noise"},
 			},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
-				results := map[string]string{}
+				results, details := map[string]string{}, map[string]string{}
 				for _, c := range te.Clients {
 					if err := c.Connect(ctx, runner.ConnectWithStatus); err != nil {
 						results[c.Name()] = "reject"
@@ -129,7 +138,7 @@ func transportSpecs() []runner.Spec {
 					}
 					results[c.Name()] = "accept"
 				}
-				return diverge("transport.handshake.connect", "transport", te.Meta, results)
+				return diverge("transport.handshake.connect", "transport", te.Meta, results, details)
 			},
 		},
 		{
@@ -140,7 +149,7 @@ func transportSpecs() []runner.Spec {
 				SpecRules: []string{"transport:identity"},
 			},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
-				results := map[string]string{}
+				results, details := map[string]string{}, map[string]string{}
 				for _, c := range te.Clients {
 					if err := c.RotateIdentity(ctx); err != nil {
 						results[c.Name()] = "reject"
@@ -148,7 +157,7 @@ func transportSpecs() []runner.Spec {
 					}
 					results[c.Name()] = "accept"
 				}
-				return diverge("transport.handshake.identity_rotation", "transport", te.Meta, results)
+				return diverge("transport.handshake.identity_rotation", "transport", te.Meta, results, details)
 			},
 		},
 	}

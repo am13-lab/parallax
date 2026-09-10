@@ -20,12 +20,23 @@ func irMachineDefs() []*irMachine {
 					ActionType: "ActOpenStream",
 					Protocol:   "/eth2/beacon_chain/req/ping/1/ssz_snappy",
 					TimeoutMs:  10000,
+					Payload: func(g *irContext) []byte {
+						buf := make([]byte, 8)
+						binary.LittleEndian.PutUint64(buf[0:8], 1)
+						return wire.BuildSSZSnappy(buf)
+					},
 				},
 				{
 					From: "ConcIdle", To: "ConcOneStream", Label: "conc_open_bbr_stream", Weight: 8,
 					ActionType: "ActOpenStream",
 					Protocol:   "/eth2/beacon_chain/req/beacon_blocks_by_range/2/ssz_snappy",
 					TimeoutMs:  10000,
+					Payload: func(g *irContext) []byte {
+						buf := make([]byte, 16)
+						binary.LittleEndian.PutUint64(buf[0:8], 0)
+						binary.LittleEndian.PutUint64(buf[8:16], 1)
+						return wire.BuildSSZSnappy(buf)
+					},
 				},
 				{
 					From: "ConcIdle", To: "ConcOneStream", Label: "conc_open_metadata_stream", Weight: 8,
@@ -38,6 +49,11 @@ func irMachineDefs() []*irMachine {
 					ActionType: "ActOpenStream",
 					Protocol:   "/eth2/beacon_chain/req/ping/1/ssz_snappy",
 					TimeoutMs:  10000,
+					Payload: func(g *irContext) []byte {
+						buf := make([]byte, 8)
+						binary.LittleEndian.PutUint64(buf[0:8], 2)
+						return wire.BuildSSZSnappy(buf)
+					},
 				},
 				{
 					From: "ConcMultiStream", To: "ConcMultiStream", Label: "conc_open_additional_stream", Weight: 8,
@@ -59,20 +75,28 @@ func irMachineDefs() []*irMachine {
 					ActionType: "ActOpenStream",
 					Protocol:   "/eth2/beacon_chain/req/ping/1/ssz_snappy",
 					TimeoutMs:  5000,
+					Payload: func(g *irContext) []byte {
+						buf := make([]byte, 8)
+						binary.LittleEndian.PutUint64(buf[0:8], 99)
+						return wire.BuildSSZSnappy(buf)
+					},
 				},
 				{
 					From: "ConcMultiStream", To: "ConcMultiStream", Label: "conc_read_latest", Weight: 6,
 					ActionType: "ActReadResponse",
+					Protocol:   "/eth2/beacon_chain/req/ping/1/ssz_snappy",
 					TimeoutMs:  10000,
 				},
 				{
 					From: "ConcOneStream", To: "ConcIdle", Label: "conc_read_and_close", Weight: 8,
 					ActionType: "ActReadResponse",
+					Protocol:   "/eth2/beacon_chain/req/ping/1/ssz_snappy",
 					TimeoutMs:  10000,
 				},
 				{
 					From: "ConcAtLimit", To: "ConcMultiStream", Label: "conc_read_at_limit", Weight: 6,
 					ActionType: "ActReadResponse",
+					Protocol:   "/eth2/beacon_chain/req/ping/1/ssz_snappy",
 					TimeoutMs:  10000,
 				},
 				{
@@ -117,6 +141,7 @@ func irMachineDefs() []*irMachine {
 					From: "ConcMultiStream", To: "ConcIdle", Label: "conc_drain_to_idle", Weight: 4,
 					Guard:      func(g *irContext) bool { return len(g.OpenStreams) == 1 },
 					ActionType: "ActReadResponse",
+					Protocol:   "/eth2/beacon_chain/req/ping/1/ssz_snappy",
 					TimeoutMs:  10000,
 				},
 				{
@@ -130,11 +155,17 @@ func irMachineDefs() []*irMachine {
 					ActionType: "ActWritePartial",
 					Protocol:   "/eth2/beacon_chain/req/ping/1/ssz_snappy",
 					TimeoutMs:  3000,
+					Payload: func(g *irContext) []byte {
+						buf := make([]byte, 8)
+						binary.LittleEndian.PutUint64(buf[0:8], 1)
+						return wire.BuildSSZSnappy(buf)
+					},
 				},
 				{
 					From: "ConcOneStream", To: "ConcCompleted", Label: "conc_read_without_write_close", Weight: 3,
 					SpecRefs:      []string{"PROSE-MUST-faaebe5c"},
 					ActionType:    "ActReadResponse",
+					Protocol:      "/eth2/beacon_chain/req/ping/1/ssz_snappy",
 					TimeoutMs:     5000,
 					KeepWriteOpen: true,
 				},
@@ -200,8 +231,8 @@ func irMachineDefs() []*irMachine {
 					ActionType: "ActCheckConnected",
 				},
 				{
-					From: "Connected", To: "StatusExchanged", Label: "sem_conn_status_rule_eth2_beacon_chain_req_status_2_ssz_snappy_61fdb75b", Weight: 2,
-					SpecRefs:   []string{"PROSE-MAY-1972411e"},
+					From: "Connected", To: "StatusExchanged", Label: "sem_conn_status_rule_eth2_beacon_chain_req_status_2_ssz_snappy_ade97f93", Weight: 2,
+					SpecRefs:   []string{"PROSE-MAY-cbd3c330"},
 					ForkGte:    "altair",
 					ActionType: "ActSendStatus",
 					Protocol:   "/eth2/beacon_chain/req/status/2/ssz_snappy",
@@ -463,7 +494,6 @@ func irMachineDefs() []*irMachine {
 				},
 				{
 					From: "CryptoReady", To: "CryptoSent", Label: "cm_invalid_beacon_attestation_index_oob_36a88aef", Weight: 10,
-					SpecRefs:   []string{"BEACON_ATTESTATION-IGNORE-fa60d57c"},
 					ActionType: "ActInjectGossip",
 					Protocol:   "beacon_attestation_0",
 					Payload:    func(g *irContext) []byte { return buildInvalidBeaconAttestationIndexOob(g) },
@@ -521,7 +551,6 @@ func irMachineDefs() []*irMachine {
 				},
 				{
 					From: "CryptoReady", To: "CryptoSent", Label: "cm_invalid_beacon_block_parent_known_valid_e356b48a", Weight: 10,
-					SpecRefs:   []string{"BEACON_BLOCK-IGNORE-04770bd3"},
 					ForkGte:    "bellatrix",
 					ActionType: "ActInjectGossip",
 					Protocol:   "beacon_block",
@@ -543,7 +572,6 @@ func irMachineDefs() []*irMachine {
 				},
 				{
 					From: "CryptoReady", To: "CryptoSent", Label: "cm_invalid_beacon_block_parent_known_valid_2e2047cd", Weight: 10,
-					SpecRefs:   []string{"BEACON_BLOCK-IGNORE-da534e6d"},
 					ForkGte:    "bellatrix",
 					ActionType: "ActInjectGossip",
 					Protocol:   "beacon_block",
@@ -551,7 +579,6 @@ func irMachineDefs() []*irMachine {
 				},
 				{
 					From: "CryptoReady", To: "CryptoSent", Label: "cm_invalid_beacon_block_sig_invalid_a1c60af9", Weight: 10,
-					SpecRefs:   []string{"BEACON_BLOCK-IGNORE-f0952a23"},
 					ActionType: "ActInjectGossip",
 					Protocol:   "beacon_block",
 					Payload:    func(g *irContext) []byte { return buildInvalidBeaconBlockSigInvalid(g) },
@@ -579,7 +606,6 @@ func irMachineDefs() []*irMachine {
 				},
 				{
 					From: "CryptoReady", To: "CryptoSent", Label: "cm_invalid_beacon_block_parent_known_valid_a083817b", Weight: 10,
-					SpecRefs:   []string{"BEACON_BLOCK-REJECT-823c7319"},
 					ForkGte:    "bellatrix",
 					ActionType: "ActInjectGossip",
 					Protocol:   "beacon_block",
@@ -680,7 +706,6 @@ func irMachineDefs() []*irMachine {
 				},
 				{
 					From: "CryptoReady", To: "CryptoSent", Label: "cm_invalid_sync_committee_contribution_and_proof_index_oob_760e573b", Weight: 10,
-					SpecRefs:   []string{"SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-IGNORE-b4eb6360"},
 					ForkGte:    "altair",
 					ActionType: "ActInjectGossip",
 					Protocol:   "sync_committee_contribution_and_proof",
@@ -915,6 +940,15 @@ func irMachineDefs() []*irMachine {
 					From: "Subscribed", To: "ValidSeen", Label: "sem_gossip_rule_eth2_9a9f1916", Weight: 5,
 					SpecRefs:   []string{"ETH2-SHOULD_NOT-5cba6dbb"},
 					ActionType: "ActQueryENR",
+				},
+				{
+					From: "Subscribed", To: "ValidSeen", Label: "sem_gossip_rule_execution_proof_dedup_first_seen_aab96507", Weight: 10,
+					SpecRefs:   []string{"EXECUTION_PROOF-IGNORE-84084443"},
+					ForkGte:    "eip8025",
+					ActionType: "ActInjectGossip",
+					Protocol:   "execution_proof",
+					Mutator:    "gossip_random_bytes",
+					Payload:    func(g *irContext) []byte { return buildRandomGossip100(g) },
 				},
 				{
 					From: "Subscribed", To: "ValidSeen", Label: "sem_gossip_rule_light_client_finality_update_sig_invalid_d0875b45", Weight: 10,
@@ -1280,22 +1314,28 @@ func irMachineDefs() []*irMachine {
 				{
 					From: "StreamOpen", To: "RequestHalfClosed", Label: "sem_rr_write_and_close", Weight: 7,
 					ActionType: "ActWriteAndClose",
+					Protocol:   "/eth2/beacon_chain/req/ping/1/ssz_snappy",
 					TimeoutMs:  5000,
+					Payload:    func(g *irContext) []byte { return buildBeaconBlocksByRangeV2NearHead(g) },
 				},
 				{
 					From: "StreamOpen", To: "RequestWritten", Label: "sem_rr_write_partial", Weight: 3,
 					ActionType: "ActWritePartial",
+					Protocol:   "/eth2/beacon_chain/req/ping/1/ssz_snappy",
 					TimeoutMs:  1000,
+					Payload:    func(g *irContext) []byte { return make([]byte, 1) },
 				},
 				{
 					From: "RequestWritten", To: "StreamReset", Label: "sem_rr_read_half_open", Weight: 3,
 					ActionType:    "ActReadResponse",
+					Protocol:      "/eth2/beacon_chain/req/ping/1/ssz_snappy",
 					TimeoutMs:     1000,
 					KeepWriteOpen: true,
 				},
 				{
 					From: "RequestHalfClosed", To: "FirstChunkSeen", Label: "sem_rr_read_response", Weight: 6,
 					ActionType: "ActReadResponse",
+					Protocol:   "/eth2/beacon_chain/req/ping/1/ssz_snappy",
 					TimeoutMs:  10000,
 				},
 				{

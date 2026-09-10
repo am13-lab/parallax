@@ -160,7 +160,7 @@ func loadIDSet(path, arrayKey string) map[string]bool {
 func validateMachine(m *Machine, refs refIndex) *Result {
 	r := &Result{}
 	gate1Structural(m, r)
-	gate2References(m, r, refs)
+	gate2References(m, r, refs, refs.protocolModel)
 	gate3Payload(m, r, refs.protocolModel)
 	gate4WellFormed(m, r)
 	r.Skipped = append(r.Skipped, "gate5: skipped (differential cross-check requires a generated machine pair)")
@@ -185,13 +185,13 @@ func gate7ForkAvailability(m *Machine, r *Result, pm *ProtocolModel) {
 	}
 	// Validate the availability table's fork names (independent of this machine).
 	for proto, av := range pm.Availability {
-		if !knownFork(av.IntroducedFork) {
+		if !pm.knownModelFork(av.IntroducedFork) {
 			r.add("gate7", "availability["+proto+"].introduced_fork", "unknown fork %q", av.IntroducedFork)
 		}
 		if av.DeprecatedFork != "" {
-			if !knownFork(av.DeprecatedFork) {
+			if !pm.knownModelFork(av.DeprecatedFork) {
 				r.add("gate7", "availability["+proto+"].deprecated_fork", "unknown fork %q", av.DeprecatedFork)
-			} else if knownFork(av.IntroducedFork) && forkRank[av.DeprecatedFork] <= forkRank[av.IntroducedFork] {
+			} else if knownFork(av.IntroducedFork) && knownFork(av.DeprecatedFork) && forkRank[av.DeprecatedFork] <= forkRank[av.IntroducedFork] {
 				r.add("gate7", "availability["+proto+"]", "deprecated_fork %q not after introduced_fork %q", av.DeprecatedFork, av.IntroducedFork)
 			}
 		}
@@ -474,7 +474,7 @@ var ruleStrengths = map[string]bool{"MUST": true, "SHOULD": true, "MAY": true}
 
 // --- Gate 2: reference resolution ---
 
-func gate2References(m *Machine, r *Result, refs refIndex) {
+func gate2References(m *Machine, r *Result, refs refIndex, pm *ProtocolModel) {
 	states := map[string]bool{}
 	for _, s := range m.States {
 		states[s.Name] = true
@@ -492,7 +492,7 @@ func gate2References(m *Machine, r *Result, refs refIndex) {
 		}
 		gate2Action(t.Action, base+".action", r)
 		if t.Guard != nil {
-			gate2Guard(t.Guard, base+".guard", r)
+			gate2Guard(t.Guard, base+".guard", r, pm)
 		}
 		if refs.specRules != nil {
 			for j, ref := range t.SpecRefs {
@@ -538,7 +538,7 @@ func gate2Action(a Action, path string, r *Result) {
 	}
 }
 
-func gate2Guard(g *Guard, path string, r *Result) {
+func gate2Guard(g *Guard, path string, r *Result, pm *ProtocolModel) {
 	if g.Flag != "" && !guardFlagFields[g.Flag] {
 		r.add("gate2", path+".flag", "unknown flag %q", g.Flag)
 	}
@@ -556,29 +556,29 @@ func gate2Guard(g *Guard, path string, r *Result) {
 			r.add("gate2", fmt.Sprintf("%s.last_result_in[%d]", path, i), "unknown result code %q", code)
 		}
 	}
-	if g.ForkGte != "" && !knownFork(g.ForkGte) {
+	if g.ForkGte != "" && !pm.knownModelFork(g.ForkGte) {
 		r.add("gate2", path+".fork_gte", "unknown fork %q", g.ForkGte)
 	}
 	for i, f := range g.ForkIn {
-		if !knownFork(f) {
+		if !pm.knownModelFork(f) {
 			r.add("gate2", fmt.Sprintf("%s.fork_in[%d]", path, i), "unknown fork %q", f)
 		}
 	}
 	for i := range g.And {
-		gate2Guard(&g.And[i], fmt.Sprintf("%s.and[%d]", path, i), r)
+		gate2Guard(&g.And[i], fmt.Sprintf("%s.and[%d]", path, i), r, pm)
 	}
 	for i := range g.Or {
 		// Fork atoms inside or/not cannot be extracted into a ForkConstraint.
 		if g.Or[i].isForkAtom() {
 			r.add("gate2", fmt.Sprintf("%s.or[%d]", path, i), "fork atom not allowed inside 'or'; use it standalone or in a top-level 'and'")
 		}
-		gate2Guard(&g.Or[i], fmt.Sprintf("%s.or[%d]", path, i), r)
+		gate2Guard(&g.Or[i], fmt.Sprintf("%s.or[%d]", path, i), r, pm)
 	}
 	if g.Not != nil {
 		if g.Not.isForkAtom() {
 			r.add("gate2", path+".not", "fork atom not allowed inside 'not'; use it standalone or in a top-level 'and'")
 		}
-		gate2Guard(g.Not, path+".not", r)
+		gate2Guard(g.Not, path+".not", r, pm)
 	}
 }
 

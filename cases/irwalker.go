@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 	"math/rand"
+	"os"
+	"strconv"
 	"strings"
 	"time"
 
@@ -423,11 +425,23 @@ func irPayload(a *irTransition, ictx *irContext) []byte {
 	return payload
 }
 
+// irTimeScale 缩放 walker 内部的等待/超时（默认 1.0）。设置
+// PARALLAX_TIME_SCALE（如 0.2）可整体缩短响应等待，用于快速验证轮；
+// 客户端正常响应时 verdict 不变，仅未响应等待上限缩短。
+var irTimeScale = func() float64 {
+	if v := os.Getenv("PARALLAX_TIME_SCALE"); v != "" {
+		if f, err := strconv.ParseFloat(v, 64); err == nil && f > 0 {
+			return f
+		}
+	}
+	return 1.0
+}()
+
 func irTimeout(ms int) time.Duration {
 	if ms <= 0 {
-		return 15 * time.Second
+		return time.Duration(15*irTimeScale) * time.Second
 	}
-	return time.Duration(ms) * time.Millisecond
+	return time.Duration(float64(ms)*irTimeScale) * time.Millisecond
 }
 
 func shortInput(protocol string, body []byte) string {

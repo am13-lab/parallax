@@ -62,12 +62,12 @@ func protocolSpecs3() []runner.Spec {
 				buf := make([]byte, 16)
 				binary.LittleEndian.PutUint64(buf[0:8], 0)
 				binary.LittleEndian.PutUint64(buf[8:16], count)
-				results := map[string]string{}
+				results, details := map[string]string{}, map[string]string{}
 				for _, c := range te.Clients {
 					res, err := c.ReqResp(ctx, execPayloadByRangeV1, wire.BuildSSZSnappy(buf), reqTimeout)
-					results[c.Name()] = outcome(res, err)
+					recordOutcome(results, details, c.Name(), res, err)
 				}
-				return diverge(fmt.Sprintf("reqresp.execution_payload_by_range.%s", p.label), "reqresp", te.Meta, results)
+				return diverge(fmt.Sprintf("reqresp.execution_payload_by_range.%s", p.label), "reqresp", te.Meta, results, details)
 			},
 		})
 	}
@@ -95,12 +95,12 @@ func protocolSpecs3() []runner.Spec {
 				for i := 0; i < roots; i++ {
 					buf[i*32] = byte(i)
 				}
-				results := map[string]string{}
+				results, details := map[string]string{}, map[string]string{}
 				for _, c := range te.Clients {
 					res, err := c.ReqResp(ctx, execPayloadByRootV1, wire.BuildSSZSnappy(buf), reqTimeout)
-					results[c.Name()] = outcome(res, err)
+					recordOutcome(results, details, c.Name(), res, err)
 				}
-				return diverge(fmt.Sprintf("reqresp.execution_payload_by_root.%s", p.label), "reqresp", te.Meta, results)
+				return diverge(fmt.Sprintf("reqresp.execution_payload_by_root.%s", p.label), "reqresp", te.Meta, results, details)
 			},
 		})
 	}
@@ -114,12 +114,12 @@ func protocolSpecs3() []runner.Spec {
 			Metadata: runner.Metadata{SpecRules: []string{"fulu:data-columns-by-range"}},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				body := dataColumnsByRangeRequest(0, 1, []uint64{999999})
-				results := map[string]string{}
+				results, details := map[string]string{}, map[string]string{}
 				for _, c := range te.Clients {
 					res, err := c.ReqResp(ctx, dataColsByRangeV1, body, reqTimeout)
-					results[c.Name()] = outcome(res, err)
+					recordOutcome(results, details, c.Name(), res, err)
 				}
-				return diverge("reqresp.data_columns_by_range.columns_oob", "reqresp", te.Meta, results)
+				return diverge("reqresp.data_columns_by_range.columns_oob", "reqresp", te.Meta, results, details)
 			},
 		},
 		runner.Spec{
@@ -129,12 +129,12 @@ func protocolSpecs3() []runner.Spec {
 			Metadata: runner.Metadata{SpecRules: []string{"fulu:data-columns-by-range"}},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				body := dataColumnsByRangeRequest(0, 1, nil)
-				results := map[string]string{}
+				results, details := map[string]string{}, map[string]string{}
 				for _, c := range te.Clients {
 					res, err := c.ReqResp(ctx, dataColsByRangeV1, body, reqTimeout)
-					results[c.Name()] = outcome(res, err)
+					recordOutcome(results, details, c.Name(), res, err)
 				}
-				return diverge("reqresp.data_columns_by_range.zero_columns", "reqresp", te.Meta, results)
+				return diverge("reqresp.data_columns_by_range.zero_columns", "reqresp", te.Meta, results, details)
 			},
 		},
 	)
@@ -150,7 +150,7 @@ func protocolSpecs3() []runner.Spec {
 		},
 		Preflight: requireCustodyRequirement,
 		Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
-			results := map[string]string{}
+			results, details := map[string]string{}, map[string]string{}
 			for _, c := range te.Clients {
 				rec, out := enrOf(ctx, c)
 				if out != "" {
@@ -165,7 +165,7 @@ func protocolSpecs3() []runner.Spec {
 				}
 				results[c.Name()] = verdict(val == te.Chain.CustodyRequirement)
 			}
-			return diverge("discovery.custody.advertised_matches_requirement", "discovery", te.Meta, results)
+			return diverge("discovery.custody.advertised_matches_requirement", "discovery", te.Meta, results, details)
 		},
 	})
 
@@ -190,7 +190,7 @@ func protocolSpecs3() []runner.Spec {
 			},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				body := wire.BuildSSZSnappy(nil)
-				results := map[string]string{}
+				results, details := map[string]string{}, map[string]string{}
 				for _, c := range te.Clients {
 					sawLimited := false
 					for i := 0; i < target.burst; i++ {
@@ -205,7 +205,7 @@ func protocolSpecs3() []runner.Spec {
 					}
 					results[c.Name()] = verdict(sawLimited)
 				}
-				return diverge(target.id, "reqresp", te.Meta, results)
+				return diverge(target.id, "reqresp", te.Meta, results, details)
 			},
 		})
 	}

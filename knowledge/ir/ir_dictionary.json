@@ -644,7 +644,7 @@
     }
   },
   {
-    "note": "Fulu partial-columns: PDCS: header inclusion proof axis (placeholder proof) \u2014 differential probe",
+    "note": "Fulu partial-columns: PDCS: header inclusion proof axis (placeholder proof) — differential probe",
     "match": {
       "rule_id": "PARTIAL_DATA_COLUMN_SIDECAR-REJECT-0a994b43"
     },
@@ -659,7 +659,7 @@
     }
   },
   {
-    "note": "Fulu partial-columns: PDCS: partial column kzg proofs axis \u2014 differential probe",
+    "note": "Fulu partial-columns: PDCS: partial column kzg proofs axis — differential probe",
     "match": {
       "rule_id": "PARTIAL_DATA_COLUMN_SIDECAR-REJECT-d3e82f5b"
     },
@@ -674,7 +674,7 @@
     }
   },
   {
-    "note": "Fulu partial-columns: PDCS: header signature axis \u2014 differential probe",
+    "note": "Fulu partial-columns: PDCS: header signature axis — differential probe",
     "match": {
       "rule_id": "PARTIAL_DATA_COLUMN_SIDECAR-REJECT-84dab49d"
     },
@@ -689,7 +689,7 @@
     }
   },
   {
-    "note": "Fulu partial-columns: PDCS: block_root vs hash_tree_root(block_header) \u2014 differential probe",
+    "note": "Fulu partial-columns: PDCS: block_root vs hash_tree_root(block_header) — differential probe",
     "match": {
       "rule_id": "PARTIAL_DATA_COLUMN_SIDECAR-REJECT-97a846a9"
     },
@@ -704,7 +704,7 @@
     }
   },
   {
-    "note": "Fulu partial-columns: PDCS: cells present, future slot \u2014 differential probe",
+    "note": "Fulu partial-columns: PDCS: cells present, future slot — differential probe",
     "match": {
       "rule_id": "PARTIAL_DATA_COLUMN_SIDECAR-IGNORE-64fbc194"
     },
@@ -719,7 +719,7 @@
     }
   },
   {
-    "note": "Fulu partial-columns: PDCS: header present, future slot \u2014 differential probe",
+    "note": "Fulu partial-columns: PDCS: header present, future slot — differential probe",
     "match": {
       "rule_id": "PARTIAL_DATA_COLUMN_SIDECAR-IGNORE-93b9b10e"
     },
@@ -734,7 +734,7 @@
     }
   },
   {
-    "note": "Fulu partial-columns: PDCS: slot <= finalized_slot \u2014 receiver-state differential probe",
+    "note": "Fulu partial-columns: PDCS: slot <= finalized_slot — receiver-state differential probe",
     "match": {
       "rule_id": "PARTIAL_DATA_COLUMN_SIDECAR-IGNORE-73fe21ca"
     },
@@ -749,7 +749,7 @@
     }
   },
   {
-    "note": "Fulu partial-columns: PDCS: cells present, slot <= finalized_slot \u2014 differential probe",
+    "note": "Fulu partial-columns: PDCS: cells present, slot <= finalized_slot — differential probe",
     "match": {
       "rule_id": "PARTIAL_DATA_COLUMN_SIDECAR-IGNORE-e843ba36"
     },
@@ -764,7 +764,7 @@
     }
   },
   {
-    "note": "Fulu partial-columns: PDCS: parent_root not in store.block_states \u2014 differential probe",
+    "note": "Fulu partial-columns: PDCS: parent_root not in store.block_states — differential probe",
     "match": {
       "rule_id": "PARTIAL_DATA_COLUMN_SIDECAR-REJECT-1191de75"
     },
@@ -779,7 +779,7 @@
     }
   },
   {
-    "note": "Fulu partial-columns: PDCS: slot <= parent slot \u2014 differential probe",
+    "note": "Fulu partial-columns: PDCS: slot <= parent slot — differential probe",
     "match": {
       "rule_id": "PARTIAL_DATA_COLUMN_SIDECAR-REJECT-819b18b6"
     },
@@ -794,7 +794,7 @@
     }
   },
   {
-    "note": "Fulu partial-columns: PDCS: proposer_index >= len(state.validators) \u2014 differential probe",
+    "note": "Fulu partial-columns: PDCS: proposer_index >= len(state.validators) — differential probe",
     "match": {
       "rule_id": "PARTIAL_DATA_COLUMN_SIDECAR-REJECT-4df28963"
     },
@@ -809,7 +809,7 @@
     }
   },
   {
-    "note": "Fulu partial-columns: PDCS: proposer_index != expected_proposer \u2014 differential probe",
+    "note": "Fulu partial-columns: PDCS: proposer_index != expected_proposer — differential probe",
     "match": {
       "rule_id": "PARTIAL_DATA_COLUMN_SIDECAR-REJECT-a18636bd"
     },
@@ -824,7 +824,7 @@
     }
   },
   {
-    "note": "Fulu partial-columns: PDCS: checkpoint_block != finalized_checkpoint.root \u2014 differential probe",
+    "note": "Fulu partial-columns: PDCS: checkpoint_block != finalized_checkpoint.root — differential probe",
     "match": {
       "rule_id": "PARTIAL_DATA_COLUMN_SIDECAR-REJECT-ba7e950d"
     },
@@ -836,6 +836,635 @@
     },
     "classification": {
       "execution_kind": "stateless"
+    }
+  },
+  {
+    "note": "reqresp differential probe: blocks_by_range response consistency/content rule",
+    "match": {
+      "rule_id": "PROSE-MUST-06696858"
+    },
+    "classification": {
+      "execution_kind": "stateless"
+    },
+    "emit": {
+      "action": "ActSendReqResp",
+      "protocol": "/eth2/beacon_chain/req/beacon_blocks_by_range/1/ssz_snappy",
+      "builder": "buildBlocksByRangeV1Probe",
+      "wrap": "ssz_snappy",
+      "expected": "",
+      "timeout_ms": 5000
+    }
+  },
+  {
+    "note": "reqresp differential probe: blocks_by_range response consistency/content rule",
+    "match": {
+      "rule_id": "PROSE-MUST-585a5daf"
+    },
+    "classification": {
+      "execution_kind": "stateless"
+    },
+    "emit": {
+      "action": "ActSendReqResp",
+      "protocol": "/eth2/beacon_chain/req/beacon_blocks_by_range/1/ssz_snappy",
+      "builder": "buildBlocksByRangeV1Probe",
+      "wrap": "ssz_snappy",
+      "expected": "",
+      "timeout_ms": 5000
+    }
+  },
+  {
+    "note": "reqresp differential probe: blocks_by_range response consistency/content rule",
+    "match": {
+      "rule_id": "PROSE-MUST-5aed4805"
+    },
+    "classification": {
+      "execution_kind": "stateless"
+    },
+    "emit": {
+      "action": "ActSendReqResp",
+      "protocol": "/eth2/beacon_chain/req/beacon_blocks_by_range/1/ssz_snappy",
+      "builder": "buildBlocksByRangeV1Probe",
+      "wrap": "ssz_snappy",
+      "expected": "",
+      "timeout_ms": 5000
+    }
+  },
+  {
+    "note": "reqresp differential probe: blocks_by_range response consistency/content rule",
+    "match": {
+      "rule_id": "PROSE-MUST-7359b5d6"
+    },
+    "classification": {
+      "execution_kind": "stateless"
+    },
+    "emit": {
+      "action": "ActSendReqResp",
+      "protocol": "/eth2/beacon_chain/req/beacon_blocks_by_range/1/ssz_snappy",
+      "builder": "buildBlocksByRangeV1Probe",
+      "wrap": "ssz_snappy",
+      "expected": "",
+      "timeout_ms": 5000
+    }
+  },
+  {
+    "note": "reqresp differential probe: blocks_by_range response consistency/content rule",
+    "match": {
+      "rule_id": "PROSE-MUST-ab4ff3da"
+    },
+    "classification": {
+      "execution_kind": "stateless"
+    },
+    "emit": {
+      "action": "ActSendReqResp",
+      "protocol": "/eth2/beacon_chain/req/beacon_blocks_by_range/1/ssz_snappy",
+      "builder": "buildBlocksByRangeV1Probe",
+      "wrap": "ssz_snappy",
+      "expected": "",
+      "timeout_ms": 5000
+    }
+  },
+  {
+    "note": "reqresp differential probe: blob sidecar response rule (range container shared across range protocols)",
+    "match": {
+      "rule_id": "PROSE-MUST-363af130"
+    },
+    "classification": {
+      "execution_kind": "stateless"
+    },
+    "emit": {
+      "action": "ActSendReqResp",
+      "protocol": "/eth2/beacon_chain/req/blob_sidecars_by_range/1/ssz_snappy",
+      "builder": "buildBlocksByRangeV1Probe",
+      "wrap": "ssz_snappy",
+      "expected": "",
+      "timeout_ms": 5000
+    }
+  },
+  {
+    "note": "reqresp differential probe: blob sidecar response rule (range container shared across range protocols)",
+    "match": {
+      "rule_id": "PROSE-MUST-4bfaa766"
+    },
+    "classification": {
+      "execution_kind": "stateless"
+    },
+    "emit": {
+      "action": "ActSendReqResp",
+      "protocol": "/eth2/beacon_chain/req/blob_sidecars_by_range/1/ssz_snappy",
+      "builder": "buildBlocksByRangeV1Probe",
+      "wrap": "ssz_snappy",
+      "expected": "",
+      "timeout_ms": 5000
+    }
+  },
+  {
+    "note": "reqresp differential probe: blob sidecar response rule (range container shared across range protocols)",
+    "match": {
+      "rule_id": "PROSE-MUST-621e66c7"
+    },
+    "classification": {
+      "execution_kind": "stateless"
+    },
+    "emit": {
+      "action": "ActSendReqResp",
+      "protocol": "/eth2/beacon_chain/req/blob_sidecars_by_range/1/ssz_snappy",
+      "builder": "buildBlocksByRangeV1Probe",
+      "wrap": "ssz_snappy",
+      "expected": "",
+      "timeout_ms": 5000
+    }
+  },
+  {
+    "note": "reqresp differential probe: blob sidecar response rule (range container shared across range protocols)",
+    "match": {
+      "rule_id": "PROSE-MUST-78397db4"
+    },
+    "classification": {
+      "execution_kind": "stateless"
+    },
+    "emit": {
+      "action": "ActSendReqResp",
+      "protocol": "/eth2/beacon_chain/req/blob_sidecars_by_range/1/ssz_snappy",
+      "builder": "buildBlocksByRangeV1Probe",
+      "wrap": "ssz_snappy",
+      "expected": "",
+      "timeout_ms": 5000
+    }
+  },
+  {
+    "note": "reqresp differential probe: blob sidecar response rule (range container shared across range protocols)",
+    "match": {
+      "rule_id": "PROSE-MUST-7a65230f"
+    },
+    "classification": {
+      "execution_kind": "stateless"
+    },
+    "emit": {
+      "action": "ActSendReqResp",
+      "protocol": "/eth2/beacon_chain/req/blob_sidecars_by_range/1/ssz_snappy",
+      "builder": "buildBlocksByRangeV1Probe",
+      "wrap": "ssz_snappy",
+      "expected": "",
+      "timeout_ms": 5000
+    }
+  },
+  {
+    "note": "reqresp differential probe: blob sidecar response rule (range container shared across range protocols)",
+    "match": {
+      "rule_id": "PROSE-MUST-9cd4be04"
+    },
+    "classification": {
+      "execution_kind": "stateless"
+    },
+    "emit": {
+      "action": "ActSendReqResp",
+      "protocol": "/eth2/beacon_chain/req/blob_sidecars_by_range/1/ssz_snappy",
+      "builder": "buildBlocksByRangeV1Probe",
+      "wrap": "ssz_snappy",
+      "expected": "",
+      "timeout_ms": 5000
+    }
+  },
+  {
+    "note": "reqresp differential probe: blob sidecar response rule (range container shared across range protocols)",
+    "match": {
+      "rule_id": "PROSE-MUST-eab58464"
+    },
+    "classification": {
+      "execution_kind": "stateless"
+    },
+    "emit": {
+      "action": "ActSendReqResp",
+      "protocol": "/eth2/beacon_chain/req/blob_sidecars_by_range/1/ssz_snappy",
+      "builder": "buildBlocksByRangeV1Probe",
+      "wrap": "ssz_snappy",
+      "expected": "",
+      "timeout_ms": 5000
+    }
+  },
+  {
+    "note": "reqresp differential probe: blob sidecar response rule (range container shared across range protocols)",
+    "match": {
+      "rule_id": "PROSE-MUST-ef01bacf"
+    },
+    "classification": {
+      "execution_kind": "stateless"
+    },
+    "emit": {
+      "action": "ActSendReqResp",
+      "protocol": "/eth2/beacon_chain/req/blob_sidecars_by_range/1/ssz_snappy",
+      "builder": "buildBlocksByRangeV1Probe",
+      "wrap": "ssz_snappy",
+      "expected": "",
+      "timeout_ms": 5000
+    }
+  },
+  {
+    "note": "reqresp differential probe: blob sidecar response rule (range container shared across range protocols)",
+    "match": {
+      "rule_id": "PROSE-MUST-fa8679e2"
+    },
+    "classification": {
+      "execution_kind": "stateless"
+    },
+    "emit": {
+      "action": "ActSendReqResp",
+      "protocol": "/eth2/beacon_chain/req/blob_sidecars_by_range/1/ssz_snappy",
+      "builder": "buildBlocksByRangeV1Probe",
+      "wrap": "ssz_snappy",
+      "expected": "",
+      "timeout_ms": 5000
+    }
+  },
+  {
+    "note": "reqresp differential probe: data column sidecar response rule",
+    "match": {
+      "rule_id": "PROSE-MUST-496fac48"
+    },
+    "classification": {
+      "execution_kind": "stateless"
+    },
+    "emit": {
+      "action": "ActSendReqResp",
+      "protocol": "/eth2/beacon_chain/req/data_column_sidecars_by_range/1/ssz_snappy",
+      "builder": "buildDataColumns010",
+      "wrap": "ssz_snappy",
+      "expected": "",
+      "timeout_ms": 5000
+    }
+  },
+  {
+    "note": "reqresp differential probe: data column sidecar response rule",
+    "match": {
+      "rule_id": "PROSE-MUST-53017fdb"
+    },
+    "classification": {
+      "execution_kind": "stateless"
+    },
+    "emit": {
+      "action": "ActSendReqResp",
+      "protocol": "/eth2/beacon_chain/req/data_column_sidecars_by_range/1/ssz_snappy",
+      "builder": "buildDataColumns010",
+      "wrap": "ssz_snappy",
+      "expected": "",
+      "timeout_ms": 5000
+    }
+  },
+  {
+    "note": "reqresp differential probe: data column sidecar response rule",
+    "match": {
+      "rule_id": "PROSE-MUST-6ac612dd"
+    },
+    "classification": {
+      "execution_kind": "stateless"
+    },
+    "emit": {
+      "action": "ActSendReqResp",
+      "protocol": "/eth2/beacon_chain/req/data_column_sidecars_by_range/1/ssz_snappy",
+      "builder": "buildDataColumns010",
+      "wrap": "ssz_snappy",
+      "expected": "",
+      "timeout_ms": 5000
+    }
+  },
+  {
+    "note": "reqresp differential probe: data column sidecar response rule",
+    "match": {
+      "rule_id": "PROSE-MUST-8329fc6d"
+    },
+    "classification": {
+      "execution_kind": "stateless"
+    },
+    "emit": {
+      "action": "ActSendReqResp",
+      "protocol": "/eth2/beacon_chain/req/data_column_sidecars_by_range/1/ssz_snappy",
+      "builder": "buildDataColumns010",
+      "wrap": "ssz_snappy",
+      "expected": "",
+      "timeout_ms": 5000
+    }
+  },
+  {
+    "note": "reqresp differential probe: data column sidecar response rule",
+    "match": {
+      "rule_id": "PROSE-MUST-dc077cf0"
+    },
+    "classification": {
+      "execution_kind": "stateless"
+    },
+    "emit": {
+      "action": "ActSendReqResp",
+      "protocol": "/eth2/beacon_chain/req/data_column_sidecars_by_range/1/ssz_snappy",
+      "builder": "buildDataColumns010",
+      "wrap": "ssz_snappy",
+      "expected": "",
+      "timeout_ms": 5000
+    }
+  },
+  {
+    "note": "reqresp differential probe: blocks_by_root response rule",
+    "match": {
+      "rule_id": "PROSE-MUST-8a9d0925"
+    },
+    "classification": {
+      "execution_kind": "stateless"
+    },
+    "emit": {
+      "action": "ActSendReqResp",
+      "protocol": "/eth2/beacon_chain/req/beacon_blocks_by_root/2/ssz_snappy",
+      "builder": "buildRootListHeadRoot",
+      "wrap": "ssz_snappy",
+      "expected": "",
+      "timeout_ms": 5000
+    }
+  },
+  {
+    "note": "reqresp differential probe: framing/encoding behavior rule (representative protocol)",
+    "match": {
+      "rule_id": "PROSE-MUST-0b68b894"
+    },
+    "classification": {
+      "execution_kind": "stateless"
+    },
+    "emit": {
+      "action": "ActSendReqResp",
+      "protocol": "/eth2/beacon_chain/req/beacon_blocks_by_range/2/ssz_snappy",
+      "builder": "buildBlocksByRangeHalfOpen",
+      "wrap": "ssz_snappy",
+      "expected": "",
+      "timeout_ms": 5000
+    }
+  },
+  {
+    "note": "reqresp differential probe: framing/encoding behavior rule (representative protocol)",
+    "match": {
+      "rule_id": "PROSE-MUST-27157b02"
+    },
+    "classification": {
+      "execution_kind": "stateless"
+    },
+    "emit": {
+      "action": "ActSendReqResp",
+      "protocol": "/eth2/beacon_chain/req/beacon_blocks_by_range/2/ssz_snappy",
+      "builder": "buildBlocksByRangeHalfOpen",
+      "wrap": "ssz_snappy",
+      "expected": "",
+      "timeout_ms": 5000
+    }
+  },
+  {
+    "note": "reqresp differential probe: framing/encoding behavior rule (representative protocol)",
+    "match": {
+      "rule_id": "PROSE-MUST-2b3162f6"
+    },
+    "classification": {
+      "execution_kind": "stateless"
+    },
+    "emit": {
+      "action": "ActSendReqResp",
+      "protocol": "/eth2/beacon_chain/req/beacon_blocks_by_range/2/ssz_snappy",
+      "builder": "buildBlocksByRangeHalfOpen",
+      "wrap": "ssz_snappy",
+      "expected": "",
+      "timeout_ms": 5000
+    }
+  },
+  {
+    "note": "reqresp differential probe: framing/encoding behavior rule (representative protocol)",
+    "match": {
+      "rule_id": "PROSE-MUST-49d953b3"
+    },
+    "classification": {
+      "execution_kind": "stateless"
+    },
+    "emit": {
+      "action": "ActSendReqResp",
+      "protocol": "/eth2/beacon_chain/req/beacon_blocks_by_range/2/ssz_snappy",
+      "builder": "buildBlocksByRangeHalfOpen",
+      "wrap": "ssz_snappy",
+      "expected": "",
+      "timeout_ms": 5000
+    }
+  },
+  {
+    "note": "reqresp differential probe: framing/encoding behavior rule (representative protocol)",
+    "match": {
+      "rule_id": "PROSE-MUST-530de565"
+    },
+    "classification": {
+      "execution_kind": "stateless"
+    },
+    "emit": {
+      "action": "ActSendReqResp",
+      "protocol": "/eth2/beacon_chain/req/beacon_blocks_by_range/2/ssz_snappy",
+      "builder": "buildBlocksByRangeHalfOpen",
+      "wrap": "ssz_snappy",
+      "expected": "",
+      "timeout_ms": 5000
+    }
+  },
+  {
+    "note": "reqresp differential probe: framing/encoding behavior rule (representative protocol)",
+    "match": {
+      "rule_id": "PROSE-MUST-5e68552b"
+    },
+    "classification": {
+      "execution_kind": "stateless"
+    },
+    "emit": {
+      "action": "ActSendReqResp",
+      "protocol": "/eth2/beacon_chain/req/beacon_blocks_by_range/2/ssz_snappy",
+      "builder": "buildBlocksByRangeHalfOpen",
+      "wrap": "ssz_snappy",
+      "expected": "",
+      "timeout_ms": 5000
+    }
+  },
+  {
+    "note": "reqresp differential probe: framing/encoding behavior rule (representative protocol)",
+    "match": {
+      "rule_id": "PROSE-MUST-8b1fde57"
+    },
+    "classification": {
+      "execution_kind": "stateless"
+    },
+    "emit": {
+      "action": "ActSendReqResp",
+      "protocol": "/eth2/beacon_chain/req/beacon_blocks_by_range/2/ssz_snappy",
+      "builder": "buildBlocksByRangeHalfOpen",
+      "wrap": "ssz_snappy",
+      "expected": "",
+      "timeout_ms": 5000
+    }
+  },
+  {
+    "note": "reqresp differential probe: framing/encoding behavior rule (representative protocol)",
+    "match": {
+      "rule_id": "PROSE-MUST-8e3ad988"
+    },
+    "classification": {
+      "execution_kind": "stateless"
+    },
+    "emit": {
+      "action": "ActSendReqResp",
+      "protocol": "/eth2/beacon_chain/req/beacon_blocks_by_range/2/ssz_snappy",
+      "builder": "buildBlocksByRangeHalfOpen",
+      "wrap": "ssz_snappy",
+      "expected": "",
+      "timeout_ms": 5000
+    }
+  },
+  {
+    "note": "reqresp differential probe: framing/encoding behavior rule (representative protocol)",
+    "match": {
+      "rule_id": "PROSE-MUST-c33e5e4e"
+    },
+    "classification": {
+      "execution_kind": "stateless"
+    },
+    "emit": {
+      "action": "ActSendReqResp",
+      "protocol": "/eth2/beacon_chain/req/beacon_blocks_by_range/2/ssz_snappy",
+      "builder": "buildBlocksByRangeHalfOpen",
+      "wrap": "ssz_snappy",
+      "expected": "",
+      "timeout_ms": 5000
+    }
+  },
+  {
+    "note": "reqresp differential probe: framing/encoding behavior rule (representative protocol)",
+    "match": {
+      "rule_id": "PROSE-MUST-c8f1e7f8"
+    },
+    "classification": {
+      "execution_kind": "stateless"
+    },
+    "emit": {
+      "action": "ActSendReqResp",
+      "protocol": "/eth2/beacon_chain/req/beacon_blocks_by_range/2/ssz_snappy",
+      "builder": "buildBlocksByRangeHalfOpen",
+      "wrap": "ssz_snappy",
+      "expected": "",
+      "timeout_ms": 5000
+    }
+  },
+  {
+    "note": "reqresp differential probe: framing/encoding behavior rule (representative protocol)",
+    "match": {
+      "rule_id": "PROSE-MUST-caedc19d"
+    },
+    "classification": {
+      "execution_kind": "stateless"
+    },
+    "emit": {
+      "action": "ActSendReqResp",
+      "protocol": "/eth2/beacon_chain/req/beacon_blocks_by_range/2/ssz_snappy",
+      "builder": "buildBlocksByRangeHalfOpen",
+      "wrap": "ssz_snappy",
+      "expected": "",
+      "timeout_ms": 5000
+    }
+  },
+  {
+    "note": "reqresp differential probe: framing/encoding behavior rule (representative protocol)",
+    "match": {
+      "rule_id": "PROSE-MUST-da21bde4"
+    },
+    "classification": {
+      "execution_kind": "stateless"
+    },
+    "emit": {
+      "action": "ActSendReqResp",
+      "protocol": "/eth2/beacon_chain/req/beacon_blocks_by_range/2/ssz_snappy",
+      "builder": "buildBlocksByRangeHalfOpen",
+      "wrap": "ssz_snappy",
+      "expected": "",
+      "timeout_ms": 5000
+    }
+  },
+  {
+    "note": "reqresp differential probe: framing/encoding behavior rule (representative protocol)",
+    "match": {
+      "rule_id": "PROSE-MUST-bc7717a4"
+    },
+    "classification": {
+      "execution_kind": "stateless"
+    },
+    "emit": {
+      "action": "ActSendReqResp",
+      "protocol": "/eth2/beacon_chain/req/beacon_blocks_by_range/2/ssz_snappy",
+      "builder": "buildBlocksByRangeHalfOpen",
+      "wrap": "ssz_snappy",
+      "expected": "",
+      "timeout_ms": 5000
+    }
+  },
+  {
+    "note": "reqresp differential probe: framing/encoding behavior rule (representative protocol)",
+    "match": {
+      "rule_id": "PROSE-MUST-e4fbee1a"
+    },
+    "classification": {
+      "execution_kind": "stateless"
+    },
+    "emit": {
+      "action": "ActSendReqResp",
+      "protocol": "/eth2/beacon_chain/req/beacon_blocks_by_range/2/ssz_snappy",
+      "builder": "buildBlocksByRangeHalfOpen",
+      "wrap": "ssz_snappy",
+      "expected": "",
+      "timeout_ms": 5000
+    }
+  },
+  {
+    "note": "reqresp differential probe: framing/encoding behavior rule (representative protocol)",
+    "match": {
+      "rule_id": "PROSE-MUST-85dfc232"
+    },
+    "classification": {
+      "execution_kind": "stateless"
+    },
+    "emit": {
+      "action": "ActSendReqResp",
+      "protocol": "/eth2/beacon_chain/req/beacon_blocks_by_range/2/ssz_snappy",
+      "builder": "buildBlocksByRangeHalfOpen",
+      "wrap": "ssz_snappy",
+      "expected": "",
+      "timeout_ms": 5000
+    }
+  },
+  {
+    "note": "reqresp differential probe: framing/encoding behavior rule (representative protocol)",
+    "match": {
+      "rule_id": "PROSE-MUST-d6e27745"
+    },
+    "classification": {
+      "execution_kind": "stateless"
+    },
+    "emit": {
+      "action": "ActSendReqResp",
+      "protocol": "/eth2/beacon_chain/req/beacon_blocks_by_range/2/ssz_snappy",
+      "builder": "buildBlocksByRangeHalfOpen",
+      "wrap": "ssz_snappy",
+      "expected": "",
+      "timeout_ms": 5000
+    }
+  },
+  {
+    "note": "reqresp differential probe: MUST_NOT rule",
+    "match": {
+      "rule_id": "PROSE-MUST_NOT-89347b2a"
+    },
+    "classification": {
+      "execution_kind": "stateless"
+    },
+    "emit": {
+      "action": "ActSendReqResp",
+      "protocol": "/eth2/beacon_chain/req/ping/1/ssz_snappy",
+      "builder": "buildPingStreamCountSSZ",
+      "wrap": "ssz_snappy",
+      "expected": "",
+      "timeout_ms": 5000
     }
   }
 ]

@@ -38,7 +38,7 @@ type cryptoSequenceSpec struct {
 }
 
 var cryptoSequenceRuleSpecs = map[string]cryptoSequenceSpec{
-	"BEACON_AGGREGATE_AND_PROOF-IGNORE-7c1a7594": {
+	"BEACON_AGGREGATE_AND_PROOF-IGNORE-5a5dee05": {
 		template: "duplicate_first_seen", builder: "buildLiveValidBeaconAggregateAndProof", protocol: "beacon_aggregate_and_proof",
 	},
 	"BLOB_SIDECAR-IGNORE-ed3428e1": {

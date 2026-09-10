@@ -1,7 +1,7 @@
 {
   "version": 1,
   "source": "cmd/irderive",
-  "total_rules": 196,
+  "total_rules": 218,
   "cases": [
     {
       "id": "cryptomsg.generated.attester_slashing.actinjectgossip_buildinvalidattesterslashingfieldequality.32436903",
@@ -499,7 +499,7 @@
         "label": "stateless_beacon_aggregate_and_proof_actinjectgossip_buildinvalidbeaconaggregateandproofslotepochrange_2b19e14f",
         "weight": 10,
         "description": "generated stateless probe for BEACON_AGGREGATE_AND_PROOF-IGNORE-ebee640a, BEACON_AGGREGATE_AND_PROOF-REJECT-02e06dcb",
-        "condition_desc": "when not is_within_slot_range( state, aggregate.data.slot, ATTESTATION_PROPAGATION_SLOT_RANGE, current_time_ms )",
+        "condition_desc": "when not is_within_slot_range( store, aggregate.data.slot, ATTESTATION_PROPAGATION_SLOT_RANGE, current_time_ms )",
         "tags": [
           "conditional"
         ],
@@ -543,7 +543,7 @@
         "label": "stateless_beacon_aggregate_and_proof_actinjectgossip_buildinvalidbeaconaggregateandproofslotepochrange_d9fb3f82",
         "weight": 10,
         "description": "generated stateless probe for BEACON_AGGREGATE_AND_PROOF-IGNORE-85b80178",
-        "condition_desc": "when not (is_previous_epoch_attestation or is_current_epoch_attestation)",
+        "condition_desc": "when not is_current_or_previous_epoch(store, attestation_epoch, current_time_ms)",
         "tags": [
           "conditional"
         ],
@@ -589,7 +589,7 @@
         "label": "stateless_beacon_aggregate_and_proof_actinjectgossip_buildinvalidbeaconaggregateandproofslotfuture_dd871bbd",
         "weight": 10,
         "description": "generated stateless probe for BEACON_AGGREGATE_AND_PROOF-IGNORE-67149835",
-        "condition_desc": "when not is_not_from_future_slot(state, aggregate.data.slot, current_time_ms)",
+        "condition_desc": "when is_future_slot(store, aggregate.data.slot, current_time_ms)",
         "tags": [
           "conditional"
         ],
@@ -631,7 +631,6 @@
         "BEACON_AGGREGATE_AND_PROOF-IGNORE-dc38af01",
         "BEACON_AGGREGATE_AND_PROOF-REJECT-544ecc21",
         "BEACON_AGGREGATE_AND_PROOF-REJECT-5658ca54",
-        "BEACON_AGGREGATE_AND_PROOF-REJECT-9d4a9467",
         "BEACON_AGGREGATE_AND_PROOF-REJECT-fc3dd3a9"
       ],
       "transition": {
@@ -639,8 +638,8 @@
         "to": "CryptoSent",
         "label": "stateless_beacon_aggregate_and_proof_actinjectgossip_buildvalidbeaconaggregateandproof_5d4f0a8f",
         "weight": 10,
-        "description": "generated stateless probe for BEACON_AGGREGATE_AND_PROOF-IGNORE-19a3a197, BEACON_AGGREGATE_AND_PROOF-IGNORE-dc38af01, BEACON_AGGREGATE_AND_PROOF-REJECT-544ecc21, BEACON_AGGREGATE_AND_PROOF-REJECT-5658ca54, BEACON_AGGREGATE_AND_PROOF-REJECT-9d4a9467, BEACON_AGGREGATE_AND_PROOF-REJECT-fc3dd3a9",
-        "condition_desc": "until «block is retrieved»; when aggregate.data.beacon_block_root not in store.blocks",
+        "description": "generated stateless probe for BEACON_AGGREGATE_AND_PROOF-IGNORE-19a3a197, BEACON_AGGREGATE_AND_PROOF-IGNORE-dc38af01, BEACON_AGGREGATE_AND_PROOF-REJECT-544ecc21, BEACON_AGGREGATE_AND_PROOF-REJECT-5658ca54, BEACON_AGGREGATE_AND_PROOF-REJECT-fc3dd3a9",
+        "condition_desc": "until «block is retrieved»; when block_root not in store.blocks",
         "tags": [
           "temporal:until",
           "conditional"
@@ -650,7 +649,6 @@
           "BEACON_AGGREGATE_AND_PROOF-IGNORE-dc38af01",
           "BEACON_AGGREGATE_AND_PROOF-REJECT-544ecc21",
           "BEACON_AGGREGATE_AND_PROOF-REJECT-5658ca54",
-          "BEACON_AGGREGATE_AND_PROOF-REJECT-9d4a9467",
           "BEACON_AGGREGATE_AND_PROOF-REJECT-fc3dd3a9"
         ],
         "action": {
@@ -696,49 +694,6 @@
             "kind": "builder",
             "wrap": "raw",
             "name": "buildInvalidBeaconAttestationFinalizedAncestor"
-          }
-        },
-        "oracle": {
-          "differential": true,
-          "expected": "REJECT",
-          "must_not": [
-            "CRASH",
-            "ACCEPT"
-          ],
-          "spec_predicate": "accepted == 0",
-          "strength": "MUST"
-        }
-      }
-    },
-    {
-      "id": "cryptomsg.generated.beacon_attestation.actinjectgossip_buildinvalidbeaconattestationindexoob.bc80ab89",
-      "category": "cryptomsg",
-      "domain": "cryptomsg",
-      "surface": "beacon_attestation",
-      "probe": "actinjectgossip_buildinvalidbeaconattestationindexoob",
-      "rule_ids": [
-        "BEACON_ATTESTATION-IGNORE-fa60d57c"
-      ],
-      "transition": {
-        "from": "CryptoReady",
-        "to": "CryptoSent",
-        "label": "stateless_beacon_attestation_actinjectgossip_buildinvalidbeaconattestationindexoob_bc80ab89",
-        "weight": 10,
-        "description": "generated stateless probe for BEACON_ATTESTATION-IGNORE-fa60d57c",
-        "condition_desc": "when (participant_index, target_epoch) in seen.attestation_validator_epochs",
-        "tags": [
-          "conditional"
-        ],
-        "spec_refs": [
-          "BEACON_ATTESTATION-IGNORE-fa60d57c"
-        ],
-        "action": {
-          "type": "ActInjectGossip",
-          "protocol": "beacon_attestation_0",
-          "payload": {
-            "kind": "builder",
-            "wrap": "raw",
-            "name": "buildInvalidBeaconAttestationIndexOob"
           }
         },
         "oracle": {
@@ -859,7 +814,7 @@
         "label": "stateless_beacon_attestation_actinjectgossip_buildinvalidbeaconattestationslotepochrange_584942c7",
         "weight": 10,
         "description": "generated stateless probe for BEACON_ATTESTATION-IGNORE-493398b9",
-        "condition_desc": "when not (is_previous_epoch_attestation or is_current_epoch_attestation)",
+        "condition_desc": "when not is_current_or_previous_epoch(store, attestation_epoch, current_time_ms)",
         "tags": [
           "conditional"
         ],
@@ -907,7 +862,7 @@
         "label": "stateless_beacon_attestation_actinjectgossip_buildinvalidbeaconattestationslotepochrange_760fefdb",
         "weight": 10,
         "description": "generated stateless probe for BEACON_ATTESTATION-IGNORE-9dbc7051, BEACON_ATTESTATION-REJECT-2d8f2580, BEACON_ATTESTATION-REJECT-fc3dd3a9",
-        "condition_desc": "when not is_within_slot_range( state, data.slot, ATTESTATION_PROPAGATION_SLOT_RANGE, current_time_ms )",
+        "condition_desc": "when not is_within_slot_range( store, data.slot, ATTESTATION_PROPAGATION_SLOT_RANGE, current_time_ms )",
         "tags": [
           "conditional"
         ],
@@ -952,7 +907,7 @@
         "label": "stateless_beacon_attestation_actinjectgossip_buildinvalidbeaconattestationslotfuture_844b06a3",
         "weight": 10,
         "description": "generated stateless probe for BEACON_ATTESTATION-IGNORE-5da40ec3",
-        "condition_desc": "when not is_not_from_future_slot(state, data.slot, current_time_ms)",
+        "condition_desc": "when is_future_slot(store, data.slot, current_time_ms)",
         "tags": [
           "conditional"
         ],
@@ -990,8 +945,6 @@
       "surface": "beacon_attestation",
       "probe": "actinjectgossip_buildinvalidbeaconattestationtargetrootconsistent",
       "rule_ids": [
-        "BEACON_ATTESTATION-IGNORE-19a3a197",
-        "BEACON_ATTESTATION-REJECT-544ecc21",
         "BEACON_ATTESTATION-REJECT-cb7a1c7e"
       ],
       "transition": {
@@ -999,15 +952,12 @@
         "to": "CryptoSent",
         "label": "stateless_beacon_attestation_actinjectgossip_buildinvalidbeaconattestationtargetrootconsistent_cb463ed7",
         "weight": 10,
-        "description": "generated stateless probe for BEACON_ATTESTATION-IGNORE-19a3a197, BEACON_ATTESTATION-REJECT-544ecc21, BEACON_ATTESTATION-REJECT-cb7a1c7e",
-        "condition_desc": "until «block is retrieved»; when beacon_block_root not in store.blocks",
+        "description": "generated stateless probe for BEACON_ATTESTATION-REJECT-cb7a1c7e",
+        "condition_desc": "when target_checkpoint_block != data.target.root",
         "tags": [
-          "temporal:until",
           "conditional"
         ],
         "spec_refs": [
-          "BEACON_ATTESTATION-IGNORE-19a3a197",
-          "BEACON_ATTESTATION-REJECT-544ecc21",
           "BEACON_ATTESTATION-REJECT-cb7a1c7e"
         ],
         "action": {
@@ -1204,24 +1154,24 @@
       "surface": "beacon_block",
       "probe": "actinjectgossip_buildinvalidbeaconblockparentknownvalid",
       "rule_ids": [
-        "BEACON_BLOCK-IGNORE-04770bd3",
-        "BEACON_BLOCK-IGNORE-da534e6d",
-        "BEACON_BLOCK-REJECT-823c7319"
+        "BEACON_BLOCK-IGNORE-6f3dc923",
+        "BEACON_BLOCK-IGNORE-a98db703",
+        "BEACON_BLOCK-REJECT-6e147d11"
       ],
       "transition": {
         "from": "CryptoReady",
         "to": "CryptoSent",
         "label": "stateless_beacon_block_actinjectgossip_buildinvalidbeaconblockparentknownvalid_23fa2260",
         "weight": 10,
-        "description": "generated stateless probe for BEACON_BLOCK-IGNORE-04770bd3, BEACON_BLOCK-IGNORE-da534e6d, BEACON_BLOCK-REJECT-823c7319",
-        "condition_desc": "when is_execution_enabled(state, block.body) and parent_payload_status == PAYLOAD_STATUS_INVALIDATED",
+        "description": "generated stateless probe for BEACON_BLOCK-IGNORE-6f3dc923, BEACON_BLOCK-IGNORE-a98db703, BEACON_BLOCK-REJECT-6e147d11",
+        "condition_desc": "when block.parent_root not in store.block_states and is_execution_enabled(store.block_states[store.justified_checkpoint.root], block.body)",
         "tags": [
           "conditional"
         ],
         "spec_refs": [
-          "BEACON_BLOCK-IGNORE-04770bd3",
-          "BEACON_BLOCK-IGNORE-da534e6d",
-          "BEACON_BLOCK-REJECT-823c7319"
+          "BEACON_BLOCK-IGNORE-6f3dc923",
+          "BEACON_BLOCK-IGNORE-a98db703",
+          "BEACON_BLOCK-REJECT-6e147d11"
         ],
         "action": {
           "type": "ActInjectGossip",
@@ -1282,6 +1232,48 @@
             "wrap": "raw",
             "name": "buildInvalidBeaconBlockParentKnownValid"
           }
+        },
+        "oracle": {
+          "differential": true,
+          "expected": "REJECT",
+          "must_not": [
+            "CRASH",
+            "ACCEPT"
+          ],
+          "spec_predicate": "accepted == 0",
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "cryptomsg.generated.beacon_block.actinjectgossip_buildinvalidbeaconblockparentknownvalid.67875b1c",
+      "category": "cryptomsg",
+      "domain": "cryptomsg",
+      "surface": "beacon_block",
+      "probe": "actinjectgossip_buildinvalidbeaconblockparentknownvalid",
+      "rule_ids": [
+        "BEACON_BLOCK-REJECT-48c14af0"
+      ],
+      "transition": {
+        "from": "CryptoReady",
+        "to": "CryptoSent",
+        "label": "stateless_beacon_block_actinjectgossip_buildinvalidbeaconblockparentknownvalid_67875b1c",
+        "weight": 10,
+        "description": "generated stateless probe for BEACON_BLOCK-REJECT-48c14af0",
+        "spec_refs": [
+          "BEACON_BLOCK-REJECT-48c14af0"
+        ],
+        "action": {
+          "type": "ActInjectGossip",
+          "protocol": "beacon_block",
+          "payload": {
+            "kind": "builder",
+            "wrap": "raw",
+            "name": "buildInvalidBeaconBlockParentKnownValid"
+          }
+        },
+        "guard": {
+          "fork_gte": "eip8148"
         },
         "oracle": {
           "differential": true,
@@ -1381,7 +1373,7 @@
       "surface": "beacon_block",
       "probe": "actinjectgossip_buildinvalidbeaconblocksiginvalid",
       "rule_ids": [
-        "BEACON_BLOCK-IGNORE-f0952a23",
+        "BEACON_BLOCK-IGNORE-2b120cd4",
         "BEACON_BLOCK-REJECT-3fd28bdc"
       ],
       "transition": {
@@ -1389,13 +1381,13 @@
         "to": "CryptoSent",
         "label": "stateless_beacon_block_actinjectgossip_buildinvalidbeaconblocksiginvalid_c3df4350",
         "weight": 10,
-        "description": "generated stateless probe for BEACON_BLOCK-IGNORE-f0952a23, BEACON_BLOCK-REJECT-3fd28bdc",
-        "condition_desc": "when (block.proposer_index, block.slot) in seen.proposer_slots",
+        "description": "generated stateless probe for BEACON_BLOCK-IGNORE-2b120cd4, BEACON_BLOCK-REJECT-3fd28bdc",
+        "condition_desc": "when proposer_slot_key in seen.proposer_slots",
         "tags": [
           "conditional"
         ],
         "spec_refs": [
-          "BEACON_BLOCK-IGNORE-f0952a23",
+          "BEACON_BLOCK-IGNORE-2b120cd4",
           "BEACON_BLOCK-REJECT-3fd28bdc"
         ],
         "action": {
@@ -1434,7 +1426,7 @@
         "label": "stateless_beacon_block_actinjectgossip_buildinvalidbeaconblockslotfuture_f19b6f01",
         "weight": 10,
         "description": "generated stateless probe for BEACON_BLOCK-IGNORE-451f432d",
-        "condition_desc": "when not is_not_from_future_slot(state, block.slot, current_time_ms)",
+        "condition_desc": "when is_future_slot(store, block.slot, current_time_ms)",
         "tags": [
           "conditional"
         ],
@@ -1832,7 +1824,7 @@
         "label": "stateless_blob_sidecar_actinjectgossip_buildinvalidblobsidecarslotfuture_5b21c870",
         "weight": 10,
         "description": "generated stateless probe for BLOB_SIDECAR-IGNORE-8cf6775b",
-        "condition_desc": "when not is_not_from_future_slot(state, block_header.slot, current_time_ms)",
+        "condition_desc": "when is_future_slot(store, block_header.slot, current_time_ms)",
         "tags": [
           "conditional"
         ],
@@ -2065,7 +2057,7 @@
         "label": "stateless_bls_to_execution_change_actinjectgossip_buildinvalidblstoexecutionchangesiginvalid_26c6ac7d",
         "weight": 10,
         "description": "generated stateless probe for BLS_TO_EXECUTION_CHANGE-REJECT-cc9547b7",
-        "condition_desc": "when not bls.Verify( bls_to_execution_change.from_bls_pubkey, signing_root, signed_bls_to_execution_change.signature, )",
+        "condition_desc": "when not bls.Verify(pubkey, signing_root, signed_bls_to_execution_change.signature)",
         "tags": [
           "conditional"
         ],
@@ -2093,46 +2085,6 @@
           ],
           "spec_predicate": "accepted == 0",
           "strength": "MUST"
-        }
-      }
-    },
-    {
-      "id": "cryptomsg.generated.bls_to_execution_change.actinjectgossip_buildvalidblstoexecutionchange.ddd1a583",
-      "category": "cryptomsg",
-      "domain": "cryptomsg",
-      "surface": "bls_to_execution_change",
-      "probe": "actinjectgossip_buildvalidblstoexecutionchange",
-      "rule_ids": [
-        "BLS_TO_EXECUTION_CHANGE-IGNORE-c2adbb4f"
-      ],
-      "transition": {
-        "from": "CryptoReady",
-        "to": "CryptoSent",
-        "label": "stateless_bls_to_execution_change_actinjectgossip_buildvalidblstoexecutionchange_ddd1a583",
-        "weight": 10,
-        "description": "generated stateless probe for BLS_TO_EXECUTION_CHANGE-IGNORE-c2adbb4f",
-        "condition_desc": "after «the Capella fork epoch (where current_epoch is defined by the current wall-clock time»; when current_epoch \u003c CAPELLA_FORK_EPOCH",
-        "tags": [
-          "temporal:after",
-          "conditional"
-        ],
-        "spec_refs": [
-          "BLS_TO_EXECUTION_CHANGE-IGNORE-c2adbb4f"
-        ],
-        "action": {
-          "type": "ActInjectGossip",
-          "protocol": "bls_to_execution_change",
-          "payload": {
-            "kind": "builder",
-            "wrap": "raw",
-            "name": "buildValidBlsToExecutionChange"
-          }
-        },
-        "guard": {
-          "fork_gte": "capella"
-        },
-        "oracle": {
-          "differential": true
         }
       }
     },
@@ -2332,7 +2284,7 @@
         "label": "stateless_data_column_sidecar_actinjectgossip_buildinvaliddatacolumnsidecarslotfuture_e09d58f6",
         "weight": 10,
         "description": "generated stateless probe for DATA_COLUMN_SIDECAR-IGNORE-8cf6775b",
-        "condition_desc": "when not is_not_from_future_slot(state, block_header.slot, current_time_ms)",
+        "condition_desc": "when is_future_slot(store, block_header.slot, current_time_ms)",
         "tags": [
           "conditional"
         ],
@@ -2601,7 +2553,7 @@
       "probe": "actinjectgossip_buildinvalidsynccommitteecontributionandproofindexoob",
       "rule_ids": [
         "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-IGNORE-85bd91b0",
-        "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-IGNORE-b4eb6360",
+        "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-IGNORE-db9ed2c2",
         "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-1d325814",
         "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-5bdbca46",
         "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-c33e885a"
@@ -2611,14 +2563,14 @@
         "to": "CryptoSent",
         "label": "stateless_sync_committee_contribution_and_proof_actinjectgossip_buildinvalidsynccommitteecontributionandproofindexoob_3ff2bb16",
         "weight": 10,
-        "description": "generated stateless probe for SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-IGNORE-85bd91b0, SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-IGNORE-b4eb6360, SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-1d325814, SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-5bdbca46, SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-c33e885a",
+        "description": "generated stateless probe for SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-IGNORE-85bd91b0, SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-IGNORE-db9ed2c2, SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-1d325814, SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-5bdbca46, SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-c33e885a",
         "condition_desc": "when is_non_strict_superset(seen_bits, contribution_bits)",
         "tags": [
           "conditional"
         ],
         "spec_refs": [
           "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-IGNORE-85bd91b0",
-          "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-IGNORE-b4eb6360",
+          "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-IGNORE-db9ed2c2",
           "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-1d325814",
           "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-5bdbca46",
           "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-c33e885a"
@@ -2760,7 +2712,7 @@
         "label": "stateless_sync_committee_contribution_and_proof_actinjectgossip_buildinvalidsynccommitteecontributionandproofslotepochrange_9479204d",
         "weight": 10,
         "description": "generated stateless probe for SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-IGNORE-908a6bf7",
-        "condition_desc": "when not is_current_slot(state, contribution.slot, current_time_ms)",
+        "condition_desc": "when not is_current_slot(store, contribution.slot, current_time_ms)",
         "tags": [
           "conditional"
         ],
@@ -2844,20 +2796,20 @@
       "surface": "sync_committee_message",
       "probe": "actinjectgossip_buildinvalidsynccommitteemessagesiginvalid",
       "rule_ids": [
-        "SYNC_COMMITTEE_MESSAGE-REJECT-9b15dc3b"
+        "SYNC_COMMITTEE_MESSAGE-REJECT-cc9547b7"
       ],
       "transition": {
         "from": "CryptoReady",
         "to": "CryptoSent",
         "label": "stateless_sync_committee_message_actinjectgossip_buildinvalidsynccommitteemessagesiginvalid_e167668f",
         "weight": 10,
-        "description": "generated stateless probe for SYNC_COMMITTEE_MESSAGE-REJECT-9b15dc3b",
+        "description": "generated stateless probe for SYNC_COMMITTEE_MESSAGE-REJECT-cc9547b7",
         "condition_desc": "when not bls.Verify(validator.pubkey, signing_root, sync_committee_message.signature)",
         "tags": [
           "conditional"
         ],
         "spec_refs": [
-          "SYNC_COMMITTEE_MESSAGE-REJECT-9b15dc3b"
+          "SYNC_COMMITTEE_MESSAGE-REJECT-cc9547b7"
         ],
         "action": {
           "type": "ActInjectGossip",
@@ -2898,7 +2850,7 @@
         "label": "stateless_sync_committee_message_actinjectgossip_buildinvalidsynccommitteemessageslotepochrange_bac90b84",
         "weight": 10,
         "description": "generated stateless probe for SYNC_COMMITTEE_MESSAGE-IGNORE-dddd9a14",
-        "condition_desc": "when not is_current_slot(state, sync_committee_message.slot, current_time_ms)",
+        "condition_desc": "when not is_current_slot(store, sync_committee_message.slot, current_time_ms)",
         "tags": [
           "conditional"
         ],
@@ -3061,20 +3013,20 @@
       "surface": "voluntary_exit",
       "probe": "actinjectgossip_buildinvalidvoluntaryexitslotfuture",
       "rule_ids": [
-        "VOLUNTARY_EXIT-REJECT-f64fc894"
+        "VOLUNTARY_EXIT-IGNORE-a324eca6"
       ],
       "transition": {
         "from": "CryptoReady",
         "to": "CryptoSent",
         "label": "stateless_voluntary_exit_actinjectgossip_buildinvalidvoluntaryexitslotfuture_32c8209c",
         "weight": 10,
-        "description": "generated stateless probe for VOLUNTARY_EXIT-REJECT-f64fc894",
-        "condition_desc": "when current_epoch \u003c voluntary_exit.epoch",
+        "description": "generated stateless probe for VOLUNTARY_EXIT-IGNORE-a324eca6",
+        "condition_desc": "when is_future_epoch(store, voluntary_exit.epoch, current_time_ms)",
         "tags": [
           "conditional"
         ],
         "spec_refs": [
-          "VOLUNTARY_EXIT-REJECT-f64fc894"
+          "VOLUNTARY_EXIT-IGNORE-a324eca6"
         ],
         "action": {
           "type": "ActInjectGossip",
@@ -3105,7 +3057,6 @@
       "probe": "actinjectgossip_buildvalidvoluntaryexit",
       "rule_ids": [
         "VOLUNTARY_EXIT-REJECT-15cadc01",
-        "VOLUNTARY_EXIT-REJECT-e7806012",
         "VOLUNTARY_EXIT-REJECT-f5f33715"
       ],
       "transition": {
@@ -3113,14 +3064,13 @@
         "to": "CryptoSent",
         "label": "stateless_voluntary_exit_actinjectgossip_buildvalidvoluntaryexit_11d03ee8",
         "weight": 10,
-        "description": "generated stateless probe for VOLUNTARY_EXIT-REJECT-15cadc01, VOLUNTARY_EXIT-REJECT-e7806012, VOLUNTARY_EXIT-REJECT-f5f33715",
+        "description": "generated stateless probe for VOLUNTARY_EXIT-REJECT-15cadc01, VOLUNTARY_EXIT-REJECT-f5f33715",
         "condition_desc": "when not is_active_validator(validator, current_epoch)",
         "tags": [
           "conditional"
         ],
         "spec_refs": [
           "VOLUNTARY_EXIT-REJECT-15cadc01",
-          "VOLUNTARY_EXIT-REJECT-e7806012",
           "VOLUNTARY_EXIT-REJECT-f5f33715"
         ],
         "action": {
@@ -3500,7 +3450,7 @@
         "label": "stateless_partial_data_column_sidecar_actinjectgossip_buildinvalidpartialdatacolumnslotfuture_e6347a91",
         "weight": 10,
         "description": "generated stateless probe for PARTIAL_DATA_COLUMN_SIDECAR-IGNORE-64fbc194, PARTIAL_DATA_COLUMN_SIDECAR-IGNORE-93b9b10e",
-        "condition_desc": "when has_cells and not is_not_from_future_slot(state, block_header.slot, current_time_ms)",
+        "condition_desc": "when has_cells and is_future_slot(store, block_header.slot, current_time_ms)",
         "tags": [
           "conditional"
         ],
@@ -3629,6 +3579,90 @@
       }
     },
     {
+      "id": "reqresp.generated.eth2_beacon_chain_req_beacon_blocks_by_head_1_ssz_snappy.actsendreqresp_buildblocksbyrangehalfopen.1894728d",
+      "category": "reqresp",
+      "domain": "reqresp",
+      "surface": "/eth2/beacon_chain/req/beacon_blocks_by_head/1/ssz_snappy",
+      "probe": "actsendreqresp_buildblocksbyrangehalfopen",
+      "rule_ids": [
+        "PROSE-MUST-caedc19d"
+      ],
+      "transition": {
+        "from": "Connected",
+        "to": "Completed",
+        "label": "stateless_eth2_beacon_chain_req_beacon_blocks_by_head_1_ssz_snappy_actsendreqresp_buildblocksbyrangehalfopen_1894728d",
+        "weight": 10,
+        "description": "generated stateless probe for PROSE-MUST-caedc19d",
+        "spec_refs": [
+          "PROSE-MUST-caedc19d"
+        ],
+        "action": {
+          "type": "ActSendReqResp",
+          "protocol": "/eth2/beacon_chain/req/beacon_blocks_by_range/2/ssz_snappy",
+          "payload": {
+            "kind": "builder",
+            "wrap": "ssz_snappy",
+            "name": "buildBlocksByRangeHalfOpen"
+          },
+          "timeout_ms": 5000
+        },
+        "guard": {
+          "fork_gte": "fulu"
+        },
+        "oracle": {
+          "differential": true,
+          "must_not": [
+            "CRASH"
+          ],
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "reqresp.generated.eth2_beacon_chain_req_beacon_blocks_by_head_1_ssz_snappy.actsendreqresp_buildrootlistheadroot.1468abbd",
+      "category": "reqresp",
+      "domain": "reqresp",
+      "surface": "/eth2/beacon_chain/req/beacon_blocks_by_head/1/ssz_snappy",
+      "probe": "actsendreqresp_buildrootlistheadroot",
+      "rule_ids": [
+        "PROSE-MUST-8a9d0925"
+      ],
+      "transition": {
+        "from": "Connected",
+        "to": "Completed",
+        "label": "stateless_eth2_beacon_chain_req_beacon_blocks_by_head_1_ssz_snappy_actsendreqresp_buildrootlistheadroot_1468abbd",
+        "weight": 10,
+        "description": "generated stateless probe for PROSE-MUST-8a9d0925",
+        "condition_desc": "when they have the block at beacon_root",
+        "tags": [
+          "conditional"
+        ],
+        "spec_refs": [
+          "PROSE-MUST-8a9d0925"
+        ],
+        "action": {
+          "type": "ActSendReqResp",
+          "protocol": "/eth2/beacon_chain/req/beacon_blocks_by_root/2/ssz_snappy",
+          "payload": {
+            "kind": "builder",
+            "wrap": "ssz_snappy",
+            "name": "buildRootListHeadRoot"
+          },
+          "timeout_ms": 5000
+        },
+        "guard": {
+          "fork_gte": "fulu"
+        },
+        "oracle": {
+          "differential": true,
+          "must_not": [
+            "CRASH"
+          ],
+          "strength": "MUST"
+        }
+      }
+    },
+    {
       "id": "reqresp.generated.eth2_beacon_chain_req_beacon_blocks_by_range_1_ssz_snappy.actsendreqresp_buildbeaconblocksbyrangev2nearhead.40778bba",
       "category": "reqresp",
       "domain": "reqresp",
@@ -3716,6 +3750,51 @@
       }
     },
     {
+      "id": "reqresp.generated.eth2_beacon_chain_req_beacon_blocks_by_range_1_ssz_snappy.actsendreqresp_buildblocksbyrangev1probe.2f133a19",
+      "category": "reqresp",
+      "domain": "reqresp",
+      "surface": "/eth2/beacon_chain/req/beacon_blocks_by_range/1/ssz_snappy",
+      "probe": "actsendreqresp_buildblocksbyrangev1probe",
+      "rule_ids": [
+        "PROSE-MUST-06696858",
+        "PROSE-MUST-585a5daf",
+        "PROSE-MUST-5aed4805",
+        "PROSE-MUST-7359b5d6",
+        "PROSE-MUST-ab4ff3da"
+      ],
+      "transition": {
+        "from": "Connected",
+        "to": "Completed",
+        "label": "stateless_eth2_beacon_chain_req_beacon_blocks_by_range_1_ssz_snappy_actsendreqresp_buildblocksbyrangev1probe_2f133a19",
+        "weight": 10,
+        "description": "generated stateless probe for PROSE-MUST-06696858, PROSE-MUST-585a5daf, PROSE-MUST-5aed4805, PROSE-MUST-7359b5d6, PROSE-MUST-ab4ff3da",
+        "spec_refs": [
+          "PROSE-MUST-06696858",
+          "PROSE-MUST-585a5daf",
+          "PROSE-MUST-5aed4805",
+          "PROSE-MUST-7359b5d6",
+          "PROSE-MUST-ab4ff3da"
+        ],
+        "action": {
+          "type": "ActSendReqResp",
+          "protocol": "/eth2/beacon_chain/req/beacon_blocks_by_range/1/ssz_snappy",
+          "payload": {
+            "kind": "builder",
+            "wrap": "ssz_snappy",
+            "name": "buildBlocksByRangeV1Probe"
+          },
+          "timeout_ms": 5000
+        },
+        "oracle": {
+          "differential": true,
+          "must_not": [
+            "CRASH"
+          ],
+          "strength": "MUST"
+        }
+      }
+    },
+    {
       "id": "reqresp.generated.eth2_beacon_chain_req_beacon_blocks_by_range_1_ssz_snappy.actvalidateresponseorder_buildblocksbyrangeordering.0ddc72fa",
       "category": "reqresp",
       "domain": "reqresp",
@@ -3760,7 +3839,6 @@
       "surface": "/eth2/beacon_chain/req/beacon_blocks_by_root/1/ssz_snappy",
       "probe": "actsendreqresp_buildrootlistheadroot",
       "rule_ids": [
-        "PROSE-MUST-5980f0c3",
         "PROSE-MUST-ea82e3d1",
         "PROSE-MUST-ef0e0e97",
         "PROSE-MUST-f719d380"
@@ -3770,9 +3848,12 @@
         "to": "Completed",
         "label": "stateless_eth2_beacon_chain_req_beacon_blocks_by_root_1_ssz_snappy_actsendreqresp_buildrootlistheadroot_258495ce",
         "weight": 10,
-        "description": "generated stateless probe for PROSE-MUST-5980f0c3, PROSE-MUST-ea82e3d1, PROSE-MUST-ef0e0e97, PROSE-MUST-f719d380",
+        "description": "generated stateless probe for PROSE-MUST-ea82e3d1, PROSE-MUST-ef0e0e97, PROSE-MUST-f719d380",
+        "condition_desc": "when they have it",
+        "tags": [
+          "conditional"
+        ],
         "spec_refs": [
-          "PROSE-MUST-5980f0c3",
           "PROSE-MUST-ea82e3d1",
           "PROSE-MUST-ef0e0e97",
           "PROSE-MUST-f719d380"
@@ -3790,6 +3871,84 @@
         "oracle": {
           "differential": true,
           "expected": "SUCCESS",
+          "must_not": [
+            "CRASH"
+          ],
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "reqresp.generated.eth2_beacon_chain_req_beacon_blocks_by_root_2_ssz_snappy.actsendreqresp_buildrootlistheadroot.c67264c9",
+      "category": "reqresp",
+      "domain": "reqresp",
+      "surface": "/eth2/beacon_chain/req/beacon_blocks_by_root/2/ssz_snappy",
+      "probe": "actsendreqresp_buildrootlistheadroot",
+      "rule_ids": [
+        "PROSE-MUST-ddb66335"
+      ],
+      "transition": {
+        "from": "Connected",
+        "to": "Completed",
+        "label": "stateless_eth2_beacon_chain_req_beacon_blocks_by_root_2_ssz_snappy_actsendreqresp_buildrootlistheadroot_c67264c9",
+        "weight": 10,
+        "description": "generated stateless probe for PROSE-MUST-ddb66335",
+        "spec_refs": [
+          "PROSE-MUST-ddb66335"
+        ],
+        "action": {
+          "type": "ActSendReqResp",
+          "protocol": "/eth2/beacon_chain/req/beacon_blocks_by_root/2/ssz_snappy",
+          "payload": {
+            "kind": "builder",
+            "wrap": "ssz_snappy",
+            "name": "buildRootListHeadRoot"
+          },
+          "timeout_ms": 10000
+        },
+        "oracle": {
+          "differential": true,
+          "expected": "SUCCESS",
+          "must_not": [
+            "CRASH"
+          ],
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "reqresp.generated.eth2_beacon_chain_req_blob_sidecars_by_range_1_ssz_snappy.actsendreqresp_buildblocksbyrangehalfopen.047c1535",
+      "category": "reqresp",
+      "domain": "reqresp",
+      "surface": "/eth2/beacon_chain/req/blob_sidecars_by_range/1/ssz_snappy",
+      "probe": "actsendreqresp_buildblocksbyrangehalfopen",
+      "rule_ids": [
+        "PROSE-MUST-d6e27745"
+      ],
+      "transition": {
+        "from": "Connected",
+        "to": "Completed",
+        "label": "stateless_eth2_beacon_chain_req_blob_sidecars_by_range_1_ssz_snappy_actsendreqresp_buildblocksbyrangehalfopen_047c1535",
+        "weight": 10,
+        "description": "generated stateless probe for PROSE-MUST-d6e27745",
+        "spec_refs": [
+          "PROSE-MUST-d6e27745"
+        ],
+        "action": {
+          "type": "ActSendReqResp",
+          "protocol": "/eth2/beacon_chain/req/beacon_blocks_by_range/2/ssz_snappy",
+          "payload": {
+            "kind": "builder",
+            "wrap": "ssz_snappy",
+            "name": "buildBlocksByRangeHalfOpen"
+          },
+          "timeout_ms": 5000
+        },
+        "guard": {
+          "fork_gte": "deneb"
+        },
+        "oracle": {
+          "differential": true,
           "must_not": [
             "CRASH"
           ],
@@ -3878,18 +4037,64 @@
       }
     },
     {
-      "id": "reqresp.generated.eth2_beacon_chain_req_blob_sidecars_by_range_1_ssz_snappy.actsendreqresp_buildblocksbyrangenearhead.91d35c4b",
+      "id": "reqresp.generated.eth2_beacon_chain_req_blob_sidecars_by_range_1_ssz_snappy.actsendreqresp_buildblocksbyrangenearhead.e3c607dd",
       "category": "reqresp",
       "domain": "reqresp",
       "surface": "/eth2/beacon_chain/req/blob_sidecars_by_range/1/ssz_snappy",
       "probe": "actsendreqresp_buildblocksbyrangenearhead",
+      "rule_ids": [
+        "PROSE-MUST-000fd139",
+        "PROSE-MUST-9c40cb32",
+        "PROSE-MUST-b18cebcf",
+        "PROSE-MUST-bcca3fad"
+      ],
+      "transition": {
+        "from": "Connected",
+        "to": "Completed",
+        "label": "stateless_eth2_beacon_chain_req_blob_sidecars_by_range_1_ssz_snappy_actsendreqresp_buildblocksbyrangenearhead_e3c607dd",
+        "weight": 10,
+        "description": "generated stateless probe for PROSE-MUST-000fd139, PROSE-MUST-9c40cb32, PROSE-MUST-b18cebcf, PROSE-MUST-bcca3fad",
+        "spec_refs": [
+          "PROSE-MUST-000fd139",
+          "PROSE-MUST-9c40cb32",
+          "PROSE-MUST-b18cebcf",
+          "PROSE-MUST-bcca3fad"
+        ],
+        "action": {
+          "type": "ActSendReqResp",
+          "protocol": "/eth2/beacon_chain/req/blob_sidecars_by_range/1/ssz_snappy",
+          "payload": {
+            "kind": "builder",
+            "wrap": "ssz_snappy",
+            "name": "buildBlocksByRangeNearHead"
+          },
+          "timeout_ms": 10000
+        },
+        "guard": {
+          "fork_gte": "deneb"
+        },
+        "oracle": {
+          "differential": true,
+          "must_not": [
+            "CRASH"
+          ],
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "reqresp.generated.eth2_beacon_chain_req_blob_sidecars_by_range_1_ssz_snappy.actsendreqresp_buildblocksbyrangev1probe.1c7fdfe3",
+      "category": "reqresp",
+      "domain": "reqresp",
+      "surface": "/eth2/beacon_chain/req/blob_sidecars_by_range/1/ssz_snappy",
+      "probe": "actsendreqresp_buildblocksbyrangev1probe",
       "rule_ids": [
         "PROSE-MUST-9cd4be04"
       ],
       "transition": {
         "from": "Connected",
         "to": "Completed",
-        "label": "stateless_eth2_beacon_chain_req_blob_sidecars_by_range_1_ssz_snappy_actsendreqresp_buildblocksbyrangenearhead_91d35c4b",
+        "label": "stateless_eth2_beacon_chain_req_blob_sidecars_by_range_1_ssz_snappy_actsendreqresp_buildblocksbyrangev1probe_1c7fdfe3",
         "weight": 10,
         "description": "generated stateless probe for PROSE-MUST-9cd4be04",
         "condition_desc": "when the requested range includes any epochs in this interval.",
@@ -3905,9 +4110,9 @@
           "payload": {
             "kind": "builder",
             "wrap": "ssz_snappy",
-            "name": "buildBlocksByRangeNearHead"
+            "name": "buildBlocksByRangeV1Probe"
           },
-          "timeout_ms": 10000
+          "timeout_ms": 5000
         },
         "guard": {
           "fork_gte": "fulu"
@@ -3922,36 +4127,32 @@
       }
     },
     {
-      "id": "reqresp.generated.eth2_beacon_chain_req_blob_sidecars_by_range_1_ssz_snappy.actsendreqresp_buildblocksbyrangenearhead.e3c607dd",
+      "id": "reqresp.generated.eth2_beacon_chain_req_blob_sidecars_by_range_1_ssz_snappy.actsendreqresp_buildblocksbyrangev1probe.7b1b76cd",
       "category": "reqresp",
       "domain": "reqresp",
       "surface": "/eth2/beacon_chain/req/blob_sidecars_by_range/1/ssz_snappy",
-      "probe": "actsendreqresp_buildblocksbyrangenearhead",
+      "probe": "actsendreqresp_buildblocksbyrangev1probe",
       "rule_ids": [
-        "PROSE-MUST-000fd139",
+        "PROSE-MUST-621e66c7",
         "PROSE-MUST-78397db4",
         "PROSE-MUST-7a65230f",
-        "PROSE-MUST-9c40cb32",
-        "PROSE-MUST-b18cebcf",
-        "PROSE-MUST-bcca3fad",
-        "PROSE-MUST-d6e27745",
-        "PROSE-MUST-ef01bacf"
+        "PROSE-MUST-eab58464",
+        "PROSE-MUST-ef01bacf",
+        "PROSE-MUST-fa8679e2"
       ],
       "transition": {
         "from": "Connected",
         "to": "Completed",
-        "label": "stateless_eth2_beacon_chain_req_blob_sidecars_by_range_1_ssz_snappy_actsendreqresp_buildblocksbyrangenearhead_e3c607dd",
+        "label": "stateless_eth2_beacon_chain_req_blob_sidecars_by_range_1_ssz_snappy_actsendreqresp_buildblocksbyrangev1probe_7b1b76cd",
         "weight": 10,
-        "description": "generated stateless probe for PROSE-MUST-000fd139, PROSE-MUST-78397db4, PROSE-MUST-7a65230f, PROSE-MUST-9c40cb32, PROSE-MUST-b18cebcf, PROSE-MUST-bcca3fad, PROSE-MUST-d6e27745, PROSE-MUST-ef01bacf",
+        "description": "generated stateless probe for PROSE-MUST-621e66c7, PROSE-MUST-78397db4, PROSE-MUST-7a65230f, PROSE-MUST-eab58464, PROSE-MUST-ef01bacf, PROSE-MUST-fa8679e2",
         "spec_refs": [
-          "PROSE-MUST-000fd139",
+          "PROSE-MUST-621e66c7",
           "PROSE-MUST-78397db4",
           "PROSE-MUST-7a65230f",
-          "PROSE-MUST-9c40cb32",
-          "PROSE-MUST-b18cebcf",
-          "PROSE-MUST-bcca3fad",
-          "PROSE-MUST-d6e27745",
-          "PROSE-MUST-ef01bacf"
+          "PROSE-MUST-eab58464",
+          "PROSE-MUST-ef01bacf",
+          "PROSE-MUST-fa8679e2"
         ],
         "action": {
           "type": "ActSendReqResp",
@@ -3959,9 +4160,9 @@
           "payload": {
             "kind": "builder",
             "wrap": "ssz_snappy",
-            "name": "buildBlocksByRangeNearHead"
+            "name": "buildBlocksByRangeV1Probe"
           },
-          "timeout_ms": 10000
+          "timeout_ms": 5000
         },
         "guard": {
           "fork_gte": "deneb"
@@ -4024,7 +4225,6 @@
       "surface": "/eth2/beacon_chain/req/blob_sidecars_by_root/1/ssz_snappy",
       "probe": "actsendreqresp_buildblobidentifierheadroot",
       "rule_ids": [
-        "PROSE-MUST-363af130",
         "PROSE-MUST-baa6186c"
       ],
       "transition": {
@@ -4032,13 +4232,8 @@
         "to": "Completed",
         "label": "stateless_eth2_beacon_chain_req_blob_sidecars_by_root_1_ssz_snappy_actsendreqresp_buildblobidentifierheadroot_b9bbfa87",
         "weight": 10,
-        "description": "generated stateless probe for PROSE-MUST-363af130, PROSE-MUST-baa6186c",
-        "condition_desc": "when they have it",
-        "tags": [
-          "conditional"
-        ],
+        "description": "generated stateless probe for PROSE-MUST-baa6186c",
         "spec_refs": [
-          "PROSE-MUST-363af130",
           "PROSE-MUST-baa6186c"
         ],
         "action": {
@@ -4064,18 +4259,62 @@
       }
     },
     {
-      "id": "reqresp.generated.eth2_beacon_chain_req_blob_sidecars_by_root_1_ssz_snappy.actsendreqresp_buildblobidentifierheadroot.e44ef085",
+      "id": "reqresp.generated.eth2_beacon_chain_req_blob_sidecars_by_root_1_ssz_snappy.actsendreqresp_buildblocksbyrangev1probe.4811ba40",
       "category": "reqresp",
       "domain": "reqresp",
       "surface": "/eth2/beacon_chain/req/blob_sidecars_by_root/1/ssz_snappy",
-      "probe": "actsendreqresp_buildblobidentifierheadroot",
+      "probe": "actsendreqresp_buildblocksbyrangev1probe",
+      "rule_ids": [
+        "PROSE-MUST-363af130"
+      ],
+      "transition": {
+        "from": "Connected",
+        "to": "Completed",
+        "label": "stateless_eth2_beacon_chain_req_blob_sidecars_by_root_1_ssz_snappy_actsendreqresp_buildblocksbyrangev1probe_4811ba40",
+        "weight": 10,
+        "description": "generated stateless probe for PROSE-MUST-363af130",
+        "condition_desc": "when they have it",
+        "tags": [
+          "conditional"
+        ],
+        "spec_refs": [
+          "PROSE-MUST-363af130"
+        ],
+        "action": {
+          "type": "ActSendReqResp",
+          "protocol": "/eth2/beacon_chain/req/blob_sidecars_by_range/1/ssz_snappy",
+          "payload": {
+            "kind": "builder",
+            "wrap": "ssz_snappy",
+            "name": "buildBlocksByRangeV1Probe"
+          },
+          "timeout_ms": 5000
+        },
+        "guard": {
+          "fork_gte": "deneb"
+        },
+        "oracle": {
+          "differential": true,
+          "must_not": [
+            "CRASH"
+          ],
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "reqresp.generated.eth2_beacon_chain_req_blob_sidecars_by_root_1_ssz_snappy.actsendreqresp_buildblocksbyrangev1probe.4cef972e",
+      "category": "reqresp",
+      "domain": "reqresp",
+      "surface": "/eth2/beacon_chain/req/blob_sidecars_by_root/1/ssz_snappy",
+      "probe": "actsendreqresp_buildblocksbyrangev1probe",
       "rule_ids": [
         "PROSE-MUST-4bfaa766"
       ],
       "transition": {
         "from": "Connected",
         "to": "Completed",
-        "label": "stateless_eth2_beacon_chain_req_blob_sidecars_by_root_1_ssz_snappy_actsendreqresp_buildblobidentifierheadroot_e44ef085",
+        "label": "stateless_eth2_beacon_chain_req_blob_sidecars_by_root_1_ssz_snappy_actsendreqresp_buildblocksbyrangev1probe_4cef972e",
         "weight": 10,
         "description": "generated stateless probe for PROSE-MUST-4bfaa766",
         "condition_desc": "when any of the requested roots correspond to blocks in this interval.",
@@ -4087,13 +4326,101 @@
         ],
         "action": {
           "type": "ActSendReqResp",
-          "protocol": "/eth2/beacon_chain/req/blob_sidecars_by_root/1/ssz_snappy",
+          "protocol": "/eth2/beacon_chain/req/blob_sidecars_by_range/1/ssz_snappy",
           "payload": {
             "kind": "builder",
             "wrap": "ssz_snappy",
-            "name": "buildBlobIdentifierHeadRoot"
+            "name": "buildBlocksByRangeV1Probe"
           },
-          "timeout_ms": 10000
+          "timeout_ms": 5000
+        },
+        "guard": {
+          "fork_gte": "fulu"
+        },
+        "oracle": {
+          "differential": true,
+          "must_not": [
+            "CRASH"
+          ],
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "reqresp.generated.eth2_beacon_chain_req_data_column_sidecars_by_range_1_ssz_snappy.actsendreqresp_buildblocksbyrangehalfopen.7415cf49",
+      "category": "reqresp",
+      "domain": "reqresp",
+      "surface": "/eth2/beacon_chain/req/data_column_sidecars_by_range/1/ssz_snappy",
+      "probe": "actsendreqresp_buildblocksbyrangehalfopen",
+      "rule_ids": [
+        "PROSE-MUST-85dfc232"
+      ],
+      "transition": {
+        "from": "Connected",
+        "to": "Completed",
+        "label": "stateless_eth2_beacon_chain_req_data_column_sidecars_by_range_1_ssz_snappy_actsendreqresp_buildblocksbyrangehalfopen_7415cf49",
+        "weight": 10,
+        "description": "generated stateless probe for PROSE-MUST-85dfc232",
+        "spec_refs": [
+          "PROSE-MUST-85dfc232"
+        ],
+        "action": {
+          "type": "ActSendReqResp",
+          "protocol": "/eth2/beacon_chain/req/beacon_blocks_by_range/2/ssz_snappy",
+          "payload": {
+            "kind": "builder",
+            "wrap": "ssz_snappy",
+            "name": "buildBlocksByRangeHalfOpen"
+          },
+          "timeout_ms": 5000
+        },
+        "guard": {
+          "fork_gte": "fulu"
+        },
+        "oracle": {
+          "differential": true,
+          "must_not": [
+            "CRASH"
+          ],
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "reqresp.generated.eth2_beacon_chain_req_data_column_sidecars_by_range_1_ssz_snappy.actsendreqresp_builddatacolumns010.ab447b11",
+      "category": "reqresp",
+      "domain": "reqresp",
+      "surface": "/eth2/beacon_chain/req/data_column_sidecars_by_range/1/ssz_snappy",
+      "probe": "actsendreqresp_builddatacolumns010",
+      "rule_ids": [
+        "PROSE-MUST-496fac48",
+        "PROSE-MUST-53017fdb",
+        "PROSE-MUST-6ac612dd",
+        "PROSE-MUST-8329fc6d",
+        "PROSE-MUST-dc077cf0"
+      ],
+      "transition": {
+        "from": "Connected",
+        "to": "Completed",
+        "label": "stateless_eth2_beacon_chain_req_data_column_sidecars_by_range_1_ssz_snappy_actsendreqresp_builddatacolumns010_ab447b11",
+        "weight": 10,
+        "description": "generated stateless probe for PROSE-MUST-496fac48, PROSE-MUST-53017fdb, PROSE-MUST-6ac612dd, PROSE-MUST-8329fc6d, PROSE-MUST-dc077cf0",
+        "spec_refs": [
+          "PROSE-MUST-496fac48",
+          "PROSE-MUST-53017fdb",
+          "PROSE-MUST-6ac612dd",
+          "PROSE-MUST-8329fc6d",
+          "PROSE-MUST-dc077cf0"
+        ],
+        "action": {
+          "type": "ActSendReqResp",
+          "protocol": "/eth2/beacon_chain/req/data_column_sidecars_by_range/1/ssz_snappy",
+          "payload": {
+            "kind": "builder",
+            "wrap": "ssz_snappy",
+            "name": "buildDataColumns010"
+          },
+          "timeout_ms": 5000
         },
         "guard": {
           "fork_gte": "fulu"
@@ -4155,10 +4482,7 @@
       "probe": "actsendreqresp_builddatacolumnsordering",
       "rule_ids": [
         "PROSE-MUST-3d5cb37f",
-        "PROSE-MUST-496fac48",
-        "PROSE-MUST-53017fdb",
         "PROSE-MUST-62b7152d",
-        "PROSE-MUST-85dfc232",
         "PROSE-MUST-9d59d4cc"
       ],
       "transition": {
@@ -4166,13 +4490,10 @@
         "to": "Completed",
         "label": "stateless_eth2_beacon_chain_req_data_column_sidecars_by_range_1_ssz_snappy_actsendreqresp_builddatacolumnsordering_a4b5adb5",
         "weight": 10,
-        "description": "generated stateless probe for PROSE-MUST-3d5cb37f, PROSE-MUST-496fac48, PROSE-MUST-53017fdb, PROSE-MUST-62b7152d, PROSE-MUST-85dfc232, PROSE-MUST-9d59d4cc",
+        "description": "generated stateless probe for PROSE-MUST-3d5cb37f, PROSE-MUST-62b7152d, PROSE-MUST-9d59d4cc",
         "spec_refs": [
           "PROSE-MUST-3d5cb37f",
-          "PROSE-MUST-496fac48",
-          "PROSE-MUST-53017fdb",
           "PROSE-MUST-62b7152d",
-          "PROSE-MUST-85dfc232",
           "PROSE-MUST-9d59d4cc"
         ],
         "action": {
@@ -4559,6 +4880,67 @@
       }
     },
     {
+      "id": "reqresp.generated.reqresp.actsendreqresp_buildblocksbyrangehalfopen.2fd9599a",
+      "category": "reqresp",
+      "domain": "reqresp",
+      "surface": "reqresp",
+      "probe": "actsendreqresp_buildblocksbyrangehalfopen",
+      "rule_ids": [
+        "PROSE-MUST-0b68b894",
+        "PROSE-MUST-27157b02",
+        "PROSE-MUST-2b3162f6",
+        "PROSE-MUST-49d953b3",
+        "PROSE-MUST-530de565",
+        "PROSE-MUST-5e68552b",
+        "PROSE-MUST-8b1fde57",
+        "PROSE-MUST-8e3ad988",
+        "PROSE-MUST-bc7717a4",
+        "PROSE-MUST-c33e5e4e",
+        "PROSE-MUST-c8f1e7f8",
+        "PROSE-MUST-da21bde4",
+        "PROSE-MUST-e4fbee1a"
+      ],
+      "transition": {
+        "from": "Connected",
+        "to": "Completed",
+        "label": "stateless_reqresp_actsendreqresp_buildblocksbyrangehalfopen_2fd9599a",
+        "weight": 10,
+        "description": "generated stateless probe for PROSE-MUST-0b68b894, PROSE-MUST-27157b02, PROSE-MUST-2b3162f6, PROSE-MUST-49d953b3, PROSE-MUST-530de565, PROSE-MUST-5e68552b, PROSE-MUST-8b1fde57, PROSE-MUST-8e3ad988, PROSE-MUST-bc7717a4, PROSE-MUST-c33e5e4e, PROSE-MUST-c8f1e7f8, PROSE-MUST-da21bde4, PROSE-MUST-e4fbee1a",
+        "spec_refs": [
+          "PROSE-MUST-0b68b894",
+          "PROSE-MUST-27157b02",
+          "PROSE-MUST-2b3162f6",
+          "PROSE-MUST-49d953b3",
+          "PROSE-MUST-530de565",
+          "PROSE-MUST-5e68552b",
+          "PROSE-MUST-8b1fde57",
+          "PROSE-MUST-8e3ad988",
+          "PROSE-MUST-bc7717a4",
+          "PROSE-MUST-c33e5e4e",
+          "PROSE-MUST-c8f1e7f8",
+          "PROSE-MUST-da21bde4",
+          "PROSE-MUST-e4fbee1a"
+        ],
+        "action": {
+          "type": "ActSendReqResp",
+          "protocol": "/eth2/beacon_chain/req/beacon_blocks_by_range/2/ssz_snappy",
+          "payload": {
+            "kind": "builder",
+            "wrap": "ssz_snappy",
+            "name": "buildBlocksByRangeHalfOpen"
+          },
+          "timeout_ms": 5000
+        },
+        "oracle": {
+          "differential": true,
+          "must_not": [
+            "CRASH"
+          ],
+          "strength": "MUST"
+        }
+      }
+    },
+    {
       "id": "reqresp.generated.reqresp.actsendreqresp_buildblocksbyrangehalfopen.705da545",
       "category": "reqresp",
       "domain": "reqresp",
@@ -4684,6 +5066,47 @@
             "CRASH"
           ],
           "strength": "MAY"
+        }
+      }
+    },
+    {
+      "id": "reqresp.generated.reqresp.actsendreqresp_buildpingstreamcountssz.ca7ccfee",
+      "category": "reqresp",
+      "domain": "reqresp",
+      "surface": "reqresp",
+      "probe": "actsendreqresp_buildpingstreamcountssz",
+      "rule_ids": [
+        "PROSE-MUST_NOT-89347b2a"
+      ],
+      "transition": {
+        "from": "Connected",
+        "to": "Completed",
+        "label": "stateless_reqresp_actsendreqresp_buildpingstreamcountssz_ca7ccfee",
+        "weight": 10,
+        "description": "generated stateless probe for PROSE-MUST_NOT-89347b2a",
+        "condition_desc": "when rate limiting.",
+        "tags": [
+          "conditional"
+        ],
+        "spec_refs": [
+          "PROSE-MUST_NOT-89347b2a"
+        ],
+        "action": {
+          "type": "ActSendReqResp",
+          "protocol": "/eth2/beacon_chain/req/ping/1/ssz_snappy",
+          "payload": {
+            "kind": "builder",
+            "wrap": "ssz_snappy",
+            "name": "buildPingStreamCountSSZ"
+          },
+          "timeout_ms": 5000
+        },
+        "oracle": {
+          "differential": true,
+          "must_not": [
+            "CRASH"
+          ],
+          "strength": "MUST"
         }
       }
     }

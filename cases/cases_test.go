@@ -190,6 +190,14 @@ func TestPingEmptyBodyDiverges(t *testing.T) {
 	if d.Severity != runner.SeverityHigh || d.Type != runner.DivAcceptReject {
 		t.Fatalf("severity/type: %+v", d)
 	}
+	if d.ClientDetails == nil {
+		t.Fatal("divergence must carry per-client details for reporting")
+	}
+	for name, res := range d.ClientResults {
+		if d.ClientDetails[name] == "" {
+			t.Fatalf("client %s (%s) has no captured detail", name, res)
+		}
+	}
 }
 
 func TestUnknownProtocolAgainstServingNode(t *testing.T) {

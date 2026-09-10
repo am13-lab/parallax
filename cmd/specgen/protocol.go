@@ -36,7 +36,9 @@ func extractSurfaces(doc *Doc) []Surface {
 			continue
 		}
 		switch {
-		case blk.HeadingLevel == 5:
+		// Method headings are level 5 in most fork files; newer files
+		// (e.g. heze) restructure sections and use level 4.
+		case blk.HeadingLevel == 5 || blk.HeadingLevel == 4:
 			s, ok := parseMethodHeading(doc, blocks, i)
 			if ok {
 				out = append(out, s)

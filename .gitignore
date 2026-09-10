@@ -12,3 +12,8 @@
 .idea/
 .vscode/
 .DS_Store
+
+# Pipeline build artifacts
+/irdrive
+/smgen
+/specgen

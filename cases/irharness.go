@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"math/rand"
 	"strings"
+	"sync"
 	"time"
 
 	"parallax/runner"
@@ -33,7 +34,7 @@ func irForkRank(name string) int {
 // zero values (mirroring the p2p-testing executor's behavior when state is
 // unavailable).
 func irNewContext(te runner.TestEnv) *irContext {
-	ictx := &irContext{Rng: rand.New(rand.NewSource(te.RNG.Int63()))}
+	ictx := &irContext{Rng: rand.New(rand.NewSource(te.RNG.Int63())), OpenStreams: map[string]struct{}{}, PayloadCache: map[string][]byte{}}
 	ictx.ForkDigest = te.Chain.ForkDigest
 	for _, c := range te.Clients {
 		st, err := c.State(context.Background())
@@ -74,14 +75,10 @@ func irOrderCheck(ctx context.Context, client runner.Client, protocol, label str
 		timeout = 30 * time.Second
 	}
 	res, err := client.ReqResp(ctx, protocol, body, timeout)
-	if err != nil {
-		return "other:" + err.Error()
-	}
-	if res == nil {
-		return "other:nil result"
-	}
-	if res.StreamReset || (res.Error != "" && len(res.RawBytes) == 0) {
-		return "reject"
+	if err != nil || res == nil || res.StreamReset || (res.Error != "" && len(res.RawBytes) == 0) {
+		// Failed exchange: classify with the shared outcome classifier so
+		// the reject reason (reset/timeout/dial_failed) is preserved.
+		return outcome(res, err)
 	}
 	if len(res.RawBytes) == 0 {
 		// A clean zero-chunk range response is trivially ordered.
@@ -193,4 +190,39 @@ func joinForks(fs []string) string {
 		out += f
 	}
 	return out
+}
+
+// irProbeAll runs probe concurrently across every client and returns the
+// name->verdict map. Per-client probes are independent, so wall-clock cost
+// is the slowest client rather than the sum of all clients.
+func irProbeAll(te runner.TestEnv, probe func(runner.Client) string) map[string]string {	var wg sync.WaitGroup
+	var mu sync.Mutex
+	out := make(map[string]string, len(te.Clients))
+	for _, c := range te.Clients {
+		c := c
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			v := probe(c)
+			mu.Lock()
+			out[c.Name()] = v
+			mu.Unlock()
+		}()
+	}
+	wg.Wait()
+	return out
+}
+
+// irProbeAllD is irProbeAll plus per-client details: the raw probe string
+// is the substance of the verdict, so it is surfaced (minus the "other:"
+// routing prefix) for divergence reporting.
+func irProbeAllD(te runner.TestEnv, probe func(runner.Client) string) (map[string]string, map[string]string) {
+	results := irProbeAll(te, probe)
+	details := make(map[string]string, len(results))
+	for n, v := range results {
+		if strings.HasPrefix(v, "other:") {
+			details[n] = strings.TrimPrefix(v, "other:")
+		}
+	}
+	return results, details
 }

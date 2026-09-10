@@ -176,9 +176,9 @@
     {
       "from": "Connected",
       "to": "StatusExchanged",
-      "label": "sem_conn_status_rule_eth2_beacon_chain_req_status_2_ssz_snappy_61fdb75b",
+      "label": "sem_conn_status_rule_eth2_beacon_chain_req_status_2_ssz_snappy_ade97f93",
       "weight": 2,
-      "description": "AST bind: Status exchange rule: If they do, they MAY also update the contents of their [Status](../../phase0/p2p-interface.md#status) message to reflect the locally available light client data.",
+      "description": "AST bind: Status exchange rule: If they do, they MAY also update the contents of their [Status](../../phase0/p2p-interface.md#status-v1) message to reflect the locally available light client data.",
       "condition_desc": "when they do",
       "tags": [
         "conditional",
@@ -187,7 +187,7 @@
         "semantic:status"
       ],
       "spec_refs": [
-        "PROSE-MAY-1972411e"
+        "PROSE-MAY-cbd3c330"
       ],
       "action": {
         "type": "ActSendStatus",

@@ -223,6 +223,24 @@ func generatedStatemachineSpecs() []runner.Spec {
 					divs[0].Input = input
 					divs[0].Expected = strings.Join(wantVector, "/")
 					divs[0].Steps = steps
+					// Outliers are spec-relative, not consensus-relative: a
+					// client deviates when any step verdict fails its step's
+					// want (reject:<reason> satisfies "reject").
+					var off []string
+					for _, c := range te.Clients {
+						conform := true
+						for i := range plan {
+							got := steps[i].ClientResults[c.Name()]
+							if got != wantVector[i] && !(wantVector[i] == "reject" && strings.HasPrefix(got, "reject")) {
+								conform = false
+								break
+							}
+						}
+						if !conform {
+							off = append(off, c.Name())
+						}
+					}
+					divs[0].OutlierClients = off
 					divs[0].Description = fmt.Sprintf("%s: %d of %d clients deviated from the expected step outcomes",
 						fullID, len(divs[0].OutlierClients), len(results))
 				}
@@ -311,10 +329,18 @@ func generatedSemanticSpecs() []runner.Spec {
 					details[c.Name()] = detail(res, err)
 				}
 				var divs []runner.Divergence
+				var violators []string
 				for _, c := range te.Clients {
 					got := classOf(outcomes[c.Name()]) == "accept"
 					if got == chk.wantAccept {
 						continue
+					}
+					violators = append(violators, c.Name())
+				}
+				if len(violators) > 0 {
+					verb := "violates"
+					if len(violators) > 1 {
+						verb = "violate"
 					}
 					divs = append(divs, runner.Divergence{
 						TestID:         id,
@@ -322,12 +348,12 @@ func generatedSemanticSpecs() []runner.Spec {
 						SpecRuleIDs:    te.Meta.SpecRules,
 						Type:           runner.DivAcceptReject,
 						Severity:       runner.SeverityMedium,
-						Description:    fmt.Sprintf("%s: %s violates expected verdict (want accept=%v)", id, c.Name(), chk.wantAccept),
+						Description:    fmt.Sprintf("%s: %s %s expected verdict (want accept=%v)", id, strings.Join(violators, ", "), verb, chk.wantAccept),
 						Input:          chk.input + " · " + bodyHex(body),
 						Expected:       want,
 						ClientResults:  outcomes,
 						ClientDetails:  details,
-						OutlierClients: []string{c.Name()},
+						OutlierClients: violators,
 					})
 				}
 				return divs

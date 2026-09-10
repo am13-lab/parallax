@@ -14,17 +14,17 @@ import (
 func irSequenceSpecs() []runner.Spec {
 	var specs []runner.Spec
 	{
-		id := "ir_seq.cryptomsg.generated_sequence.beacon_aggregate_and_proof.duplicate_first_seen.18d71276"
+		id := "ir_seq.cryptomsg.generated_sequence.beacon_aggregate_and_proof.duplicate_first_seen.63d7631b"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "cryptomsg",
-			What:     "cryptomsg.generated_sequence.beacon_aggregate_and_proof.duplicate_first_seen.18d71276: 2-step sequence (1:cm_sequence_beacon_aggregate_and_proof_duplicate_first_seen_setup_18d71276 -> 2:cm_sequence_beacon_aggregate_and_proof_duplicate_first_seen_probe_18d71276)",
-			Metadata: runner.Metadata{SpecRules: []string{"BEACON_AGGREGATE_AND_PROOF-IGNORE-7c1a7594"}, MinClients: 2},
+			What:     "cryptomsg.generated_sequence.beacon_aggregate_and_proof.duplicate_first_seen.63d7631b: 2-step sequence (1:cm_sequence_beacon_aggregate_and_proof_duplicate_first_seen_setup_63d7631b -> 2:cm_sequence_beacon_aggregate_and_proof_duplicate_first_seen_probe_63d7631b)",
+			Metadata: runner.Metadata{SpecRules: []string{"BEACON_AGGREGATE_AND_PROOF-IGNORE-5a5dee05"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				ictx := irNewContext(te)
 				results := map[string]string{}
 				for _, cl := range te.Clients {
 					var verdicts []string
-					// step 1: cm_sequence_beacon_aggregate_and_proof_duplicate_first_seen_setup_18d71276
+					// step 1: cm_sequence_beacon_aggregate_and_proof_duplicate_first_seen_setup_63d7631b
 					payload1 := buildLiveValidBeaconAggregateAndProof(ictx)
 					ictx.StorePayload("seq_beacon_aggregate_and_proof_duplicate_first_seen", payload1)
 					gtopic1 := irFullGossipTopic(ictx, "beacon_aggregate_and_proof")
@@ -36,7 +36,7 @@ func irSequenceSpecs() []runner.Spec {
 					}
 					gv1, gerr1 := cl.ObserveGossip(ctx, gtopic1, payload1, gossipWait)
 					verdicts = append(verdicts, classOf(gossipOutcome(gv1, gerr1)))
-					// step 2: cm_sequence_beacon_aggregate_and_proof_duplicate_first_seen_probe_18d71276
+					// step 2: cm_sequence_beacon_aggregate_and_proof_duplicate_first_seen_probe_63d7631b
 					payload2, _ := ictx.LoadPayload("seq_beacon_aggregate_and_proof_duplicate_first_seen")
 					gtopic2 := irFullGossipTopic(ictx, "beacon_aggregate_and_proof")
 					if ictx.GossipTopicOverride != "" {
@@ -134,17 +134,17 @@ func irSequenceSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_seq.cryptomsg.generated_sequence.data_column_sidecar.duplicate_first_seen.51d0f050"
+		id := "ir_seq.cryptomsg.generated_sequence.data_column_sidecar.duplicate_first_seen.74f6e51f"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "cryptomsg",
-			What:     "cryptomsg.generated_sequence.data_column_sidecar.duplicate_first_seen.51d0f050: 2-step sequence (1:cm_sequence_data_column_sidecar_duplicate_first_seen_setup_51d0f050 -> 2:cm_sequence_data_column_sidecar_duplicate_first_seen_probe_51d0f050)",
+			What:     "cryptomsg.generated_sequence.data_column_sidecar.duplicate_first_seen.74f6e51f: 2-step sequence (1:cm_sequence_data_column_sidecar_duplicate_first_seen_setup_74f6e51f -> 2:cm_sequence_data_column_sidecar_duplicate_first_seen_probe_74f6e51f)",
 			Metadata: runner.Metadata{SpecRules: []string{"DATA_COLUMN_SIDECAR-IGNORE-869c65a5"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				ictx := irNewContext(te)
 				results := map[string]string{}
 				for _, cl := range te.Clients {
 					var verdicts []string
-					// step 1: cm_sequence_data_column_sidecar_duplicate_first_seen_setup_51d0f050
+					// step 1: cm_sequence_data_column_sidecar_duplicate_first_seen_setup_74f6e51f
 					payload1 := buildLiveValidDataColumnSidecar(ictx)
 					ictx.StorePayload("seq_data_column_sidecar_duplicate_first_seen", payload1)
 					gtopic1 := irFullGossipTopic(ictx, "data_column_sidecar_0")
@@ -156,7 +156,7 @@ func irSequenceSpecs() []runner.Spec {
 					}
 					gv1, gerr1 := cl.ObserveGossip(ctx, gtopic1, payload1, gossipWait)
 					verdicts = append(verdicts, classOf(gossipOutcome(gv1, gerr1)))
-					// step 2: cm_sequence_data_column_sidecar_duplicate_first_seen_probe_51d0f050
+					// step 2: cm_sequence_data_column_sidecar_duplicate_first_seen_probe_74f6e51f
 					payload2, _ := ictx.LoadPayload("seq_data_column_sidecar_duplicate_first_seen")
 					gtopic2 := irFullGossipTopic(ictx, "data_column_sidecar_0")
 					if ictx.GossipTopicOverride != "" {

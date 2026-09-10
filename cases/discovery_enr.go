@@ -128,7 +128,7 @@ func enrSpecs() []runner.Spec {
 			What:     whatForDiscovery(id),
 			Metadata: runner.Metadata{SpecRules: []string{rule}},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
-				results := map[string]string{}
+				results, details := map[string]string{}, map[string]string{}
 				for _, c := range te.Clients {
 					rec, out := enrOf(ctx, c)
 					if out != "" {
@@ -137,7 +137,7 @@ func enrSpecs() []runner.Spec {
 					}
 					results[c.Name()] = verdict(check(rec))
 				}
-				return diverge(id, "discovery", te.Meta, results)
+				return diverge(id, "discovery", te.Meta, results, details)
 			},
 		}
 	}
