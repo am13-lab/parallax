@@ -1,0 +1,10 @@
+# Fast validation config: 3 mainstream CLs on geth.
+# Daily iteration / pipeline validation — finishes in minutes.
+# For full coverage use net.yaml (6 CLs) or net-matrix.yaml (EL x CL matrix).
+participants:
+  - el_type: geth
+    cl_type: lighthouse
+  - el_type: geth
+    cl_type: prysm
+  - el_type: geth
+    cl_type: teku

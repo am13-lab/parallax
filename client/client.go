@@ -130,7 +130,7 @@ func (c *Client) statusHandshake(ctx context.Context) {
 		if strings.HasSuffix(proto, "/2/") {
 			body = c.statusV2
 		}
-		_, _, err := c.probe.SendAndReceive(ctx, proto, wire.BuildSSZSnappy(body), 5*time.Second)
+		_, _, err := c.probe.SendAndReceive(ctx, proto, wire.BuildSSZSnappy(body), 2*time.Second)
 		if err != nil {
 			c.log.Warn("status handshake failed (non-fatal)", "client", c.name, "protocol", proto, "err", err)
 		}
@@ -150,10 +150,9 @@ func (c *Client) OwnPeerID() string { return c.probe.OwnPeerID() }
 func (c *Client) ReqResp(ctx context.Context, protocol string, body []byte, timeout time.Duration) (*runner.ReqRespResult, error) {
 	if err := c.probe.EnsureConnected(ctx); err != nil {
 		if cerr := c.reconnect(ctx); cerr != nil {
-			return &runner.ReqRespResult{
-				Error:       fmt.Sprintf("reconnect failed: %s (original: %s)", cerr, err),
-				StreamReset: true,
-			}, nil
+			return c.classify(&runner.ReqRespResult{
+				Error: fmt.Sprintf("reconnect failed: %s (original: %s)", cerr, err),
+			}), nil
 		}
 	}
 
@@ -166,35 +165,56 @@ func (c *Client) ReqResp(ctx context.Context, protocol string, body []byte, time
 	}
 	if err != nil {
 		result.Error = err.Error()
-		if len(resp) == 0 {
+		// Only a peer-initiated stream reset is surfaced as StreamReset;
+		// timeouts and dial failures keep their real reason in Error.
+		if len(resp) == 0 && isStreamReset(err.Error()) {
 			result.StreamReset = true
 		}
-		// Connection-level failure despite EnsureConnected: reconnect once
-		// through the next address and retry a single time.
+		// Connection-level failures get exactly one retry to tell a
+		// network blip from consistent client behavior. Timeouts are NOT
+		// retried: a retry doubles the wait (10s+ per case) and the
+		// timeout itself is already recorded as the failure reason.
 		if len(resp) == 0 && isStreamOpenFailure(err.Error()) {
-			if cerr := c.reconnect(ctx); cerr == nil {
-				resp2, ttfb2, dur2, err2 := c.probe.SendAndReceiveWithTTFB(ctx, protocol, body, timeout)
-				if err2 == nil {
-					result = &runner.ReqRespResult{
-						RawBytes:        resp2,
-						Duration:        dur2,
-						TimeToFirstByte: ttfb2,
-					}
+			if cerr := c.reconnect(ctx); cerr != nil {
+				result.Error = fmt.Sprintf("reconnect failed: %s (original: %s)", cerr, err)
+				return c.classify(result), nil
+			}
+			resp2, ttfb2, dur2, err2 := c.probe.SendAndReceiveWithTTFB(ctx, protocol, body, timeout)
+			if err2 == nil {
+				result = &runner.ReqRespResult{
+					RawBytes:        resp2,
+					Duration:        dur2,
+					TimeToFirstByte: ttfb2,
 				}
+			} else {
+				result.Error = fmt.Sprintf("%s (consistent after retry; original: %s)", err2, err)
 			}
 		}
 	}
 
+	return c.classify(result), nil
+}
+
+// classify parses the raw response bytes into chunks once, at the single
+// return point of ReqResp.
+func (c *Client) classify(result *runner.ReqRespResult) *runner.ReqRespResult {
 	if len(result.RawBytes) > 0 {
 		result.ResponseChunks = wire.ParseReqRespResponse(result.RawBytes)
 	}
-	return result, nil
+	return result
 }
 
 func isStreamOpenFailure(msg string) bool {
 	return strings.Contains(msg, "connection failed") ||
 		strings.Contains(msg, "connection closed") ||
 		strings.Contains(msg, "all dials failed")
+}
+
+// isStreamReset reports whether the error text indicates the peer reset
+// the stream (or the underlying connection), as opposed to a timeout or
+// dial failure.
+func isStreamReset(msg string) bool {
+	return strings.Contains(msg, "reset")
 }
 
 // SendOnly opens a stream, writes the body, and does not read.
@@ -317,12 +337,12 @@ func (c *Client) Connect(ctx context.Context, mode runner.ConnectMode) error {
 }
 
 func (c *Client) freshConnect(ctx context.Context, handshake bool) error {
-	c.mu.Lock()
-	if c.observer != nil {
-		c.observer.Close()
-		c.observer = nil
-	}
-	c.mu.Unlock()
+	// The observer is NOT torn down here: it is a passive subscriber on a
+	// dedicated host, so a reconnect of the probe does not affect it.
+	// Tearing it down made every post-reconnect gossip action pay a full
+	// rebuild (new host + connect + 2s mesh warmup), which dominated the
+	// batch runtime. p2p-testing keeps the observer client-lifetime for
+	// the same reason.
 
 	newProbe, err := probe.New()
 	if err != nil {
@@ -352,12 +372,8 @@ func (c *Client) RotateIdentity(ctx context.Context) error {
 		c.proxyIdx = -1
 	}
 
-	c.mu.Lock()
-	if c.observer != nil {
-		c.observer.Close()
-		c.observer = nil
-	}
-	c.mu.Unlock()
+	// The observer stays alive across identity rotation (same rationale as
+	// freshConnect; matches p2p-testing).
 
 	newProbe, err := probe.New()
 	if err != nil {

@@ -82,7 +82,6 @@ func cmdAnalyze(args []string) error {
 	fs.StringVar(&cfg.ReportPath, "report", "", "path to report.json")
 	fs.StringVar(&cfg.AllowlistPath, "allowlist", "knowledge/known_divergences.json", "path to known divergences JSON")
 	fs.BoolVar(&cfg.Legacy, "legacy", false, "emit legacy-shape JSON next to the report")
-	fs.BoolVar(&cfg.HTML, "html", false, "also emit a standalone HTML report")
 	fs.StringVar(&cfg.JUnitOut, "junit-out", "", "also emit JUnit XML to this path")
 	if err := fs.Parse(args); err != nil {
 		return err

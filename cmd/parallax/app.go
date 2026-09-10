@@ -7,12 +7,15 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"os/exec"
+	"path/filepath"
 	"strings"
 	"time"
 
 	"parallax/cases"
 	"parallax/client"
 	"parallax/env"
+	"parallax/env/hiveenv"
 	"parallax/env/kurtosisenv"
 	"parallax/env/staticenv"
 	"parallax/report"
@@ -32,12 +35,20 @@ type RunConfig struct {
 	// scheduling
 	Parallel int // concurrent specs per wave (1 = serial)
 
+	// hive provider
+	HiveGenDir     string
+	HiveClientList string
+	HiveClients    []string
+	HivegenBin     string
+
 	// selection
-	TestIDList   string
-	CategoryList string
-	TestIDs      []string
-	Categories   []string
-	IncludeHeavy bool
+	TestIDList        string
+	CategoryList      string
+	ExcludePrefixList string
+	TestIDs           []string
+	Categories        []string
+	ExcludePrefixes   []string
+	IncludeHeavy      bool
 
 	// scheduling
 	Seed           int64
@@ -95,6 +106,9 @@ func runRun(ctx context.Context, cfg RunConfig) error {
 	}
 
 	specs := cases.All()
+	if len(cfg.ExcludePrefixes) > 0 {
+		specs = excludeSpecPrefixes(specs, cfg.ExcludePrefixes)
+	}
 	rep := runner.Run(ctx, specs, clients, envr, chain, runner.Options{
 		Seed:           cfg.Seed,
 		TestIDs:        cfg.TestIDs,
@@ -114,6 +128,25 @@ func runRun(ctx context.Context, cfg RunConfig) error {
 	}
 	printSummary(cfg.Stdout, rep)
 	return nil
+}
+
+// excludeSpecPrefixes drops specs whose ID starts with any of the given
+// prefixes (e.g. the IR-generated families: "ir.", "ir_").
+func excludeSpecPrefixes(specs []runner.Spec, prefixes []string) []runner.Spec {
+	out := specs[:0]
+	for _, s := range specs {
+		excluded := false
+		for _, p := range prefixes {
+			if strings.HasPrefix(s.ID, p) {
+				excluded = true
+				break
+			}
+		}
+		if !excluded {
+			out = append(out, s)
+		}
+	}
+	return out
 }
 
 // filterEndpoints keeps only endpoints whose Name contains one of the
@@ -147,6 +180,17 @@ func splitComma(s string) []string {
 	return out
 }
 
+// hiveGenFilesPresent reports whether the hivegen output dir already
+// carries a complete provisioning set.
+func hiveGenFilesPresent(dir string) bool {
+	for _, f := range []string{"genesis.json", "genesis.ssz", "config.yaml"} {
+		if _, err := os.Stat(filepath.Join(dir, f)); err != nil {
+			return false
+		}
+	}
+	return true
+}
+
 func setupEnv(ctx context.Context, cfg RunConfig) (env.Environment, []env.Endpoint, error) {
 	switch cfg.Env {
 	case "static":
@@ -169,6 +213,35 @@ func setupEnv(ctx context.Context, cfg RunConfig) (env.Environment, []env.Endpoi
 			Enclave:  cfg.Enclave,
 			ArgsFile: cfg.ArgsFile,
 			Attach:   cfg.Attach,
+		})
+		if err != nil {
+			return nil, nil, err
+		}
+		return envr, envr.Endpoints(), nil
+	case "hive":
+		genDir := cfg.HiveGenDir
+		if genDir == "" {
+			// Default: keep the provisioning files inside the batch
+			// output dir so they are archived with the report.
+			genDir = filepath.Join(cfg.OutputDir, "gen")
+		}
+		if !hiveGenFilesPresent(genDir) {
+			bin := cfg.HivegenBin
+			if bin == "" {
+				bin = "dist/hivegen"
+			}
+			cmd := exec.Command(bin, "-out", genDir, "-genesis-delay", "90s")
+			cmd.Stdout = os.Stdout
+			cmd.Stderr = os.Stderr
+			if err := cmd.Run(); err != nil {
+				return nil, nil, fmt.Errorf("hivegen (%s): %w", bin, err)
+			}
+		}
+		prov := hiveenv.Provider{}
+		envr, err := prov.Setup(ctx, hiveenv.Config{
+			Enclave:     cfg.Enclave,
+			GenDir:      genDir,
+			ClientTypes: cfg.HiveClients,
 		})
 		if err != nil {
 			return nil, nil, err
@@ -218,9 +291,6 @@ func writeOutputs(outputDir string, rep *runner.Report) error {
 	if err := os.WriteFile(outputDir+"/junit.xml", junit, 0o644); err != nil {
 		return err
 	}
-	if err := report.ArchiveRun(rep); err != nil {
-		fmt.Fprintf(os.Stderr, "warn: archive run: %v\n", err)
-	}
 	return nil
 }
 
@@ -240,7 +310,6 @@ type AnalyzeConfig struct {
 	ReportPath    string
 	AllowlistPath string
 	Legacy        bool
-	HTML          bool
 	JUnitOut      string
 }
 
@@ -291,26 +360,6 @@ func runAnalyze(cfg AnalyzeConfig, stdout io.Writer) error {
 		fmt.Fprintf(stdout, "junit report: %s\n", cfg.JUnitOut)
 	}
 
-	if cfg.HTML {
-		historyDir, err := report.HistoryDir()
-		if err != nil {
-			historyDir = ""
-		}
-		runs, err := report.CollectRuns(&rep, findings, historyDir, 20)
-		if err != nil {
-			return fmt.Errorf("collect history: %w", err)
-		}
-		htmlData, err := report.WriteHTMLRuns(runs, 0)
-		if err != nil {
-			return fmt.Errorf("render html: %w", err)
-		}
-		htmlPath := strings.TrimSuffix(cfg.ReportPath, ".json") + ".html"
-		if err := os.WriteFile(htmlPath, htmlData, 0o644); err != nil {
-			return err
-		}
-		fmt.Fprintf(stdout, "html report: %s (%d runs)\n", htmlPath, len(runs))
-	}
-
 	if cfg.JUnitOut != "" {
 		junit, err := report.WriteJUnit(&rep)
 		if err != nil {
@@ -354,6 +403,7 @@ func parseRunArgs(fs *flag.FlagSet, cfg *RunConfig, args []string) error {
 	fs.BoolVar(&cfg.Attach, "attach", false, "kurtosis: attach to existing enclave instead of provisioning")
 	fs.StringVar(&cfg.TestIDList, "test", "", "comma-separated exact test IDs (bypasses run-class filter)")
 	fs.StringVar(&cfg.CategoryList, "category", "", "comma-separated categories")
+	fs.StringVar(&cfg.ExcludePrefixList, "exclude-prefix", "", "comma-separated test-ID prefixes to exclude (e.g. \"ir.,ir_\")")
 	fs.BoolVar(&cfg.IncludeHeavy, "include-heavy", false, "include heavy tests")
 	fs.Int64Var(&cfg.Seed, "seed", 42, "random seed")
 	fs.DurationVar(&cfg.InterTestDelay, "delay", time.Second, "delay between tests")
@@ -363,6 +413,9 @@ func parseRunArgs(fs *flag.FlagSet, cfg *RunConfig, args []string) error {
 	fs.DurationVar(&cfg.PerTestTimeout, "test-timeout", 2*time.Minute, "per-test timeout")
 	fs.StringVar(&cfg.Preset, "preset", "mainnet", "chain preset label")
 	fs.StringVar(&cfg.Clients, "clients", "", "comma-separated client name substrings to include (empty = all)")
+	fs.StringVar(&cfg.HiveGenDir, "hive-gen", "", "hive env: hivegen output dir (default <out>/gen, generated on demand)")
+	fs.StringVar(&cfg.HivegenBin, "hivegen-bin", "dist/hivegen", "hive env: path to the hivegen binary for on-demand provisioning")
+	fs.StringVar(&cfg.HiveClientList, "hive-clients", "lighthouse", "hive env: comma-separated CL client types")
 	fs.IntVar(&cfg.Parallel, "parallel", 4, "concurrent specs per wave (1 = serial)")
 	fs.StringVar(&cfg.OutputDir, "out", "results", "output directory")
 	if err := fs.Parse(args); err != nil {
@@ -370,5 +423,7 @@ func parseRunArgs(fs *flag.FlagSet, cfg *RunConfig, args []string) error {
 	}
 	cfg.TestIDs = splitComma(cfg.TestIDList)
 	cfg.Categories = splitComma(cfg.CategoryList)
+	cfg.ExcludePrefixes = splitComma(cfg.ExcludePrefixList)
+	cfg.HiveClients = splitComma(cfg.HiveClientList)
 	return nil
 }
