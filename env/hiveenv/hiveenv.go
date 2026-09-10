@@ -170,6 +170,12 @@ func (p *Provider) Setup(ctx context.Context, cfg any) (env.Environment, error) 
 	if !ok {
 		return nil, fmt.Errorf("hive provider expects hiveenv.Config, got %T", cfg)
 	}
+	// docker bind mounts require absolute host paths.
+	abs, err := filepath.Abs(hcfg.GenDir)
+	if err != nil {
+		return nil, err
+	}
+	hcfg.GenDir = abs
 	for _, f := range []string{"genesis.json", "genesis.ssz", "config.yaml"} {
 		if _, err := lookupFile(hcfg.GenDir, f); err != nil {
 			return nil, fmt.Errorf("genesis dir %s: %w (generate with hive-sim/cmd/hivegen)", hcfg.GenDir, err)
