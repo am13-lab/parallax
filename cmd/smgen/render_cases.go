@@ -356,11 +356,10 @@ func renderCaseRun(b *strings.Builder, t *Transition, category string, pm *Proto
 		if err := renderPayloadBody(b, &t.Action, "body", pm); err != nil {
 			return err
 		}
-		fmt.Fprintf(b, "\t\t\t\tresults := map[string]string{}\n")
-		fmt.Fprintf(b, "\t\t\t\tfor _, c := range te.Clients {\n")
+		fmt.Fprintf(b, "\t\t\t\tresults := irProbeAll(te, func(c runner.Client) string {\n")
 		fmt.Fprintf(b, "\t\t\t\t\tres, err := c.ReqResp(ctx, %q, body, timeout)\n", proto)
-		fmt.Fprintf(b, "\t\t\t\t\tresults[c.Name()] = outcome(res, err)\n")
-		fmt.Fprintf(b, "\t\t\t\t}\n")
+		fmt.Fprintf(b, "\t\t\t\t\treturn outcome(res, err)\n")
+		fmt.Fprintf(b, "\t\t\t\t})\n")
 	case "gossip":
 		fmt.Fprintf(b, "\t\t\t\ttopic := irFullGossipTopic(ictx, %q)\n", t.Action.Protocol)
 		if err := renderPayloadBody(b, &t.Action, "payload", pm); err != nil {
@@ -405,12 +404,10 @@ func renderCaseRun(b *strings.Builder, t *Transition, category string, pm *Proto
 		if err := renderPayloadBody(b, &t.Action, "body", pm); err != nil {
 			return err
 		}
-		fmt.Fprintf(b, "\t\t\t\tresults := map[string]string{}\n")
-		fmt.Fprintf(b, "\t\t\t\tfor _, c := range te.Clients {\n")
+		fmt.Fprintf(b, "\t\t\t\tresults := irProbeAll(te, func(c runner.Client) string {\n")
 		fmt.Fprintf(b, "\t\t\t\t\tif err := c.SendOnly(ctx, %q, body); err != nil {\n", proto)
-		fmt.Fprintf(b, "\t\t\t\t\t\tresults[c.Name()] = \"other:\" + err.Error()\n")
-		fmt.Fprintf(b, "\t\t\t\t\t} else {\n\t\t\t\t\t\tresults[c.Name()] = \"sent\"\n\t\t\t\t\t}\n")
-		fmt.Fprintf(b, "\t\t\t\t}\n")
+		fmt.Fprintf(b, "\t\t\t\t\t\treturn \"other:\" + err.Error()\n\t\t\t\t\t}\n\t\t\t\t\treturn \"sent\"\n")
+		fmt.Fprintf(b, "\t\t\t\t})\n")
 	case "reconnect":
 		emitReconnectBody(b)
 	case "statequery":
@@ -435,11 +432,11 @@ func renderCaseRun(b *strings.Builder, t *Transition, category string, pm *Proto
 		if err := renderPayloadBody(b, &t.Action, "body", pm); err != nil {
 			return err
 		}
-		fmt.Fprintf(b, "\t\t\t\tresults := map[string]string{}\n")
-		fmt.Fprintf(b, "\t\t\t\tfor _, c := range te.Clients {\n")
+		fmt.Fprintf(b, "\t\t\t\tresults := irProbeAll(te, func(c runner.Client) string {\n")
 		fmt.Fprintf(b, "\t\t\t\t\tir, err := c.OpenStream(ctx, %q)\n", proto)
-		fmt.Fprintf(b, "\t\t\t\t\tif err != nil {\n\t\t\t\t\t\tresults[c.Name()] = \"other:\" + err.Error()\n\t\t\t\t\t\tcontinue\n\t\t\t\t\t}\n")
-		fmt.Fprintf(b, "\t\t\t\t\tif len(body) > 0 {\n\t\t\t\t\t\tif werr := ir.WriteChunk(body, false); werr != nil {\n\t\t\t\t\t\t\tresults[c.Name()] = \"other:\" + werr.Error()\n\t\t\t\t\t\t\tcontinue\n\t\t\t\t\t\t}\n\t\t\t\t\t\tresults[c.Name()] = \"written\"\n\t\t\t\t\t} else {\n\t\t\t\t\t\tresults[c.Name()] = \"opened\"\n\t\t\t\t\t}\n\t\t\t\t\tir.Close()\n\t\t\t\t}\n")
+		fmt.Fprintf(b, "\t\t\t\t\tif err != nil {\n\t\t\t\t\t\treturn \"other:\" + err.Error()\n\t\t\t\t\t}\n")
+		fmt.Fprintf(b, "\t\t\t\t\tif len(body) > 0 {\n\t\t\t\t\t\tif werr := ir.WriteChunk(body, false); werr != nil {\n\t\t\t\t\t\t\treturn \"other:\" + werr.Error()\n\t\t\t\t\t\t}\n\t\t\t\t\t\treturn \"written\"\n\t\t\t\t\t}\n\t\t\t\t\treturn \"opened\"\n")
+		fmt.Fprintf(b, "\t\t\t\t})\n")
 	case "writepartial":
 		proto := t.Action.Protocol
 		if proto == "" {

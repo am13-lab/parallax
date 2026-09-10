@@ -8,6 +8,7 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"strings"
 	"time"
 
 	"parallax/cases"
@@ -91,6 +92,12 @@ func runSimulation(cfg SimConfig) (*runner.Report, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Minute)
 	defer cancel()
 
+	// In-memory test nodes relay gossip within milliseconds; the 8s devnet
+	// propagation window would add hours across the ~260 gossip call sites.
+	// 1s leaves margin over the sub-100ms in-memory relay without the
+	// boundary flapping shorter windows showed.
+	cases.SetGossipWait(1 * time.Second)
+
 	envCfg := &staticenv.Config{}
 	type liveNode struct {
 		node *testnode.Node
@@ -132,7 +139,14 @@ func runSimulation(cfg SimConfig) (*runner.Report, error) {
 	}
 
 	chain := runner.ChainConfig{Preset: "mainnet", ForkDigest: [4]byte{0xde, 0xad, 0xbe, 0xef}, CustodyRequirement: 4}
-	rep := runner.Run(ctx, cases.All(), clients, envr, chain, runner.Options{
+	// The simulation runs the hand-written families, the 30 statemachine
+	// representative sequences, and the fast deterministic IR families
+	// (req/resp, discovery, concurrency probes). The remaining IR cases —
+	// gossip validation, walker plans, crypto-msg sweeps, peer scoring,
+	// resource exhaustion — are devnet-run territory: slower,
+	// timing-sensitive, or deliberately degrading.
+	specs := simSelection(cases.All())
+	rep := runner.Run(ctx, specs, clients, envr, chain, runner.Options{
 		Seed:           42,
 		PerTestTimeout: 2 * time.Minute,
 		Progress: func(r runner.TestResult) {
@@ -160,4 +174,33 @@ func runSimulation(cfg SimConfig) (*runner.Report, error) {
 		return nil, err
 	}
 	return rep, nil
+}
+
+// simIRAllowlist is the subset of IR-generated families the in-memory
+// simulation exercises.
+var simIRAllowlist = []string{
+	"ir.ReqResp.",
+	"ir.Discovery.",
+	"ir.Concurrent.",
+	"ir_stateless.reqresp.",
+	"ir_stateless.discovery.",
+}
+
+// simSelection keeps the hand-written families, the statemachine
+// representative sequences, and the allowlisted fast IR families.
+func simSelection(all []runner.Spec) []runner.Spec {
+	out := make([]runner.Spec, 0, len(all))
+	for _, s := range all {
+		if !strings.HasPrefix(s.ID, "ir.") && !strings.HasPrefix(s.ID, "ir_") {
+			out = append(out, s)
+			continue
+		}
+		for _, p := range simIRAllowlist {
+			if strings.HasPrefix(s.ID, p) {
+				out = append(out, s)
+				break
+			}
+		}
+	}
+	return out
 }
