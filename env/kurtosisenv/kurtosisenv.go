@@ -157,6 +157,11 @@ func (p *Provider) Setup(ctx context.Context, cfg any) (env.Environment, error) 
 		return nil, fmt.Errorf("kurtosis provider expects kurtosisenv.Config, got %T", cfg)
 	}
 	if !kcfg.Attach {
+		// A leftover enclave carries stale client state (peer-score bans
+		// can outlive the batch by an hour+), which would poison the run.
+		// Always start from a clean slate; a missing enclave is not an
+		// error here — Provision below creates it.
+		_ = p.API.Destroy(ctx, kcfg.Enclave)
 		if err := p.API.Provision(ctx, kcfg.Enclave, kcfg.ArgsFile); err != nil {
 			return nil, fmt.Errorf("provision enclave %s: %w", kcfg.Enclave, err)
 		}

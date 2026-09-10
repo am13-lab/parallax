@@ -24,6 +24,7 @@ type fakeAPI struct {
 	services   []kurtosisenv.ServiceInfo
 	logs       map[string][]string
 	provisions []string // args files seen
+	destroyed  []string // enclaves destroyed, in call order
 	failHTTP   bool
 }
 
@@ -51,7 +52,12 @@ func (f *fakeAPI) Provision(ctx context.Context, enclaveName, argsFile string) e
 	return nil
 }
 
-func (f *fakeAPI) Destroy(ctx context.Context, enclaveName string) error { return nil }
+func (f *fakeAPI) Destroy(ctx context.Context, enclaveName string) error {
+	f.mu.Lock()
+	defer f.mu.Unlock()
+	f.destroyed = append(f.destroyed, enclaveName)
+	return nil
+}
 
 // beaconServer answers /eth/v1/node/identity with a fixed peer ID.
 func beaconServer(t *testing.T, peerID string) *httptest.Server {
@@ -226,4 +232,49 @@ func srvPort(t *testing.T, srv *httptest.Server) uint16 {
 		t.Fatal(err)
 	}
 	return uint16(port)
+}
+
+// TestSetupFreshEnclaveDestroysLeftover verifies that a non-attach Setup
+// always destroys any leftover enclave before provisioning: stale client
+// state (peer-score bans outliving the batch) must never leak into a run.
+func TestSetupFreshEnclaveDestroysLeftover(t *testing.T) {
+	fake := &fakeAPI{services: []kurtosisenv.ServiceInfo{{
+		Name:     "cl-1-prysm-geth",
+		PublicIP: "127.0.0.1",
+		Ports:    map[string]uint16{"tcp-discovery": 9000},
+	}}}
+	p := &kurtosisenv.Provider{API: fake}
+	_, err := p.Setup(context.Background(), kurtosisenv.Config{
+		Enclave:  "parallax",
+		ArgsFile: "net.yaml",
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(fake.destroyed) != 1 || fake.destroyed[0] != "parallax" {
+		t.Fatalf("setup must destroy the leftover enclave first, destroyed=%v", fake.destroyed)
+	}
+	if len(fake.provisions) != 1 {
+		t.Fatalf("setup must provision after destroying, provisions=%v", fake.provisions)
+	}
+}
+
+// TestSetupAttachDoesNotDestroy verifies attach mode leaves the enclave.
+func TestSetupAttachDoesNotDestroy(t *testing.T) {
+	fake := &fakeAPI{services: []kurtosisenv.ServiceInfo{{
+		Name:     "cl-1-prysm-geth",
+		PublicIP: "127.0.0.1",
+		Ports:    map[string]uint16{"tcp-discovery": 9000},
+	}}}
+	p := &kurtosisenv.Provider{API: fake}
+	_, err := p.Setup(context.Background(), kurtosisenv.Config{
+		Enclave: "parallax",
+		Attach:  true,
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(fake.destroyed) != 0 {
+		t.Fatalf("attach must not destroy, destroyed=%v", fake.destroyed)
+	}
 }
