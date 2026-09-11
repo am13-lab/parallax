@@ -85,8 +85,20 @@ go run ./cmd/parallax analyze --report results/hive-quick/report.json \
 Regenerate the spec-derived test cases end to end (knowledge artifacts, IR
 plans, and runner.Spec cases) from a consensus-specs checkout:
 
+`specchain` drives the pipeline either one-shot or staged — each stage
+leaves inspectable artifacts (`knowledge/`, generated case files):
+
 ```bash
+# one-shot: every stage in order
 go run ./cmd/specchain -specs /path/to/consensus-specs/specs
+
+# staged: run one stage at a time, inspect artifacts between steps
+go run ./cmd/specchain spec  -specs /path/to/consensus-specs/specs
+go run ./cmd/specchain ir
+go run ./cmd/specchain cases
+
+# artifact presence and freshness per stage
+go run ./cmd/specchain status
 ```
 
 Each stage can also run on its own for partial regeneration:

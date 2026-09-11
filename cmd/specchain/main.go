@@ -93,13 +93,15 @@ func printStatus() {
 
 func usage() {
 	fmt.Fprintln(os.Stderr, strings.TrimSpace(`
-usage:
-  specchain [-specs DIR]          run the full pipeline
-  specchain spec  [-specs DIR]    stage 1: specs -> knowledge JSONs
-  specchain ir                    stage 2: knowledge JSONs -> SM-IR plans
-  specchain cases                 stage 3: SM-IR plans -> Go case files
-  specchain all [-specs DIR]      same as the full pipeline
-  specchain status                artifact presence and freshness`))
+specchain: staged or one-shot generation from consensus specs to Go test cases
+(pipeline: specs -> knowledge JSONs -> SM-IR plans -> Go case files)
+
+  specchain [-specs DIR]          one-shot: run every stage in order
+  specchain all [-specs DIR]      one-shot (explicit form)
+  specchain spec  [-specs DIR]    staged: specs -> knowledge JSONs
+  specchain ir                    staged: knowledge JSONs -> SM-IR plans
+  specchain cases                 staged: SM-IR plans -> Go case files
+  specchain status                artifact presence and freshness per stage`))
 	os.Exit(2)
 }
 
