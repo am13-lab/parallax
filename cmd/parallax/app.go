@@ -10,6 +10,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"strings"
+	"syscall"
 	"time"
 
 	"parallax/cases"
@@ -34,6 +35,11 @@ type RunConfig struct {
 	Clients string
 	// scheduling
 	Parallel int // concurrent specs per wave (1 = serial)
+
+	// one-shot regeneration: run the spec pipeline, rebuild this binary,
+	// then exec the fresh binary for the actual run
+	Regen    bool
+	SpecsDir string
 
 	// hive provider
 	HiveGenDir     string
@@ -70,6 +76,38 @@ type RunConfig struct {
 func runRun(ctx context.Context, cfg RunConfig) error {
 	if cfg.Stdout == nil {
 		cfg.Stdout = os.Stdout
+	}
+	if cfg.Regen {
+		// One-shot bootstrap: regenerate the spec-derived case sources,
+		// rebuild this binary, and hand over to the fresh build. Requires
+		// running from the source tree with the go toolchain available.
+		fmt.Fprintln(cfg.Stdout, "==> regenerating spec-derived cases")
+		specs := cfg.SpecsDir
+		if specs == "" {
+			specs = filepath.Join("consensus-specs", "specs")
+		}
+		chain := exec.Command("go", "run", "./cmd/specchain", "all", "-specs", specs)
+		chain.Stdout = cfg.Stdout
+		chain.Stderr = os.Stderr
+		if err := chain.Run(); err != nil {
+			return fmt.Errorf("specchain: %w", err)
+		}
+		fmt.Fprintln(cfg.Stdout, "==> rebuilding binary")
+		build := exec.Command("go", "build", "-o", "dist/parallax-final", "./cmd/parallax")
+		build.Stdout = cfg.Stdout
+		build.Stderr = os.Stderr
+		if err := build.Run(); err != nil {
+			return fmt.Errorf("rebuild: %w", err)
+		}
+		args := make([]string, 0, len(os.Args))
+		for _, a := range os.Args {
+			if a == "-regen" || a == "-regen=true" {
+				continue
+			}
+			args = append(args, a)
+		}
+		fmt.Fprintln(cfg.Stdout, "==> handing over to fresh binary")
+		return syscall.Exec("dist/parallax-final", args, os.Environ())
 	}
 	envr, endpoints, err := setupEnv(ctx, cfg)
 	if err != nil {
@@ -452,6 +490,8 @@ func parseRunArgs(fs *flag.FlagSet, cfg *RunConfig, args []string) error {
 	fs.BoolVar(&cfg.Attach, "attach", false, "kurtosis: attach to existing enclave instead of provisioning")
 	fs.StringVar(&cfg.TestIDList, "test", "", "comma-separated exact test IDs (bypasses run-class filter)")
 	fs.StringVar(&cfg.CategoryList, "category", "", "comma-separated categories")
+	fs.BoolVar(&cfg.Regen, "regen", false, "regenerate spec cases, rebuild, then run (source tree + go toolchain required)")
+	fs.StringVar(&cfg.SpecsDir, "specs-dir", filepath.Join("consensus-specs", "specs"), "consensus-specs root for -regen")
 	fs.StringVar(&cfg.Suite, "suite", "quick", "test tier: quick | standard | full (default quick)")
 	fs.StringVar(&cfg.ExcludePrefixList, "exclude-prefix", "", "comma-separated test-ID prefixes to exclude (e.g. \"ir.,ir_\")")
 	fs.BoolVar(&cfg.IncludeHeavy, "include-heavy", false, "include heavy tests")

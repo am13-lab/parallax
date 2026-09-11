@@ -82,6 +82,17 @@ go run ./cmd/parallax analyze --report results/hive-quick/report.json \
 
 ## One-shot runs
 
+CLI one-shot (regenerates spec cases, rebuilds, then runs — requires the
+source tree and the go toolchain):
+
+```bash
+go run ./cmd/parallax run -regen \
+    -specs-dir /path/to/consensus-specs/specs \
+    -env hive -enclave hivesmoke \
+    -hive-clients "lighthouse,teku,prysm,nimbus,lodestar,grandine" \
+    -out results/quick
+```
+
 `make` wraps everything: spec-case regeneration when absent, build, and a
 live tier run on the hive path.
 
