@@ -21,6 +21,10 @@ worked recipe for adding more tests. Summary:
 - every layer is tested without a live devnet through an in-process fake
   beacon node (testnode) and fake backend servers
 
+Prerequisites: Go 1.25+. For live devnets: Docker (OrbStack or
+Docker Desktop) and the kurtosis CLI
+(`brew install kurtosis-tech/tap/kurtosis-cli`).
+
 ## Usage
 
 ### 1. One-shot full pipeline
@@ -132,6 +136,8 @@ go run ./cmd/smgen -generate-sequences knowledge/ir/sequence_tests_generated.jso
 typed method definitions and refreshes protocol availability from the spec.
 
 ### 5. Utilities
+||||||| 17d8d80
+## Commands
 
 ```bash
 # show the case registry

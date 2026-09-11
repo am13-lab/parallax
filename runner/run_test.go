@@ -394,3 +394,37 @@ func TestPanicBecomesError(t *testing.T) {
 		t.Fatalf("summary errors: %+v", rep.Summary)
 	}
 }
+
+func TestSystemicHealthFailureDoesNotBan(t *testing.T) {
+	// When EVERY client fails the post-test health check, the failure is
+	// environmental (host stall): no client may be banned.
+	a := newFakeClient("a")
+	b := newFakeClient("b")
+	poison := &atomic.Bool{}
+	a.poison, b.poison = poison, poison
+	cs := []runner.Client{a, b}
+
+	seen := map[string]int{}
+	var mu sync.Mutex
+	specs := []runner.Spec{
+		spec("t.first", func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
+			poison.Store(true) // everything dies during this test
+			return nil
+		}),
+		spec("t.second", func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
+			mu.Lock()
+			seen["clients"] = len(te.Clients)
+			mu.Unlock()
+			return nil
+		}),
+	}
+	rep := runner.Run(context.Background(), specs, cs, fe0(), runner.ChainConfig{},
+		runner.Options{Seed: 1, BanThreshold: 1})
+
+	mu.Lock()
+	n := seen["clients"]
+	mu.Unlock()
+	if n != 2 {
+		t.Fatalf("systemic failure must not ban: t.second saw %d clients (excluded=%v)", n, rep.Results[1].ExcludedClients)
+	}
+}

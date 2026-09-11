@@ -400,8 +400,25 @@ func Run(ctx context.Context, specs []Spec, clients []Client, environment env.En
 	postHealth := func(usable []Client) {
 		mu.Lock()
 		defer mu.Unlock()
+		// A failure hitting EVERY usable client at once is environmental
+		// (host stall, VM pressure) and must not ban anyone — ported from
+		// main's first-live-run stability work.
+		healthFailures := 0
 		for _, c := range usable {
-			hctx, hcancel := context.WithTimeout(ctx, 2*time.Second)
+			hctx, hcancel := context.WithTimeout(ctx, 8*time.Second)
+			err := c.Health(hctx)
+			hcancel()
+			if err != nil {
+				healthFailures++
+			}
+		}
+		if len(usable) > 0 && healthFailures == len(usable) {
+			slog.Warn("all clients failed post-test health check; treating as environmental, no bans",
+				"clients", len(usable))
+			return
+		}
+		for _, c := range usable {
+			hctx, hcancel := context.WithTimeout(ctx, 8*time.Second)
 			err := c.Health(hctx)
 			hcancel()
 			if err != nil {
