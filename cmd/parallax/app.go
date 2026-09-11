@@ -42,6 +42,7 @@ type RunConfig struct {
 	HivegenBin     string
 
 	// selection
+	Suite             string
 	TestIDList        string
 	CategoryList      string
 	ExcludePrefixList string
@@ -106,6 +107,7 @@ func runRun(ctx context.Context, cfg RunConfig) error {
 	}
 
 	specs := cases.All()
+	applySuite(cfg.Suite, &cfg)
 	if len(cfg.ExcludePrefixes) > 0 {
 		specs = excludeSpecPrefixes(specs, cfg.ExcludePrefixes)
 	}
@@ -128,6 +130,37 @@ func runRun(ctx context.Context, cfg RunConfig) error {
 	}
 	printSummary(cfg.Stdout, rep)
 	return nil
+}
+
+// applySuite adjusts the selection inputs for the named test tier:
+// quick (representative manifest), standard (hand-written families,
+// IR excluded) or full (everything). Explicit -exclude-prefix values
+// are preserved and merged with the tier's own exclusions.
+func applySuite(suite string, cfg *RunConfig) {
+	switch suite {
+	case "quick":
+		cfg.TestIDs = cases.QuickSuite()
+	case "full":
+		// no exclusions
+	default: // standard
+		cfg.ExcludePrefixes = appendUnion(cfg.ExcludePrefixes, "ir.", "ir_")
+	}
+}
+
+func appendUnion(list []string, vals ...string) []string {
+	for _, v := range vals {
+		found := false
+		for _, e := range list {
+			if e == v {
+				found = true
+				break
+			}
+		}
+		if !found {
+			list = append(list, v)
+		}
+	}
+	return list
 }
 
 // excludeSpecPrefixes drops specs whose ID starts with any of the given
@@ -419,6 +452,7 @@ func parseRunArgs(fs *flag.FlagSet, cfg *RunConfig, args []string) error {
 	fs.BoolVar(&cfg.Attach, "attach", false, "kurtosis: attach to existing enclave instead of provisioning")
 	fs.StringVar(&cfg.TestIDList, "test", "", "comma-separated exact test IDs (bypasses run-class filter)")
 	fs.StringVar(&cfg.CategoryList, "category", "", "comma-separated categories")
+	fs.StringVar(&cfg.Suite, "suite", "quick", "test tier: quick | standard | full (default quick)")
 	fs.StringVar(&cfg.ExcludePrefixList, "exclude-prefix", "", "comma-separated test-ID prefixes to exclude (e.g. \"ir.,ir_\")")
 	fs.BoolVar(&cfg.IncludeHeavy, "include-heavy", false, "include heavy tests")
 	fs.Int64Var(&cfg.Seed, "seed", 42, "random seed")
