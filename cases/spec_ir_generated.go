@@ -36,7 +36,7 @@ func irConcurrentSpecs() []runner.Spec {
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "ir_concurrent",
 			What:     "conc_open_ping_stream (ConcIdle -> ConcOneStream)",
-			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
+			Metadata: runner.Metadata{SpecRules: []string{"PROSE-MAY-c3746d81", "PROSE-MUST-faaebe5c", "PROSE-MUST_NOT-305625f9"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				ctx, cancel := context.WithTimeout(ctx, 10000*time.Millisecond)
 				defer cancel()
@@ -69,7 +69,7 @@ func irConcurrentSpecs() []runner.Spec {
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "ir_concurrent",
 			What:     "conc_open_bbr_stream (ConcIdle -> ConcOneStream)",
-			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
+			Metadata: runner.Metadata{SpecRules: []string{"PROSE-MAY-c3746d81", "PROSE-MUST-faaebe5c", "PROSE-MUST_NOT-305625f9"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				ctx, cancel := context.WithTimeout(ctx, 10000*time.Millisecond)
 				defer cancel()
@@ -103,7 +103,7 @@ func irConcurrentSpecs() []runner.Spec {
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "ir_concurrent",
 			What:     "conc_open_metadata_stream (ConcIdle -> ConcOneStream)",
-			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
+			Metadata: runner.Metadata{SpecRules: []string{"PROSE-MAY-c3746d81", "PROSE-MUST-faaebe5c", "PROSE-MUST_NOT-305625f9"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				ctx, cancel := context.WithTimeout(ctx, 10000*time.Millisecond)
 				defer cancel()
@@ -134,7 +134,7 @@ func irConcurrentSpecs() []runner.Spec {
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "ir_concurrent",
 			What:     "conc_open_second_stream (ConcOneStream -> ConcMultiStream)",
-			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
+			Metadata: runner.Metadata{SpecRules: []string{"PROSE-MAY-c3746d81", "PROSE-MUST-faaebe5c", "PROSE-MUST_NOT-305625f9"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				ctx, cancel := context.WithTimeout(ctx, 10000*time.Millisecond)
 				defer cancel()
@@ -200,7 +200,7 @@ func irConcurrentSpecs() []runner.Spec {
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "ir_concurrent",
 			What:     "conc_read_latest (ConcMultiStream -> ConcMultiStream)",
-			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
+			Metadata: runner.Metadata{SpecRules: []string{"PROSE-MAY-c3746d81", "PROSE-MUST-faaebe5c", "PROSE-MUST_NOT-305625f9"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				timeout := 10000 * time.Millisecond
 				body := []byte(nil)
@@ -221,7 +221,7 @@ func irConcurrentSpecs() []runner.Spec {
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "ir_concurrent",
 			What:     "conc_read_and_close (ConcOneStream -> ConcIdle)",
-			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
+			Metadata: runner.Metadata{SpecRules: []string{"PROSE-MAY-c3746d81", "PROSE-MUST-faaebe5c", "PROSE-MUST_NOT-305625f9"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				timeout := 10000 * time.Millisecond
 				body := []byte(nil)
@@ -242,7 +242,7 @@ func irConcurrentSpecs() []runner.Spec {
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "ir_concurrent",
 			What:     "conc_read_at_limit (ConcAtLimit -> ConcMultiStream)",
-			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
+			Metadata: runner.Metadata{SpecRules: []string{"PROSE-MAY-c3746d81", "PROSE-MUST-faaebe5c", "PROSE-MUST_NOT-305625f9"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				timeout := 10000 * time.Millisecond
 				body := []byte(nil)
@@ -263,7 +263,7 @@ func irConcurrentSpecs() []runner.Spec {
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "ir_concurrent",
 			What:     "conc_normal_ping_while_open (ConcMultiStream -> ConcMultiStream)",
-			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
+			Metadata: runner.Metadata{SpecRules: []string{"PROSE-MAY-c3746d81", "PROSE-MUST-faaebe5c", "PROSE-MUST_NOT-305625f9"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				timeout := 5000 * time.Millisecond
 				buf := make([]byte, 8)
@@ -286,7 +286,7 @@ func irConcurrentSpecs() []runner.Spec {
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "ir_concurrent",
 			What:     "conc_check_connected (ConcMultiStream -> ConcMultiStream)",
-			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
+			Metadata: runner.Metadata{SpecRules: []string{"PROSE-MAY-c3746d81", "PROSE-MUST-faaebe5c", "PROSE-MUST_NOT-305625f9"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				results := map[string]string{}
 				for _, c := range te.Clients {
@@ -309,7 +309,7 @@ func irConcurrentSpecs() []runner.Spec {
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "ir_concurrent",
 			What:     "conc_check_at_limit (ConcAtLimit -> ConcAtLimit)",
-			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
+			Metadata: runner.Metadata{SpecRules: []string{"PROSE-MAY-c3746d81", "PROSE-MUST-faaebe5c", "PROSE-MUST_NOT-305625f9"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				results := map[string]string{}
 				for _, c := range te.Clients {
@@ -332,7 +332,7 @@ func irConcurrentSpecs() []runner.Spec {
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "ir_concurrent",
 			What:     "conc_idle_to_completed (ConcIdle -> ConcCompleted)",
-			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
+			Metadata: runner.Metadata{SpecRules: []string{"PROSE-MAY-c3746d81", "PROSE-MUST-faaebe5c", "PROSE-MUST_NOT-305625f9"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				timeout := 100 * time.Millisecond
 				time.Sleep(timeout)
@@ -357,7 +357,7 @@ func irConcurrentSpecs() []runner.Spec {
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "ir_concurrent",
 			What:     "conc_multi_to_completed (ConcMultiStream -> ConcCompleted)",
-			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
+			Metadata: runner.Metadata{SpecRules: []string{"PROSE-MAY-c3746d81", "PROSE-MUST-faaebe5c", "PROSE-MUST_NOT-305625f9"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				timeout := 100 * time.Millisecond
 				time.Sleep(timeout)
@@ -382,7 +382,7 @@ func irConcurrentSpecs() []runner.Spec {
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "ir_concurrent",
 			What:     "conc_idle_delay (ConcIdle -> ConcIdle)",
-			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
+			Metadata: runner.Metadata{SpecRules: []string{"PROSE-MAY-c3746d81", "PROSE-MUST-faaebe5c", "PROSE-MUST_NOT-305625f9"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				timeout := 500 * time.Millisecond
 				time.Sleep(timeout)
@@ -495,7 +495,7 @@ func irConnLifecycleSpecs() []runner.Spec {
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "ir_connlifecycle",
 			What:     "reference backbone: active peer connection is available before protocol exchange",
-			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
+			Metadata: runner.Metadata{SpecRules: []string{"PROSE-MAY-3fe46c85", "PROSE-MAY-68276936", "PROSE-MAY-6eb8c500", "PROSE-MAY-9ad1e8ba", "PROSE-MAY-c3957c31", "PROSE-MAY-cbd3c330", "PROSE-MUST-25837f32", "PROSE-MUST-369ed609", "PROSE-MUST-64de0098", "PROSE-MUST-80f23060", "PROSE-MUST-fb63b2af", "PROSE-SHOULD-12343187", "PROSE-SHOULD-5c74107b", "PROSE-SHOULD-d2397b37"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				results := map[string]string{}
 				for _, c := range te.Clients {
@@ -518,7 +518,7 @@ func irConnLifecycleSpecs() []runner.Spec {
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "ir_connlifecycle",
 			What:     "spec backbone: Status is the connection-level handshake request (expected accept)",
-			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
+			Metadata: runner.Metadata{SpecRules: []string{"PROSE-MAY-3fe46c85", "PROSE-MAY-68276936", "PROSE-MAY-6eb8c500", "PROSE-MAY-9ad1e8ba", "PROSE-MAY-c3957c31", "PROSE-MAY-cbd3c330", "PROSE-MUST-25837f32", "PROSE-MUST-369ed609", "PROSE-MUST-64de0098", "PROSE-MUST-80f23060", "PROSE-MUST-fb63b2af", "PROSE-SHOULD-12343187", "PROSE-SHOULD-5c74107b", "PROSE-SHOULD-d2397b37"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				ictx := irNewContext(te)
 				timeout := 5000 * time.Millisecond
@@ -540,7 +540,7 @@ func irConnLifecycleSpecs() []runner.Spec {
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "ir_connlifecycle",
 			What:     "spec backbone: metadata versioning is queried after status/ping indicates a peer record may be stale",
-			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
+			Metadata: runner.Metadata{SpecRules: []string{"PROSE-MAY-3fe46c85", "PROSE-MAY-68276936", "PROSE-MAY-6eb8c500", "PROSE-MAY-9ad1e8ba", "PROSE-MAY-c3957c31", "PROSE-MAY-cbd3c330", "PROSE-MUST-25837f32", "PROSE-MUST-369ed609", "PROSE-MUST-64de0098", "PROSE-MUST-80f23060", "PROSE-MUST-fb63b2af", "PROSE-SHOULD-12343187", "PROSE-SHOULD-5c74107b", "PROSE-SHOULD-d2397b37"}, MinClients: 2},
 			Preflight: func(ctx context.Context, chain runner.ChainConfig, cs []runner.Client) runner.PreflightResult {
 				return irPreflightFork(ctx, cs, "fulu", []string{})
 			},
@@ -564,7 +564,7 @@ func irConnLifecycleSpecs() []runner.Spec {
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "ir_connlifecycle",
 			What:     "spec backbone: after handshake, peers probe sync data using Req/Resp",
-			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
+			Metadata: runner.Metadata{SpecRules: []string{"PROSE-MAY-3fe46c85", "PROSE-MAY-68276936", "PROSE-MAY-6eb8c500", "PROSE-MAY-9ad1e8ba", "PROSE-MAY-c3957c31", "PROSE-MAY-cbd3c330", "PROSE-MUST-25837f32", "PROSE-MUST-369ed609", "PROSE-MUST-64de0098", "PROSE-MUST-80f23060", "PROSE-MUST-fb63b2af", "PROSE-SHOULD-12343187", "PROSE-SHOULD-5c74107b", "PROSE-SHOULD-d2397b37"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				ictx := irNewContext(te)
 				timeout := 10000 * time.Millisecond
@@ -586,7 +586,7 @@ func irConnLifecycleSpecs() []runner.Spec {
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "ir_connlifecycle",
 			What:     "spec backbone: peers may send Goodbye before disconnecting",
-			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
+			Metadata: runner.Metadata{SpecRules: []string{"PROSE-MAY-3fe46c85", "PROSE-MAY-68276936", "PROSE-MAY-6eb8c500", "PROSE-MAY-9ad1e8ba", "PROSE-MAY-c3957c31", "PROSE-MAY-cbd3c330", "PROSE-MUST-25837f32", "PROSE-MUST-369ed609", "PROSE-MUST-64de0098", "PROSE-MUST-80f23060", "PROSE-MUST-fb63b2af", "PROSE-SHOULD-12343187", "PROSE-SHOULD-5c74107b", "PROSE-SHOULD-d2397b37"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				timeout := 3000 * time.Millisecond
 				buf := make([]byte, 8)
@@ -609,7 +609,7 @@ func irConnLifecycleSpecs() []runner.Spec {
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "ir_connlifecycle",
 			What:     "reference backbone: repeat protocol probes while the connection remains live",
-			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
+			Metadata: runner.Metadata{SpecRules: []string{"PROSE-MAY-3fe46c85", "PROSE-MAY-68276936", "PROSE-MAY-6eb8c500", "PROSE-MAY-9ad1e8ba", "PROSE-MAY-c3957c31", "PROSE-MAY-cbd3c330", "PROSE-MUST-25837f32", "PROSE-MUST-369ed609", "PROSE-MUST-64de0098", "PROSE-MUST-80f23060", "PROSE-MUST-fb63b2af", "PROSE-SHOULD-12343187", "PROSE-SHOULD-5c74107b", "PROSE-SHOULD-d2397b37"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				results := map[string]string{}
 				for _, c := range te.Clients {
@@ -632,7 +632,7 @@ func irConnLifecycleSpecs() []runner.Spec {
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "ir_connlifecycle",
 			What:     "reference backbone: Goodbye terminates the connection lifecycle path",
-			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
+			Metadata: runner.Metadata{SpecRules: []string{"PROSE-MAY-3fe46c85", "PROSE-MAY-68276936", "PROSE-MAY-6eb8c500", "PROSE-MAY-9ad1e8ba", "PROSE-MAY-c3957c31", "PROSE-MAY-cbd3c330", "PROSE-MUST-25837f32", "PROSE-MUST-369ed609", "PROSE-MUST-64de0098", "PROSE-MUST-80f23060", "PROSE-MUST-fb63b2af", "PROSE-SHOULD-12343187", "PROSE-SHOULD-5c74107b", "PROSE-SHOULD-d2397b37"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				results := map[string]string{}
 				for _, c := range te.Clients {
@@ -651,7 +651,7 @@ func irConnLifecycleSpecs() []runner.Spec {
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "ir_connlifecycle",
 			What:     "reference backbone: terminal path from an established protocol connection",
-			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
+			Metadata: runner.Metadata{SpecRules: []string{"PROSE-MAY-3fe46c85", "PROSE-MAY-68276936", "PROSE-MAY-6eb8c500", "PROSE-MAY-9ad1e8ba", "PROSE-MAY-c3957c31", "PROSE-MAY-cbd3c330", "PROSE-MUST-25837f32", "PROSE-MUST-369ed609", "PROSE-MUST-64de0098", "PROSE-MUST-80f23060", "PROSE-MUST-fb63b2af", "PROSE-SHOULD-12343187", "PROSE-SHOULD-5c74107b", "PROSE-SHOULD-d2397b37"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				results := map[string]string{}
 				for _, c := range te.Clients {
@@ -1001,7 +1001,7 @@ func irCryptoMsgSpecs() []runner.Spec {
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "ir_cryptomsg",
 			What:     "backbone: liveness check",
-			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
+			Metadata: runner.Metadata{SpecRules: []string{"ATTESTER_SLASHING-IGNORE-647ecfb9", "BEACON_ATTESTATION-IGNORE-19a3a197", "BEACON_ATTESTATION-IGNORE-493398b9", "BEACON_ATTESTATION-IGNORE-5da40ec3", "BEACON_ATTESTATION-IGNORE-9dbc7051", "BEACON_ATTESTATION-IGNORE-e55933f5", "BEACON_ATTESTATION-REJECT-2d8f2580", "BEACON_ATTESTATION-REJECT-36fd424b", "BEACON_ATTESTATION-REJECT-544ecc21", "BEACON_ATTESTATION-REJECT-cb7a1c7e", "BEACON_ATTESTATION-REJECT-f7a87fa4", "BEACON_ATTESTATION-REJECT-fc3dd3a9", "BEACON_ATTESTATION_SUBNET_ID-MUST-454af71d", "BEACON_BLOCK-IGNORE-451f432d", "BEACON_BLOCK-IGNORE-b127f4ef", "BEACON_BLOCK-REJECT-33eeeb94", "BEACON_BLOCK-REJECT-3fd28bdc", "BEACON_BLOCK-REJECT-5f829684", "BLOB_SIDECAR-REJECT-124b7dda", "BLOB_SIDECAR-REJECT-190a8460", "BLS_TO_EXECUTION_CHANGE-REJECT-3869cf36", "BLS_TO_EXECUTION_CHANGE-REJECT-c61b3034", "BLS_TO_EXECUTION_CHANGE-REJECT-cc9547b7", "DATA_COLUMN_SIDECAR-REJECT-459b0d39", "DATA_COLUMN_SIDECAR-REJECT-9a465758", "DATA_COLUMN_SIDECAR-REJECT-f173b70c", "PROPOSER_SLASHING-IGNORE-a4a13783", "PROPOSER_SLASHING-REJECT-1248d8f2", "PROPOSER_SLASHING-REJECT-4e6c2331", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-IGNORE-85bd91b0", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-08097fc1", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-1d325814", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-52168aa3", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-5448167e", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-5bdbca46", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-5dd820ac"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				results := map[string]string{}
 				for _, c := range te.Clients {
@@ -1024,7 +1024,7 @@ func irCryptoMsgSpecs() []runner.Spec {
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "ir_cryptomsg",
 			What:     "backbone: cycle back",
-			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
+			Metadata: runner.Metadata{SpecRules: []string{"ATTESTER_SLASHING-IGNORE-647ecfb9", "BEACON_ATTESTATION-IGNORE-19a3a197", "BEACON_ATTESTATION-IGNORE-493398b9", "BEACON_ATTESTATION-IGNORE-5da40ec3", "BEACON_ATTESTATION-IGNORE-9dbc7051", "BEACON_ATTESTATION-IGNORE-e55933f5", "BEACON_ATTESTATION-REJECT-2d8f2580", "BEACON_ATTESTATION-REJECT-36fd424b", "BEACON_ATTESTATION-REJECT-544ecc21", "BEACON_ATTESTATION-REJECT-cb7a1c7e", "BEACON_ATTESTATION-REJECT-f7a87fa4", "BEACON_ATTESTATION-REJECT-fc3dd3a9", "BEACON_ATTESTATION_SUBNET_ID-MUST-454af71d", "BEACON_BLOCK-IGNORE-451f432d", "BEACON_BLOCK-IGNORE-b127f4ef", "BEACON_BLOCK-REJECT-33eeeb94", "BEACON_BLOCK-REJECT-3fd28bdc", "BEACON_BLOCK-REJECT-5f829684", "BLOB_SIDECAR-REJECT-124b7dda", "BLOB_SIDECAR-REJECT-190a8460", "BLS_TO_EXECUTION_CHANGE-REJECT-3869cf36", "BLS_TO_EXECUTION_CHANGE-REJECT-c61b3034", "BLS_TO_EXECUTION_CHANGE-REJECT-cc9547b7", "DATA_COLUMN_SIDECAR-REJECT-459b0d39", "DATA_COLUMN_SIDECAR-REJECT-9a465758", "DATA_COLUMN_SIDECAR-REJECT-f173b70c", "PROPOSER_SLASHING-IGNORE-a4a13783", "PROPOSER_SLASHING-REJECT-1248d8f2", "PROPOSER_SLASHING-REJECT-4e6c2331", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-IGNORE-85bd91b0", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-08097fc1", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-1d325814", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-52168aa3", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-5448167e", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-5bdbca46", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-5dd820ac"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				results := map[string]string{}
 				for _, c := range te.Clients {
@@ -1047,7 +1047,7 @@ func irCryptoMsgSpecs() []runner.Spec {
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "ir_cryptomsg",
 			What:     "backbone: terminal path",
-			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
+			Metadata: runner.Metadata{SpecRules: []string{"ATTESTER_SLASHING-IGNORE-647ecfb9", "BEACON_ATTESTATION-IGNORE-19a3a197", "BEACON_ATTESTATION-IGNORE-493398b9", "BEACON_ATTESTATION-IGNORE-5da40ec3", "BEACON_ATTESTATION-IGNORE-9dbc7051", "BEACON_ATTESTATION-IGNORE-e55933f5", "BEACON_ATTESTATION-REJECT-2d8f2580", "BEACON_ATTESTATION-REJECT-36fd424b", "BEACON_ATTESTATION-REJECT-544ecc21", "BEACON_ATTESTATION-REJECT-cb7a1c7e", "BEACON_ATTESTATION-REJECT-f7a87fa4", "BEACON_ATTESTATION-REJECT-fc3dd3a9", "BEACON_ATTESTATION_SUBNET_ID-MUST-454af71d", "BEACON_BLOCK-IGNORE-451f432d", "BEACON_BLOCK-IGNORE-b127f4ef", "BEACON_BLOCK-REJECT-33eeeb94", "BEACON_BLOCK-REJECT-3fd28bdc", "BEACON_BLOCK-REJECT-5f829684", "BLOB_SIDECAR-REJECT-124b7dda", "BLOB_SIDECAR-REJECT-190a8460", "BLS_TO_EXECUTION_CHANGE-REJECT-3869cf36", "BLS_TO_EXECUTION_CHANGE-REJECT-c61b3034", "BLS_TO_EXECUTION_CHANGE-REJECT-cc9547b7", "DATA_COLUMN_SIDECAR-REJECT-459b0d39", "DATA_COLUMN_SIDECAR-REJECT-9a465758", "DATA_COLUMN_SIDECAR-REJECT-f173b70c", "PROPOSER_SLASHING-IGNORE-a4a13783", "PROPOSER_SLASHING-REJECT-1248d8f2", "PROPOSER_SLASHING-REJECT-4e6c2331", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-IGNORE-85bd91b0", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-08097fc1", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-1d325814", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-52168aa3", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-5448167e", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-5bdbca46", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-5dd820ac"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				results := map[string]string{}
 				for _, c := range te.Clients {
@@ -1070,7 +1070,7 @@ func irCryptoMsgSpecs() []runner.Spec {
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "ir_cryptomsg",
 			What:     "valid signed attester_slashing baseline",
-			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
+			Metadata: runner.Metadata{SpecRules: []string{"ATTESTER_SLASHING-IGNORE-647ecfb9", "BEACON_ATTESTATION-IGNORE-19a3a197", "BEACON_ATTESTATION-IGNORE-493398b9", "BEACON_ATTESTATION-IGNORE-5da40ec3", "BEACON_ATTESTATION-IGNORE-9dbc7051", "BEACON_ATTESTATION-IGNORE-e55933f5", "BEACON_ATTESTATION-REJECT-2d8f2580", "BEACON_ATTESTATION-REJECT-36fd424b", "BEACON_ATTESTATION-REJECT-544ecc21", "BEACON_ATTESTATION-REJECT-cb7a1c7e", "BEACON_ATTESTATION-REJECT-f7a87fa4", "BEACON_ATTESTATION-REJECT-fc3dd3a9", "BEACON_ATTESTATION_SUBNET_ID-MUST-454af71d", "BEACON_BLOCK-IGNORE-451f432d", "BEACON_BLOCK-IGNORE-b127f4ef", "BEACON_BLOCK-REJECT-33eeeb94", "BEACON_BLOCK-REJECT-3fd28bdc", "BEACON_BLOCK-REJECT-5f829684", "BLOB_SIDECAR-REJECT-124b7dda", "BLOB_SIDECAR-REJECT-190a8460", "BLS_TO_EXECUTION_CHANGE-REJECT-3869cf36", "BLS_TO_EXECUTION_CHANGE-REJECT-c61b3034", "BLS_TO_EXECUTION_CHANGE-REJECT-cc9547b7", "DATA_COLUMN_SIDECAR-REJECT-459b0d39", "DATA_COLUMN_SIDECAR-REJECT-9a465758", "DATA_COLUMN_SIDECAR-REJECT-f173b70c", "PROPOSER_SLASHING-IGNORE-a4a13783", "PROPOSER_SLASHING-REJECT-1248d8f2", "PROPOSER_SLASHING-REJECT-4e6c2331", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-IGNORE-85bd91b0", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-08097fc1", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-1d325814", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-52168aa3", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-5448167e", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-5bdbca46", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-5dd820ac"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				ictx := irNewContext(te)
 				topic := irFullGossipTopic(ictx, "attester_slashing")
@@ -1103,7 +1103,7 @@ func irCryptoMsgSpecs() []runner.Spec {
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "ir_cryptomsg",
 			What:     "valid signed beacon_aggregate_and_proof baseline",
-			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
+			Metadata: runner.Metadata{SpecRules: []string{"ATTESTER_SLASHING-IGNORE-647ecfb9", "BEACON_ATTESTATION-IGNORE-19a3a197", "BEACON_ATTESTATION-IGNORE-493398b9", "BEACON_ATTESTATION-IGNORE-5da40ec3", "BEACON_ATTESTATION-IGNORE-9dbc7051", "BEACON_ATTESTATION-IGNORE-e55933f5", "BEACON_ATTESTATION-REJECT-2d8f2580", "BEACON_ATTESTATION-REJECT-36fd424b", "BEACON_ATTESTATION-REJECT-544ecc21", "BEACON_ATTESTATION-REJECT-cb7a1c7e", "BEACON_ATTESTATION-REJECT-f7a87fa4", "BEACON_ATTESTATION-REJECT-fc3dd3a9", "BEACON_ATTESTATION_SUBNET_ID-MUST-454af71d", "BEACON_BLOCK-IGNORE-451f432d", "BEACON_BLOCK-IGNORE-b127f4ef", "BEACON_BLOCK-REJECT-33eeeb94", "BEACON_BLOCK-REJECT-3fd28bdc", "BEACON_BLOCK-REJECT-5f829684", "BLOB_SIDECAR-REJECT-124b7dda", "BLOB_SIDECAR-REJECT-190a8460", "BLS_TO_EXECUTION_CHANGE-REJECT-3869cf36", "BLS_TO_EXECUTION_CHANGE-REJECT-c61b3034", "BLS_TO_EXECUTION_CHANGE-REJECT-cc9547b7", "DATA_COLUMN_SIDECAR-REJECT-459b0d39", "DATA_COLUMN_SIDECAR-REJECT-9a465758", "DATA_COLUMN_SIDECAR-REJECT-f173b70c", "PROPOSER_SLASHING-IGNORE-a4a13783", "PROPOSER_SLASHING-REJECT-1248d8f2", "PROPOSER_SLASHING-REJECT-4e6c2331", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-IGNORE-85bd91b0", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-08097fc1", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-1d325814", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-52168aa3", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-5448167e", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-5bdbca46", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-5dd820ac"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				ictx := irNewContext(te)
 				topic := irFullGossipTopic(ictx, "beacon_aggregate_and_proof")
@@ -1136,7 +1136,7 @@ func irCryptoMsgSpecs() []runner.Spec {
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "ir_cryptomsg",
 			What:     "valid signed beacon_attestation baseline",
-			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
+			Metadata: runner.Metadata{SpecRules: []string{"ATTESTER_SLASHING-IGNORE-647ecfb9", "BEACON_ATTESTATION-IGNORE-19a3a197", "BEACON_ATTESTATION-IGNORE-493398b9", "BEACON_ATTESTATION-IGNORE-5da40ec3", "BEACON_ATTESTATION-IGNORE-9dbc7051", "BEACON_ATTESTATION-IGNORE-e55933f5", "BEACON_ATTESTATION-REJECT-2d8f2580", "BEACON_ATTESTATION-REJECT-36fd424b", "BEACON_ATTESTATION-REJECT-544ecc21", "BEACON_ATTESTATION-REJECT-cb7a1c7e", "BEACON_ATTESTATION-REJECT-f7a87fa4", "BEACON_ATTESTATION-REJECT-fc3dd3a9", "BEACON_ATTESTATION_SUBNET_ID-MUST-454af71d", "BEACON_BLOCK-IGNORE-451f432d", "BEACON_BLOCK-IGNORE-b127f4ef", "BEACON_BLOCK-REJECT-33eeeb94", "BEACON_BLOCK-REJECT-3fd28bdc", "BEACON_BLOCK-REJECT-5f829684", "BLOB_SIDECAR-REJECT-124b7dda", "BLOB_SIDECAR-REJECT-190a8460", "BLS_TO_EXECUTION_CHANGE-REJECT-3869cf36", "BLS_TO_EXECUTION_CHANGE-REJECT-c61b3034", "BLS_TO_EXECUTION_CHANGE-REJECT-cc9547b7", "DATA_COLUMN_SIDECAR-REJECT-459b0d39", "DATA_COLUMN_SIDECAR-REJECT-9a465758", "DATA_COLUMN_SIDECAR-REJECT-f173b70c", "PROPOSER_SLASHING-IGNORE-a4a13783", "PROPOSER_SLASHING-REJECT-1248d8f2", "PROPOSER_SLASHING-REJECT-4e6c2331", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-IGNORE-85bd91b0", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-08097fc1", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-1d325814", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-52168aa3", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-5448167e", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-5bdbca46", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-5dd820ac"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				ictx := irNewContext(te)
 				topic := irFullGossipTopic(ictx, "beacon_attestation_0")
@@ -1169,7 +1169,7 @@ func irCryptoMsgSpecs() []runner.Spec {
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "ir_cryptomsg",
 			What:     "valid signed beacon_block baseline",
-			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
+			Metadata: runner.Metadata{SpecRules: []string{"ATTESTER_SLASHING-IGNORE-647ecfb9", "BEACON_ATTESTATION-IGNORE-19a3a197", "BEACON_ATTESTATION-IGNORE-493398b9", "BEACON_ATTESTATION-IGNORE-5da40ec3", "BEACON_ATTESTATION-IGNORE-9dbc7051", "BEACON_ATTESTATION-IGNORE-e55933f5", "BEACON_ATTESTATION-REJECT-2d8f2580", "BEACON_ATTESTATION-REJECT-36fd424b", "BEACON_ATTESTATION-REJECT-544ecc21", "BEACON_ATTESTATION-REJECT-cb7a1c7e", "BEACON_ATTESTATION-REJECT-f7a87fa4", "BEACON_ATTESTATION-REJECT-fc3dd3a9", "BEACON_ATTESTATION_SUBNET_ID-MUST-454af71d", "BEACON_BLOCK-IGNORE-451f432d", "BEACON_BLOCK-IGNORE-b127f4ef", "BEACON_BLOCK-REJECT-33eeeb94", "BEACON_BLOCK-REJECT-3fd28bdc", "BEACON_BLOCK-REJECT-5f829684", "BLOB_SIDECAR-REJECT-124b7dda", "BLOB_SIDECAR-REJECT-190a8460", "BLS_TO_EXECUTION_CHANGE-REJECT-3869cf36", "BLS_TO_EXECUTION_CHANGE-REJECT-c61b3034", "BLS_TO_EXECUTION_CHANGE-REJECT-cc9547b7", "DATA_COLUMN_SIDECAR-REJECT-459b0d39", "DATA_COLUMN_SIDECAR-REJECT-9a465758", "DATA_COLUMN_SIDECAR-REJECT-f173b70c", "PROPOSER_SLASHING-IGNORE-a4a13783", "PROPOSER_SLASHING-REJECT-1248d8f2", "PROPOSER_SLASHING-REJECT-4e6c2331", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-IGNORE-85bd91b0", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-08097fc1", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-1d325814", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-52168aa3", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-5448167e", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-5bdbca46", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-5dd820ac"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				ictx := irNewContext(te)
 				topic := irFullGossipTopic(ictx, "beacon_block")
@@ -1202,7 +1202,7 @@ func irCryptoMsgSpecs() []runner.Spec {
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "ir_cryptomsg",
 			What:     "valid signed blob_sidecar baseline",
-			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
+			Metadata: runner.Metadata{SpecRules: []string{"ATTESTER_SLASHING-IGNORE-647ecfb9", "BEACON_ATTESTATION-IGNORE-19a3a197", "BEACON_ATTESTATION-IGNORE-493398b9", "BEACON_ATTESTATION-IGNORE-5da40ec3", "BEACON_ATTESTATION-IGNORE-9dbc7051", "BEACON_ATTESTATION-IGNORE-e55933f5", "BEACON_ATTESTATION-REJECT-2d8f2580", "BEACON_ATTESTATION-REJECT-36fd424b", "BEACON_ATTESTATION-REJECT-544ecc21", "BEACON_ATTESTATION-REJECT-cb7a1c7e", "BEACON_ATTESTATION-REJECT-f7a87fa4", "BEACON_ATTESTATION-REJECT-fc3dd3a9", "BEACON_ATTESTATION_SUBNET_ID-MUST-454af71d", "BEACON_BLOCK-IGNORE-451f432d", "BEACON_BLOCK-IGNORE-b127f4ef", "BEACON_BLOCK-REJECT-33eeeb94", "BEACON_BLOCK-REJECT-3fd28bdc", "BEACON_BLOCK-REJECT-5f829684", "BLOB_SIDECAR-REJECT-124b7dda", "BLOB_SIDECAR-REJECT-190a8460", "BLS_TO_EXECUTION_CHANGE-REJECT-3869cf36", "BLS_TO_EXECUTION_CHANGE-REJECT-c61b3034", "BLS_TO_EXECUTION_CHANGE-REJECT-cc9547b7", "DATA_COLUMN_SIDECAR-REJECT-459b0d39", "DATA_COLUMN_SIDECAR-REJECT-9a465758", "DATA_COLUMN_SIDECAR-REJECT-f173b70c", "PROPOSER_SLASHING-IGNORE-a4a13783", "PROPOSER_SLASHING-REJECT-1248d8f2", "PROPOSER_SLASHING-REJECT-4e6c2331", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-IGNORE-85bd91b0", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-08097fc1", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-1d325814", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-52168aa3", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-5448167e", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-5bdbca46", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-5dd820ac"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				ictx := irNewContext(te)
 				topic := irFullGossipTopic(ictx, "blob_sidecar_0")
@@ -1235,7 +1235,7 @@ func irCryptoMsgSpecs() []runner.Spec {
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "ir_cryptomsg",
 			What:     "valid signed bls_to_execution_change baseline",
-			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
+			Metadata: runner.Metadata{SpecRules: []string{"ATTESTER_SLASHING-IGNORE-647ecfb9", "BEACON_ATTESTATION-IGNORE-19a3a197", "BEACON_ATTESTATION-IGNORE-493398b9", "BEACON_ATTESTATION-IGNORE-5da40ec3", "BEACON_ATTESTATION-IGNORE-9dbc7051", "BEACON_ATTESTATION-IGNORE-e55933f5", "BEACON_ATTESTATION-REJECT-2d8f2580", "BEACON_ATTESTATION-REJECT-36fd424b", "BEACON_ATTESTATION-REJECT-544ecc21", "BEACON_ATTESTATION-REJECT-cb7a1c7e", "BEACON_ATTESTATION-REJECT-f7a87fa4", "BEACON_ATTESTATION-REJECT-fc3dd3a9", "BEACON_ATTESTATION_SUBNET_ID-MUST-454af71d", "BEACON_BLOCK-IGNORE-451f432d", "BEACON_BLOCK-IGNORE-b127f4ef", "BEACON_BLOCK-REJECT-33eeeb94", "BEACON_BLOCK-REJECT-3fd28bdc", "BEACON_BLOCK-REJECT-5f829684", "BLOB_SIDECAR-REJECT-124b7dda", "BLOB_SIDECAR-REJECT-190a8460", "BLS_TO_EXECUTION_CHANGE-REJECT-3869cf36", "BLS_TO_EXECUTION_CHANGE-REJECT-c61b3034", "BLS_TO_EXECUTION_CHANGE-REJECT-cc9547b7", "DATA_COLUMN_SIDECAR-REJECT-459b0d39", "DATA_COLUMN_SIDECAR-REJECT-9a465758", "DATA_COLUMN_SIDECAR-REJECT-f173b70c", "PROPOSER_SLASHING-IGNORE-a4a13783", "PROPOSER_SLASHING-REJECT-1248d8f2", "PROPOSER_SLASHING-REJECT-4e6c2331", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-IGNORE-85bd91b0", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-08097fc1", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-1d325814", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-52168aa3", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-5448167e", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-5bdbca46", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-5dd820ac"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				ictx := irNewContext(te)
 				topic := irFullGossipTopic(ictx, "bls_to_execution_change")
@@ -1268,7 +1268,7 @@ func irCryptoMsgSpecs() []runner.Spec {
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "ir_cryptomsg",
 			What:     "valid signed data_column_sidecar baseline",
-			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
+			Metadata: runner.Metadata{SpecRules: []string{"ATTESTER_SLASHING-IGNORE-647ecfb9", "BEACON_ATTESTATION-IGNORE-19a3a197", "BEACON_ATTESTATION-IGNORE-493398b9", "BEACON_ATTESTATION-IGNORE-5da40ec3", "BEACON_ATTESTATION-IGNORE-9dbc7051", "BEACON_ATTESTATION-IGNORE-e55933f5", "BEACON_ATTESTATION-REJECT-2d8f2580", "BEACON_ATTESTATION-REJECT-36fd424b", "BEACON_ATTESTATION-REJECT-544ecc21", "BEACON_ATTESTATION-REJECT-cb7a1c7e", "BEACON_ATTESTATION-REJECT-f7a87fa4", "BEACON_ATTESTATION-REJECT-fc3dd3a9", "BEACON_ATTESTATION_SUBNET_ID-MUST-454af71d", "BEACON_BLOCK-IGNORE-451f432d", "BEACON_BLOCK-IGNORE-b127f4ef", "BEACON_BLOCK-REJECT-33eeeb94", "BEACON_BLOCK-REJECT-3fd28bdc", "BEACON_BLOCK-REJECT-5f829684", "BLOB_SIDECAR-REJECT-124b7dda", "BLOB_SIDECAR-REJECT-190a8460", "BLS_TO_EXECUTION_CHANGE-REJECT-3869cf36", "BLS_TO_EXECUTION_CHANGE-REJECT-c61b3034", "BLS_TO_EXECUTION_CHANGE-REJECT-cc9547b7", "DATA_COLUMN_SIDECAR-REJECT-459b0d39", "DATA_COLUMN_SIDECAR-REJECT-9a465758", "DATA_COLUMN_SIDECAR-REJECT-f173b70c", "PROPOSER_SLASHING-IGNORE-a4a13783", "PROPOSER_SLASHING-REJECT-1248d8f2", "PROPOSER_SLASHING-REJECT-4e6c2331", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-IGNORE-85bd91b0", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-08097fc1", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-1d325814", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-52168aa3", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-5448167e", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-5bdbca46", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-5dd820ac"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				ictx := irNewContext(te)
 				topic := irFullGossipTopic(ictx, "data_column_sidecar_0")
@@ -1301,7 +1301,7 @@ func irCryptoMsgSpecs() []runner.Spec {
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "ir_cryptomsg",
 			What:     "valid signed proposer_slashing baseline",
-			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
+			Metadata: runner.Metadata{SpecRules: []string{"ATTESTER_SLASHING-IGNORE-647ecfb9", "BEACON_ATTESTATION-IGNORE-19a3a197", "BEACON_ATTESTATION-IGNORE-493398b9", "BEACON_ATTESTATION-IGNORE-5da40ec3", "BEACON_ATTESTATION-IGNORE-9dbc7051", "BEACON_ATTESTATION-IGNORE-e55933f5", "BEACON_ATTESTATION-REJECT-2d8f2580", "BEACON_ATTESTATION-REJECT-36fd424b", "BEACON_ATTESTATION-REJECT-544ecc21", "BEACON_ATTESTATION-REJECT-cb7a1c7e", "BEACON_ATTESTATION-REJECT-f7a87fa4", "BEACON_ATTESTATION-REJECT-fc3dd3a9", "BEACON_ATTESTATION_SUBNET_ID-MUST-454af71d", "BEACON_BLOCK-IGNORE-451f432d", "BEACON_BLOCK-IGNORE-b127f4ef", "BEACON_BLOCK-REJECT-33eeeb94", "BEACON_BLOCK-REJECT-3fd28bdc", "BEACON_BLOCK-REJECT-5f829684", "BLOB_SIDECAR-REJECT-124b7dda", "BLOB_SIDECAR-REJECT-190a8460", "BLS_TO_EXECUTION_CHANGE-REJECT-3869cf36", "BLS_TO_EXECUTION_CHANGE-REJECT-c61b3034", "BLS_TO_EXECUTION_CHANGE-REJECT-cc9547b7", "DATA_COLUMN_SIDECAR-REJECT-459b0d39", "DATA_COLUMN_SIDECAR-REJECT-9a465758", "DATA_COLUMN_SIDECAR-REJECT-f173b70c", "PROPOSER_SLASHING-IGNORE-a4a13783", "PROPOSER_SLASHING-REJECT-1248d8f2", "PROPOSER_SLASHING-REJECT-4e6c2331", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-IGNORE-85bd91b0", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-08097fc1", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-1d325814", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-52168aa3", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-5448167e", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-5bdbca46", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-5dd820ac"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				ictx := irNewContext(te)
 				topic := irFullGossipTopic(ictx, "proposer_slashing")
@@ -1334,7 +1334,7 @@ func irCryptoMsgSpecs() []runner.Spec {
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "ir_cryptomsg",
 			What:     "valid signed sync_committee_contribution_and_proof baseline",
-			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
+			Metadata: runner.Metadata{SpecRules: []string{"ATTESTER_SLASHING-IGNORE-647ecfb9", "BEACON_ATTESTATION-IGNORE-19a3a197", "BEACON_ATTESTATION-IGNORE-493398b9", "BEACON_ATTESTATION-IGNORE-5da40ec3", "BEACON_ATTESTATION-IGNORE-9dbc7051", "BEACON_ATTESTATION-IGNORE-e55933f5", "BEACON_ATTESTATION-REJECT-2d8f2580", "BEACON_ATTESTATION-REJECT-36fd424b", "BEACON_ATTESTATION-REJECT-544ecc21", "BEACON_ATTESTATION-REJECT-cb7a1c7e", "BEACON_ATTESTATION-REJECT-f7a87fa4", "BEACON_ATTESTATION-REJECT-fc3dd3a9", "BEACON_ATTESTATION_SUBNET_ID-MUST-454af71d", "BEACON_BLOCK-IGNORE-451f432d", "BEACON_BLOCK-IGNORE-b127f4ef", "BEACON_BLOCK-REJECT-33eeeb94", "BEACON_BLOCK-REJECT-3fd28bdc", "BEACON_BLOCK-REJECT-5f829684", "BLOB_SIDECAR-REJECT-124b7dda", "BLOB_SIDECAR-REJECT-190a8460", "BLS_TO_EXECUTION_CHANGE-REJECT-3869cf36", "BLS_TO_EXECUTION_CHANGE-REJECT-c61b3034", "BLS_TO_EXECUTION_CHANGE-REJECT-cc9547b7", "DATA_COLUMN_SIDECAR-REJECT-459b0d39", "DATA_COLUMN_SIDECAR-REJECT-9a465758", "DATA_COLUMN_SIDECAR-REJECT-f173b70c", "PROPOSER_SLASHING-IGNORE-a4a13783", "PROPOSER_SLASHING-REJECT-1248d8f2", "PROPOSER_SLASHING-REJECT-4e6c2331", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-IGNORE-85bd91b0", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-08097fc1", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-1d325814", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-52168aa3", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-5448167e", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-5bdbca46", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-5dd820ac"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				ictx := irNewContext(te)
 				topic := irFullGossipTopic(ictx, "sync_committee_contribution_and_proof")
@@ -1367,7 +1367,7 @@ func irCryptoMsgSpecs() []runner.Spec {
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "ir_cryptomsg",
 			What:     "valid signed sync_committee_message baseline",
-			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
+			Metadata: runner.Metadata{SpecRules: []string{"ATTESTER_SLASHING-IGNORE-647ecfb9", "BEACON_ATTESTATION-IGNORE-19a3a197", "BEACON_ATTESTATION-IGNORE-493398b9", "BEACON_ATTESTATION-IGNORE-5da40ec3", "BEACON_ATTESTATION-IGNORE-9dbc7051", "BEACON_ATTESTATION-IGNORE-e55933f5", "BEACON_ATTESTATION-REJECT-2d8f2580", "BEACON_ATTESTATION-REJECT-36fd424b", "BEACON_ATTESTATION-REJECT-544ecc21", "BEACON_ATTESTATION-REJECT-cb7a1c7e", "BEACON_ATTESTATION-REJECT-f7a87fa4", "BEACON_ATTESTATION-REJECT-fc3dd3a9", "BEACON_ATTESTATION_SUBNET_ID-MUST-454af71d", "BEACON_BLOCK-IGNORE-451f432d", "BEACON_BLOCK-IGNORE-b127f4ef", "BEACON_BLOCK-REJECT-33eeeb94", "BEACON_BLOCK-REJECT-3fd28bdc", "BEACON_BLOCK-REJECT-5f829684", "BLOB_SIDECAR-REJECT-124b7dda", "BLOB_SIDECAR-REJECT-190a8460", "BLS_TO_EXECUTION_CHANGE-REJECT-3869cf36", "BLS_TO_EXECUTION_CHANGE-REJECT-c61b3034", "BLS_TO_EXECUTION_CHANGE-REJECT-cc9547b7", "DATA_COLUMN_SIDECAR-REJECT-459b0d39", "DATA_COLUMN_SIDECAR-REJECT-9a465758", "DATA_COLUMN_SIDECAR-REJECT-f173b70c", "PROPOSER_SLASHING-IGNORE-a4a13783", "PROPOSER_SLASHING-REJECT-1248d8f2", "PROPOSER_SLASHING-REJECT-4e6c2331", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-IGNORE-85bd91b0", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-08097fc1", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-1d325814", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-52168aa3", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-5448167e", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-5bdbca46", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-5dd820ac"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				ictx := irNewContext(te)
 				topic := irFullGossipTopic(ictx, "sync_committee_0")
@@ -1400,7 +1400,7 @@ func irCryptoMsgSpecs() []runner.Spec {
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "ir_cryptomsg",
 			What:     "valid signed voluntary_exit baseline",
-			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
+			Metadata: runner.Metadata{SpecRules: []string{"ATTESTER_SLASHING-IGNORE-647ecfb9", "BEACON_ATTESTATION-IGNORE-19a3a197", "BEACON_ATTESTATION-IGNORE-493398b9", "BEACON_ATTESTATION-IGNORE-5da40ec3", "BEACON_ATTESTATION-IGNORE-9dbc7051", "BEACON_ATTESTATION-IGNORE-e55933f5", "BEACON_ATTESTATION-REJECT-2d8f2580", "BEACON_ATTESTATION-REJECT-36fd424b", "BEACON_ATTESTATION-REJECT-544ecc21", "BEACON_ATTESTATION-REJECT-cb7a1c7e", "BEACON_ATTESTATION-REJECT-f7a87fa4", "BEACON_ATTESTATION-REJECT-fc3dd3a9", "BEACON_ATTESTATION_SUBNET_ID-MUST-454af71d", "BEACON_BLOCK-IGNORE-451f432d", "BEACON_BLOCK-IGNORE-b127f4ef", "BEACON_BLOCK-REJECT-33eeeb94", "BEACON_BLOCK-REJECT-3fd28bdc", "BEACON_BLOCK-REJECT-5f829684", "BLOB_SIDECAR-REJECT-124b7dda", "BLOB_SIDECAR-REJECT-190a8460", "BLS_TO_EXECUTION_CHANGE-REJECT-3869cf36", "BLS_TO_EXECUTION_CHANGE-REJECT-c61b3034", "BLS_TO_EXECUTION_CHANGE-REJECT-cc9547b7", "DATA_COLUMN_SIDECAR-REJECT-459b0d39", "DATA_COLUMN_SIDECAR-REJECT-9a465758", "DATA_COLUMN_SIDECAR-REJECT-f173b70c", "PROPOSER_SLASHING-IGNORE-a4a13783", "PROPOSER_SLASHING-REJECT-1248d8f2", "PROPOSER_SLASHING-REJECT-4e6c2331", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-IGNORE-85bd91b0", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-08097fc1", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-1d325814", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-52168aa3", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-5448167e", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-5bdbca46", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-5dd820ac"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				ictx := irNewContext(te)
 				topic := irFullGossipTopic(ictx, "voluntary_exit")
@@ -2930,7 +2930,7 @@ func irDiscoverySpecs() []runner.Spec {
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "ir_discovery",
 			What:     "backbone: liveness check",
-			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
+			Metadata: runner.Metadata{SpecRules: []string{"PROSE-MAY-0f4bcdc9", "PROSE-MAY-cd1cb27a", "PROSE-MAY-f46586f6", "PROSE-MUST-0648388b", "PROSE-MUST-3bacaa86", "PROSE-MUST-56ec7740", "PROSE-MUST-9812f11c", "PROSE-MUST-bdd581d1", "PROSE-MUST-eb253094", "PROSE-MUST_NOT-774c52cc"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				results := map[string]string{}
 				for _, c := range te.Clients {
@@ -2953,7 +2953,7 @@ func irDiscoverySpecs() []runner.Spec {
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "ir_discovery",
 			What:     "backbone: cycle back",
-			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
+			Metadata: runner.Metadata{SpecRules: []string{"PROSE-MAY-0f4bcdc9", "PROSE-MAY-cd1cb27a", "PROSE-MAY-f46586f6", "PROSE-MUST-0648388b", "PROSE-MUST-3bacaa86", "PROSE-MUST-56ec7740", "PROSE-MUST-9812f11c", "PROSE-MUST-bdd581d1", "PROSE-MUST-eb253094", "PROSE-MUST_NOT-774c52cc"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				results := map[string]string{}
 				for _, c := range te.Clients {
@@ -2976,7 +2976,7 @@ func irDiscoverySpecs() []runner.Spec {
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "ir_discovery",
 			What:     "backbone: terminal path",
-			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
+			Metadata: runner.Metadata{SpecRules: []string{"PROSE-MAY-0f4bcdc9", "PROSE-MAY-cd1cb27a", "PROSE-MAY-f46586f6", "PROSE-MUST-0648388b", "PROSE-MUST-3bacaa86", "PROSE-MUST-56ec7740", "PROSE-MUST-9812f11c", "PROSE-MUST-bdd581d1", "PROSE-MUST-eb253094", "PROSE-MUST_NOT-774c52cc"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				results := map[string]string{}
 				for _, c := range te.Clients {
@@ -3356,7 +3356,7 @@ func irGossipValidationSpecs() []runner.Spec {
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "ir_gossipvalidation",
 			What:     "spec backbone: topic participation begins with an active subscription",
-			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
+			Metadata: runner.Metadata{SpecRules: []string{"ETH2-SHOULD-50cecb99", "ETH2-SHOULD_NOT-5cba6dbb", "EXECUTION_PROOF-IGNORE-84084443", "LIGHT_CLIENT_FINALITY_UPDATE-IGNORE-fa13328c", "LIGHT_CLIENT_FINALITY_UPDATE-MUST-2146fea4", "LIGHT_CLIENT_FINALITY_UPDATE-MUST-379dc991", "LIGHT_CLIENT_FINALITY_UPDATE-MUST-a934795f", "LIGHT_CLIENT_OPTIMISTIC_UPDATE-IGNORE-e21f1587", "LIGHT_CLIENT_OPTIMISTIC_UPDATE-MUST-409d5940", "LIGHT_CLIENT_OPTIMISTIC_UPDATE-MUST-4aa31c50", "LIGHT_CLIENT_OPTIMISTIC_UPDATE-MUST-d8f98e64", "PARTIAL_DATA_COLUMN_SIDECAR-IGNORE-4b3745fd", "PARTIAL_DATA_COLUMN_SIDECAR-IGNORE-ac743680", "PARTIAL_DATA_COLUMN_SIDECAR-REJECT-8ab8add3", "PROSE-SHOULD-8423471c", "PROSE-SHOULD-ba897e5b", "PROSE-SHOULD-e1ee5362", "PROSE-SHOULD-f3d9ce33", "PROSE-SHOULD_NOT-c1b17ff2"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				ictx := irNewContext(te)
 				topic := irFullGossipTopic(ictx, "beacon_block")
@@ -3381,7 +3381,7 @@ func irGossipValidationSpecs() []runner.Spec {
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "ir_gossipvalidation",
 			What:     "spec backbone: first valid message can be accepted and propagated",
-			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
+			Metadata: runner.Metadata{SpecRules: []string{"ETH2-SHOULD-50cecb99", "ETH2-SHOULD_NOT-5cba6dbb", "EXECUTION_PROOF-IGNORE-84084443", "LIGHT_CLIENT_FINALITY_UPDATE-IGNORE-fa13328c", "LIGHT_CLIENT_FINALITY_UPDATE-MUST-2146fea4", "LIGHT_CLIENT_FINALITY_UPDATE-MUST-379dc991", "LIGHT_CLIENT_FINALITY_UPDATE-MUST-a934795f", "LIGHT_CLIENT_OPTIMISTIC_UPDATE-IGNORE-e21f1587", "LIGHT_CLIENT_OPTIMISTIC_UPDATE-MUST-409d5940", "LIGHT_CLIENT_OPTIMISTIC_UPDATE-MUST-4aa31c50", "LIGHT_CLIENT_OPTIMISTIC_UPDATE-MUST-d8f98e64", "PARTIAL_DATA_COLUMN_SIDECAR-IGNORE-4b3745fd", "PARTIAL_DATA_COLUMN_SIDECAR-IGNORE-ac743680", "PARTIAL_DATA_COLUMN_SIDECAR-REJECT-8ab8add3", "PROSE-SHOULD-8423471c", "PROSE-SHOULD-ba897e5b", "PROSE-SHOULD-e1ee5362", "PROSE-SHOULD-f3d9ce33", "PROSE-SHOULD_NOT-c1b17ff2"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				ictx := irNewContext(te)
 				topic := irFullGossipTopic(ictx, "beacon_block")
@@ -3414,7 +3414,7 @@ func irGossipValidationSpecs() []runner.Spec {
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "ir_gossipvalidation",
 			What:     "reference backbone: duplicate/seen-message validation is stateful",
-			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
+			Metadata: runner.Metadata{SpecRules: []string{"ETH2-SHOULD-50cecb99", "ETH2-SHOULD_NOT-5cba6dbb", "EXECUTION_PROOF-IGNORE-84084443", "LIGHT_CLIENT_FINALITY_UPDATE-IGNORE-fa13328c", "LIGHT_CLIENT_FINALITY_UPDATE-MUST-2146fea4", "LIGHT_CLIENT_FINALITY_UPDATE-MUST-379dc991", "LIGHT_CLIENT_FINALITY_UPDATE-MUST-a934795f", "LIGHT_CLIENT_OPTIMISTIC_UPDATE-IGNORE-e21f1587", "LIGHT_CLIENT_OPTIMISTIC_UPDATE-MUST-409d5940", "LIGHT_CLIENT_OPTIMISTIC_UPDATE-MUST-4aa31c50", "LIGHT_CLIENT_OPTIMISTIC_UPDATE-MUST-d8f98e64", "PARTIAL_DATA_COLUMN_SIDECAR-IGNORE-4b3745fd", "PARTIAL_DATA_COLUMN_SIDECAR-IGNORE-ac743680", "PARTIAL_DATA_COLUMN_SIDECAR-REJECT-8ab8add3", "PROSE-SHOULD-8423471c", "PROSE-SHOULD-ba897e5b", "PROSE-SHOULD-e1ee5362", "PROSE-SHOULD-f3d9ce33", "PROSE-SHOULD_NOT-c1b17ff2"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				ictx := irNewContext(te)
 				topic := irFullGossipTopic(ictx, "beacon_block")
@@ -3447,7 +3447,7 @@ func irGossipValidationSpecs() []runner.Spec {
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "ir_gossipvalidation",
 			What:     "reference backbone: conflicting messages require prior valid context",
-			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
+			Metadata: runner.Metadata{SpecRules: []string{"ETH2-SHOULD-50cecb99", "ETH2-SHOULD_NOT-5cba6dbb", "EXECUTION_PROOF-IGNORE-84084443", "LIGHT_CLIENT_FINALITY_UPDATE-IGNORE-fa13328c", "LIGHT_CLIENT_FINALITY_UPDATE-MUST-2146fea4", "LIGHT_CLIENT_FINALITY_UPDATE-MUST-379dc991", "LIGHT_CLIENT_FINALITY_UPDATE-MUST-a934795f", "LIGHT_CLIENT_OPTIMISTIC_UPDATE-IGNORE-e21f1587", "LIGHT_CLIENT_OPTIMISTIC_UPDATE-MUST-409d5940", "LIGHT_CLIENT_OPTIMISTIC_UPDATE-MUST-4aa31c50", "LIGHT_CLIENT_OPTIMISTIC_UPDATE-MUST-d8f98e64", "PARTIAL_DATA_COLUMN_SIDECAR-IGNORE-4b3745fd", "PARTIAL_DATA_COLUMN_SIDECAR-IGNORE-ac743680", "PARTIAL_DATA_COLUMN_SIDECAR-REJECT-8ab8add3", "PROSE-SHOULD-8423471c", "PROSE-SHOULD-ba897e5b", "PROSE-SHOULD-e1ee5362", "PROSE-SHOULD-f3d9ce33", "PROSE-SHOULD_NOT-c1b17ff2"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				ictx := irNewContext(te)
 				topic := irFullGossipTopic(ictx, "beacon_block")
@@ -3480,7 +3480,7 @@ func irGossipValidationSpecs() []runner.Spec {
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "ir_gossipvalidation",
 			What:     "spec backbone: some gossip validation depends on deferred parent/header availability",
-			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
+			Metadata: runner.Metadata{SpecRules: []string{"ETH2-SHOULD-50cecb99", "ETH2-SHOULD_NOT-5cba6dbb", "EXECUTION_PROOF-IGNORE-84084443", "LIGHT_CLIENT_FINALITY_UPDATE-IGNORE-fa13328c", "LIGHT_CLIENT_FINALITY_UPDATE-MUST-2146fea4", "LIGHT_CLIENT_FINALITY_UPDATE-MUST-379dc991", "LIGHT_CLIENT_FINALITY_UPDATE-MUST-a934795f", "LIGHT_CLIENT_OPTIMISTIC_UPDATE-IGNORE-e21f1587", "LIGHT_CLIENT_OPTIMISTIC_UPDATE-MUST-409d5940", "LIGHT_CLIENT_OPTIMISTIC_UPDATE-MUST-4aa31c50", "LIGHT_CLIENT_OPTIMISTIC_UPDATE-MUST-d8f98e64", "PARTIAL_DATA_COLUMN_SIDECAR-IGNORE-4b3745fd", "PARTIAL_DATA_COLUMN_SIDECAR-IGNORE-ac743680", "PARTIAL_DATA_COLUMN_SIDECAR-REJECT-8ab8add3", "PROSE-SHOULD-8423471c", "PROSE-SHOULD-ba897e5b", "PROSE-SHOULD-e1ee5362", "PROSE-SHOULD-f3d9ce33", "PROSE-SHOULD_NOT-c1b17ff2"}, MinClients: 2},
 			Preflight: func(ctx context.Context, chain runner.ChainConfig, cs []runner.Client) runner.PreflightResult {
 				return irPreflightFork(ctx, cs, "fulu", []string{})
 			},
@@ -3516,7 +3516,7 @@ func irGossipValidationSpecs() []runner.Spec {
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "ir_gossipvalidation",
 			What:     "reference backbone: repeated invalid/duplicate behavior may affect scoring",
-			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
+			Metadata: runner.Metadata{SpecRules: []string{"ETH2-SHOULD-50cecb99", "ETH2-SHOULD_NOT-5cba6dbb", "EXECUTION_PROOF-IGNORE-84084443", "LIGHT_CLIENT_FINALITY_UPDATE-IGNORE-fa13328c", "LIGHT_CLIENT_FINALITY_UPDATE-MUST-2146fea4", "LIGHT_CLIENT_FINALITY_UPDATE-MUST-379dc991", "LIGHT_CLIENT_FINALITY_UPDATE-MUST-a934795f", "LIGHT_CLIENT_OPTIMISTIC_UPDATE-IGNORE-e21f1587", "LIGHT_CLIENT_OPTIMISTIC_UPDATE-MUST-409d5940", "LIGHT_CLIENT_OPTIMISTIC_UPDATE-MUST-4aa31c50", "LIGHT_CLIENT_OPTIMISTIC_UPDATE-MUST-d8f98e64", "PARTIAL_DATA_COLUMN_SIDECAR-IGNORE-4b3745fd", "PARTIAL_DATA_COLUMN_SIDECAR-IGNORE-ac743680", "PARTIAL_DATA_COLUMN_SIDECAR-REJECT-8ab8add3", "PROSE-SHOULD-8423471c", "PROSE-SHOULD-ba897e5b", "PROSE-SHOULD-e1ee5362", "PROSE-SHOULD-f3d9ce33", "PROSE-SHOULD_NOT-c1b17ff2"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				results := map[string]string{}
 				for _, c := range te.Clients {
@@ -3539,7 +3539,7 @@ func irGossipValidationSpecs() []runner.Spec {
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "ir_gossipvalidation",
 			What:     "reference backbone: equivocation/conflict paths feed peer scoring",
-			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
+			Metadata: runner.Metadata{SpecRules: []string{"ETH2-SHOULD-50cecb99", "ETH2-SHOULD_NOT-5cba6dbb", "EXECUTION_PROOF-IGNORE-84084443", "LIGHT_CLIENT_FINALITY_UPDATE-IGNORE-fa13328c", "LIGHT_CLIENT_FINALITY_UPDATE-MUST-2146fea4", "LIGHT_CLIENT_FINALITY_UPDATE-MUST-379dc991", "LIGHT_CLIENT_FINALITY_UPDATE-MUST-a934795f", "LIGHT_CLIENT_OPTIMISTIC_UPDATE-IGNORE-e21f1587", "LIGHT_CLIENT_OPTIMISTIC_UPDATE-MUST-409d5940", "LIGHT_CLIENT_OPTIMISTIC_UPDATE-MUST-4aa31c50", "LIGHT_CLIENT_OPTIMISTIC_UPDATE-MUST-d8f98e64", "PARTIAL_DATA_COLUMN_SIDECAR-IGNORE-4b3745fd", "PARTIAL_DATA_COLUMN_SIDECAR-IGNORE-ac743680", "PARTIAL_DATA_COLUMN_SIDECAR-REJECT-8ab8add3", "PROSE-SHOULD-8423471c", "PROSE-SHOULD-ba897e5b", "PROSE-SHOULD-e1ee5362", "PROSE-SHOULD-f3d9ce33", "PROSE-SHOULD_NOT-c1b17ff2"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				results := map[string]string{}
 				for _, c := range te.Clients {
@@ -3562,7 +3562,7 @@ func irGossipValidationSpecs() []runner.Spec {
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "ir_gossipvalidation",
 			What:     "reference backbone: deferred work eventually returns to subscribed validation",
-			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
+			Metadata: runner.Metadata{SpecRules: []string{"ETH2-SHOULD-50cecb99", "ETH2-SHOULD_NOT-5cba6dbb", "EXECUTION_PROOF-IGNORE-84084443", "LIGHT_CLIENT_FINALITY_UPDATE-IGNORE-fa13328c", "LIGHT_CLIENT_FINALITY_UPDATE-MUST-2146fea4", "LIGHT_CLIENT_FINALITY_UPDATE-MUST-379dc991", "LIGHT_CLIENT_FINALITY_UPDATE-MUST-a934795f", "LIGHT_CLIENT_OPTIMISTIC_UPDATE-IGNORE-e21f1587", "LIGHT_CLIENT_OPTIMISTIC_UPDATE-MUST-409d5940", "LIGHT_CLIENT_OPTIMISTIC_UPDATE-MUST-4aa31c50", "LIGHT_CLIENT_OPTIMISTIC_UPDATE-MUST-d8f98e64", "PARTIAL_DATA_COLUMN_SIDECAR-IGNORE-4b3745fd", "PARTIAL_DATA_COLUMN_SIDECAR-IGNORE-ac743680", "PARTIAL_DATA_COLUMN_SIDECAR-REJECT-8ab8add3", "PROSE-SHOULD-8423471c", "PROSE-SHOULD-ba897e5b", "PROSE-SHOULD-e1ee5362", "PROSE-SHOULD-f3d9ce33", "PROSE-SHOULD_NOT-c1b17ff2"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				results := map[string]string{}
 				for _, c := range te.Clients {
@@ -3585,7 +3585,7 @@ func irGossipValidationSpecs() []runner.Spec {
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "ir_gossipvalidation",
 			What:     "reference backbone: severe peer-score outcomes can end the session",
-			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
+			Metadata: runner.Metadata{SpecRules: []string{"ETH2-SHOULD-50cecb99", "ETH2-SHOULD_NOT-5cba6dbb", "EXECUTION_PROOF-IGNORE-84084443", "LIGHT_CLIENT_FINALITY_UPDATE-IGNORE-fa13328c", "LIGHT_CLIENT_FINALITY_UPDATE-MUST-2146fea4", "LIGHT_CLIENT_FINALITY_UPDATE-MUST-379dc991", "LIGHT_CLIENT_FINALITY_UPDATE-MUST-a934795f", "LIGHT_CLIENT_OPTIMISTIC_UPDATE-IGNORE-e21f1587", "LIGHT_CLIENT_OPTIMISTIC_UPDATE-MUST-409d5940", "LIGHT_CLIENT_OPTIMISTIC_UPDATE-MUST-4aa31c50", "LIGHT_CLIENT_OPTIMISTIC_UPDATE-MUST-d8f98e64", "PARTIAL_DATA_COLUMN_SIDECAR-IGNORE-4b3745fd", "PARTIAL_DATA_COLUMN_SIDECAR-IGNORE-ac743680", "PARTIAL_DATA_COLUMN_SIDECAR-REJECT-8ab8add3", "PROSE-SHOULD-8423471c", "PROSE-SHOULD-ba897e5b", "PROSE-SHOULD-e1ee5362", "PROSE-SHOULD-f3d9ce33", "PROSE-SHOULD_NOT-c1b17ff2"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				results := map[string]string{}
 				for _, c := range te.Clients {
@@ -4961,7 +4961,7 @@ func irReqRespSpecs() []runner.Spec {
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "ir_reqresp",
 			What:     "HTTP/2/QUIC-stream reference: request stream opens before bytes are written",
-			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
+			Metadata: runner.Metadata{SpecRules: []string{"PROSE-MAY-3ade641f", "PROSE-MAY-71e2aa1d", "PROSE-MAY-9078b390", "PROSE-MAY-a038d9cc", "PROSE-MAY-c56d92e4", "PROSE-MAY-d8c38ce4", "PROSE-MAY-defcfe07", "PROSE-MAY-e0d0a6ac", "PROSE-MAY-e23242dc", "PROSE-MUST-04eb0b1f", "PROSE-MUST-1cc30454", "PROSE-MUST-646ea120", "PROSE-MUST-e8b6e4e4", "PROSE-MUST-faaebe5c", "PROSE-MUST_NOT-e8f92f76", "PROSE-SHOULD-1a783d48", "PROSE-SHOULD-24243530", "PROSE-SHOULD-3b4ee952", "PROSE-SHOULD-48683a8f", "PROSE-SHOULD-4f7e7229", "PROSE-SHOULD-8702eb06", "PROSE-SHOULD-e7b5dc38", "PROSE-SHOULD-ee2e76b7", "PROSE-SHOULD-ef57ae27"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				ctx, cancel := context.WithTimeout(ctx, 5000*time.Millisecond)
 				defer cancel()
@@ -4992,7 +4992,7 @@ func irReqRespSpecs() []runner.Spec {
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "ir_reqresp",
 			What:     "spec backbone: requester writes the request then closes the write side",
-			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
+			Metadata: runner.Metadata{SpecRules: []string{"PROSE-MAY-3ade641f", "PROSE-MAY-71e2aa1d", "PROSE-MAY-9078b390", "PROSE-MAY-a038d9cc", "PROSE-MAY-c56d92e4", "PROSE-MAY-d8c38ce4", "PROSE-MAY-defcfe07", "PROSE-MAY-e0d0a6ac", "PROSE-MAY-e23242dc", "PROSE-MUST-04eb0b1f", "PROSE-MUST-1cc30454", "PROSE-MUST-646ea120", "PROSE-MUST-e8b6e4e4", "PROSE-MUST-faaebe5c", "PROSE-MUST_NOT-e8f92f76", "PROSE-SHOULD-1a783d48", "PROSE-SHOULD-24243530", "PROSE-SHOULD-3b4ee952", "PROSE-SHOULD-48683a8f", "PROSE-SHOULD-4f7e7229", "PROSE-SHOULD-8702eb06", "PROSE-SHOULD-e7b5dc38", "PROSE-SHOULD-ee2e76b7", "PROSE-SHOULD-ef57ae27"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				ictx := irNewContext(te)
 				body := buildBeaconBlocksByRangeV2NearHead(ictx)
@@ -5015,7 +5015,7 @@ func irReqRespSpecs() []runner.Spec {
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "ir_reqresp",
 			What:     "reference backbone: partial write leaves a resource-holding stream state",
-			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
+			Metadata: runner.Metadata{SpecRules: []string{"PROSE-MAY-3ade641f", "PROSE-MAY-71e2aa1d", "PROSE-MAY-9078b390", "PROSE-MAY-a038d9cc", "PROSE-MAY-c56d92e4", "PROSE-MAY-d8c38ce4", "PROSE-MAY-defcfe07", "PROSE-MAY-e0d0a6ac", "PROSE-MAY-e23242dc", "PROSE-MUST-04eb0b1f", "PROSE-MUST-1cc30454", "PROSE-MUST-646ea120", "PROSE-MUST-e8b6e4e4", "PROSE-MUST-faaebe5c", "PROSE-MUST_NOT-e8f92f76", "PROSE-SHOULD-1a783d48", "PROSE-SHOULD-24243530", "PROSE-SHOULD-3b4ee952", "PROSE-SHOULD-48683a8f", "PROSE-SHOULD-4f7e7229", "PROSE-SHOULD-8702eb06", "PROSE-SHOULD-e7b5dc38", "PROSE-SHOULD-ee2e76b7", "PROSE-SHOULD-ef57ae27"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				body := make([]byte, 1)
 				results := map[string]string{}
@@ -5043,7 +5043,7 @@ func irReqRespSpecs() []runner.Spec {
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "ir_reqresp",
 			What:     "negative path: read while the write side remains open",
-			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
+			Metadata: runner.Metadata{SpecRules: []string{"PROSE-MAY-3ade641f", "PROSE-MAY-71e2aa1d", "PROSE-MAY-9078b390", "PROSE-MAY-a038d9cc", "PROSE-MAY-c56d92e4", "PROSE-MAY-d8c38ce4", "PROSE-MAY-defcfe07", "PROSE-MAY-e0d0a6ac", "PROSE-MAY-e23242dc", "PROSE-MUST-04eb0b1f", "PROSE-MUST-1cc30454", "PROSE-MUST-646ea120", "PROSE-MUST-e8b6e4e4", "PROSE-MUST-faaebe5c", "PROSE-MUST_NOT-e8f92f76", "PROSE-SHOULD-1a783d48", "PROSE-SHOULD-24243530", "PROSE-SHOULD-3b4ee952", "PROSE-SHOULD-48683a8f", "PROSE-SHOULD-4f7e7229", "PROSE-SHOULD-8702eb06", "PROSE-SHOULD-e7b5dc38", "PROSE-SHOULD-ee2e76b7", "PROSE-SHOULD-ef57ae27"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				timeout := 1000 * time.Millisecond
 				body := []byte(nil)
@@ -5064,7 +5064,7 @@ func irReqRespSpecs() []runner.Spec {
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "ir_reqresp",
 			What:     "spec backbone: response consists of response_chunk entries after request EOF",
-			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
+			Metadata: runner.Metadata{SpecRules: []string{"PROSE-MAY-3ade641f", "PROSE-MAY-71e2aa1d", "PROSE-MAY-9078b390", "PROSE-MAY-a038d9cc", "PROSE-MAY-c56d92e4", "PROSE-MAY-d8c38ce4", "PROSE-MAY-defcfe07", "PROSE-MAY-e0d0a6ac", "PROSE-MAY-e23242dc", "PROSE-MUST-04eb0b1f", "PROSE-MUST-1cc30454", "PROSE-MUST-646ea120", "PROSE-MUST-e8b6e4e4", "PROSE-MUST-faaebe5c", "PROSE-MUST_NOT-e8f92f76", "PROSE-SHOULD-1a783d48", "PROSE-SHOULD-24243530", "PROSE-SHOULD-3b4ee952", "PROSE-SHOULD-48683a8f", "PROSE-SHOULD-4f7e7229", "PROSE-SHOULD-8702eb06", "PROSE-SHOULD-e7b5dc38", "PROSE-SHOULD-ee2e76b7", "PROSE-SHOULD-ef57ae27"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				timeout := 10000 * time.Millisecond
 				body := []byte(nil)
@@ -5085,7 +5085,7 @@ func irReqRespSpecs() []runner.Spec {
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "ir_reqresp",
 			What:     "reference backbone: full response consumed or stream ended",
-			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
+			Metadata: runner.Metadata{SpecRules: []string{"PROSE-MAY-3ade641f", "PROSE-MAY-71e2aa1d", "PROSE-MAY-9078b390", "PROSE-MAY-a038d9cc", "PROSE-MAY-c56d92e4", "PROSE-MAY-d8c38ce4", "PROSE-MAY-defcfe07", "PROSE-MAY-e0d0a6ac", "PROSE-MAY-e23242dc", "PROSE-MUST-04eb0b1f", "PROSE-MUST-1cc30454", "PROSE-MUST-646ea120", "PROSE-MUST-e8b6e4e4", "PROSE-MUST-faaebe5c", "PROSE-MUST_NOT-e8f92f76", "PROSE-SHOULD-1a783d48", "PROSE-SHOULD-24243530", "PROSE-SHOULD-3b4ee952", "PROSE-SHOULD-48683a8f", "PROSE-SHOULD-4f7e7229", "PROSE-SHOULD-8702eb06", "PROSE-SHOULD-e7b5dc38", "PROSE-SHOULD-ee2e76b7", "PROSE-SHOULD-ef57ae27"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				results := map[string]string{}
 				for _, c := range te.Clients {
@@ -5108,7 +5108,7 @@ func irReqRespSpecs() []runner.Spec {
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "ir_reqresp",
 			What:     "reference backbone: another independent stream can be opened",
-			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
+			Metadata: runner.Metadata{SpecRules: []string{"PROSE-MAY-3ade641f", "PROSE-MAY-71e2aa1d", "PROSE-MAY-9078b390", "PROSE-MAY-a038d9cc", "PROSE-MAY-c56d92e4", "PROSE-MAY-d8c38ce4", "PROSE-MAY-defcfe07", "PROSE-MAY-e0d0a6ac", "PROSE-MAY-e23242dc", "PROSE-MUST-04eb0b1f", "PROSE-MUST-1cc30454", "PROSE-MUST-646ea120", "PROSE-MUST-e8b6e4e4", "PROSE-MUST-faaebe5c", "PROSE-MUST_NOT-e8f92f76", "PROSE-SHOULD-1a783d48", "PROSE-SHOULD-24243530", "PROSE-SHOULD-3b4ee952", "PROSE-SHOULD-48683a8f", "PROSE-SHOULD-4f7e7229", "PROSE-SHOULD-8702eb06", "PROSE-SHOULD-e7b5dc38", "PROSE-SHOULD-ee2e76b7", "PROSE-SHOULD-ef57ae27"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				results := map[string]string{}
 				for _, c := range te.Clients {
@@ -5131,7 +5131,7 @@ func irReqRespSpecs() []runner.Spec {
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "ir_reqresp",
 			What:     "reference backbone: terminal path after a complete response",
-			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
+			Metadata: runner.Metadata{SpecRules: []string{"PROSE-MAY-3ade641f", "PROSE-MAY-71e2aa1d", "PROSE-MAY-9078b390", "PROSE-MAY-a038d9cc", "PROSE-MAY-c56d92e4", "PROSE-MAY-d8c38ce4", "PROSE-MAY-defcfe07", "PROSE-MAY-e0d0a6ac", "PROSE-MAY-e23242dc", "PROSE-MUST-04eb0b1f", "PROSE-MUST-1cc30454", "PROSE-MUST-646ea120", "PROSE-MUST-e8b6e4e4", "PROSE-MUST-faaebe5c", "PROSE-MUST_NOT-e8f92f76", "PROSE-SHOULD-1a783d48", "PROSE-SHOULD-24243530", "PROSE-SHOULD-3b4ee952", "PROSE-SHOULD-48683a8f", "PROSE-SHOULD-4f7e7229", "PROSE-SHOULD-8702eb06", "PROSE-SHOULD-e7b5dc38", "PROSE-SHOULD-ee2e76b7", "PROSE-SHOULD-ef57ae27"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				results := map[string]string{}
 				for _, c := range te.Clients {
@@ -5154,7 +5154,7 @@ func irReqRespSpecs() []runner.Spec {
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "ir_reqresp",
 			What:     "reference backbone: reset/error paths close the stream",
-			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
+			Metadata: runner.Metadata{SpecRules: []string{"PROSE-MAY-3ade641f", "PROSE-MAY-71e2aa1d", "PROSE-MAY-9078b390", "PROSE-MAY-a038d9cc", "PROSE-MAY-c56d92e4", "PROSE-MAY-d8c38ce4", "PROSE-MAY-defcfe07", "PROSE-MAY-e0d0a6ac", "PROSE-MAY-e23242dc", "PROSE-MUST-04eb0b1f", "PROSE-MUST-1cc30454", "PROSE-MUST-646ea120", "PROSE-MUST-e8b6e4e4", "PROSE-MUST-faaebe5c", "PROSE-MUST_NOT-e8f92f76", "PROSE-SHOULD-1a783d48", "PROSE-SHOULD-24243530", "PROSE-SHOULD-3b4ee952", "PROSE-SHOULD-48683a8f", "PROSE-SHOULD-4f7e7229", "PROSE-SHOULD-8702eb06", "PROSE-SHOULD-e7b5dc38", "PROSE-SHOULD-ee2e76b7", "PROSE-SHOULD-ef57ae27"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				results := map[string]string{}
 				for _, c := range te.Clients {
@@ -5851,7 +5851,7 @@ func irSubnetSubscriptionSpecs() []runner.Spec {
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "ir_subnetsubscription",
 			What:     "sub_query_enr (SubENRProbe -> SubENRProbe)",
-			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
+			Metadata: runner.Metadata{SpecRules: []string{"BEACON_ATTESTATION-REJECT-02f714ed", "BEACON_ATTESTATION_SUBNET_ID-MUST-454af71d", "DATA_COLUMN_SIDECAR-REJECT-459b0d39", "DATA_COLUMN_SIDECAR-REJECT-c094c7ea", "PROSE-MAY-99c5c95f", "PROSE-MUST-0648388b", "PROSE-MUST-4bfaa766", "PROSE-MUST-56ec7740", "PROSE-MUST-9cd4be04", "SYNC_COMMITTEE_MESSAGE-REJECT-c428cd4e"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				results := map[string]string{}
 				for _, c := range te.Clients {
@@ -5874,7 +5874,7 @@ func irSubnetSubscriptionSpecs() []runner.Spec {
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "ir_subnetsubscription",
 			What:     "sub_status_handshake (SubENRProbe -> SubENRProbe)",
-			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
+			Metadata: runner.Metadata{SpecRules: []string{"BEACON_ATTESTATION-REJECT-02f714ed", "BEACON_ATTESTATION_SUBNET_ID-MUST-454af71d", "DATA_COLUMN_SIDECAR-REJECT-459b0d39", "DATA_COLUMN_SIDECAR-REJECT-c094c7ea", "PROSE-MAY-99c5c95f", "PROSE-MUST-0648388b", "PROSE-MUST-4bfaa766", "PROSE-MUST-56ec7740", "PROSE-MUST-9cd4be04", "SYNC_COMMITTEE_MESSAGE-REJECT-c428cd4e"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				ictx := irNewContext(te)
 				timeout := 5000 * time.Millisecond
@@ -5896,7 +5896,7 @@ func irSubnetSubscriptionSpecs() []runner.Spec {
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "ir_subnetsubscription",
 			What:     "sub_metadata_v3 (SubENRProbe -> SubENRProbe)",
-			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
+			Metadata: runner.Metadata{SpecRules: []string{"BEACON_ATTESTATION-REJECT-02f714ed", "BEACON_ATTESTATION_SUBNET_ID-MUST-454af71d", "DATA_COLUMN_SIDECAR-REJECT-459b0d39", "DATA_COLUMN_SIDECAR-REJECT-c094c7ea", "PROSE-MAY-99c5c95f", "PROSE-MUST-0648388b", "PROSE-MUST-4bfaa766", "PROSE-MUST-56ec7740", "PROSE-MUST-9cd4be04", "SYNC_COMMITTEE_MESSAGE-REJECT-c428cd4e"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				timeout := 5000 * time.Millisecond
 				body := []byte(nil)
@@ -5917,7 +5917,7 @@ func irSubnetSubscriptionSpecs() []runner.Spec {
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "ir_subnetsubscription",
 			What:     "sub_probe_idle (SubENRProbe -> SubENRProbe)",
-			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
+			Metadata: runner.Metadata{SpecRules: []string{"BEACON_ATTESTATION-REJECT-02f714ed", "BEACON_ATTESTATION_SUBNET_ID-MUST-454af71d", "DATA_COLUMN_SIDECAR-REJECT-459b0d39", "DATA_COLUMN_SIDECAR-REJECT-c094c7ea", "PROSE-MAY-99c5c95f", "PROSE-MUST-0648388b", "PROSE-MUST-4bfaa766", "PROSE-MUST-56ec7740", "PROSE-MUST-9cd4be04", "SYNC_COMMITTEE_MESSAGE-REJECT-c428cd4e"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				timeout := 2000 * time.Millisecond
 				time.Sleep(timeout)
@@ -5965,7 +5965,7 @@ func irSubnetSubscriptionSpecs() []runner.Spec {
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "ir_subnetsubscription",
 			What:     "sub_verify_syncnets (SubCustodyResolve -> SubCustodyResolve)",
-			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
+			Metadata: runner.Metadata{SpecRules: []string{"BEACON_ATTESTATION-REJECT-02f714ed", "BEACON_ATTESTATION_SUBNET_ID-MUST-454af71d", "DATA_COLUMN_SIDECAR-REJECT-459b0d39", "DATA_COLUMN_SIDECAR-REJECT-c094c7ea", "PROSE-MAY-99c5c95f", "PROSE-MUST-0648388b", "PROSE-MUST-4bfaa766", "PROSE-MUST-56ec7740", "PROSE-MUST-9cd4be04", "SYNC_COMMITTEE_MESSAGE-REJECT-c428cd4e"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				results := map[string]string{}
 				for _, c := range te.Clients {
@@ -6011,7 +6011,7 @@ func irSubnetSubscriptionSpecs() []runner.Spec {
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "ir_subnetsubscription",
 			What:     "sub_inject_custody_data_column (SubCustodyInject -> SubCustodyInject)",
-			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
+			Metadata: runner.Metadata{SpecRules: []string{"BEACON_ATTESTATION-REJECT-02f714ed", "BEACON_ATTESTATION_SUBNET_ID-MUST-454af71d", "DATA_COLUMN_SIDECAR-REJECT-459b0d39", "DATA_COLUMN_SIDECAR-REJECT-c094c7ea", "PROSE-MAY-99c5c95f", "PROSE-MUST-0648388b", "PROSE-MUST-4bfaa766", "PROSE-MUST-56ec7740", "PROSE-MUST-9cd4be04", "SYNC_COMMITTEE_MESSAGE-REJECT-c428cd4e"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				ictx := irNewContext(te)
 				topic := irFullGossipTopic(ictx, "")
@@ -6045,7 +6045,7 @@ func irSubnetSubscriptionSpecs() []runner.Spec {
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "ir_subnetsubscription",
 			What:     "sub_inject_subscribed_attestation (SubCustodyInject -> SubCustodyInject)",
-			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
+			Metadata: runner.Metadata{SpecRules: []string{"BEACON_ATTESTATION-REJECT-02f714ed", "BEACON_ATTESTATION_SUBNET_ID-MUST-454af71d", "DATA_COLUMN_SIDECAR-REJECT-459b0d39", "DATA_COLUMN_SIDECAR-REJECT-c094c7ea", "PROSE-MAY-99c5c95f", "PROSE-MUST-0648388b", "PROSE-MUST-4bfaa766", "PROSE-MUST-56ec7740", "PROSE-MUST-9cd4be04", "SYNC_COMMITTEE_MESSAGE-REJECT-c428cd4e"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				ictx := irNewContext(te)
 				topic := irFullGossipTopic(ictx, "")
@@ -6079,7 +6079,7 @@ func irSubnetSubscriptionSpecs() []runner.Spec {
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "ir_subnetsubscription",
 			What:     "sub_inject_subscribed_sync (SubCustodyInject -> SubCustodyInject)",
-			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
+			Metadata: runner.Metadata{SpecRules: []string{"BEACON_ATTESTATION-REJECT-02f714ed", "BEACON_ATTESTATION_SUBNET_ID-MUST-454af71d", "DATA_COLUMN_SIDECAR-REJECT-459b0d39", "DATA_COLUMN_SIDECAR-REJECT-c094c7ea", "PROSE-MAY-99c5c95f", "PROSE-MUST-0648388b", "PROSE-MUST-4bfaa766", "PROSE-MUST-56ec7740", "PROSE-MUST-9cd4be04", "SYNC_COMMITTEE_MESSAGE-REJECT-c428cd4e"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				ictx := irNewContext(te)
 				topic := irFullGossipTopic(ictx, "")
@@ -6113,7 +6113,7 @@ func irSubnetSubscriptionSpecs() []runner.Spec {
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "ir_subnetsubscription",
 			What:     "sub_custody_check_connected (SubCustodyInject -> SubCustodyInject)",
-			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
+			Metadata: runner.Metadata{SpecRules: []string{"BEACON_ATTESTATION-REJECT-02f714ed", "BEACON_ATTESTATION_SUBNET_ID-MUST-454af71d", "DATA_COLUMN_SIDECAR-REJECT-459b0d39", "DATA_COLUMN_SIDECAR-REJECT-c094c7ea", "PROSE-MAY-99c5c95f", "PROSE-MUST-0648388b", "PROSE-MUST-4bfaa766", "PROSE-MUST-56ec7740", "PROSE-MUST-9cd4be04", "SYNC_COMMITTEE_MESSAGE-REJECT-c428cd4e"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				results := map[string]string{}
 				for _, c := range te.Clients {
@@ -6136,7 +6136,7 @@ func irSubnetSubscriptionSpecs() []runner.Spec {
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "ir_subnetsubscription",
 			What:     "sub_custody_burst_3 (SubCustodyInject -> SubCustodyInject)",
-			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
+			Metadata: runner.Metadata{SpecRules: []string{"BEACON_ATTESTATION-REJECT-02f714ed", "BEACON_ATTESTATION_SUBNET_ID-MUST-454af71d", "DATA_COLUMN_SIDECAR-REJECT-459b0d39", "DATA_COLUMN_SIDECAR-REJECT-c094c7ea", "PROSE-MAY-99c5c95f", "PROSE-MUST-0648388b", "PROSE-MUST-4bfaa766", "PROSE-MUST-56ec7740", "PROSE-MUST-9cd4be04", "SYNC_COMMITTEE_MESSAGE-REJECT-c428cd4e"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				ictx := irNewContext(te)
 				topic := irFullGossipTopic(ictx, "")
@@ -6170,7 +6170,7 @@ func irSubnetSubscriptionSpecs() []runner.Spec {
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "ir_subnetsubscription",
 			What:     "sub_custody_detected_disconnect (SubCustodyInject -> SubDisconnected)",
-			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
+			Metadata: runner.Metadata{SpecRules: []string{"BEACON_ATTESTATION-REJECT-02f714ed", "BEACON_ATTESTATION_SUBNET_ID-MUST-454af71d", "DATA_COLUMN_SIDECAR-REJECT-459b0d39", "DATA_COLUMN_SIDECAR-REJECT-c094c7ea", "PROSE-MAY-99c5c95f", "PROSE-MUST-0648388b", "PROSE-MUST-4bfaa766", "PROSE-MUST-56ec7740", "PROSE-MUST-9cd4be04", "SYNC_COMMITTEE_MESSAGE-REJECT-c428cd4e"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				results := map[string]string{}
 				for _, c := range te.Clients {
@@ -6193,7 +6193,7 @@ func irSubnetSubscriptionSpecs() []runner.Spec {
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "ir_subnetsubscription",
 			What:     "sub_inject_noncustody_data_column (SubNonCustodyInject -> SubNonCustodyInject)",
-			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
+			Metadata: runner.Metadata{SpecRules: []string{"BEACON_ATTESTATION-REJECT-02f714ed", "BEACON_ATTESTATION_SUBNET_ID-MUST-454af71d", "DATA_COLUMN_SIDECAR-REJECT-459b0d39", "DATA_COLUMN_SIDECAR-REJECT-c094c7ea", "PROSE-MAY-99c5c95f", "PROSE-MUST-0648388b", "PROSE-MUST-4bfaa766", "PROSE-MUST-56ec7740", "PROSE-MUST-9cd4be04", "SYNC_COMMITTEE_MESSAGE-REJECT-c428cd4e"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				ictx := irNewContext(te)
 				topic := irFullGossipTopic(ictx, "")
@@ -6227,7 +6227,7 @@ func irSubnetSubscriptionSpecs() []runner.Spec {
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "ir_subnetsubscription",
 			What:     "sub_inject_unsubscribed_attestation (SubNonCustodyInject -> SubNonCustodyInject)",
-			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
+			Metadata: runner.Metadata{SpecRules: []string{"BEACON_ATTESTATION-REJECT-02f714ed", "BEACON_ATTESTATION_SUBNET_ID-MUST-454af71d", "DATA_COLUMN_SIDECAR-REJECT-459b0d39", "DATA_COLUMN_SIDECAR-REJECT-c094c7ea", "PROSE-MAY-99c5c95f", "PROSE-MUST-0648388b", "PROSE-MUST-4bfaa766", "PROSE-MUST-56ec7740", "PROSE-MUST-9cd4be04", "SYNC_COMMITTEE_MESSAGE-REJECT-c428cd4e"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				ictx := irNewContext(te)
 				topic := irFullGossipTopic(ictx, "")
@@ -6261,7 +6261,7 @@ func irSubnetSubscriptionSpecs() []runner.Spec {
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "ir_subnetsubscription",
 			What:     "sub_inject_unsubscribed_sync (SubNonCustodyInject -> SubNonCustodyInject)",
-			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
+			Metadata: runner.Metadata{SpecRules: []string{"BEACON_ATTESTATION-REJECT-02f714ed", "BEACON_ATTESTATION_SUBNET_ID-MUST-454af71d", "DATA_COLUMN_SIDECAR-REJECT-459b0d39", "DATA_COLUMN_SIDECAR-REJECT-c094c7ea", "PROSE-MAY-99c5c95f", "PROSE-MUST-0648388b", "PROSE-MUST-4bfaa766", "PROSE-MUST-56ec7740", "PROSE-MUST-9cd4be04", "SYNC_COMMITTEE_MESSAGE-REJECT-c428cd4e"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				ictx := irNewContext(te)
 				topic := irFullGossipTopic(ictx, "")
@@ -6295,7 +6295,7 @@ func irSubnetSubscriptionSpecs() []runner.Spec {
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "ir_subnetsubscription",
 			What:     "sub_noncustody_check_connected (SubNonCustodyInject -> SubNonCustodyInject)",
-			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
+			Metadata: runner.Metadata{SpecRules: []string{"BEACON_ATTESTATION-REJECT-02f714ed", "BEACON_ATTESTATION_SUBNET_ID-MUST-454af71d", "DATA_COLUMN_SIDECAR-REJECT-459b0d39", "DATA_COLUMN_SIDECAR-REJECT-c094c7ea", "PROSE-MAY-99c5c95f", "PROSE-MUST-0648388b", "PROSE-MUST-4bfaa766", "PROSE-MUST-56ec7740", "PROSE-MUST-9cd4be04", "SYNC_COMMITTEE_MESSAGE-REJECT-c428cd4e"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				results := map[string]string{}
 				for _, c := range te.Clients {
@@ -6318,7 +6318,7 @@ func irSubnetSubscriptionSpecs() []runner.Spec {
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "ir_subnetsubscription",
 			What:     "sub_noncustody_burst_5 (SubNonCustodyInject -> SubNonCustodyInject)",
-			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
+			Metadata: runner.Metadata{SpecRules: []string{"BEACON_ATTESTATION-REJECT-02f714ed", "BEACON_ATTESTATION_SUBNET_ID-MUST-454af71d", "DATA_COLUMN_SIDECAR-REJECT-459b0d39", "DATA_COLUMN_SIDECAR-REJECT-c094c7ea", "PROSE-MAY-99c5c95f", "PROSE-MUST-0648388b", "PROSE-MUST-4bfaa766", "PROSE-MUST-56ec7740", "PROSE-MUST-9cd4be04", "SYNC_COMMITTEE_MESSAGE-REJECT-c428cd4e"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				ictx := irNewContext(te)
 				topic := irFullGossipTopic(ictx, "")
@@ -6352,7 +6352,7 @@ func irSubnetSubscriptionSpecs() []runner.Spec {
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "ir_subnetsubscription",
 			What:     "sub_noncustody_detected_disconnect (SubNonCustodyInject -> SubDisconnected)",
-			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
+			Metadata: runner.Metadata{SpecRules: []string{"BEACON_ATTESTATION-REJECT-02f714ed", "BEACON_ATTESTATION_SUBNET_ID-MUST-454af71d", "DATA_COLUMN_SIDECAR-REJECT-459b0d39", "DATA_COLUMN_SIDECAR-REJECT-c094c7ea", "PROSE-MAY-99c5c95f", "PROSE-MUST-0648388b", "PROSE-MUST-4bfaa766", "PROSE-MUST-56ec7740", "PROSE-MUST-9cd4be04", "SYNC_COMMITTEE_MESSAGE-REJECT-c428cd4e"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				results := map[string]string{}
 				for _, c := range te.Clients {
@@ -6511,7 +6511,7 @@ func irSubnetSubscriptionSpecs() []runner.Spec {
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "ir_subnetsubscription",
 			What:     "sub_inject_cross_type (SubBoundaryInject -> SubBoundaryInject)",
-			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
+			Metadata: runner.Metadata{SpecRules: []string{"BEACON_ATTESTATION-REJECT-02f714ed", "BEACON_ATTESTATION_SUBNET_ID-MUST-454af71d", "DATA_COLUMN_SIDECAR-REJECT-459b0d39", "DATA_COLUMN_SIDECAR-REJECT-c094c7ea", "PROSE-MAY-99c5c95f", "PROSE-MUST-0648388b", "PROSE-MUST-4bfaa766", "PROSE-MUST-56ec7740", "PROSE-MUST-9cd4be04", "SYNC_COMMITTEE_MESSAGE-REJECT-c428cd4e"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				ictx := irNewContext(te)
 				topic := irFullGossipTopic(ictx, "")
@@ -6545,7 +6545,7 @@ func irSubnetSubscriptionSpecs() []runner.Spec {
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "ir_subnetsubscription",
 			What:     "sub_boundary_check_connected (SubBoundaryInject -> SubBoundaryInject)",
-			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
+			Metadata: runner.Metadata{SpecRules: []string{"BEACON_ATTESTATION-REJECT-02f714ed", "BEACON_ATTESTATION_SUBNET_ID-MUST-454af71d", "DATA_COLUMN_SIDECAR-REJECT-459b0d39", "DATA_COLUMN_SIDECAR-REJECT-c094c7ea", "PROSE-MAY-99c5c95f", "PROSE-MUST-0648388b", "PROSE-MUST-4bfaa766", "PROSE-MUST-56ec7740", "PROSE-MUST-9cd4be04", "SYNC_COMMITTEE_MESSAGE-REJECT-c428cd4e"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				results := map[string]string{}
 				for _, c := range te.Clients {
@@ -6568,7 +6568,7 @@ func irSubnetSubscriptionSpecs() []runner.Spec {
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "ir_subnetsubscription",
 			What:     "sub_boundary_detected_disconnect (SubBoundaryInject -> SubDisconnected)",
-			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
+			Metadata: runner.Metadata{SpecRules: []string{"BEACON_ATTESTATION-REJECT-02f714ed", "BEACON_ATTESTATION_SUBNET_ID-MUST-454af71d", "DATA_COLUMN_SIDECAR-REJECT-459b0d39", "DATA_COLUMN_SIDECAR-REJECT-c094c7ea", "PROSE-MAY-99c5c95f", "PROSE-MUST-0648388b", "PROSE-MUST-4bfaa766", "PROSE-MUST-56ec7740", "PROSE-MUST-9cd4be04", "SYNC_COMMITTEE_MESSAGE-REJECT-c428cd4e"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				results := map[string]string{}
 				for _, c := range te.Clients {
@@ -6591,7 +6591,7 @@ func irSubnetSubscriptionSpecs() []runner.Spec {
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "ir_subnetsubscription",
 			What:     "sub_reconnect_full (SubDisconnected -> SubENRProbe)",
-			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
+			Metadata: runner.Metadata{SpecRules: []string{"BEACON_ATTESTATION-REJECT-02f714ed", "BEACON_ATTESTATION_SUBNET_ID-MUST-454af71d", "DATA_COLUMN_SIDECAR-REJECT-459b0d39", "DATA_COLUMN_SIDECAR-REJECT-c094c7ea", "PROSE-MAY-99c5c95f", "PROSE-MUST-0648388b", "PROSE-MUST-4bfaa766", "PROSE-MUST-56ec7740", "PROSE-MUST-9cd4be04", "SYNC_COMMITTEE_MESSAGE-REJECT-c428cd4e"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				results := map[string]string{}
 				for _, c := range te.Clients {
@@ -6614,7 +6614,7 @@ func irSubnetSubscriptionSpecs() []runner.Spec {
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "ir_subnetsubscription",
 			What:     "sub_end_after_disconnect (SubDisconnected -> SubCompleted)",
-			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
+			Metadata: runner.Metadata{SpecRules: []string{"BEACON_ATTESTATION-REJECT-02f714ed", "BEACON_ATTESTATION_SUBNET_ID-MUST-454af71d", "DATA_COLUMN_SIDECAR-REJECT-459b0d39", "DATA_COLUMN_SIDECAR-REJECT-c094c7ea", "PROSE-MAY-99c5c95f", "PROSE-MUST-0648388b", "PROSE-MUST-4bfaa766", "PROSE-MUST-56ec7740", "PROSE-MUST-9cd4be04", "SYNC_COMMITTEE_MESSAGE-REJECT-c428cd4e"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				timeout := 100 * time.Millisecond
 				time.Sleep(timeout)
@@ -6639,7 +6639,7 @@ func irSubnetSubscriptionSpecs() []runner.Spec {
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "ir_subnetsubscription",
 			What:     "sub_wait_reconnect (SubDisconnected -> SubENRProbe)",
-			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
+			Metadata: runner.Metadata{SpecRules: []string{"BEACON_ATTESTATION-REJECT-02f714ed", "BEACON_ATTESTATION_SUBNET_ID-MUST-454af71d", "DATA_COLUMN_SIDECAR-REJECT-459b0d39", "DATA_COLUMN_SIDECAR-REJECT-c094c7ea", "PROSE-MAY-99c5c95f", "PROSE-MUST-0648388b", "PROSE-MUST-4bfaa766", "PROSE-MUST-56ec7740", "PROSE-MUST-9cd4be04", "SYNC_COMMITTEE_MESSAGE-REJECT-c428cd4e"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				timeout := 5000 * time.Millisecond
 				time.Sleep(timeout)

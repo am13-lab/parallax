@@ -33,6 +33,22 @@
       "label": "sem_conn_connect",
       "weight": 4,
       "description": "reference backbone: active peer connection is available before protocol exchange",
+      "spec_refs": [
+        "PROSE-MAY-3fe46c85",
+        "PROSE-MAY-68276936",
+        "PROSE-MAY-6eb8c500",
+        "PROSE-MAY-9ad1e8ba",
+        "PROSE-MAY-c3957c31",
+        "PROSE-MAY-cbd3c330",
+        "PROSE-MUST-25837f32",
+        "PROSE-MUST-369ed609",
+        "PROSE-MUST-64de0098",
+        "PROSE-MUST-80f23060",
+        "PROSE-MUST-fb63b2af",
+        "PROSE-SHOULD-12343187",
+        "PROSE-SHOULD-5c74107b",
+        "PROSE-SHOULD-d2397b37"
+      ],
       "action": {
         "type": "ActCheckConnected"
       },
@@ -50,6 +66,22 @@
       "label": "sem_conn_status_baseline",
       "weight": 8,
       "description": "spec backbone: Status is the connection-level handshake request",
+      "spec_refs": [
+        "PROSE-MAY-3fe46c85",
+        "PROSE-MAY-68276936",
+        "PROSE-MAY-6eb8c500",
+        "PROSE-MAY-9ad1e8ba",
+        "PROSE-MAY-c3957c31",
+        "PROSE-MAY-cbd3c330",
+        "PROSE-MUST-25837f32",
+        "PROSE-MUST-369ed609",
+        "PROSE-MUST-64de0098",
+        "PROSE-MUST-80f23060",
+        "PROSE-MUST-fb63b2af",
+        "PROSE-SHOULD-12343187",
+        "PROSE-SHOULD-5c74107b",
+        "PROSE-SHOULD-d2397b37"
+      ],
       "action": {
         "type": "ActSendStatus",
         "protocol": "/eth2/beacon_chain/req/status/2/ssz_snappy",
@@ -75,6 +107,22 @@
       "label": "sem_conn_metadata_probe",
       "weight": 5,
       "description": "spec backbone: metadata versioning is queried after status/ping indicates a peer record may be stale",
+      "spec_refs": [
+        "PROSE-MAY-3fe46c85",
+        "PROSE-MAY-68276936",
+        "PROSE-MAY-6eb8c500",
+        "PROSE-MAY-9ad1e8ba",
+        "PROSE-MAY-c3957c31",
+        "PROSE-MAY-cbd3c330",
+        "PROSE-MUST-25837f32",
+        "PROSE-MUST-369ed609",
+        "PROSE-MUST-64de0098",
+        "PROSE-MUST-80f23060",
+        "PROSE-MUST-fb63b2af",
+        "PROSE-SHOULD-12343187",
+        "PROSE-SHOULD-5c74107b",
+        "PROSE-SHOULD-d2397b37"
+      ],
       "action": {
         "type": "ActSendReqResp",
         "protocol": "/eth2/beacon_chain/req/metadata/3/ssz_snappy",
@@ -97,6 +145,22 @@
       "label": "sem_conn_sync_probe",
       "weight": 5,
       "description": "spec backbone: after handshake, peers probe sync data using Req/Resp",
+      "spec_refs": [
+        "PROSE-MAY-3fe46c85",
+        "PROSE-MAY-68276936",
+        "PROSE-MAY-6eb8c500",
+        "PROSE-MAY-9ad1e8ba",
+        "PROSE-MAY-c3957c31",
+        "PROSE-MAY-cbd3c330",
+        "PROSE-MUST-25837f32",
+        "PROSE-MUST-369ed609",
+        "PROSE-MUST-64de0098",
+        "PROSE-MUST-80f23060",
+        "PROSE-MUST-fb63b2af",
+        "PROSE-SHOULD-12343187",
+        "PROSE-SHOULD-5c74107b",
+        "PROSE-SHOULD-d2397b37"
+      ],
       "action": {
         "type": "ActSendReqResp",
         "protocol": "/eth2/beacon_chain/req/beacon_blocks_by_range/2/ssz_snappy",
@@ -121,6 +185,22 @@
       "label": "sem_conn_goodbye_baseline",
       "weight": 3,
       "description": "spec backbone: peers may send Goodbye before disconnecting",
+      "spec_refs": [
+        "PROSE-MAY-3fe46c85",
+        "PROSE-MAY-68276936",
+        "PROSE-MAY-6eb8c500",
+        "PROSE-MAY-9ad1e8ba",
+        "PROSE-MAY-c3957c31",
+        "PROSE-MAY-cbd3c330",
+        "PROSE-MUST-25837f32",
+        "PROSE-MUST-369ed609",
+        "PROSE-MUST-64de0098",
+        "PROSE-MUST-80f23060",
+        "PROSE-MUST-fb63b2af",
+        "PROSE-SHOULD-12343187",
+        "PROSE-SHOULD-5c74107b",
+        "PROSE-SHOULD-d2397b37"
+      ],
       "action": {
         "type": "ActSendReqResp",
         "protocol": "/eth2/beacon_chain/req/goodbye/1/ssz_snappy",
@@ -149,6 +229,22 @@
       "label": "sem_conn_probe_reset",
       "weight": 2,
       "description": "reference backbone: repeat protocol probes while the connection remains live",
+      "spec_refs": [
+        "PROSE-MAY-3fe46c85",
+        "PROSE-MAY-68276936",
+        "PROSE-MAY-6eb8c500",
+        "PROSE-MAY-9ad1e8ba",
+        "PROSE-MAY-c3957c31",
+        "PROSE-MAY-cbd3c330",
+        "PROSE-MUST-25837f32",
+        "PROSE-MUST-369ed609",
+        "PROSE-MUST-64de0098",
+        "PROSE-MUST-80f23060",
+        "PROSE-MUST-fb63b2af",
+        "PROSE-SHOULD-12343187",
+        "PROSE-SHOULD-5c74107b",
+        "PROSE-SHOULD-d2397b37"
+      ],
       "action": {
         "type": "ActCheckConnected"
       }
@@ -159,6 +255,22 @@
       "label": "sem_conn_close_after_goodbye",
       "weight": 4,
       "description": "reference backbone: Goodbye terminates the connection lifecycle path",
+      "spec_refs": [
+        "PROSE-MAY-3fe46c85",
+        "PROSE-MAY-68276936",
+        "PROSE-MAY-6eb8c500",
+        "PROSE-MAY-9ad1e8ba",
+        "PROSE-MAY-c3957c31",
+        "PROSE-MAY-cbd3c330",
+        "PROSE-MUST-25837f32",
+        "PROSE-MUST-369ed609",
+        "PROSE-MUST-64de0098",
+        "PROSE-MUST-80f23060",
+        "PROSE-MUST-fb63b2af",
+        "PROSE-SHOULD-12343187",
+        "PROSE-SHOULD-5c74107b",
+        "PROSE-SHOULD-d2397b37"
+      ],
       "action": {
         "type": "ActDisconnectPeer"
       }
@@ -169,6 +281,22 @@
       "label": "sem_conn_finish",
       "weight": 1,
       "description": "reference backbone: terminal path from an established protocol connection",
+      "spec_refs": [
+        "PROSE-MAY-3fe46c85",
+        "PROSE-MAY-68276936",
+        "PROSE-MAY-6eb8c500",
+        "PROSE-MAY-9ad1e8ba",
+        "PROSE-MAY-c3957c31",
+        "PROSE-MAY-cbd3c330",
+        "PROSE-MUST-25837f32",
+        "PROSE-MUST-369ed609",
+        "PROSE-MUST-64de0098",
+        "PROSE-MUST-80f23060",
+        "PROSE-MUST-fb63b2af",
+        "PROSE-SHOULD-12343187",
+        "PROSE-SHOULD-5c74107b",
+        "PROSE-SHOULD-d2397b37"
+      ],
       "action": {
         "type": "ActCheckConnected"
       }

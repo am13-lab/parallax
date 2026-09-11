@@ -21,6 +21,18 @@
       "label": "disc_baseline",
       "weight": 1,
       "description": "backbone: liveness check",
+      "spec_refs": [
+        "PROSE-MAY-0f4bcdc9",
+        "PROSE-MAY-cd1cb27a",
+        "PROSE-MAY-f46586f6",
+        "PROSE-MUST-0648388b",
+        "PROSE-MUST-3bacaa86",
+        "PROSE-MUST-56ec7740",
+        "PROSE-MUST-9812f11c",
+        "PROSE-MUST-bdd581d1",
+        "PROSE-MUST-eb253094",
+        "PROSE-MUST_NOT-774c52cc"
+      ],
       "action": {
         "type": "ActCheckConnected"
       }
@@ -31,6 +43,18 @@
       "label": "disc_reset",
       "weight": 1,
       "description": "backbone: cycle back",
+      "spec_refs": [
+        "PROSE-MAY-0f4bcdc9",
+        "PROSE-MAY-cd1cb27a",
+        "PROSE-MAY-f46586f6",
+        "PROSE-MUST-0648388b",
+        "PROSE-MUST-3bacaa86",
+        "PROSE-MUST-56ec7740",
+        "PROSE-MUST-9812f11c",
+        "PROSE-MUST-bdd581d1",
+        "PROSE-MUST-eb253094",
+        "PROSE-MUST_NOT-774c52cc"
+      ],
       "action": {
         "type": "ActCheckConnected"
       }
@@ -41,6 +65,18 @@
       "label": "disc_finish",
       "weight": 1,
       "description": "backbone: terminal path",
+      "spec_refs": [
+        "PROSE-MAY-0f4bcdc9",
+        "PROSE-MAY-cd1cb27a",
+        "PROSE-MAY-f46586f6",
+        "PROSE-MUST-0648388b",
+        "PROSE-MUST-3bacaa86",
+        "PROSE-MUST-56ec7740",
+        "PROSE-MUST-9812f11c",
+        "PROSE-MUST-bdd581d1",
+        "PROSE-MUST-eb253094",
+        "PROSE-MUST_NOT-774c52cc"
+      ],
       "action": {
         "type": "ActCheckConnected"
       }
