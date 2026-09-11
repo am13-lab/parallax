@@ -1,0 +1,1015 @@
+{
+  "name": "ReqResp",
+  "constructor": "NewReqRespMachine",
+  "init_state": "Idle",
+  "states": [
+    {
+      "name": "Idle"
+    },
+    {
+      "name": "StreamOpen"
+    },
+    {
+      "name": "RequestWritten"
+    },
+    {
+      "name": "RequestHalfClosed"
+    },
+    {
+      "name": "FirstChunkSeen"
+    },
+    {
+      "name": "ResponseComplete"
+    },
+    {
+      "name": "StreamReset"
+    },
+    {
+      "name": "Closed",
+      "terminal": true
+    }
+  ],
+  "transitions": [
+    {
+      "from": "Idle",
+      "to": "StreamOpen",
+      "label": "sem_rr_open_stream",
+      "weight": 5,
+      "description": "HTTP/2/QUIC-stream reference: request stream opens before bytes are written",
+      "action": {
+        "type": "ActOpenStream",
+        "protocol": "/eth2/beacon_chain/req/beacon_blocks_by_range/2/ssz_snappy",
+        "timeout_ms": 5000
+      }
+    },
+    {
+      "from": "StreamOpen",
+      "to": "RequestHalfClosed",
+      "label": "sem_rr_write_and_close",
+      "weight": 7,
+      "description": "spec backbone: requester writes the request then closes the write side",
+      "action": {
+        "type": "ActWriteAndClose",
+        "protocol": "/eth2/beacon_chain/req/ping/1/ssz_snappy",
+        "payload": {
+          "kind": "builder",
+          "wrap": "ssz_snappy",
+          "name": "buildBeaconBlocksByRangeV2NearHead"
+        },
+        "timeout_ms": 5000
+      },
+      "oracle": {
+        "differential": true,
+        "must_not": [
+          "CRASH"
+        ],
+        "strength": "MUST"
+      }
+    },
+    {
+      "from": "StreamOpen",
+      "to": "RequestWritten",
+      "label": "sem_rr_write_partial",
+      "weight": 3,
+      "description": "reference backbone: partial write leaves a resource-holding stream state",
+      "action": {
+        "type": "ActWritePartial",
+        "protocol": "/eth2/beacon_chain/req/ping/1/ssz_snappy",
+        "payload": {
+          "kind": "literal",
+          "wrap": "raw",
+          "size": 1
+        },
+        "timeout_ms": 1000
+      }
+    },
+    {
+      "from": "RequestWritten",
+      "to": "StreamReset",
+      "label": "sem_rr_read_half_open",
+      "weight": 3,
+      "description": "negative path: read while the write side remains open",
+      "action": {
+        "type": "ActReadResponse",
+        "protocol": "/eth2/beacon_chain/req/ping/1/ssz_snappy",
+        "timeout_ms": 1000,
+        "keep_write_open": true
+      },
+      "oracle": {
+        "differential": true,
+        "must_not": [
+          "CRASH",
+          "ACCEPT"
+        ],
+        "strength": "MUST"
+      }
+    },
+    {
+      "from": "RequestHalfClosed",
+      "to": "FirstChunkSeen",
+      "label": "sem_rr_read_response",
+      "weight": 6,
+      "description": "spec backbone: response consists of response_chunk entries after request EOF",
+      "action": {
+        "type": "ActReadResponse",
+        "protocol": "/eth2/beacon_chain/req/ping/1/ssz_snappy",
+        "timeout_ms": 10000
+      },
+      "oracle": {
+        "differential": true,
+        "must_not": [
+          "CRASH"
+        ],
+        "strength": "MUST"
+      }
+    },
+    {
+      "from": "FirstChunkSeen",
+      "to": "ResponseComplete",
+      "label": "sem_rr_response_complete",
+      "weight": 5,
+      "description": "reference backbone: full response consumed or stream ended",
+      "action": {
+        "type": "ActCheckConnected"
+      }
+    },
+    {
+      "from": "ResponseComplete",
+      "to": "Idle",
+      "label": "sem_rr_reset",
+      "weight": 2,
+      "description": "reference backbone: another independent stream can be opened",
+      "action": {
+        "type": "ActCheckConnected"
+      }
+    },
+    {
+      "from": "ResponseComplete",
+      "to": "Closed",
+      "label": "sem_rr_finish",
+      "weight": 1,
+      "description": "reference backbone: terminal path after a complete response",
+      "action": {
+        "type": "ActCheckConnected"
+      }
+    },
+    {
+      "from": "StreamReset",
+      "to": "Closed",
+      "label": "sem_rr_reset_to_closed",
+      "weight": 3,
+      "description": "reference backbone: reset/error paths close the stream",
+      "action": {
+        "type": "ActCheckConnected"
+      }
+    },
+    {
+      "from": "Idle",
+      "to": "ResponseComplete",
+      "label": "sem_rr_rule_eth2_beacon_chain_req_blob_sidecars_by_range_1_ssz_snappy_44bc9898",
+      "weight": 2,
+      "description": "AST bind: Req/Resp response behavior: Clients MAY respond with an empty list if the requested range lies entirely at or after FULU_FORK_EPOCH.",
+      "condition_desc": "after «FULU_FORK_EPOCH»; when the requested range lies entirely at or after FULU_FORK_EPOCH.",
+      "tags": [
+        "temporal:after",
+        "conditional",
+        "semantic:ReqResp",
+        "binding:reqresp_response_rule",
+        "semantic:reqresp"
+      ],
+      "spec_refs": [
+        "PROSE-MAY-3ade641f"
+      ],
+      "action": {
+        "type": "ActSendReqResp",
+        "protocol": "/eth2/beacon_chain/req/blob_sidecars_by_range/1/ssz_snappy",
+        "payload": {
+          "kind": "builder",
+          "wrap": "ssz_snappy",
+          "name": "buildBlocksByRangeNearHead"
+        },
+        "timeout_ms": 10000
+      },
+      "guard": {
+        "fork_gte": "fulu"
+      },
+      "oracle": {
+        "differential": true,
+        "must_not": [
+          "CRASH"
+        ],
+        "strength": "MAY"
+      }
+    },
+    {
+      "from": "Idle",
+      "to": "ResponseComplete",
+      "label": "sem_rr_rule_eth2_beacon_chain_req_beacon_blocks_by_root_1_ssz_snappy_3e88e536",
+      "weight": 2,
+      "description": "AST bind: Req/Resp response behavior: Clients MAY include a block in the response as soon as it passes the gossip validation rules",
+      "condition_desc": "upon «it passes the gossip validation rules»",
+      "tags": [
+        "temporal:upon",
+        "semantic:ReqResp",
+        "binding:reqresp_response_rule",
+        "semantic:reqresp"
+      ],
+      "spec_refs": [
+        "PROSE-MAY-71e2aa1d"
+      ],
+      "action": {
+        "type": "ActSendReqResp",
+        "protocol": "/eth2/beacon_chain/req/beacon_blocks_by_root/2/ssz_snappy",
+        "payload": {
+          "kind": "builder",
+          "wrap": "ssz_snappy",
+          "name": "buildRootListHeadRoot"
+        },
+        "timeout_ms": 10000
+      },
+      "oracle": {
+        "differential": true,
+        "must_not": [
+          "CRASH"
+        ],
+        "strength": "MAY"
+      }
+    },
+    {
+      "from": "Idle",
+      "to": "ResponseComplete",
+      "label": "sem_rr_rule_reqresp_280a4d17",
+      "weight": 2,
+      "description": "AST bind: Req/Resp response behavior: The responder MAY rate-limit chunks by withholding each chunk until capacity is available",
+      "condition_desc": "until «capacity is available»",
+      "tags": [
+        "temporal:until",
+        "semantic:ReqResp",
+        "binding:reqresp_response_rule",
+        "semantic:reqresp"
+      ],
+      "spec_refs": [
+        "PROSE-MAY-9078b390"
+      ],
+      "action": {
+        "type": "ActSendReqResp",
+        "protocol": "/eth2/beacon_chain/req/beacon_blocks_by_range/2/ssz_snappy",
+        "payload": {
+          "kind": "builder",
+          "wrap": "ssz_snappy",
+          "name": "buildBeaconBlocksByRangeV2NearHead"
+        },
+        "timeout_ms": 10000
+      },
+      "oracle": {
+        "differential": true,
+        "must_not": [
+          "CRASH"
+        ],
+        "strength": "MAY"
+      }
+    },
+    {
+      "from": "Idle",
+      "to": "ResponseComplete",
+      "label": "sem_rr_rule_eth2_beacon_chain_req_data_column_sidecars_by_range_1_ssz_snappy_91acfa9d",
+      "weight": 2,
+      "description": "AST bind: Req/Resp response behavior: After the initial data column sidecar, clients MAY stop in the process of responding if their fork choice changes the view of the chain in the context of the request.",
+      "condition_desc": "after «the initial data column sidecar»; when their fork choice changes the view of the chain in the context of the request.",
+      "tags": [
+        "temporal:after",
+        "conditional",
+        "semantic:ReqResp",
+        "binding:reqresp_response_rule",
+        "semantic:reqresp"
+      ],
+      "spec_refs": [
+        "PROSE-MAY-a038d9cc"
+      ],
+      "action": {
+        "type": "ActSendReqResp",
+        "protocol": "/eth2/beacon_chain/req/data_column_sidecars_by_range/1/ssz_snappy",
+        "payload": {
+          "kind": "builder",
+          "wrap": "raw",
+          "name": "buildDataColumnsOrdering"
+        },
+        "timeout_ms": 10000
+      },
+      "guard": {
+        "fork_gte": "fulu"
+      },
+      "oracle": {
+        "differential": true,
+        "must_not": [
+          "CRASH"
+        ],
+        "strength": "MAY"
+      }
+    },
+    {
+      "from": "FirstChunkSeen",
+      "to": "ResponseComplete",
+      "label": "sem_rr_rule_reqresp_be962048",
+      "weight": 2,
+      "description": "AST bind: Req/Resp response behavior: After reading a valid header, the payload MAY be read, while maintaining the size constraints from the header.",
+      "condition_desc": "after «reading a valid header»",
+      "tags": [
+        "temporal:after",
+        "semantic:ReqResp",
+        "binding:reqresp_response_rule",
+        "semantic:reqresp",
+        "temporal_derived",
+        "spec_from:FirstChunkSeen"
+      ],
+      "spec_refs": [
+        "PROSE-MAY-c56d92e4"
+      ],
+      "action": {
+        "type": "ActSendReqResp",
+        "protocol": "/eth2/beacon_chain/req/beacon_blocks_by_range/2/ssz_snappy",
+        "payload": {
+          "kind": "builder",
+          "wrap": "ssz_snappy",
+          "name": "buildBeaconBlocksByRangeV2NearHead"
+        },
+        "timeout_ms": 10000
+      },
+      "oracle": {
+        "differential": true,
+        "must_not": [
+          "CRASH"
+        ],
+        "strength": "MAY"
+      }
+    },
+    {
+      "from": "Idle",
+      "to": "ResponseComplete",
+      "label": "sem_rr_rule_eth2_beacon_chain_req_beacon_blocks_by_range_1_ssz_snappy_73bdd214",
+      "weight": 2,
+      "description": "AST bind: Req/Resp response behavior: After the initial block, clients MAY stop in the process of responding if their fork choice changes the view of the chain in the context of the request.",
+      "condition_desc": "after «the initial block»; when their fork choice changes the view of the chain in the context of the request.",
+      "tags": [
+        "temporal:after",
+        "conditional",
+        "semantic:ReqResp",
+        "binding:reqresp_response_rule",
+        "semantic:reqresp"
+      ],
+      "spec_refs": [
+        "PROSE-MAY-d8c38ce4"
+      ],
+      "action": {
+        "type": "ActSendReqResp",
+        "protocol": "/eth2/beacon_chain/req/beacon_blocks_by_range/1/ssz_snappy",
+        "payload": {
+          "kind": "builder",
+          "wrap": "ssz_snappy",
+          "name": "buildBeaconBlocksByRangeV2NearHead"
+        },
+        "timeout_ms": 10000
+      },
+      "oracle": {
+        "differential": true,
+        "must_not": [
+          "CRASH"
+        ],
+        "strength": "MAY"
+      }
+    },
+    {
+      "from": "Idle",
+      "to": "ResponseComplete",
+      "label": "sem_rr_rule_eth2_beacon_chain_req_blob_sidecars_by_range_1_ssz_snappy_8e130cd1",
+      "weight": 2,
+      "description": "AST bind: Req/Resp response behavior: After the initial blob sidecar, clients MAY stop in the process of responding if their fork choice changes the view of the chain in the context of the request.",
+      "condition_desc": "after «the initial blob sidecar»; when their fork choice changes the view of the chain in the context of the request.",
+      "tags": [
+        "temporal:after",
+        "conditional",
+        "semantic:ReqResp",
+        "binding:reqresp_response_rule",
+        "semantic:reqresp"
+      ],
+      "spec_refs": [
+        "PROSE-MAY-defcfe07"
+      ],
+      "action": {
+        "type": "ActSendReqResp",
+        "protocol": "/eth2/beacon_chain/req/blob_sidecars_by_range/1/ssz_snappy",
+        "payload": {
+          "kind": "builder",
+          "wrap": "ssz_snappy",
+          "name": "buildBlocksByRangeNearHead"
+        },
+        "timeout_ms": 10000
+      },
+      "guard": {
+        "fork_gte": "deneb"
+      },
+      "oracle": {
+        "differential": true,
+        "must_not": [
+          "CRASH"
+        ],
+        "strength": "MAY"
+      }
+    },
+    {
+      "from": "Idle",
+      "to": "ResponseComplete",
+      "label": "sem_rr_rule_eth2_beacon_chain_req_blob_sidecars_by_root_1_ssz_snappy_e5286fbf",
+      "weight": 2,
+      "description": "AST bind: Req/Resp response behavior: Clients MAY respond with an empty list if all requested roots correspond to blocks at or after FULU_FORK_EPOCH.",
+      "condition_desc": "after «FULU_FORK_EPOCH»; when all requested roots correspond to blocks at or after FULU_FORK_EPOCH.",
+      "tags": [
+        "temporal:after",
+        "conditional",
+        "semantic:ReqResp",
+        "binding:reqresp_response_rule",
+        "semantic:reqresp"
+      ],
+      "spec_refs": [
+        "PROSE-MAY-e0d0a6ac"
+      ],
+      "action": {
+        "type": "ActSendReqResp",
+        "protocol": "/eth2/beacon_chain/req/blob_sidecars_by_root/1/ssz_snappy",
+        "payload": {
+          "kind": "builder",
+          "wrap": "ssz_snappy",
+          "name": "buildBlobIdentifierHeadRoot"
+        },
+        "timeout_ms": 10000
+      },
+      "guard": {
+        "fork_gte": "fulu"
+      },
+      "oracle": {
+        "differential": true,
+        "must_not": [
+          "CRASH"
+        ],
+        "strength": "MAY"
+      }
+    },
+    {
+      "from": "Idle",
+      "to": "ResponseComplete",
+      "label": "sem_rr_rule_eth2_beacon_chain_req_beacon_blocks_by_range_1_ssz_snappy_4b514d05",
+      "weight": 10,
+      "description": "AST bind: Req/Resp response behavior: Of note, blocks from slots before the finalization MUST lead to the finalized block reported in the Status handshake.",
+      "condition_desc": "before «the finalization MUST lead to the finalized block reported in the Status handshake»",
+      "tags": [
+        "temporal:before",
+        "semantic:ReqResp",
+        "binding:reqresp_response_rule",
+        "semantic:reqresp"
+      ],
+      "spec_refs": [
+        "PROSE-MUST-1cc30454"
+      ],
+      "action": {
+        "type": "ActSendReqResp",
+        "protocol": "/eth2/beacon_chain/req/beacon_blocks_by_range/2/ssz_snappy",
+        "payload": {
+          "kind": "builder",
+          "wrap": "ssz_snappy",
+          "name": "buildBeaconBlocksByRangeV2NearHead"
+        },
+        "timeout_ms": 10000
+      },
+      "oracle": {
+        "differential": true,
+        "expected": "SUCCESS",
+        "must_not": [
+          "CRASH"
+        ],
+        "strength": "MUST"
+      }
+    },
+    {
+      "from": "Idle",
+      "to": "ResponseComplete",
+      "label": "sem_rr_rule_eth2_beacon_chain_req_blob_sidecars_by_range_1_ssz_snappy_612e2a03",
+      "weight": 5,
+      "description": "AST bind: Req/Resp response behavior: Before consuming the next response chunk, the response reader SHOULD verify the blob sidecar is well-formatted, has valid inclusion proof, and is correct w.r.t",
+      "condition_desc": "before «consuming the next response chunk»",
+      "tags": [
+        "temporal:before",
+        "semantic:ReqResp",
+        "binding:reqresp_response_rule",
+        "semantic:reqresp"
+      ],
+      "spec_refs": [
+        "PROSE-SHOULD-24243530"
+      ],
+      "action": {
+        "type": "ActSendReqResp",
+        "protocol": "/eth2/beacon_chain/req/blob_sidecars_by_range/1/ssz_snappy",
+        "payload": {
+          "kind": "builder",
+          "wrap": "ssz_snappy",
+          "name": "buildBlocksByRangeNearHead"
+        },
+        "timeout_ms": 10000
+      },
+      "guard": {
+        "fork_gte": "deneb"
+      },
+      "oracle": {
+        "differential": true,
+        "must_not": [
+          "CRASH"
+        ],
+        "strength": "SHOULD"
+      }
+    },
+    {
+      "from": "Idle",
+      "to": "ResponseComplete",
+      "label": "sem_rr_rule_eth2_beacon_chain_req_beacon_blocks_by_root_2_ssz_snappy_0a2ca94a",
+      "weight": 5,
+      "description": "AST bind: Req/Resp response behavior: [Modified in Deneb:EIP4844] Clients SHOULD include a block in the response as soon as it passes the gossip validation rules",
+      "condition_desc": "upon «it passes the gossip validation rules»",
+      "tags": [
+        "temporal:upon",
+        "semantic:ReqResp",
+        "binding:reqresp_response_rule",
+        "semantic:reqresp"
+      ],
+      "spec_refs": [
+        "PROSE-SHOULD-4f7e7229"
+      ],
+      "action": {
+        "type": "ActSendReqResp",
+        "protocol": "/eth2/beacon_chain/req/beacon_blocks_by_root/2/ssz_snappy",
+        "payload": {
+          "kind": "builder",
+          "wrap": "ssz_snappy",
+          "name": "buildRootListHeadRoot"
+        },
+        "timeout_ms": 10000
+      },
+      "guard": {
+        "fork_gte": "deneb"
+      },
+      "oracle": {
+        "differential": true,
+        "must_not": [
+          "CRASH"
+        ],
+        "strength": "SHOULD"
+      }
+    },
+    {
+      "from": "Idle",
+      "to": "ResponseComplete",
+      "label": "sem_rr_rule_eth2_beacon_chain_req_data_column_sidecars_by_range_1_ssz_snappy_b908a05c",
+      "weight": 5,
+      "description": "AST bind: Req/Resp response behavior: Before consuming the next response chunk, the response reader SHOULD verify the data column sidecar is well-formatted through verify_data_column_sidecar, has valid inclusion proof through verify_data_column_sidecar_inclusion_proof, and is correct w.r.t",
+      "condition_desc": "before «consuming the next response chunk»",
+      "tags": [
+        "temporal:before",
+        "semantic:ReqResp",
+        "binding:reqresp_response_rule",
+        "semantic:reqresp"
+      ],
+      "spec_refs": [
+        "PROSE-SHOULD-e7b5dc38"
+      ],
+      "action": {
+        "type": "ActSendReqResp",
+        "protocol": "/eth2/beacon_chain/req/data_column_sidecars_by_range/1/ssz_snappy",
+        "payload": {
+          "kind": "builder",
+          "wrap": "raw",
+          "name": "buildDataColumnsOrdering"
+        },
+        "timeout_ms": 10000
+      },
+      "guard": {
+        "fork_gte": "fulu"
+      },
+      "oracle": {
+        "differential": true,
+        "must_not": [
+          "CRASH"
+        ],
+        "strength": "SHOULD"
+      }
+    },
+    {
+      "from": "Idle",
+      "to": "ResponseComplete",
+      "label": "sem_rr_rule_eth2_beacon_chain_req_beacon_blocks_by_head_1_ssz_snappy_78a36611",
+      "weight": 5,
+      "description": "AST bind: Req/Resp response behavior: Clients SHOULD include a block in the response as soon as it passes the gossip validation rules",
+      "condition_desc": "upon «it passes the gossip validation rules»",
+      "tags": [
+        "temporal:upon",
+        "semantic:ReqResp",
+        "binding:reqresp_response_rule",
+        "semantic:reqresp"
+      ],
+      "spec_refs": [
+        "PROSE-SHOULD-ee2e76b7"
+      ],
+      "action": {
+        "type": "ActSendReqResp",
+        "protocol": "/eth2/beacon_chain/req/beacon_blocks_by_head/1/ssz_snappy",
+        "payload": {
+          "kind": "builder",
+          "wrap": "ssz_snappy",
+          "name": "buildBlocksByHeadHeadRoot"
+        },
+        "timeout_ms": 10000
+      },
+      "guard": {
+        "fork_gte": "fulu"
+      },
+      "oracle": {
+        "differential": true,
+        "must_not": [
+          "CRASH"
+        ],
+        "strength": "SHOULD"
+      }
+    },
+    {
+      "from": "Idle",
+      "to": "ResponseComplete",
+      "label": "sem_rr_rule_eth2_beacon_chain_req_blob_sidecars_by_root_1_ssz_snappy_dc1b76c1",
+      "weight": 5,
+      "description": "AST bind: Req/Resp response behavior: Clients SHOULD include a sidecar in the response as soon as it passes the gossip validation rules",
+      "condition_desc": "upon «it passes the gossip validation rules»",
+      "tags": [
+        "temporal:upon",
+        "semantic:ReqResp",
+        "binding:reqresp_response_rule",
+        "semantic:reqresp"
+      ],
+      "spec_refs": [
+        "PROSE-SHOULD-ef57ae27"
+      ],
+      "action": {
+        "type": "ActSendReqResp",
+        "protocol": "/eth2/beacon_chain/req/blob_sidecars_by_root/1/ssz_snappy",
+        "payload": {
+          "kind": "builder",
+          "wrap": "ssz_snappy",
+          "name": "buildBlobIdentifierHeadRoot"
+        },
+        "timeout_ms": 10000
+      },
+      "guard": {
+        "fork_gte": "deneb"
+      },
+      "oracle": {
+        "differential": true,
+        "must_not": [
+          "CRASH"
+        ],
+        "strength": "SHOULD"
+      }
+    },
+    {
+      "from": "Idle",
+      "to": "StreamOpen",
+      "label": "sem_rr_open_rule_reqresp_bcb3b626",
+      "weight": 10,
+      "description": "AST bind: Req/Resp stream negotiation rule: Before reading the payload, the header MUST be validated:",
+      "condition_desc": "before «reading the payload»",
+      "tags": [
+        "temporal:before",
+        "semantic:ReqResp",
+        "binding:reqresp_open_stream_rule",
+        "semantic:reqresp",
+        "semantic:stream"
+      ],
+      "spec_refs": [
+        "PROSE-MUST-04eb0b1f"
+      ],
+      "action": {
+        "type": "ActOpenStream",
+        "protocol": "/eth2/beacon_chain/req/beacon_blocks_by_range/2/ssz_snappy",
+        "timeout_ms": 10000
+      },
+      "oracle": {
+        "differential": true,
+        "must_not": [
+          "CRASH"
+        ],
+        "strength": "MUST"
+      }
+    },
+    {
+      "from": "Idle",
+      "to": "StreamOpen",
+      "label": "sem_rr_open_rule_reqresp_c9de040d",
+      "weight": 10,
+      "description": "AST bind: Req/Resp stream negotiation rule: Once a new stream with the protocol ID for the request type has been negotiated, the responder MUST validate it before processing it",
+      "condition_desc": "once «a new stream with the protocol ID for the request type has been negotiated»",
+      "tags": [
+        "temporal:once",
+        "semantic:ReqResp",
+        "binding:reqresp_open_stream_rule",
+        "semantic:reqresp",
+        "semantic:stream"
+      ],
+      "spec_refs": [
+        "PROSE-MUST-646ea120"
+      ],
+      "action": {
+        "type": "ActOpenStream",
+        "protocol": "/eth2/beacon_chain/req/beacon_blocks_by_range/2/ssz_snappy",
+        "timeout_ms": 10000
+      },
+      "oracle": {
+        "differential": true,
+        "must_not": [
+          "CRASH"
+        ],
+        "strength": "MUST"
+      }
+    },
+    {
+      "from": "Idle",
+      "to": "StreamOpen",
+      "label": "sem_rr_open_rule_reqresp_327e7d33",
+      "weight": 5,
+      "description": "AST bind: Req/Resp stream negotiation rule: Once a new stream with the protocol ID for the request type has been negotiated, the responder SHOULD process the incoming request and",
+      "condition_desc": "once «a new stream with the protocol ID for the request type has been negotiated»",
+      "tags": [
+        "temporal:once",
+        "semantic:ReqResp",
+        "binding:reqresp_open_stream_rule",
+        "semantic:reqresp",
+        "semantic:stream"
+      ],
+      "spec_refs": [
+        "PROSE-SHOULD-1a783d48"
+      ],
+      "action": {
+        "type": "ActOpenStream",
+        "protocol": "/eth2/beacon_chain/req/beacon_blocks_by_range/2/ssz_snappy",
+        "timeout_ms": 10000
+      },
+      "oracle": {
+        "differential": true,
+        "must_not": [
+          "CRASH"
+        ],
+        "strength": "SHOULD"
+      }
+    },
+    {
+      "from": "StreamOpen",
+      "to": "RequestHalfClosed",
+      "label": "sem_rr_write_close_rule_reqresp_79688bcb",
+      "weight": 10,
+      "description": "AST bind: Req/Resp request write/half-close rule: Request processing and validation MUST be done according to the encoding strategy, until EOF (denoting stream half-closure by the requester).",
+      "condition_desc": "until «EOF (denoting stream half-closure by the requester»",
+      "tags": [
+        "temporal:until",
+        "semantic:ReqResp",
+        "binding:reqresp_write_close_rule",
+        "semantic:reqresp",
+        "semantic:stream"
+      ],
+      "spec_refs": [
+        "PROSE-MUST-e8b6e4e4"
+      ],
+      "action": {
+        "type": "ActWriteAndClose",
+        "protocol": "/eth2/beacon_chain/req/beacon_blocks_by_range/2/ssz_snappy",
+        "payload": {
+          "kind": "builder",
+          "wrap": "ssz_snappy",
+          "name": "buildBeaconBlocksByRangeV2NearHead"
+        },
+        "timeout_ms": 10000
+      },
+      "oracle": {
+        "differential": true,
+        "must_not": [
+          "CRASH"
+        ],
+        "strength": "MUST"
+      }
+    },
+    {
+      "from": "StreamOpen",
+      "to": "RequestHalfClosed",
+      "label": "sem_rr_write_close_rule_reqresp_fd719991",
+      "weight": 10,
+      "description": "AST bind: Req/Resp request write/half-close rule: The requester MUST close the write side of the stream once it finishes writing the request message",
+      "condition_desc": "once «it finishes writing the request message»",
+      "tags": [
+        "temporal:once",
+        "semantic:ReqResp",
+        "binding:reqresp_write_close_rule",
+        "semantic:reqresp",
+        "semantic:stream"
+      ],
+      "spec_refs": [
+        "PROSE-MUST-faaebe5c"
+      ],
+      "action": {
+        "type": "ActWriteAndClose",
+        "protocol": "/eth2/beacon_chain/req/beacon_blocks_by_range/2/ssz_snappy",
+        "payload": {
+          "kind": "builder",
+          "wrap": "ssz_snappy",
+          "name": "buildBeaconBlocksByRangeV2NearHead"
+        },
+        "timeout_ms": 10000
+      },
+      "oracle": {
+        "differential": true,
+        "must_not": [
+          "CRASH"
+        ],
+        "strength": "MUST"
+      }
+    },
+    {
+      "from": "StreamOpen",
+      "to": "RequestHalfClosed",
+      "label": "sem_rr_write_close_rule_reqresp_c8b07b9a",
+      "weight": 5,
+      "description": "AST bind: Req/Resp request write/half-close rule: Once a new stream with the protocol ID for the request type has been negotiated, the full request message SHOULD be sent immediately",
+      "condition_desc": "once «a new stream with the protocol ID for the request type has been negotiated»",
+      "tags": [
+        "temporal:once",
+        "semantic:ReqResp",
+        "binding:reqresp_write_close_rule",
+        "semantic:reqresp",
+        "semantic:stream"
+      ],
+      "spec_refs": [
+        "PROSE-SHOULD-8702eb06"
+      ],
+      "action": {
+        "type": "ActWriteAndClose",
+        "protocol": "/eth2/beacon_chain/req/beacon_blocks_by_range/2/ssz_snappy",
+        "payload": {
+          "kind": "builder",
+          "wrap": "ssz_snappy",
+          "name": "buildBeaconBlocksByRangeV2NearHead"
+        },
+        "timeout_ms": 10000
+      },
+      "oracle": {
+        "differential": true,
+        "must_not": [
+          "CRASH"
+        ],
+        "strength": "SHOULD"
+      }
+    },
+    {
+      "from": "Idle",
+      "to": "ResponseComplete",
+      "label": "sem_rr_validate_rule_reqresp_0db0a7b5",
+      "weight": 2,
+      "description": "AST bind: Req/Resp response inspection rule: An error result is received in one of the chunks (the error payload MAY be read before stopping).",
+      "condition_desc": "before «stopping»",
+      "tags": [
+        "temporal:before",
+        "semantic:ReqResp",
+        "binding:reqresp_validate_response_rule",
+        "semantic:reqresp",
+        "semantic:response"
+      ],
+      "spec_refs": [
+        "PROSE-MAY-e23242dc"
+      ],
+      "action": {
+        "type": "ActValidateResponseOrder",
+        "protocol": "/eth2/beacon_chain/req/beacon_blocks_by_range/2/ssz_snappy",
+        "payload": {
+          "kind": "builder",
+          "wrap": "ssz_snappy",
+          "name": "buildBeaconBlocksByRangeV2NearHead"
+        },
+        "timeout_ms": 10000
+      },
+      "oracle": {
+        "differential": true,
+        "must_not": [
+          "CRASH"
+        ],
+        "strength": "MAY"
+      }
+    },
+    {
+      "from": "FirstChunkSeen",
+      "to": "ResponseComplete",
+      "label": "sem_rr_validate_rule_reqresp_0e437c7d",
+      "weight": 10,
+      "description": "AST bind: Req/Resp response inspection rule: A reader MUST_NOT read more than max_compressed_len(n) bytes after reading the SSZ length-prefix n from the header.",
+      "condition_desc": "after «reading the SSZ length-prefix n from the header»",
+      "tags": [
+        "temporal:after",
+        "semantic:ReqResp",
+        "binding:reqresp_validate_response_rule",
+        "semantic:reqresp",
+        "semantic:response",
+        "temporal_derived",
+        "spec_from:FirstChunkSeen"
+      ],
+      "spec_refs": [
+        "PROSE-MUST_NOT-e8f92f76"
+      ],
+      "action": {
+        "type": "ActValidateResponseOrder",
+        "protocol": "/eth2/beacon_chain/req/beacon_blocks_by_range/2/ssz_snappy",
+        "payload": {
+          "kind": "builder",
+          "wrap": "ssz_snappy",
+          "name": "buildBeaconBlocksByRangeV2NearHead"
+        },
+        "timeout_ms": 10000
+      },
+      "oracle": {
+        "differential": true,
+        "must_not": [
+          "CRASH"
+        ],
+        "strength": "MUST"
+      }
+    },
+    {
+      "from": "Idle",
+      "to": "ResponseComplete",
+      "label": "sem_rr_validate_rule_reqresp_0dc9939a",
+      "weight": 5,
+      "description": "AST bind: Req/Resp response inspection rule: A requester SHOULD read from the stream until either:",
+      "condition_desc": "until «either»",
+      "tags": [
+        "temporal:until",
+        "semantic:ReqResp",
+        "binding:reqresp_validate_response_rule",
+        "semantic:reqresp",
+        "semantic:response"
+      ],
+      "spec_refs": [
+        "PROSE-SHOULD-3b4ee952"
+      ],
+      "action": {
+        "type": "ActValidateResponseOrder",
+        "protocol": "/eth2/beacon_chain/req/beacon_blocks_by_range/2/ssz_snappy",
+        "payload": {
+          "kind": "builder",
+          "wrap": "ssz_snappy",
+          "name": "buildBeaconBlocksByRangeV2NearHead"
+        },
+        "timeout_ms": 10000
+      },
+      "oracle": {
+        "differential": true,
+        "must_not": [
+          "CRASH"
+        ],
+        "strength": "SHOULD"
+      }
+    },
+    {
+      "from": "Idle",
+      "to": "ResponseComplete",
+      "label": "sem_rr_validate_rule_reqresp_582b3c58",
+      "weight": 5,
+      "description": "AST bind: Req/Resp response inspection rule: For requests consisting of a single valid response_chunk, the requester SHOULD read the chunk fully, as defined by the encoding-dependent-header, before closing the stream.",
+      "condition_desc": "before «closing the stream»",
+      "tags": [
+        "temporal:before",
+        "semantic:ReqResp",
+        "binding:reqresp_validate_response_rule",
+        "semantic:reqresp",
+        "semantic:response"
+      ],
+      "spec_refs": [
+        "PROSE-SHOULD-48683a8f"
+      ],
+      "action": {
+        "type": "ActValidateResponseOrder",
+        "protocol": "/eth2/beacon_chain/req/beacon_blocks_by_range/2/ssz_snappy",
+        "payload": {
+          "kind": "builder",
+          "wrap": "ssz_snappy",
+          "name": "buildBeaconBlocksByRangeV2NearHead"
+        },
+        "timeout_ms": 10000
+      },
+      "oracle": {
+        "differential": true,
+        "must_not": [
+          "CRASH"
+        ],
+        "strength": "SHOULD"
+      }
+    }
+  ]
+}

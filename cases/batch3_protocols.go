@@ -51,6 +51,7 @@ func protocolSpecs3() []runner.Spec {
 		specs = append(specs, runner.Spec{
 			ID:       fmt.Sprintf("reqresp.execution_payload_by_range.%s", p.label),
 			Category: "reqresp",
+			What:     "Requests ExecutionPayloadByRange with count=" + fmt.Sprint(count) + " (boundary probe: 1 valid, 0 empty, 129 over max); all clients must handle it identically.",
 			Metadata: runner.Metadata{
 				SpecRules:    []string{"gloas:execution-payload-by-range"},
 				KnowledgeIDs: []string{"SHERLOCK-1140-004", "SHERLOCK-1140-378"},
@@ -61,12 +62,12 @@ func protocolSpecs3() []runner.Spec {
 				buf := make([]byte, 16)
 				binary.LittleEndian.PutUint64(buf[0:8], 0)
 				binary.LittleEndian.PutUint64(buf[8:16], count)
-				results := map[string]string{}
+				results, details := map[string]string{}, map[string]string{}
 				for _, c := range te.Clients {
 					res, err := c.ReqResp(ctx, execPayloadByRangeV1, wire.BuildSSZSnappy(buf), reqTimeout)
-					results[c.Name()] = outcome(res, err)
+					recordOutcome(results, details, c.Name(), res, err)
 				}
-				return diverge(fmt.Sprintf("reqresp.execution_payload_by_range.%s", p.label), "reqresp", te.Meta, results)
+				return diverge(fmt.Sprintf("reqresp.execution_payload_by_range.%s", p.label), "reqresp", te.Meta, results, details)
 			},
 		})
 	}
@@ -83,6 +84,7 @@ func protocolSpecs3() []runner.Spec {
 		specs = append(specs, runner.Spec{
 			ID:       fmt.Sprintf("reqresp.execution_payload_by_root.%s", p.label),
 			Category: "reqresp",
+			What:     "Requests ExecutionPayloadByRoot with " + fmt.Sprint(roots) + " root(s) (1 valid, 0 empty, 129 over max); all clients must handle it identically.",
 			Metadata: runner.Metadata{
 				SpecRules: []string{"gloas:execution-payload-by-root"},
 				RunClass:  runner.RunClassConfig,
@@ -93,12 +95,12 @@ func protocolSpecs3() []runner.Spec {
 				for i := 0; i < roots; i++ {
 					buf[i*32] = byte(i)
 				}
-				results := map[string]string{}
+				results, details := map[string]string{}, map[string]string{}
 				for _, c := range te.Clients {
 					res, err := c.ReqResp(ctx, execPayloadByRootV1, wire.BuildSSZSnappy(buf), reqTimeout)
-					results[c.Name()] = outcome(res, err)
+					recordOutcome(results, details, c.Name(), res, err)
 				}
-				return diverge(fmt.Sprintf("reqresp.execution_payload_by_root.%s", p.label), "reqresp", te.Meta, results)
+				return diverge(fmt.Sprintf("reqresp.execution_payload_by_root.%s", p.label), "reqresp", te.Meta, results, details)
 			},
 		})
 	}
@@ -108,29 +110,31 @@ func protocolSpecs3() []runner.Spec {
 		runner.Spec{
 			ID:       "reqresp.data_columns_by_range.columns_oob",
 			Category: "reqresp",
+			What:     "Requests a data column with an out-of-range index (999999); the client must reject the invalid request.",
 			Metadata: runner.Metadata{SpecRules: []string{"fulu:data-columns-by-range"}},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				body := dataColumnsByRangeRequest(0, 1, []uint64{999999})
-				results := map[string]string{}
+				results, details := map[string]string{}, map[string]string{}
 				for _, c := range te.Clients {
 					res, err := c.ReqResp(ctx, dataColsByRangeV1, body, reqTimeout)
-					results[c.Name()] = outcome(res, err)
+					recordOutcome(results, details, c.Name(), res, err)
 				}
-				return diverge("reqresp.data_columns_by_range.columns_oob", "reqresp", te.Meta, results)
+				return diverge("reqresp.data_columns_by_range.columns_oob", "reqresp", te.Meta, results, details)
 			},
 		},
 		runner.Spec{
 			ID:       "reqresp.data_columns_by_range.zero_columns",
 			Category: "reqresp",
+			What:     "Requests one slot with zero columns; the spec-defined empty response must be consistent across clients.",
 			Metadata: runner.Metadata{SpecRules: []string{"fulu:data-columns-by-range"}},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				body := dataColumnsByRangeRequest(0, 1, nil)
-				results := map[string]string{}
+				results, details := map[string]string{}, map[string]string{}
 				for _, c := range te.Clients {
 					res, err := c.ReqResp(ctx, dataColsByRangeV1, body, reqTimeout)
-					results[c.Name()] = outcome(res, err)
+					recordOutcome(results, details, c.Name(), res, err)
 				}
-				return diverge("reqresp.data_columns_by_range.zero_columns", "reqresp", te.Meta, results)
+				return diverge("reqresp.data_columns_by_range.zero_columns", "reqresp", te.Meta, results, details)
 			},
 		},
 	)
@@ -139,13 +143,14 @@ func protocolSpecs3() []runner.Spec {
 	specs = append(specs, runner.Spec{
 		ID:       "discovery.custody.advertised_matches_requirement",
 		Category: "discovery",
+		What:     "Reads each client's advertised custody group count (ENR/metadata); it must meet the spec requirement.",
 		Metadata: runner.Metadata{
 			SpecRules:    []string{"fulu:custody-enr"},
 			KnowledgeIDs: []string{"SHERLOCK-1140-058", "SHERLOCK-1140-071"},
 		},
 		Preflight: requireCustodyRequirement,
 		Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
-			results := map[string]string{}
+			results, details := map[string]string{}, map[string]string{}
 			for _, c := range te.Clients {
 				rec, out := enrOf(ctx, c)
 				if out != "" {
@@ -160,7 +165,7 @@ func protocolSpecs3() []runner.Spec {
 				}
 				results[c.Name()] = verdict(val == te.Chain.CustodyRequirement)
 			}
-			return diverge("discovery.custody.advertised_matches_requirement", "discovery", te.Meta, results)
+			return diverge("discovery.custody.advertised_matches_requirement", "discovery", te.Meta, results, details)
 		},
 	})
 
@@ -178,13 +183,14 @@ func protocolSpecs3() []runner.Spec {
 		specs = append(specs, runner.Spec{
 			ID:       target.id,
 			Category: "reqresp",
+			What:     "Bursts 40 requests on " + target.protocol + " in a tight loop; rate-limit error responses must behave consistently across clients.",
 			Metadata: runner.Metadata{
 				SpecRules: []string{"reqresp:rate-limiting"},
 				RunClass:  runner.RunClassHeavy,
 			},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				body := wire.BuildSSZSnappy(nil)
-				results := map[string]string{}
+				results, details := map[string]string{}, map[string]string{}
 				for _, c := range te.Clients {
 					sawLimited := false
 					for i := 0; i < target.burst; i++ {
@@ -199,7 +205,7 @@ func protocolSpecs3() []runner.Spec {
 					}
 					results[c.Name()] = verdict(sawLimited)
 				}
-				return diverge(target.id, "reqresp", te.Meta, results)
+				return diverge(target.id, "reqresp", te.Meta, results, details)
 			},
 		})
 	}

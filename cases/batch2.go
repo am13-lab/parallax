@@ -23,6 +23,40 @@ const (
 
 const maxPayloadSize = 10 * 1024 * 1024 // GOSSIP_MAX_SIZE also bounds req/resp payloads
 
+// whatFor derives a one-sentence explanation from a batch-2 case ID so the
+// report can tell a reader what the test probes without code access.
+func whatFor(id string) string {
+	f := familyOf(id)
+	rest := strings.TrimPrefix(id, "reqresp."+f+".")
+	parts := strings.SplitN(rest, ".", 2)
+	proto := parts[0]
+	detail := ""
+	if len(parts) > 1 {
+		detail = strings.ReplaceAll(parts[1], "_", " ")
+	}
+	switch f {
+	case "boundary":
+		return "Range/counter boundary probe (" + detail + "); the client must handle the edge case without crashing, and all clients must agree."
+	case "malformed":
+		if proto == "" {
+			return "Malformed payload (" + detail + "); the client must reject it, identically across clients."
+		}
+		return "Malformed " + proto + " payload (" + detail + "); the client must reject it, identically across clients."
+	case "trailing_bytes":
+		return "Valid " + proto + " request with trailing garbage bytes appended; framing rules require rejection, identically across clients."
+	case "length_bomb":
+		return proto + " with an oversized or lying length prefix (" + detail + "); the client must reject it without allocating."
+	case "cryptomsg":
+		rest = strings.TrimPrefix(id, "cryptomsg.")
+		parts := strings.SplitN(rest, ".", 3)
+		if len(parts) == 3 {
+			return "Malformed " + parts[0] + " payload (" + strings.ReplaceAll(parts[1], "_", " ") + ", " + parts[2] + " body); the client must reject it, identically across clients."
+		}
+		return "Malformed payload probe; the client must reject it, identically across clients."
+	}
+	return ""
+}
+
 // exchangeSpec is the shared shape of every batch-2 case: one fixed request
 // body per run, sent to all clients, verdicts classified and compared.
 func exchangeSpec(id, protocol string, buildBody func(te runner.TestEnv) []byte,
@@ -31,10 +65,11 @@ func exchangeSpec(id, protocol string, buildBody func(te runner.TestEnv) []byte,
 	return runner.Spec{
 		ID:       id,
 		Category: "reqresp",
+		What:     whatFor(id),
 		Metadata: runner.Metadata{SpecRules: []string{"reqresp:" + familyOf(id)}},
 		Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 			body := buildBody(te)
-			results := map[string]string{}
+			results, details := map[string]string{}, map[string]string{}
 			for _, c := range te.Clients {
 				res, err := c.ReqResp(ctx, protocol, body, reqTimeout)
 				out := outcome(res, err)
@@ -43,7 +78,7 @@ func exchangeSpec(id, protocol string, buildBody func(te runner.TestEnv) []byte,
 				}
 				results[c.Name()] = out
 			}
-			return diverge(id, "reqresp", te.Meta, results)
+			return diverge(id, "reqresp", te.Meta, results, details)
 		},
 	}
 }
@@ -254,10 +289,10 @@ func batch2Specs() []runner.Spec {
 	return specs
 }
 
-// normalizeGoodbye maps reset to accept: clients may disconnect on goodbye
-// without answering, which is compliant.
+// normalizeGoodbye maps any reject variant to accept: clients may disconnect
+// on goodbye without answering, which is compliant.
 func normalizeGoodbye(out string) string {
-	if out == "reject" {
+	if strings.HasPrefix(out, "reject") {
 		return "accept"
 	}
 	return out

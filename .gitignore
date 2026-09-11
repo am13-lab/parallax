@@ -12,3 +12,14 @@
 .idea/
 .vscode/
 .DS_Store
+
+# Pipeline build artifacts
+/irdrive
+/smgen
+/specgen
+
+# local build artifacts
+parallax
+simulation
+specchain
+hive-sim/hivegen

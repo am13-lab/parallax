@@ -5,11 +5,16 @@ package client
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
+	"io"
 	"log/slog"
+	"net/http"
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/libp2p/go-libp2p/core/network"
 
 	"parallax/beacon"
 	"parallax/env"
@@ -188,10 +193,9 @@ func (c *Client) OwnPeerID() string { return c.probe.OwnPeerID() }
 func (c *Client) ReqResp(ctx context.Context, protocol string, body []byte, timeout time.Duration) (*runner.ReqRespResult, error) {
 	if err := c.probe.EnsureConnected(ctx); err != nil {
 		if cerr := c.reconnect(ctx); cerr != nil {
-			return &runner.ReqRespResult{
-				Error:       fmt.Sprintf("reconnect failed: %s (original: %s)", cerr, err),
-				StreamReset: true,
-			}, nil
+			return c.classify(&runner.ReqRespResult{
+				Error: fmt.Sprintf("reconnect failed: %s (original: %s)", cerr, err),
+			}), nil
 		}
 	}
 
@@ -204,29 +208,43 @@ func (c *Client) ReqResp(ctx context.Context, protocol string, body []byte, time
 	}
 	if err != nil {
 		result.Error = err.Error()
-		if len(resp) == 0 {
+		// Only a peer-initiated stream reset is surfaced as StreamReset;
+		// timeouts and dial failures keep their real reason in Error.
+		if len(resp) == 0 && isStreamReset(err.Error()) {
 			result.StreamReset = true
 		}
-		// Connection-level failure despite EnsureConnected: reconnect once
-		// through the next address and retry a single time.
+		// Connection-level failures get exactly one retry to tell a
+		// network blip from consistent client behavior. Timeouts are NOT
+		// retried: a retry doubles the wait (10s+ per case) and the
+		// timeout itself is already recorded as the failure reason.
 		if len(resp) == 0 && isStreamOpenFailure(err.Error()) {
-			if cerr := c.reconnect(ctx); cerr == nil {
-				resp2, ttfb2, dur2, err2 := c.probe.SendAndReceiveWithTTFB(ctx, protocol, body, timeout)
-				if err2 == nil {
-					result = &runner.ReqRespResult{
-						RawBytes:        resp2,
-						Duration:        dur2,
-						TimeToFirstByte: ttfb2,
-					}
+			if cerr := c.reconnect(ctx); cerr != nil {
+				result.Error = fmt.Sprintf("reconnect failed: %s (original: %s)", cerr, err)
+				return c.classify(result), nil
+			}
+			resp2, ttfb2, dur2, err2 := c.probe.SendAndReceiveWithTTFB(ctx, protocol, body, timeout)
+			if err2 == nil {
+				result = &runner.ReqRespResult{
+					RawBytes:        resp2,
+					Duration:        dur2,
+					TimeToFirstByte: ttfb2,
 				}
+			} else {
+				result.Error = fmt.Sprintf("%s (consistent after retry; original: %s)", err2, err)
 			}
 		}
 	}
 
+	return c.classify(result), nil
+}
+
+// classify parses the raw response bytes into chunks once, at the single
+// return point of ReqResp.
+func (c *Client) classify(result *runner.ReqRespResult) *runner.ReqRespResult {
 	if len(result.RawBytes) > 0 {
 		result.ResponseChunks = wire.ParseReqRespResponse(result.RawBytes)
 	}
-	return result, nil
+	return result
 }
 
 func isStreamOpenFailure(msg string) bool {
@@ -235,10 +253,55 @@ func isStreamOpenFailure(msg string) bool {
 		strings.Contains(msg, "all dials failed")
 }
 
+// isStreamReset reports whether the error text indicates the peer reset
+// the stream (or the underlying connection), as opposed to a timeout or
+// dial failure.
+func isStreamReset(msg string) bool {
+	return strings.Contains(msg, "reset")
+}
+
 // SendOnly opens a stream, writes the body, and does not read.
 func (c *Client) SendOnly(ctx context.Context, protocol string, body []byte) error {
 	_, err := c.probe.SendOnly(ctx, protocol, body)
 	return err
+}
+
+// irStream adapts a raw libp2p stream to runner.IRStream.
+type irStream struct {
+	s network.Stream
+}
+
+func (h irStream) WriteChunk(body []byte, closeWrite bool) error {
+	if len(body) > 0 {
+		if _, err := h.s.Write(body); err != nil {
+			return fmt.Errorf("write chunk: %w", err)
+		}
+	}
+	if closeWrite {
+		return h.s.CloseWrite()
+	}
+	return nil
+}
+
+func (h irStream) ReadResponse(timeout time.Duration) ([]byte, error) {
+	_ = h.s.SetReadDeadline(time.Now().Add(timeout))
+	resp, readErr := io.ReadAll(h.s)
+	_ = h.s.Close()
+	if readErr != nil && readErr != io.EOF {
+		return resp, readErr
+	}
+	return resp, nil
+}
+
+func (h irStream) Close() error { return h.s.Close() }
+
+// OpenStream opens a raw req/resp stream without writing.
+func (c *Client) OpenStream(ctx context.Context, protocol string) (runner.IRStream, error) {
+	s, err := c.probe.OpenStream(ctx, protocol)
+	if err != nil {
+		return nil, err
+	}
+	return irStream{s: s}, nil
 }
 
 // SendSlowly writes the body byte-by-byte, then reads the response.
@@ -317,12 +380,12 @@ func (c *Client) Connect(ctx context.Context, mode runner.ConnectMode) error {
 }
 
 func (c *Client) freshConnect(ctx context.Context, handshake bool) error {
-	c.mu.Lock()
-	if c.observer != nil {
-		c.observer.Close()
-		c.observer = nil
-	}
-	c.mu.Unlock()
+	// The observer is NOT torn down here: it is a passive subscriber on a
+	// dedicated host, so a reconnect of the probe does not affect it.
+	// Tearing it down made every post-reconnect gossip action pay a full
+	// rebuild (new host + connect + 2s mesh warmup), which dominated the
+	// batch runtime. p2p-testing keeps the observer client-lifetime for
+	// the same reason.
 
 	newProbe, err := probe.New()
 	if err != nil {
@@ -352,12 +415,8 @@ func (c *Client) RotateIdentity(ctx context.Context) error {
 		c.proxyIdx = -1
 	}
 
-	c.mu.Lock()
-	if c.observer != nil {
-		c.observer.Close()
-		c.observer = nil
-	}
-	c.mu.Unlock()
+	// The observer stays alive across identity rotation (same rationale as
+	// freshConnect; matches p2p-testing).
 
 	newProbe, err := probe.New()
 	if err != nil {
@@ -458,4 +517,112 @@ func (c *Client) Endpoint() env.Endpoint {
 		BeaconAPI:  c.beaconAPI,
 		Proxies:    c.proxies,
 	}
+}
+
+// LiveBeaconAPI exposes the client's Beacon API endpoint for live payload
+// builders. Empty when no Beacon API is configured.
+func (c *Client) LiveBeaconAPI() string { return c.beaconAPI }
+
+// LivePoolContains checks the beacon operation pool once for an entry
+// identifying `index` on the given operation topic.
+func (c *Client) LivePoolContains(topic string, index uint64) (contains, observable bool) {
+	path, ok := poolEndpointFor(topic)
+	if !ok || c.beaconAPI == "" {
+		return false, false
+	}
+	client := &http.Client{Timeout: 5 * time.Second}
+	resp, err := client.Get(c.beaconAPI + path)
+	if err != nil {
+		return false, true
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode != 200 {
+		return false, true
+	}
+	var body map[string]interface{}
+	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+		return false, true
+	}
+	return poolContainsIndex(topic, body, index), true
+}
+
+func poolEndpointFor(topic string) (string, bool) {
+	switch topic {
+	case "voluntary_exit":
+		return "/eth/v1/beacon/pool/voluntary_exits", true
+	case "proposer_slashing":
+		return "/eth/v1/beacon/pool/proposer_slashings", true
+	case "attester_slashing":
+		return "/eth/v2/beacon/pool/attester_slashings", true
+	case "bls_to_execution_change":
+		return "/eth/v1/beacon/pool/bls_to_execution_changes", true
+	}
+	return "", false
+}
+
+// poolContainsIndex scans a beacon pool JSON body for an entry identifying
+// `index` (values in the beacon API are JSON strings).
+func poolContainsIndex(topic string, body map[string]interface{}, index uint64) bool {
+	list, ok := body["data"].([]interface{})
+	if !ok {
+		return false
+	}
+	target := fmt.Sprintf("%d", index)
+	for _, e := range list {
+		entry, ok := e.(map[string]interface{})
+		if !ok {
+			continue
+		}
+		switch topic {
+		case "voluntary_exit", "bls_to_execution_change":
+			if messageFieldEquals(entry, "validator_index", target) {
+				return true
+			}
+		case "proposer_slashing":
+			if headerProposerEquals(entry, "signed_header_1", target) ||
+				headerProposerEquals(entry, "signed_header_2", target) {
+				return true
+			}
+		case "attester_slashing":
+			if attestingIndicesContain(entry, "attestation_1", target) ||
+				attestingIndicesContain(entry, "attestation_2", target) {
+				return true
+			}
+		}
+	}
+	return false
+}
+
+func messageFieldEquals(entry map[string]interface{}, field, target string) bool {
+	msg, ok := entry["message"].(map[string]interface{})
+	if !ok {
+		return false
+	}
+	v, ok := msg[field].(string)
+	return ok && v == target
+}
+
+func headerProposerEquals(entry map[string]interface{}, header, target string) bool {
+	h, ok := entry[header].(map[string]interface{})
+	if !ok {
+		return false
+	}
+	return messageFieldEquals(h, "proposer_index", target)
+}
+
+func attestingIndicesContain(entry map[string]interface{}, att, target string) bool {
+	a, ok := entry[att].(map[string]interface{})
+	if !ok {
+		return false
+	}
+	indices, ok := a["attesting_indices"].([]interface{})
+	if !ok {
+		return false
+	}
+	for _, ix := range indices {
+		if s, ok := ix.(string); ok && s == target {
+			return true
+		}
+	}
+	return false
 }

@@ -1,0 +1,28 @@
+# EL x CL differential matrix (resource-trimmed: 10 participants)
+#   - 6 baseline participants: geth EL + each mainstream CL
+#   - 3 erigon EL participants: lighthouse/prysm/teku re-paired with erigon EL
+#   - 1 erigon's own CL (caplin) on erigon EL
+participants:
+  # --- geth EL baseline ---
+  - el_type: geth
+    cl_type: lighthouse
+  - el_type: geth
+    cl_type: prysm
+  - el_type: geth
+    cl_type: teku
+  - el_type: geth
+    cl_type: nimbus
+  - el_type: geth
+    cl_type: lodestar
+  - el_type: geth
+    cl_type: grandine
+  # --- same CLs on erigon EL ---
+  - el_type: erigon
+    cl_type: lighthouse
+  - el_type: erigon
+    cl_type: prysm
+  - el_type: erigon
+    cl_type: teku
+  # --- erigon's embedded CL ---
+  - el_type: erigon
+    cl_type: caplin

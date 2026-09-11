@@ -1,0 +1,15 @@
+# Pure-geth 6-node differential batch: one participant per mainstream CL,
+# all on geth EL.
+participants:
+  - el_type: geth
+    cl_type: lighthouse
+  - el_type: geth
+    cl_type: prysm
+  - el_type: geth
+    cl_type: teku
+  - el_type: geth
+    cl_type: nimbus
+  - el_type: geth
+    cl_type: lodestar
+  - el_type: geth
+    cl_type: grandine

@@ -255,6 +255,12 @@ func (p *Probe) SendAndReceiveWithTTFB(ctx context.Context, protocolID string, b
 	}
 }
 
+// OpenStream opens a raw libp2p stream to the target without writing, for
+// fine-grained multi-step interactions.
+func (p *Probe) OpenStream(ctx context.Context, protocolID string) (network.Stream, error) {
+	return p.openStream(ctx, protocolID)
+}
+
 // SendOnly sends the body without reading the response (server timeout tests).
 func (p *Probe) SendOnly(ctx context.Context, protocolID string, body []byte) (network.Stream, error) {
 	stream, err := p.openStream(ctx, protocolID)
@@ -272,6 +278,8 @@ func (p *Probe) SendOnly(ctx context.Context, protocolID string, body []byte) (n
 }
 
 // SendSlowly sends the body byte-by-byte with a delay (slow-client testing).
+// The loop respects ctx cancellation so a cancelled/timeout-bound test never
+// waits longer than its own deadline.
 func (p *Probe) SendSlowly(ctx context.Context, protocolID string, body []byte, delayPerByte, timeout time.Duration) ([]byte, error) {
 	stream, err := p.openStream(ctx, protocolID)
 	if err != nil {
@@ -280,10 +288,14 @@ func (p *Probe) SendSlowly(ctx context.Context, protocolID string, body []byte, 
 	defer stream.Close()
 
 	for _, b := range body {
+		select {
+		case <-ctx.Done():
+			return nil, fmt.Errorf("slow send cancelled: %w", ctx.Err())
+		case <-time.After(delayPerByte):
+		}
 		if _, err := stream.Write([]byte{b}); err != nil {
 			return nil, fmt.Errorf("slow write: %w", err)
 		}
-		time.Sleep(delayPerByte)
 	}
 	stream.CloseWrite()
 
@@ -299,7 +311,7 @@ func (p *Probe) openStream(ctx context.Context, protocolID string) (network.Stre
 	if err := p.EnsureConnected(ctx); err != nil {
 		return nil, err
 	}
-	streamCtx, cancel := context.WithTimeout(ctx, 10*time.Second)
+	streamCtx, cancel := context.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 	stream, err := p.host.NewStream(streamCtx, p.peerInfo.ID, protocol.ID(protocolID))
 	if err != nil {

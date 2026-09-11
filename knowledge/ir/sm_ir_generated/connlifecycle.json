@@ -1,0 +1,670 @@
+{
+  "name": "ConnLifecycle",
+  "constructor": "NewConnLifecycleMachine",
+  "init_state": "Disconnected",
+  "states": [
+    {
+      "name": "Disconnected"
+    },
+    {
+      "name": "Connected"
+    },
+    {
+      "name": "StatusExchanged"
+    },
+    {
+      "name": "MetadataKnown"
+    },
+    {
+      "name": "SyncProbing"
+    },
+    {
+      "name": "GoodbyeSent"
+    },
+    {
+      "name": "Closed",
+      "terminal": true
+    }
+  ],
+  "transitions": [
+    {
+      "from": "Disconnected",
+      "to": "Connected",
+      "label": "sem_conn_connect",
+      "weight": 4,
+      "description": "reference backbone: active peer connection is available before protocol exchange",
+      "action": {
+        "type": "ActCheckConnected"
+      },
+      "oracle": {
+        "differential": true,
+        "must_not": [
+          "CRASH"
+        ],
+        "strength": "MUST"
+      }
+    },
+    {
+      "from": "Connected",
+      "to": "StatusExchanged",
+      "label": "sem_conn_status_baseline",
+      "weight": 8,
+      "description": "spec backbone: Status is the connection-level handshake request",
+      "action": {
+        "type": "ActSendStatus",
+        "protocol": "/eth2/beacon_chain/req/status/2/ssz_snappy",
+        "payload": {
+          "kind": "builder",
+          "wrap": "ssz_snappy",
+          "name": "buildStatusV2SSZ"
+        },
+        "timeout_ms": 5000
+      },
+      "oracle": {
+        "differential": true,
+        "expected": "SUCCESS",
+        "must_not": [
+          "CRASH"
+        ],
+        "strength": "MUST"
+      }
+    },
+    {
+      "from": "StatusExchanged",
+      "to": "MetadataKnown",
+      "label": "sem_conn_metadata_probe",
+      "weight": 5,
+      "description": "spec backbone: metadata versioning is queried after status/ping indicates a peer record may be stale",
+      "action": {
+        "type": "ActSendReqResp",
+        "protocol": "/eth2/beacon_chain/req/metadata/3/ssz_snappy",
+        "timeout_ms": 5000
+      },
+      "guard": {
+        "fork_gte": "fulu"
+      },
+      "oracle": {
+        "differential": true,
+        "must_not": [
+          "CRASH"
+        ],
+        "strength": "MAY"
+      }
+    },
+    {
+      "from": "MetadataKnown",
+      "to": "SyncProbing",
+      "label": "sem_conn_sync_probe",
+      "weight": 5,
+      "description": "spec backbone: after handshake, peers probe sync data using Req/Resp",
+      "action": {
+        "type": "ActSendReqResp",
+        "protocol": "/eth2/beacon_chain/req/beacon_blocks_by_range/2/ssz_snappy",
+        "payload": {
+          "kind": "builder",
+          "wrap": "ssz_snappy",
+          "name": "buildBeaconBlocksByRangeV2NearHead"
+        },
+        "timeout_ms": 10000
+      },
+      "oracle": {
+        "differential": true,
+        "must_not": [
+          "CRASH"
+        ],
+        "strength": "SHOULD"
+      }
+    },
+    {
+      "from": "StatusExchanged",
+      "to": "GoodbyeSent",
+      "label": "sem_conn_goodbye_baseline",
+      "weight": 3,
+      "description": "spec backbone: peers may send Goodbye before disconnecting",
+      "action": {
+        "type": "ActSendReqResp",
+        "protocol": "/eth2/beacon_chain/req/goodbye/1/ssz_snappy",
+        "payload": {
+          "kind": "fields",
+          "wrap": "ssz_snappy",
+          "fields": {
+            "reason": {
+              "lit": 1
+            }
+          }
+        },
+        "timeout_ms": 3000
+      },
+      "oracle": {
+        "differential": true,
+        "must_not": [
+          "CRASH"
+        ],
+        "strength": "MAY"
+      }
+    },
+    {
+      "from": "SyncProbing",
+      "to": "StatusExchanged",
+      "label": "sem_conn_probe_reset",
+      "weight": 2,
+      "description": "reference backbone: repeat protocol probes while the connection remains live",
+      "action": {
+        "type": "ActCheckConnected"
+      }
+    },
+    {
+      "from": "GoodbyeSent",
+      "to": "Closed",
+      "label": "sem_conn_close_after_goodbye",
+      "weight": 4,
+      "description": "reference backbone: Goodbye terminates the connection lifecycle path",
+      "action": {
+        "type": "ActDisconnectPeer"
+      }
+    },
+    {
+      "from": "StatusExchanged",
+      "to": "Closed",
+      "label": "sem_conn_finish",
+      "weight": 1,
+      "description": "reference backbone: terminal path from an established protocol connection",
+      "action": {
+        "type": "ActCheckConnected"
+      }
+    },
+    {
+      "from": "Connected",
+      "to": "StatusExchanged",
+      "label": "sem_conn_status_rule_eth2_beacon_chain_req_status_2_ssz_snappy_ade97f93",
+      "weight": 2,
+      "description": "AST bind: Status exchange rule: If they do, they MAY also update the contents of their [Status](../../phase0/p2p-interface.md#status-v1) message to reflect the locally available light client data.",
+      "condition_desc": "when they do",
+      "tags": [
+        "conditional",
+        "semantic:ConnLifecycle",
+        "binding:status_handshake",
+        "semantic:status"
+      ],
+      "spec_refs": [
+        "PROSE-MAY-cbd3c330"
+      ],
+      "action": {
+        "type": "ActSendStatus",
+        "protocol": "/eth2/beacon_chain/req/status/2/ssz_snappy",
+        "payload": {
+          "kind": "builder",
+          "wrap": "ssz_snappy",
+          "name": "buildStatusV2SSZ"
+        },
+        "timeout_ms": 5000
+      },
+      "guard": {
+        "fork_gte": "altair"
+      },
+      "oracle": {
+        "differential": true,
+        "must_not": [
+          "CRASH"
+        ],
+        "strength": "MAY"
+      }
+    },
+    {
+      "from": "Connected",
+      "to": "StatusExchanged",
+      "label": "sem_conn_status_rule_eth2_beacon_chain_req_status_2_ssz_snappy_540c396c",
+      "weight": 10,
+      "description": "AST bind: Status exchange rule: Hybrid peers that also implement full node functionality MUST only incorporate data based on their full node sync progress into their Status message.",
+      "tags": [
+        "semantic:ConnLifecycle",
+        "binding:status_handshake",
+        "semantic:status"
+      ],
+      "spec_refs": [
+        "PROSE-MUST-25837f32"
+      ],
+      "action": {
+        "type": "ActSendStatus",
+        "protocol": "/eth2/beacon_chain/req/status/2/ssz_snappy",
+        "payload": {
+          "kind": "builder",
+          "wrap": "ssz_snappy",
+          "name": "buildStatusV2SSZ"
+        },
+        "timeout_ms": 5000
+      },
+      "guard": {
+        "fork_gte": "altair"
+      },
+      "oracle": {
+        "differential": true,
+        "expected": "SUCCESS",
+        "must_not": [
+          "CRASH"
+        ],
+        "strength": "MUST"
+      }
+    },
+    {
+      "from": "Connected",
+      "to": "StatusExchanged",
+      "label": "sem_conn_status_rule_eth2_beacon_chain_req_status_1_ssz_snappy_5b60b42a",
+      "weight": 10,
+      "description": "AST bind: Status exchange rule: The dialing client MUST send a Status request upon connection.",
+      "condition_desc": "upon «connection»",
+      "tags": [
+        "temporal:upon",
+        "semantic:ConnLifecycle",
+        "binding:status_handshake",
+        "semantic:status"
+      ],
+      "spec_refs": [
+        "PROSE-MUST-369ed609"
+      ],
+      "action": {
+        "type": "ActSendStatus",
+        "protocol": "/eth2/beacon_chain/req/status/2/ssz_snappy",
+        "payload": {
+          "kind": "builder",
+          "wrap": "ssz_snappy",
+          "name": "buildStatusV2SSZ"
+        },
+        "timeout_ms": 5000
+      },
+      "oracle": {
+        "differential": true,
+        "expected": "SUCCESS",
+        "must_not": [
+          "CRASH"
+        ],
+        "strength": "MUST"
+      }
+    },
+    {
+      "from": "Connected",
+      "to": "StatusExchanged",
+      "label": "sem_conn_status_rule_eth2_beacon_chain_req_status_1_ssz_snappy_51997be8",
+      "weight": 10,
+      "description": "AST bind: Status exchange rule: The request/response MUST be encoded as an SSZ-container.",
+      "tags": [
+        "semantic:ConnLifecycle",
+        "binding:status_handshake",
+        "semantic:status"
+      ],
+      "spec_refs": [
+        "PROSE-MUST-80f23060"
+      ],
+      "action": {
+        "type": "ActSendStatus",
+        "protocol": "/eth2/beacon_chain/req/status/2/ssz_snappy",
+        "payload": {
+          "kind": "builder",
+          "wrap": "ssz_snappy",
+          "name": "buildStatusV2SSZ"
+        },
+        "timeout_ms": 5000
+      },
+      "oracle": {
+        "differential": true,
+        "expected": "SUCCESS",
+        "must_not": [
+          "CRASH"
+        ],
+        "strength": "MUST"
+      }
+    },
+    {
+      "from": "Connected",
+      "to": "StatusExchanged",
+      "label": "sem_conn_status_rule_eth2_beacon_chain_req_status_1_ssz_snappy_976560d7",
+      "weight": 10,
+      "description": "AST bind: Status exchange rule: The response MUST consist of a single response_chunk.",
+      "tags": [
+        "semantic:ConnLifecycle",
+        "binding:status_handshake",
+        "semantic:status"
+      ],
+      "spec_refs": [
+        "PROSE-MUST-fb63b2af"
+      ],
+      "action": {
+        "type": "ActSendStatus",
+        "protocol": "/eth2/beacon_chain/req/status/2/ssz_snappy",
+        "payload": {
+          "kind": "builder",
+          "wrap": "ssz_snappy",
+          "name": "buildStatusV2SSZ"
+        },
+        "timeout_ms": 5000
+      },
+      "oracle": {
+        "differential": true,
+        "expected": "SUCCESS",
+        "must_not": [
+          "CRASH"
+        ],
+        "strength": "MUST"
+      }
+    },
+    {
+      "from": "Connected",
+      "to": "StatusExchanged",
+      "label": "sem_conn_status_rule_eth2_beacon_chain_req_status_2_ssz_snappy_68401aa1",
+      "weight": 5,
+      "description": "AST bind: Status exchange rule: If only limited light client data is locally available, the light client SHOULD use data based on genesis_block and GENESIS_SLOT in its Status message",
+      "condition_desc": "when only limited light client data is locally available",
+      "tags": [
+        "conditional",
+        "semantic:ConnLifecycle",
+        "binding:status_handshake",
+        "semantic:status"
+      ],
+      "spec_refs": [
+        "PROSE-SHOULD-12343187"
+      ],
+      "action": {
+        "type": "ActSendStatus",
+        "protocol": "/eth2/beacon_chain/req/status/2/ssz_snappy",
+        "payload": {
+          "kind": "builder",
+          "wrap": "ssz_snappy",
+          "name": "buildStatusV2SSZ"
+        },
+        "timeout_ms": 5000
+      },
+      "guard": {
+        "fork_gte": "altair"
+      },
+      "oracle": {
+        "differential": true,
+        "must_not": [
+          "CRASH"
+        ],
+        "strength": "SHOULD"
+      }
+    },
+    {
+      "from": "Connected",
+      "to": "StatusExchanged",
+      "label": "sem_conn_status_rule_eth2_beacon_chain_req_status_1_ssz_snappy_3b531dfe",
+      "weight": 5,
+      "description": "AST bind: Status exchange rule: Clients SHOULD immediately disconnect from one another following the handshake above under the following conditions:",
+      "condition_desc": "upon «disconnect from one another following the handshake above under the following conditions»",
+      "tags": [
+        "temporal:upon",
+        "semantic:ConnLifecycle",
+        "binding:status_handshake",
+        "semantic:status"
+      ],
+      "spec_refs": [
+        "PROSE-SHOULD-d2397b37"
+      ],
+      "action": {
+        "type": "ActSendStatus",
+        "protocol": "/eth2/beacon_chain/req/status/2/ssz_snappy",
+        "payload": {
+          "kind": "builder",
+          "wrap": "ssz_snappy",
+          "name": "buildStatusV2ForkFlipped"
+        },
+        "timeout_ms": 5000
+      },
+      "oracle": {
+        "differential": true,
+        "must_not": [
+          "CRASH"
+        ],
+        "strength": "SHOULD"
+      }
+    },
+    {
+      "from": "StatusExchanged",
+      "to": "MetadataKnown",
+      "label": "sem_conn_metadata_rule_eth2_beacon_chain_req_ping_1_ssz_snappy_5a3d50ea",
+      "weight": 2,
+      "description": "AST bind: metadata refresh rule: A client can then determine if their local record of a peer's MetaData is up to date and MAY request an updated version via the MetaData RPC method if not.",
+      "condition_desc": "when their local record of a peer's MetaData is up to date and MAY request an updated version via the MetaData RPC method if not.",
+      "tags": [
+        "conditional",
+        "semantic:ConnLifecycle",
+        "binding:metadata_refresh",
+        "semantic:metadata"
+      ],
+      "spec_refs": [
+        "PROSE-MAY-9ad1e8ba"
+      ],
+      "action": {
+        "type": "ActSendReqResp",
+        "protocol": "/eth2/beacon_chain/req/metadata/3/ssz_snappy",
+        "timeout_ms": 5000
+      },
+      "oracle": {
+        "differential": true,
+        "must_not": [
+          "CRASH"
+        ],
+        "strength": "MAY"
+      }
+    },
+    {
+      "from": "StatusExchanged",
+      "to": "GoodbyeSent",
+      "label": "sem_conn_goodbye_rule_eth2_beacon_chain_req_goodbye_1_ssz_snappy_99ca9122",
+      "weight": 2,
+      "description": "AST bind: goodbye/disconnection rule: The reason field MAY be one of the following values:",
+      "tags": [
+        "semantic:ConnLifecycle",
+        "binding:goodbye_disconnect",
+        "semantic:goodbye"
+      ],
+      "spec_refs": [
+        "PROSE-MAY-3fe46c85"
+      ],
+      "action": {
+        "type": "ActSendReqResp",
+        "protocol": "/eth2/beacon_chain/req/goodbye/1/ssz_snappy",
+        "payload": {
+          "kind": "fields",
+          "wrap": "ssz_snappy",
+          "fields": {
+            "reason": {
+              "lit": 2
+            }
+          }
+        },
+        "timeout_ms": 3000
+      },
+      "oracle": {
+        "differential": true,
+        "must_not": [
+          "CRASH"
+        ],
+        "strength": "MAY"
+      }
+    },
+    {
+      "from": "StatusExchanged",
+      "to": "GoodbyeSent",
+      "label": "sem_conn_goodbye_rule_eth2_beacon_chain_req_goodbye_1_ssz_snappy_69084526",
+      "weight": 2,
+      "description": "AST bind: goodbye/disconnection rule: Clients MAY use reason codes above 128 to indicate alternative, erroneous request-specific responses.",
+      "tags": [
+        "semantic:ConnLifecycle",
+        "binding:goodbye_disconnect",
+        "semantic:goodbye"
+      ],
+      "spec_refs": [
+        "PROSE-MAY-68276936"
+      ],
+      "action": {
+        "type": "ActSendReqResp",
+        "protocol": "/eth2/beacon_chain/req/goodbye/1/ssz_snappy",
+        "payload": {
+          "kind": "fields",
+          "wrap": "ssz_snappy",
+          "fields": {
+            "reason": {
+              "lit": 129
+            }
+          }
+        },
+        "timeout_ms": 3000
+      },
+      "oracle": {
+        "differential": true,
+        "must_not": [
+          "CRASH"
+        ],
+        "strength": "MAY"
+      }
+    },
+    {
+      "from": "StatusExchanged",
+      "to": "GoodbyeSent",
+      "label": "sem_conn_goodbye_rule_eth2_beacon_chain_req_goodbye_1_ssz_snappy_992b6685",
+      "weight": 2,
+      "description": "AST bind: goodbye/disconnection rule: Client MAY send goodbye messages upon disconnection",
+      "condition_desc": "upon «disconnection»",
+      "tags": [
+        "temporal:upon",
+        "semantic:ConnLifecycle",
+        "binding:goodbye_disconnect",
+        "semantic:goodbye"
+      ],
+      "spec_refs": [
+        "PROSE-MAY-6eb8c500"
+      ],
+      "action": {
+        "type": "ActSendReqResp",
+        "protocol": "/eth2/beacon_chain/req/goodbye/1/ssz_snappy",
+        "payload": {
+          "kind": "fields",
+          "wrap": "ssz_snappy",
+          "fields": {
+            "reason": {
+              "lit": 1
+            }
+          }
+        },
+        "timeout_ms": 3000
+      },
+      "oracle": {
+        "differential": true,
+        "must_not": [
+          "CRASH"
+        ],
+        "strength": "MAY"
+      }
+    },
+    {
+      "from": "StatusExchanged",
+      "to": "GoodbyeSent",
+      "label": "sem_conn_goodbye_rule_eth2_beacon_chain_req_goodbye_1_ssz_snappy_6f45c4df",
+      "weight": 10,
+      "description": "AST bind: goodbye/disconnection rule: The request/response MUST be encoded as a single SSZ-field.",
+      "tags": [
+        "semantic:ConnLifecycle",
+        "binding:goodbye_disconnect",
+        "semantic:goodbye"
+      ],
+      "spec_refs": [
+        "PROSE-MUST-64de0098"
+      ],
+      "action": {
+        "type": "ActSendReqResp",
+        "protocol": "/eth2/beacon_chain/req/goodbye/1/ssz_snappy",
+        "payload": {
+          "kind": "fields",
+          "wrap": "ssz_snappy",
+          "fields": {
+            "reason": {
+              "lit": 1
+            }
+          }
+        },
+        "timeout_ms": 3000
+      },
+      "oracle": {
+        "differential": true,
+        "must_not": [
+          "CRASH"
+        ],
+        "strength": "MUST"
+      }
+    },
+    {
+      "from": "StatusExchanged",
+      "to": "SyncProbing",
+      "label": "sem_conn_sync_rule_eth2_beacon_chain_req_status_1_ssz_snappy_1e947fa2",
+      "weight": 5,
+      "description": "AST bind: post-handshake sync probe rule: Once the handshake completes, the client with the lower finalized_epoch or head_slot (if the clients have equal finalized_epochs) SHOULD request beacon blocks from its counterparty via the BeaconBlocksByRange request.",
+      "condition_desc": "once «the handshake completes»; when the clients have equal finalized_epochs) SHOULD request beacon blocks from its counterparty via the BeaconBlocksByRange request.",
+      "tags": [
+        "temporal:once",
+        "conditional",
+        "semantic:ConnLifecycle",
+        "binding:post_status_sync_probe",
+        "semantic:sync"
+      ],
+      "spec_refs": [
+        "PROSE-SHOULD-5c74107b"
+      ],
+      "action": {
+        "type": "ActSendReqResp",
+        "protocol": "/eth2/beacon_chain/req/beacon_blocks_by_range/2/ssz_snappy",
+        "payload": {
+          "kind": "builder",
+          "wrap": "ssz_snappy",
+          "name": "buildBeaconBlocksByRangeV2NearHead"
+        },
+        "timeout_ms": 10000
+      },
+      "oracle": {
+        "differential": true,
+        "must_not": [
+          "CRASH"
+        ],
+        "strength": "SHOULD"
+      }
+    },
+    {
+      "from": "StatusExchanged",
+      "to": "StatusExchanged",
+      "label": "sem_conn_ping_rule_eth2_beacon_chain_req_ping_1_ssz_snappy_1b1fb2ee",
+      "weight": 2,
+      "description": "AST bind: ping/liveness rule: If the peer does not respond to the Ping request, the client MAY disconnect from the peer.",
+      "condition_desc": "when the peer does not respond to the Ping request",
+      "tags": [
+        "conditional",
+        "semantic:ConnLifecycle",
+        "binding:ping_liveness",
+        "semantic:ping"
+      ],
+      "spec_refs": [
+        "PROSE-MAY-c3957c31"
+      ],
+      "action": {
+        "type": "ActSendReqResp",
+        "protocol": "/eth2/beacon_chain/req/ping/1/ssz_snappy",
+        "payload": {
+          "kind": "fields",
+          "wrap": "ssz_snappy",
+          "fields": {
+            "value": {
+              "lit": 1
+            }
+          }
+        },
+        "timeout_ms": 5000
+      },
+      "oracle": {
+        "differential": true,
+        "must_not": [
+          "CRASH"
+        ],
+        "strength": "MAY"
+      }
+    }
+  ]
+}

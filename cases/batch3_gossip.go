@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/binary"
 	"fmt"
+	"strings"
 	"time"
 
 	"parallax/runner"
@@ -13,6 +14,27 @@ import (
 // Batch 3c: the old gossipsub families. Verdicts are remote re-propagation
 // observations (strong accept, weak reject, see METHODOLOGY section 3).
 
+// whatForGossip explains a gossipsub case in one sentence, derived from its ID.
+func whatForGossip(id string) string {
+	switch {
+	case strings.HasPrefix(id, "gossipsub.malformed."):
+		return "Publishes a malformed/garbage gossip message (" + strings.ReplaceAll(strings.TrimPrefix(id, "gossipsub.malformed."), "_", " ") + "); honest clients must reject it, consistently across clients."
+	case id == "gossipsub.unknown_topic":
+		return "Publishes on a topic no client subscribes to; every client must ignore it (no re-propagation)."
+	case strings.HasPrefix(id, "gossipsub.attestation_subnet_oob.") || strings.HasPrefix(id, "gossipsub.sync_committee_subnet_oob.") || strings.HasPrefix(id, "gossipsub.data_column_index_oob."):
+		return "Publishes on an out-of-range subnet; the message must be ignored, consistently across clients."
+	case strings.HasPrefix(id, "gossipsub.attestation_stale."):
+		return "Publishes an ancient attestation; freshness rules must reject it, consistently across clients."
+	case strings.HasPrefix(id, "gossipsub.replay."):
+		return "Replays previously seen gossip messages; message-id dedup must reject them, consistently across clients."
+	case id == "gossipsub.config.post_fulu.blob_vs_data_topics":
+		return "Publishes on a blob sidecar topic post-Fulu; topic handling must be consistent across clients."
+	case id == "gossipsub.invalid_flood":
+		return "Floods 32 invalid messages then probes again; peer scoring must treat subsequent invalid messages consistently."
+	}
+	return "Publishes a gossip message and compares re-propagation verdicts across clients."
+}
+
 // gossipVerdictCase publishes a payload on a topic and compares observed
 // verdicts across clients.
 func gossipVerdictCase(id, rule string, runClass runner.RunClass,
@@ -20,6 +42,7 @@ func gossipVerdictCase(id, rule string, runClass runner.RunClass,
 	return runner.Spec{
 		ID:       id,
 		Category: "gossip",
+		What:     whatForGossip(id),
 		Metadata: runner.Metadata{
 			SpecRules: []string{rule},
 			RunClass:  runClass,
@@ -27,12 +50,12 @@ func gossipVerdictCase(id, rule string, runClass runner.RunClass,
 		Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 			topicStr := topic(te)
 			payload := buildPayload(te)
-			results := map[string]string{}
+			results, details := map[string]string{}, map[string]string{}
 			for _, c := range te.Clients {
 				verdict, err := c.ObserveGossip(ctx, topicStr, payload, gossipWait)
-				results[c.Name()] = gossipOutcome(verdict, err)
+				recordGossipOutcome(results, details, c.Name(), verdict, err)
 			}
-			return diverge(id, "gossip", te.Meta, results)
+			return diverge(id, "gossip", te.Meta, results, details)
 		},
 	}
 }
@@ -184,6 +207,7 @@ func gossipSpecs3() []runner.Spec {
 	specs = append(specs, runner.Spec{
 		ID:       "gossipsub.invalid_flood",
 		Category: "gossip",
+		What:     whatForGossip("gossipsub.invalid_flood"),
 		Metadata: runner.Metadata{
 			SpecRules: []string{"gossipsub:peer-scoring"},
 			RunClass:  runner.RunClassHeavy,
@@ -205,13 +229,13 @@ func gossipSpecs3() []runner.Spec {
 			// Uniform by construction; the observable is the target's
 			// post-flood verdict on one more invalid message.
 			time.Sleep(time.Second)
-			verdicts := map[string]string{}
+			verdicts, verdictDetails := map[string]string{}, map[string]string{}
 			for _, c := range te.Clients {
 				v, err := c.ObserveGossip(ctx, topicStr,
 					wire.GossipSnappyEncode([]byte("post flood probe")), gossipWait)
-				verdicts[c.Name()] = gossipOutcome(v, err)
+				recordGossipOutcome(verdicts, verdictDetails, c.Name(), v, err)
 			}
-			return diverge("gossipsub.invalid_flood", "gossip", te.Meta, verdicts)
+			return diverge("gossipsub.invalid_flood", "gossip", te.Meta, verdicts, verdictDetails)
 		},
 	})
 	return specs

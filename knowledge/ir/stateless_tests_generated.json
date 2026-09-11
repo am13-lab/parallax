@@ -1,0 +1,5112 @@
+{
+  "version": 1,
+  "source": "cmd/irderive",
+  "total_rules": 217,
+  "cases": [
+    {
+      "id": "cryptomsg.generated.attester_slashing.act_inject_gossip_build_invalid_attester_slashing_field_equality.32436903",
+      "category": "cryptomsg",
+      "domain": "cryptomsg",
+      "surface": "attester_slashing",
+      "probe": "act_inject_gossip_build_invalid_attester_slashing_field_equality",
+      "rule_ids": [
+        "ATTESTER_SLASHING-IGNORE-647ecfb9",
+        "ATTESTER_SLASHING-REJECT-6cea922f"
+      ],
+      "transition": {
+        "from": "CryptoReady",
+        "to": "CryptoSent",
+        "label": "stateless_attester_slashing_act_inject_gossip_build_invalid_attester_slashing_field_equality_32436903",
+        "weight": 10,
+        "description": "generated stateless probe for ATTESTER_SLASHING-IGNORE-647ecfb9, ATTESTER_SLASHING-REJECT-6cea922f",
+        "condition_desc": "when len(new_indices) == 0",
+        "tags": [
+          "conditional"
+        ],
+        "spec_refs": [
+          "ATTESTER_SLASHING-IGNORE-647ecfb9",
+          "ATTESTER_SLASHING-REJECT-6cea922f"
+        ],
+        "action": {
+          "type": "ActInjectGossip",
+          "protocol": "attester_slashing",
+          "payload": {
+            "kind": "builder",
+            "wrap": "raw",
+            "name": "buildInvalidAttesterSlashingFieldEquality"
+          }
+        },
+        "oracle": {
+          "differential": true,
+          "expected": "REJECT",
+          "must_not": [
+            "CRASH",
+            "ACCEPT"
+          ],
+          "spec_predicate": "accepted == 0",
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "cryptomsg.generated.attester_slashing.act_inject_gossip_build_invalid_attester_slashing_index_oob.e3b36a09",
+      "category": "cryptomsg",
+      "domain": "cryptomsg",
+      "surface": "attester_slashing",
+      "probe": "act_inject_gossip_build_invalid_attester_slashing_index_oob",
+      "rule_ids": [
+        "ATTESTER_SLASHING-REJECT-02169118",
+        "ATTESTER_SLASHING-REJECT-6425e9b8",
+        "ATTESTER_SLASHING-REJECT-8adc7b7d",
+        "ATTESTER_SLASHING-REJECT-e0453bd4"
+      ],
+      "transition": {
+        "from": "CryptoReady",
+        "to": "CryptoSent",
+        "label": "stateless_attester_slashing_act_inject_gossip_build_invalid_attester_slashing_index_oob_e3b36a09",
+        "weight": 10,
+        "description": "generated stateless probe for ATTESTER_SLASHING-REJECT-02169118, ATTESTER_SLASHING-REJECT-6425e9b8, ATTESTER_SLASHING-REJECT-8adc7b7d, ATTESTER_SLASHING-REJECT-e0453bd4",
+        "condition_desc": "when any(index \u003e= len(state.validators) for index in attestation_2.attesting_indices)",
+        "tags": [
+          "conditional"
+        ],
+        "spec_refs": [
+          "ATTESTER_SLASHING-REJECT-02169118",
+          "ATTESTER_SLASHING-REJECT-6425e9b8",
+          "ATTESTER_SLASHING-REJECT-8adc7b7d",
+          "ATTESTER_SLASHING-REJECT-e0453bd4"
+        ],
+        "action": {
+          "type": "ActInjectGossip",
+          "protocol": "attester_slashing",
+          "payload": {
+            "kind": "builder",
+            "wrap": "raw",
+            "name": "buildInvalidAttesterSlashingIndexOob"
+          }
+        },
+        "oracle": {
+          "differential": true,
+          "expected": "REJECT",
+          "must_not": [
+            "CRASH",
+            "ACCEPT"
+          ],
+          "spec_predicate": "accepted == 0",
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "cryptomsg.generated.attester_slashing.act_inject_gossip_build_invalid_attester_slashing_length_limit.5fae4735",
+      "category": "cryptomsg",
+      "domain": "cryptomsg",
+      "surface": "attester_slashing",
+      "probe": "act_inject_gossip_build_invalid_attester_slashing_length_limit",
+      "rule_ids": [
+        "ATTESTER_SLASHING-REJECT-2d878548"
+      ],
+      "transition": {
+        "from": "CryptoReady",
+        "to": "CryptoSent",
+        "label": "stateless_attester_slashing_act_inject_gossip_build_invalid_attester_slashing_length_limit_5fae4735",
+        "weight": 10,
+        "description": "generated stateless probe for ATTESTER_SLASHING-REJECT-2d878548",
+        "condition_desc": "when not slashable_any",
+        "tags": [
+          "conditional"
+        ],
+        "spec_refs": [
+          "ATTESTER_SLASHING-REJECT-2d878548"
+        ],
+        "action": {
+          "type": "ActInjectGossip",
+          "protocol": "attester_slashing",
+          "payload": {
+            "kind": "builder",
+            "wrap": "raw",
+            "name": "buildInvalidAttesterSlashingLengthLimit"
+          }
+        },
+        "oracle": {
+          "differential": true,
+          "expected": "REJECT",
+          "must_not": [
+            "CRASH",
+            "ACCEPT"
+          ],
+          "spec_predicate": "accepted == 0",
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "cryptomsg.generated.beacon_aggregate_and_proof.act_inject_gossip_build_invalid_beacon_aggregate_and_proof_aggregate_sig_invalid.ce55aac1",
+      "category": "cryptomsg",
+      "domain": "cryptomsg",
+      "surface": "beacon_aggregate_and_proof",
+      "probe": "act_inject_gossip_build_invalid_beacon_aggregate_and_proof_aggregate_sig_invalid",
+      "rule_ids": [
+        "BEACON_AGGREGATE_AND_PROOF-REJECT-14282100"
+      ],
+      "transition": {
+        "from": "CryptoReady",
+        "to": "CryptoSent",
+        "label": "stateless_beacon_aggregate_and_proof_act_inject_gossip_build_invalid_beacon_aggregate_and_proof_aggregate_sig_invalid_ce55aac1",
+        "weight": 10,
+        "description": "generated stateless probe for BEACON_AGGREGATE_AND_PROOF-REJECT-14282100",
+        "condition_desc": "when not is_valid_indexed_attestation(state, get_indexed_attestation(state, aggregate))",
+        "tags": [
+          "conditional"
+        ],
+        "spec_refs": [
+          "BEACON_AGGREGATE_AND_PROOF-REJECT-14282100"
+        ],
+        "action": {
+          "type": "ActInjectGossip",
+          "protocol": "beacon_aggregate_and_proof",
+          "payload": {
+            "kind": "builder",
+            "wrap": "raw",
+            "name": "buildInvalidBeaconAggregateAndProofAggregateSigInvalid"
+          }
+        },
+        "oracle": {
+          "differential": true,
+          "expected": "REJECT",
+          "must_not": [
+            "CRASH",
+            "ACCEPT"
+          ],
+          "spec_predicate": "accepted == 0",
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "cryptomsg.generated.beacon_aggregate_and_proof.act_inject_gossip_build_invalid_beacon_aggregate_and_proof_data_index_non_zero.190c199a",
+      "category": "cryptomsg",
+      "domain": "cryptomsg",
+      "surface": "beacon_aggregate_and_proof",
+      "probe": "act_inject_gossip_build_invalid_beacon_aggregate_and_proof_data_index_non_zero",
+      "rule_ids": [
+        "BEACON_AGGREGATE_AND_PROOF-MUST-20b37b69",
+        "BEACON_AGGREGATE_AND_PROOF-REJECT-ab7fb155"
+      ],
+      "transition": {
+        "from": "CryptoReady",
+        "to": "CryptoSent",
+        "label": "stateless_beacon_aggregate_and_proof_act_inject_gossip_build_invalid_beacon_aggregate_and_proof_data_index_non_zero_190c199a",
+        "weight": 10,
+        "description": "generated stateless probe for BEACON_AGGREGATE_AND_PROOF-MUST-20b37b69, BEACON_AGGREGATE_AND_PROOF-REJECT-ab7fb155",
+        "spec_refs": [
+          "BEACON_AGGREGATE_AND_PROOF-MUST-20b37b69",
+          "BEACON_AGGREGATE_AND_PROOF-REJECT-ab7fb155"
+        ],
+        "action": {
+          "type": "ActInjectGossip",
+          "protocol": "beacon_aggregate_and_proof",
+          "payload": {
+            "kind": "builder",
+            "wrap": "raw",
+            "name": "buildInvalidBeaconAggregateAndProofDataIndexNonZero"
+          }
+        },
+        "guard": {
+          "fork_gte": "electra"
+        },
+        "oracle": {
+          "differential": true,
+          "expected": "REJECT",
+          "must_not": [
+            "CRASH",
+            "ACCEPT"
+          ],
+          "spec_predicate": "accepted == 0",
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "cryptomsg.generated.beacon_aggregate_and_proof.act_inject_gossip_build_invalid_beacon_aggregate_and_proof_multiple_committee_bits.06664bd0",
+      "category": "cryptomsg",
+      "domain": "cryptomsg",
+      "surface": "beacon_aggregate_and_proof",
+      "probe": "act_inject_gossip_build_invalid_beacon_aggregate_and_proof_multiple_committee_bits",
+      "rule_ids": [
+        "BEACON_AGGREGATE_AND_PROOF-REJECT-b0b9c377"
+      ],
+      "transition": {
+        "from": "CryptoReady",
+        "to": "CryptoSent",
+        "label": "stateless_beacon_aggregate_and_proof_act_inject_gossip_build_invalid_beacon_aggregate_and_proof_multiple_committee_bits_06664bd0",
+        "weight": 10,
+        "description": "generated stateless probe for BEACON_AGGREGATE_AND_PROOF-REJECT-b0b9c377",
+        "condition_desc": "when len(committee_indices) != 1",
+        "tags": [
+          "conditional"
+        ],
+        "spec_refs": [
+          "BEACON_AGGREGATE_AND_PROOF-REJECT-b0b9c377"
+        ],
+        "action": {
+          "type": "ActInjectGossip",
+          "protocol": "beacon_aggregate_and_proof",
+          "payload": {
+            "kind": "builder",
+            "wrap": "raw",
+            "name": "buildInvalidBeaconAggregateAndProofMultipleCommitteeBits"
+          }
+        },
+        "guard": {
+          "fork_gte": "electra"
+        },
+        "oracle": {
+          "differential": true,
+          "expected": "REJECT",
+          "must_not": [
+            "CRASH",
+            "ACCEPT"
+          ],
+          "spec_predicate": "accepted == 0",
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "cryptomsg.generated.beacon_aggregate_and_proof.act_inject_gossip_build_invalid_beacon_aggregate_and_proof_multiple_committee_bits.45d472d5",
+      "category": "cryptomsg",
+      "domain": "cryptomsg",
+      "surface": "beacon_aggregate_and_proof",
+      "probe": "act_inject_gossip_build_invalid_beacon_aggregate_and_proof_multiple_committee_bits",
+      "rule_ids": [
+        "BEACON_AGGREGATE_AND_PROOF-IGNORE-0e37cd0e"
+      ],
+      "transition": {
+        "from": "CryptoReady",
+        "to": "CryptoSent",
+        "label": "stateless_beacon_aggregate_and_proof_act_inject_gossip_build_invalid_beacon_aggregate_and_proof_multiple_committee_bits_45d472d5",
+        "weight": 10,
+        "description": "generated stateless probe for BEACON_AGGREGATE_AND_PROOF-IGNORE-0e37cd0e",
+        "condition_desc": "when is_non_strict_superset(seen_bits, aggregate_bits)",
+        "tags": [
+          "conditional"
+        ],
+        "spec_refs": [
+          "BEACON_AGGREGATE_AND_PROOF-IGNORE-0e37cd0e"
+        ],
+        "action": {
+          "type": "ActInjectGossip",
+          "protocol": "beacon_aggregate_and_proof",
+          "payload": {
+            "kind": "builder",
+            "wrap": "raw",
+            "name": "buildInvalidBeaconAggregateAndProofMultipleCommitteeBits"
+          }
+        },
+        "oracle": {
+          "differential": true,
+          "expected": "REJECT",
+          "must_not": [
+            "CRASH",
+            "ACCEPT"
+          ],
+          "spec_predicate": "accepted == 0",
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "cryptomsg.generated.beacon_aggregate_and_proof.act_inject_gossip_build_invalid_beacon_aggregate_and_proof_multiple_committee_bits.607f975d",
+      "category": "cryptomsg",
+      "domain": "cryptomsg",
+      "surface": "beacon_aggregate_and_proof",
+      "probe": "act_inject_gossip_build_invalid_beacon_aggregate_and_proof_multiple_committee_bits",
+      "rule_ids": [
+        "BEACON_AGGREGATE_AND_PROOF-REJECT-f41bc7a4"
+      ],
+      "transition": {
+        "from": "CryptoReady",
+        "to": "CryptoSent",
+        "label": "stateless_beacon_aggregate_and_proof_act_inject_gossip_build_invalid_beacon_aggregate_and_proof_multiple_committee_bits_607f975d",
+        "weight": 10,
+        "description": "generated stateless probe for BEACON_AGGREGATE_AND_PROOF-REJECT-f41bc7a4",
+        "condition_desc": "when len(aggregation_bits) != len(committee)",
+        "tags": [
+          "conditional"
+        ],
+        "spec_refs": [
+          "BEACON_AGGREGATE_AND_PROOF-REJECT-f41bc7a4"
+        ],
+        "action": {
+          "type": "ActInjectGossip",
+          "protocol": "beacon_aggregate_and_proof",
+          "payload": {
+            "kind": "builder",
+            "wrap": "raw",
+            "name": "buildInvalidBeaconAggregateAndProofMultipleCommitteeBits"
+          }
+        },
+        "oracle": {
+          "differential": true
+        }
+      }
+    },
+    {
+      "id": "cryptomsg.generated.beacon_aggregate_and_proof.act_inject_gossip_build_invalid_beacon_aggregate_and_proof_no_participants.2b051b17",
+      "category": "cryptomsg",
+      "domain": "cryptomsg",
+      "surface": "beacon_aggregate_and_proof",
+      "probe": "act_inject_gossip_build_invalid_beacon_aggregate_and_proof_no_participants",
+      "rule_ids": [
+        "BEACON_AGGREGATE_AND_PROOF-REJECT-b6185e7c"
+      ],
+      "transition": {
+        "from": "CryptoReady",
+        "to": "CryptoSent",
+        "label": "stateless_beacon_aggregate_and_proof_act_inject_gossip_build_invalid_beacon_aggregate_and_proof_no_participants_2b051b17",
+        "weight": 10,
+        "description": "generated stateless probe for BEACON_AGGREGATE_AND_PROOF-REJECT-b6185e7c",
+        "condition_desc": "when len(attesting_indices) \u003c 1",
+        "tags": [
+          "conditional"
+        ],
+        "spec_refs": [
+          "BEACON_AGGREGATE_AND_PROOF-REJECT-b6185e7c"
+        ],
+        "action": {
+          "type": "ActInjectGossip",
+          "protocol": "beacon_aggregate_and_proof",
+          "payload": {
+            "kind": "builder",
+            "wrap": "raw",
+            "name": "buildInvalidBeaconAggregateAndProofNoParticipants"
+          }
+        },
+        "oracle": {
+          "differential": true,
+          "expected": "REJECT",
+          "must_not": [
+            "CRASH",
+            "ACCEPT"
+          ],
+          "spec_predicate": "accepted == 0",
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "cryptomsg.generated.beacon_aggregate_and_proof.act_inject_gossip_build_invalid_beacon_aggregate_and_proof_outer_sig_invalid.b55369fa",
+      "category": "cryptomsg",
+      "domain": "cryptomsg",
+      "surface": "beacon_aggregate_and_proof",
+      "probe": "act_inject_gossip_build_invalid_beacon_aggregate_and_proof_outer_sig_invalid",
+      "rule_ids": [
+        "BEACON_AGGREGATE_AND_PROOF-REJECT-b10dbef1"
+      ],
+      "transition": {
+        "from": "CryptoReady",
+        "to": "CryptoSent",
+        "label": "stateless_beacon_aggregate_and_proof_act_inject_gossip_build_invalid_beacon_aggregate_and_proof_outer_sig_invalid_b55369fa",
+        "weight": 10,
+        "description": "generated stateless probe for BEACON_AGGREGATE_AND_PROOF-REJECT-b10dbef1",
+        "condition_desc": "when not bls.Verify(aggregator.pubkey, signing_root, signed_aggregate_and_proof.signature)",
+        "tags": [
+          "conditional"
+        ],
+        "spec_refs": [
+          "BEACON_AGGREGATE_AND_PROOF-REJECT-b10dbef1"
+        ],
+        "action": {
+          "type": "ActInjectGossip",
+          "protocol": "beacon_aggregate_and_proof",
+          "payload": {
+            "kind": "builder",
+            "wrap": "raw",
+            "name": "buildInvalidBeaconAggregateAndProofOuterSigInvalid"
+          }
+        },
+        "oracle": {
+          "differential": true,
+          "expected": "REJECT",
+          "must_not": [
+            "CRASH",
+            "ACCEPT"
+          ],
+          "spec_predicate": "accepted == 0",
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "cryptomsg.generated.beacon_aggregate_and_proof.act_inject_gossip_build_invalid_beacon_aggregate_and_proof_selection_proof_sig_invalid.3d53817e",
+      "category": "cryptomsg",
+      "domain": "cryptomsg",
+      "surface": "beacon_aggregate_and_proof",
+      "probe": "act_inject_gossip_build_invalid_beacon_aggregate_and_proof_selection_proof_sig_invalid",
+      "rule_ids": [
+        "BEACON_AGGREGATE_AND_PROOF-REJECT-2fa7d152",
+        "BEACON_AGGREGATE_AND_PROOF-REJECT-863359b5"
+      ],
+      "transition": {
+        "from": "CryptoReady",
+        "to": "CryptoSent",
+        "label": "stateless_beacon_aggregate_and_proof_act_inject_gossip_build_invalid_beacon_aggregate_and_proof_selection_proof_sig_invalid_3d53817e",
+        "weight": 10,
+        "description": "generated stateless probe for BEACON_AGGREGATE_AND_PROOF-REJECT-2fa7d152, BEACON_AGGREGATE_AND_PROOF-REJECT-863359b5",
+        "condition_desc": "when not is_aggregator(state, aggregate.data.slot, index, aggregate_and_proof.selection_proof)",
+        "tags": [
+          "conditional"
+        ],
+        "spec_refs": [
+          "BEACON_AGGREGATE_AND_PROOF-REJECT-2fa7d152",
+          "BEACON_AGGREGATE_AND_PROOF-REJECT-863359b5"
+        ],
+        "action": {
+          "type": "ActInjectGossip",
+          "protocol": "beacon_aggregate_and_proof",
+          "payload": {
+            "kind": "builder",
+            "wrap": "raw",
+            "name": "buildInvalidBeaconAggregateAndProofSelectionProofSigInvalid"
+          }
+        },
+        "oracle": {
+          "differential": true,
+          "expected": "REJECT",
+          "must_not": [
+            "CRASH",
+            "ACCEPT"
+          ],
+          "spec_predicate": "accepted == 0",
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "cryptomsg.generated.beacon_aggregate_and_proof.act_inject_gossip_build_invalid_beacon_aggregate_and_proof_slot_epoch_range.2b19e14f",
+      "category": "cryptomsg",
+      "domain": "cryptomsg",
+      "surface": "beacon_aggregate_and_proof",
+      "probe": "act_inject_gossip_build_invalid_beacon_aggregate_and_proof_slot_epoch_range",
+      "rule_ids": [
+        "BEACON_AGGREGATE_AND_PROOF-IGNORE-ebee640a",
+        "BEACON_AGGREGATE_AND_PROOF-REJECT-02e06dcb"
+      ],
+      "transition": {
+        "from": "CryptoReady",
+        "to": "CryptoSent",
+        "label": "stateless_beacon_aggregate_and_proof_act_inject_gossip_build_invalid_beacon_aggregate_and_proof_slot_epoch_range_2b19e14f",
+        "weight": 10,
+        "description": "generated stateless probe for BEACON_AGGREGATE_AND_PROOF-IGNORE-ebee640a, BEACON_AGGREGATE_AND_PROOF-REJECT-02e06dcb",
+        "condition_desc": "when not is_within_slot_range( store, aggregate.data.slot, ATTESTATION_PROPAGATION_SLOT_RANGE, current_time_ms )",
+        "tags": [
+          "conditional"
+        ],
+        "spec_refs": [
+          "BEACON_AGGREGATE_AND_PROOF-IGNORE-ebee640a",
+          "BEACON_AGGREGATE_AND_PROOF-REJECT-02e06dcb"
+        ],
+        "action": {
+          "type": "ActInjectGossip",
+          "protocol": "beacon_aggregate_and_proof",
+          "payload": {
+            "kind": "builder",
+            "wrap": "raw",
+            "name": "buildInvalidBeaconAggregateAndProofSlotEpochRange"
+          }
+        },
+        "oracle": {
+          "differential": true,
+          "expected": "REJECT",
+          "must_not": [
+            "CRASH",
+            "ACCEPT"
+          ],
+          "spec_predicate": "accepted == 0",
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "cryptomsg.generated.beacon_aggregate_and_proof.act_inject_gossip_build_invalid_beacon_aggregate_and_proof_slot_epoch_range.d9fb3f82",
+      "category": "cryptomsg",
+      "domain": "cryptomsg",
+      "surface": "beacon_aggregate_and_proof",
+      "probe": "act_inject_gossip_build_invalid_beacon_aggregate_and_proof_slot_epoch_range",
+      "rule_ids": [
+        "BEACON_AGGREGATE_AND_PROOF-IGNORE-85b80178"
+      ],
+      "transition": {
+        "from": "CryptoReady",
+        "to": "CryptoSent",
+        "label": "stateless_beacon_aggregate_and_proof_act_inject_gossip_build_invalid_beacon_aggregate_and_proof_slot_epoch_range_d9fb3f82",
+        "weight": 10,
+        "description": "generated stateless probe for BEACON_AGGREGATE_AND_PROOF-IGNORE-85b80178",
+        "condition_desc": "when not is_current_or_previous_epoch(store, attestation_epoch, current_time_ms)",
+        "tags": [
+          "conditional"
+        ],
+        "spec_refs": [
+          "BEACON_AGGREGATE_AND_PROOF-IGNORE-85b80178"
+        ],
+        "action": {
+          "type": "ActInjectGossip",
+          "protocol": "beacon_aggregate_and_proof",
+          "payload": {
+            "kind": "builder",
+            "wrap": "raw",
+            "name": "buildInvalidBeaconAggregateAndProofSlotEpochRange"
+          }
+        },
+        "guard": {
+          "fork_gte": "deneb"
+        },
+        "oracle": {
+          "differential": true,
+          "expected": "REJECT",
+          "must_not": [
+            "CRASH",
+            "ACCEPT"
+          ],
+          "spec_predicate": "accepted == 0",
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "cryptomsg.generated.beacon_aggregate_and_proof.act_inject_gossip_build_invalid_beacon_aggregate_and_proof_slot_future.dd871bbd",
+      "category": "cryptomsg",
+      "domain": "cryptomsg",
+      "surface": "beacon_aggregate_and_proof",
+      "probe": "act_inject_gossip_build_invalid_beacon_aggregate_and_proof_slot_future",
+      "rule_ids": [
+        "BEACON_AGGREGATE_AND_PROOF-IGNORE-67149835"
+      ],
+      "transition": {
+        "from": "CryptoReady",
+        "to": "CryptoSent",
+        "label": "stateless_beacon_aggregate_and_proof_act_inject_gossip_build_invalid_beacon_aggregate_and_proof_slot_future_dd871bbd",
+        "weight": 10,
+        "description": "generated stateless probe for BEACON_AGGREGATE_AND_PROOF-IGNORE-67149835",
+        "condition_desc": "when is_future_slot(store, aggregate.data.slot, current_time_ms)",
+        "tags": [
+          "conditional"
+        ],
+        "spec_refs": [
+          "BEACON_AGGREGATE_AND_PROOF-IGNORE-67149835"
+        ],
+        "action": {
+          "type": "ActInjectGossip",
+          "protocol": "beacon_aggregate_and_proof",
+          "payload": {
+            "kind": "builder",
+            "wrap": "raw",
+            "name": "buildInvalidBeaconAggregateAndProofSlotFuture"
+          }
+        },
+        "guard": {
+          "fork_gte": "deneb"
+        },
+        "oracle": {
+          "differential": true,
+          "expected": "REJECT",
+          "must_not": [
+            "CRASH",
+            "ACCEPT"
+          ],
+          "spec_predicate": "accepted == 0",
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "cryptomsg.generated.beacon_aggregate_and_proof.act_inject_gossip_build_valid_beacon_aggregate_and_proof.5d4f0a8f",
+      "category": "cryptomsg",
+      "domain": "cryptomsg",
+      "surface": "beacon_aggregate_and_proof",
+      "probe": "act_inject_gossip_build_valid_beacon_aggregate_and_proof",
+      "rule_ids": [
+        "BEACON_AGGREGATE_AND_PROOF-IGNORE-19a3a197",
+        "BEACON_AGGREGATE_AND_PROOF-IGNORE-dc38af01",
+        "BEACON_AGGREGATE_AND_PROOF-REJECT-544ecc21",
+        "BEACON_AGGREGATE_AND_PROOF-REJECT-5658ca54",
+        "BEACON_AGGREGATE_AND_PROOF-REJECT-fc3dd3a9"
+      ],
+      "transition": {
+        "from": "CryptoReady",
+        "to": "CryptoSent",
+        "label": "stateless_beacon_aggregate_and_proof_act_inject_gossip_build_valid_beacon_aggregate_and_proof_5d4f0a8f",
+        "weight": 10,
+        "description": "generated stateless probe for BEACON_AGGREGATE_AND_PROOF-IGNORE-19a3a197, BEACON_AGGREGATE_AND_PROOF-IGNORE-dc38af01, BEACON_AGGREGATE_AND_PROOF-REJECT-544ecc21, BEACON_AGGREGATE_AND_PROOF-REJECT-5658ca54, BEACON_AGGREGATE_AND_PROOF-REJECT-fc3dd3a9",
+        "condition_desc": "until «block is retrieved»; when block_root not in store.blocks",
+        "tags": [
+          "temporal:until",
+          "conditional"
+        ],
+        "spec_refs": [
+          "BEACON_AGGREGATE_AND_PROOF-IGNORE-19a3a197",
+          "BEACON_AGGREGATE_AND_PROOF-IGNORE-dc38af01",
+          "BEACON_AGGREGATE_AND_PROOF-REJECT-544ecc21",
+          "BEACON_AGGREGATE_AND_PROOF-REJECT-5658ca54",
+          "BEACON_AGGREGATE_AND_PROOF-REJECT-fc3dd3a9"
+        ],
+        "action": {
+          "type": "ActInjectGossip",
+          "protocol": "beacon_aggregate_and_proof",
+          "payload": {
+            "kind": "builder",
+            "wrap": "raw",
+            "name": "buildValidBeaconAggregateAndProof"
+          }
+        },
+        "oracle": {
+          "differential": true
+        }
+      }
+    },
+    {
+      "id": "cryptomsg.generated.beacon_attestation.act_inject_gossip_build_invalid_beacon_attestation_finalized_ancestor.220731b7",
+      "category": "cryptomsg",
+      "domain": "cryptomsg",
+      "surface": "beacon_attestation",
+      "probe": "act_inject_gossip_build_invalid_beacon_attestation_finalized_ancestor",
+      "rule_ids": [
+        "BEACON_ATTESTATION-IGNORE-e55933f5"
+      ],
+      "transition": {
+        "from": "CryptoReady",
+        "to": "CryptoSent",
+        "label": "stateless_beacon_attestation_act_inject_gossip_build_invalid_beacon_attestation_finalized_ancestor_220731b7",
+        "weight": 10,
+        "description": "generated stateless probe for BEACON_ATTESTATION-IGNORE-e55933f5",
+        "condition_desc": "when finalized_checkpoint_block != store.finalized_checkpoint.root",
+        "tags": [
+          "conditional"
+        ],
+        "spec_refs": [
+          "BEACON_ATTESTATION-IGNORE-e55933f5"
+        ],
+        "action": {
+          "type": "ActInjectGossip",
+          "protocol": "beacon_attestation_0",
+          "payload": {
+            "kind": "builder",
+            "wrap": "raw",
+            "name": "buildInvalidBeaconAttestationFinalizedAncestor"
+          }
+        },
+        "oracle": {
+          "differential": true,
+          "expected": "REJECT",
+          "must_not": [
+            "CRASH",
+            "ACCEPT"
+          ],
+          "spec_predicate": "accepted == 0",
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "cryptomsg.generated.beacon_attestation.act_inject_gossip_build_invalid_beacon_attestation_index_oob.c40928dd",
+      "category": "cryptomsg",
+      "domain": "cryptomsg",
+      "surface": "beacon_attestation",
+      "probe": "act_inject_gossip_build_invalid_beacon_attestation_index_oob",
+      "rule_ids": [
+        "BEACON_ATTESTATION-REJECT-36fd424b",
+        "BEACON_ATTESTATION_SUBNET_ID-MUST-454af71d"
+      ],
+      "transition": {
+        "from": "CryptoReady",
+        "to": "CryptoSent",
+        "label": "stateless_beacon_attestation_act_inject_gossip_build_invalid_beacon_attestation_index_oob_c40928dd",
+        "weight": 10,
+        "description": "generated stateless probe for BEACON_ATTESTATION-REJECT-36fd424b, BEACON_ATTESTATION_SUBNET_ID-MUST-454af71d",
+        "condition_desc": "when data.index != 0",
+        "tags": [
+          "conditional"
+        ],
+        "spec_refs": [
+          "BEACON_ATTESTATION-REJECT-36fd424b",
+          "BEACON_ATTESTATION_SUBNET_ID-MUST-454af71d"
+        ],
+        "action": {
+          "type": "ActInjectGossip",
+          "protocol": "beacon_attestation_0",
+          "payload": {
+            "kind": "builder",
+            "wrap": "raw",
+            "name": "buildInvalidBeaconAttestationIndexOob"
+          }
+        },
+        "guard": {
+          "fork_gte": "electra"
+        },
+        "oracle": {
+          "differential": true,
+          "expected": "REJECT",
+          "must_not": [
+            "CRASH",
+            "ACCEPT"
+          ],
+          "spec_predicate": "accepted == 0",
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "cryptomsg.generated.beacon_attestation.act_inject_gossip_build_invalid_beacon_attestation_sig_invalid.c789a9e8",
+      "category": "cryptomsg",
+      "domain": "cryptomsg",
+      "surface": "beacon_attestation",
+      "probe": "act_inject_gossip_build_invalid_beacon_attestation_sig_invalid",
+      "rule_ids": [
+        "BEACON_ATTESTATION-REJECT-f7a87fa4"
+      ],
+      "transition": {
+        "from": "CryptoReady",
+        "to": "CryptoSent",
+        "label": "stateless_beacon_attestation_act_inject_gossip_build_invalid_beacon_attestation_sig_invalid_c789a9e8",
+        "weight": 10,
+        "description": "generated stateless probe for BEACON_ATTESTATION-REJECT-f7a87fa4",
+        "condition_desc": "when not is_valid_indexed_attestation(state, indexed_attestation)",
+        "tags": [
+          "conditional"
+        ],
+        "spec_refs": [
+          "BEACON_ATTESTATION-REJECT-f7a87fa4"
+        ],
+        "action": {
+          "type": "ActInjectGossip",
+          "protocol": "beacon_attestation_0",
+          "payload": {
+            "kind": "builder",
+            "wrap": "raw",
+            "name": "buildInvalidBeaconAttestationSigInvalid"
+          }
+        },
+        "oracle": {
+          "differential": true,
+          "expected": "REJECT",
+          "must_not": [
+            "CRASH",
+            "ACCEPT"
+          ],
+          "spec_predicate": "accepted == 0",
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "cryptomsg.generated.beacon_attestation.act_inject_gossip_build_invalid_beacon_attestation_slot_epoch_range.584942c7",
+      "category": "cryptomsg",
+      "domain": "cryptomsg",
+      "surface": "beacon_attestation",
+      "probe": "act_inject_gossip_build_invalid_beacon_attestation_slot_epoch_range",
+      "rule_ids": [
+        "BEACON_ATTESTATION-IGNORE-493398b9"
+      ],
+      "transition": {
+        "from": "CryptoReady",
+        "to": "CryptoSent",
+        "label": "stateless_beacon_attestation_act_inject_gossip_build_invalid_beacon_attestation_slot_epoch_range_584942c7",
+        "weight": 10,
+        "description": "generated stateless probe for BEACON_ATTESTATION-IGNORE-493398b9",
+        "condition_desc": "when not is_current_or_previous_epoch(store, attestation_epoch, current_time_ms)",
+        "tags": [
+          "conditional"
+        ],
+        "spec_refs": [
+          "BEACON_ATTESTATION-IGNORE-493398b9"
+        ],
+        "action": {
+          "type": "ActInjectGossip",
+          "protocol": "beacon_attestation_0",
+          "payload": {
+            "kind": "builder",
+            "wrap": "raw",
+            "name": "buildInvalidBeaconAttestationSlotEpochRange"
+          }
+        },
+        "guard": {
+          "fork_gte": "deneb"
+        },
+        "oracle": {
+          "differential": true,
+          "expected": "REJECT",
+          "must_not": [
+            "CRASH",
+            "ACCEPT"
+          ],
+          "spec_predicate": "accepted == 0",
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "cryptomsg.generated.beacon_attestation.act_inject_gossip_build_invalid_beacon_attestation_slot_epoch_range.760fefdb",
+      "category": "cryptomsg",
+      "domain": "cryptomsg",
+      "surface": "beacon_attestation",
+      "probe": "act_inject_gossip_build_invalid_beacon_attestation_slot_epoch_range",
+      "rule_ids": [
+        "BEACON_ATTESTATION-IGNORE-9dbc7051",
+        "BEACON_ATTESTATION-REJECT-2d8f2580",
+        "BEACON_ATTESTATION-REJECT-fc3dd3a9"
+      ],
+      "transition": {
+        "from": "CryptoReady",
+        "to": "CryptoSent",
+        "label": "stateless_beacon_attestation_act_inject_gossip_build_invalid_beacon_attestation_slot_epoch_range_760fefdb",
+        "weight": 10,
+        "description": "generated stateless probe for BEACON_ATTESTATION-IGNORE-9dbc7051, BEACON_ATTESTATION-REJECT-2d8f2580, BEACON_ATTESTATION-REJECT-fc3dd3a9",
+        "condition_desc": "when not is_within_slot_range( store, data.slot, ATTESTATION_PROPAGATION_SLOT_RANGE, current_time_ms )",
+        "tags": [
+          "conditional"
+        ],
+        "spec_refs": [
+          "BEACON_ATTESTATION-IGNORE-9dbc7051",
+          "BEACON_ATTESTATION-REJECT-2d8f2580",
+          "BEACON_ATTESTATION-REJECT-fc3dd3a9"
+        ],
+        "action": {
+          "type": "ActInjectGossip",
+          "protocol": "beacon_attestation_0",
+          "payload": {
+            "kind": "builder",
+            "wrap": "raw",
+            "name": "buildInvalidBeaconAttestationSlotEpochRange"
+          }
+        },
+        "oracle": {
+          "differential": true,
+          "expected": "REJECT",
+          "must_not": [
+            "CRASH",
+            "ACCEPT"
+          ],
+          "spec_predicate": "accepted == 0",
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "cryptomsg.generated.beacon_attestation.act_inject_gossip_build_invalid_beacon_attestation_slot_future.844b06a3",
+      "category": "cryptomsg",
+      "domain": "cryptomsg",
+      "surface": "beacon_attestation",
+      "probe": "act_inject_gossip_build_invalid_beacon_attestation_slot_future",
+      "rule_ids": [
+        "BEACON_ATTESTATION-IGNORE-5da40ec3"
+      ],
+      "transition": {
+        "from": "CryptoReady",
+        "to": "CryptoSent",
+        "label": "stateless_beacon_attestation_act_inject_gossip_build_invalid_beacon_attestation_slot_future_844b06a3",
+        "weight": 10,
+        "description": "generated stateless probe for BEACON_ATTESTATION-IGNORE-5da40ec3",
+        "condition_desc": "when is_future_slot(store, data.slot, current_time_ms)",
+        "tags": [
+          "conditional"
+        ],
+        "spec_refs": [
+          "BEACON_ATTESTATION-IGNORE-5da40ec3"
+        ],
+        "action": {
+          "type": "ActInjectGossip",
+          "protocol": "beacon_attestation_0",
+          "payload": {
+            "kind": "builder",
+            "wrap": "raw",
+            "name": "buildInvalidBeaconAttestationSlotFuture"
+          }
+        },
+        "guard": {
+          "fork_gte": "deneb"
+        },
+        "oracle": {
+          "differential": true,
+          "expected": "REJECT",
+          "must_not": [
+            "CRASH",
+            "ACCEPT"
+          ],
+          "spec_predicate": "accepted == 0",
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "cryptomsg.generated.beacon_attestation.act_inject_gossip_build_invalid_beacon_attestation_target_root_consistent.cb463ed7",
+      "category": "cryptomsg",
+      "domain": "cryptomsg",
+      "surface": "beacon_attestation",
+      "probe": "act_inject_gossip_build_invalid_beacon_attestation_target_root_consistent",
+      "rule_ids": [
+        "BEACON_ATTESTATION-REJECT-cb7a1c7e"
+      ],
+      "transition": {
+        "from": "CryptoReady",
+        "to": "CryptoSent",
+        "label": "stateless_beacon_attestation_act_inject_gossip_build_invalid_beacon_attestation_target_root_consistent_cb463ed7",
+        "weight": 10,
+        "description": "generated stateless probe for BEACON_ATTESTATION-REJECT-cb7a1c7e",
+        "condition_desc": "when target_checkpoint_block != data.target.root",
+        "tags": [
+          "conditional"
+        ],
+        "spec_refs": [
+          "BEACON_ATTESTATION-REJECT-cb7a1c7e"
+        ],
+        "action": {
+          "type": "ActInjectGossip",
+          "protocol": "beacon_attestation_0",
+          "payload": {
+            "kind": "builder",
+            "wrap": "raw",
+            "name": "buildInvalidBeaconAttestationTargetRootConsistent"
+          }
+        },
+        "oracle": {
+          "differential": true,
+          "expected": "REJECT",
+          "must_not": [
+            "CRASH",
+            "ACCEPT"
+          ],
+          "spec_predicate": "accepted == 0",
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "cryptomsg.generated.beacon_attestation.act_inject_gossip_build_valid_beacon_attestation.35f8f8f5",
+      "category": "cryptomsg",
+      "domain": "cryptomsg",
+      "surface": "beacon_attestation",
+      "probe": "act_inject_gossip_build_valid_beacon_attestation",
+      "rule_ids": [
+        "BEACON_ATTESTATION-REJECT-20aed41d"
+      ],
+      "transition": {
+        "from": "CryptoReady",
+        "to": "CryptoSent",
+        "label": "stateless_beacon_attestation_act_inject_gossip_build_valid_beacon_attestation_35f8f8f5",
+        "weight": 10,
+        "description": "generated stateless probe for BEACON_ATTESTATION-REJECT-20aed41d",
+        "condition_desc": "when attester_index not in committee",
+        "tags": [
+          "conditional"
+        ],
+        "spec_refs": [
+          "BEACON_ATTESTATION-REJECT-20aed41d"
+        ],
+        "action": {
+          "type": "ActInjectGossip",
+          "protocol": "beacon_attestation_0",
+          "payload": {
+            "kind": "builder",
+            "wrap": "raw",
+            "name": "buildValidBeaconAttestation"
+          }
+        },
+        "guard": {
+          "fork_gte": "electra"
+        },
+        "oracle": {
+          "differential": true
+        }
+      }
+    },
+    {
+      "id": "cryptomsg.generated.beacon_attestation.act_inject_gossip_build_valid_beacon_attestation.946766e6",
+      "category": "cryptomsg",
+      "domain": "cryptomsg",
+      "surface": "beacon_attestation",
+      "probe": "act_inject_gossip_build_valid_beacon_attestation",
+      "rule_ids": [
+        "BEACON_ATTESTATION-REJECT-551474a5",
+        "BEACON_ATTESTATION-REJECT-f41bc7a4"
+      ],
+      "transition": {
+        "from": "CryptoReady",
+        "to": "CryptoSent",
+        "label": "stateless_beacon_attestation_act_inject_gossip_build_valid_beacon_attestation_946766e6",
+        "weight": 10,
+        "description": "generated stateless probe for BEACON_ATTESTATION-REJECT-551474a5, BEACON_ATTESTATION-REJECT-f41bc7a4",
+        "condition_desc": "when num_bits_set != 1",
+        "tags": [
+          "conditional"
+        ],
+        "spec_refs": [
+          "BEACON_ATTESTATION-REJECT-551474a5",
+          "BEACON_ATTESTATION-REJECT-f41bc7a4"
+        ],
+        "action": {
+          "type": "ActInjectGossip",
+          "protocol": "beacon_attestation_0",
+          "payload": {
+            "kind": "builder",
+            "wrap": "raw",
+            "name": "buildValidBeaconAttestation"
+          }
+        },
+        "oracle": {
+          "differential": true
+        }
+      }
+    },
+    {
+      "id": "cryptomsg.generated.beacon_attestation.act_inject_gossip_build_valid_beacon_attestation.eae9dee5",
+      "category": "cryptomsg",
+      "domain": "cryptomsg",
+      "surface": "beacon_attestation",
+      "probe": "act_inject_gossip_build_valid_beacon_attestation",
+      "rule_ids": [
+        "BEACON_ATTESTATION-REJECT-02f714ed"
+      ],
+      "transition": {
+        "from": "CryptoReady",
+        "to": "CryptoSent",
+        "label": "stateless_beacon_attestation_act_inject_gossip_build_valid_beacon_attestation_eae9dee5",
+        "weight": 10,
+        "description": "generated stateless probe for BEACON_ATTESTATION-REJECT-02f714ed",
+        "condition_desc": "when expected_subnet != subnet_id",
+        "tags": [
+          "conditional"
+        ],
+        "spec_refs": [
+          "BEACON_ATTESTATION-REJECT-02f714ed"
+        ],
+        "action": {
+          "type": "ActInjectGossip",
+          "protocol": "beacon_attestation_1",
+          "payload": {
+            "kind": "builder",
+            "wrap": "raw",
+            "name": "buildValidBeaconAttestation"
+          }
+        },
+        "oracle": {
+          "differential": true,
+          "expected": "REJECT",
+          "must_not": [
+            "CRASH",
+            "ACCEPT"
+          ],
+          "spec_predicate": "accepted == 0",
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "cryptomsg.generated.beacon_block.act_inject_gossip_build_invalid_beacon_block_kzg_proof.deb5ba6f",
+      "category": "cryptomsg",
+      "domain": "cryptomsg",
+      "surface": "beacon_block",
+      "probe": "act_inject_gossip_build_invalid_beacon_block_kzg_proof",
+      "rule_ids": [
+        "BEACON_BLOCK-REJECT-29379623"
+      ],
+      "transition": {
+        "from": "CryptoReady",
+        "to": "CryptoSent",
+        "label": "stateless_beacon_block_act_inject_gossip_build_invalid_beacon_block_kzg_proof_deb5ba6f",
+        "weight": 10,
+        "description": "generated stateless probe for BEACON_BLOCK-REJECT-29379623",
+        "condition_desc": "when len(block.body.blob_kzg_commitments) \u003e MAX_BLOBS_PER_BLOCK",
+        "tags": [
+          "conditional"
+        ],
+        "spec_refs": [
+          "BEACON_BLOCK-REJECT-29379623"
+        ],
+        "action": {
+          "type": "ActInjectGossip",
+          "protocol": "beacon_block",
+          "payload": {
+            "kind": "builder",
+            "wrap": "raw",
+            "name": "buildInvalidBeaconBlockKzgProof"
+          }
+        },
+        "guard": {
+          "fork_gte": "deneb"
+        },
+        "oracle": {
+          "differential": true,
+          "expected": "REJECT",
+          "must_not": [
+            "CRASH",
+            "ACCEPT"
+          ],
+          "spec_predicate": "accepted == 0",
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "cryptomsg.generated.beacon_block.act_inject_gossip_build_invalid_beacon_block_parent_known_valid.23fa2260",
+      "category": "cryptomsg",
+      "domain": "cryptomsg",
+      "surface": "beacon_block",
+      "probe": "act_inject_gossip_build_invalid_beacon_block_parent_known_valid",
+      "rule_ids": [
+        "BEACON_BLOCK-IGNORE-6f3dc923",
+        "BEACON_BLOCK-IGNORE-a98db703",
+        "BEACON_BLOCK-REJECT-6e147d11"
+      ],
+      "transition": {
+        "from": "CryptoReady",
+        "to": "CryptoSent",
+        "label": "stateless_beacon_block_act_inject_gossip_build_invalid_beacon_block_parent_known_valid_23fa2260",
+        "weight": 10,
+        "description": "generated stateless probe for BEACON_BLOCK-IGNORE-6f3dc923, BEACON_BLOCK-IGNORE-a98db703, BEACON_BLOCK-REJECT-6e147d11",
+        "condition_desc": "when block.parent_root not in store.block_states and is_execution_enabled(store.block_states[store.justified_checkpoint.root], block.body)",
+        "tags": [
+          "conditional"
+        ],
+        "spec_refs": [
+          "BEACON_BLOCK-IGNORE-6f3dc923",
+          "BEACON_BLOCK-IGNORE-a98db703",
+          "BEACON_BLOCK-REJECT-6e147d11"
+        ],
+        "action": {
+          "type": "ActInjectGossip",
+          "protocol": "beacon_block",
+          "payload": {
+            "kind": "builder",
+            "wrap": "raw",
+            "name": "buildInvalidBeaconBlockParentKnownValid"
+          }
+        },
+        "guard": {
+          "fork_gte": "bellatrix"
+        },
+        "oracle": {
+          "differential": true,
+          "expected": "REJECT",
+          "must_not": [
+            "CRASH",
+            "ACCEPT"
+          ],
+          "spec_predicate": "accepted == 0",
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "cryptomsg.generated.beacon_block.act_inject_gossip_build_invalid_beacon_block_parent_known_valid.3e6b40e8",
+      "category": "cryptomsg",
+      "domain": "cryptomsg",
+      "surface": "beacon_block",
+      "probe": "act_inject_gossip_build_invalid_beacon_block_parent_known_valid",
+      "rule_ids": [
+        "BEACON_BLOCK-IGNORE-b127f4ef",
+        "BEACON_BLOCK-REJECT-33eeeb94",
+        "BEACON_BLOCK-REJECT-5f829684"
+      ],
+      "transition": {
+        "from": "CryptoReady",
+        "to": "CryptoSent",
+        "label": "stateless_beacon_block_act_inject_gossip_build_invalid_beacon_block_parent_known_valid_3e6b40e8",
+        "weight": 10,
+        "description": "generated stateless probe for BEACON_BLOCK-IGNORE-b127f4ef, BEACON_BLOCK-REJECT-33eeeb94, BEACON_BLOCK-REJECT-5f829684",
+        "condition_desc": "until «parent is retrieved»; when block.parent_root not in store.blocks",
+        "tags": [
+          "temporal:until",
+          "conditional"
+        ],
+        "spec_refs": [
+          "BEACON_BLOCK-IGNORE-b127f4ef",
+          "BEACON_BLOCK-REJECT-33eeeb94",
+          "BEACON_BLOCK-REJECT-5f829684"
+        ],
+        "action": {
+          "type": "ActInjectGossip",
+          "protocol": "beacon_block",
+          "payload": {
+            "kind": "builder",
+            "wrap": "raw",
+            "name": "buildInvalidBeaconBlockParentKnownValid"
+          }
+        },
+        "oracle": {
+          "differential": true,
+          "expected": "REJECT",
+          "must_not": [
+            "CRASH",
+            "ACCEPT"
+          ],
+          "spec_predicate": "accepted == 0",
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "cryptomsg.generated.beacon_block.act_inject_gossip_build_invalid_beacon_block_parent_known_valid.67875b1c",
+      "category": "cryptomsg",
+      "domain": "cryptomsg",
+      "surface": "beacon_block",
+      "probe": "act_inject_gossip_build_invalid_beacon_block_parent_known_valid",
+      "rule_ids": [
+        "BEACON_BLOCK-REJECT-48c14af0"
+      ],
+      "transition": {
+        "from": "CryptoReady",
+        "to": "CryptoSent",
+        "label": "stateless_beacon_block_act_inject_gossip_build_invalid_beacon_block_parent_known_valid_67875b1c",
+        "weight": 10,
+        "description": "generated stateless probe for BEACON_BLOCK-REJECT-48c14af0",
+        "spec_refs": [
+          "BEACON_BLOCK-REJECT-48c14af0"
+        ],
+        "action": {
+          "type": "ActInjectGossip",
+          "protocol": "beacon_block",
+          "payload": {
+            "kind": "builder",
+            "wrap": "raw",
+            "name": "buildInvalidBeaconBlockParentKnownValid"
+          }
+        },
+        "guard": {
+          "fork_gte": "eip8148"
+        },
+        "oracle": {
+          "differential": true,
+          "expected": "REJECT",
+          "must_not": [
+            "CRASH",
+            "ACCEPT"
+          ],
+          "spec_predicate": "accepted == 0",
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "cryptomsg.generated.beacon_block.act_inject_gossip_build_invalid_beacon_block_proposer_index_wrong.a1c4248c",
+      "category": "cryptomsg",
+      "domain": "cryptomsg",
+      "surface": "beacon_block",
+      "probe": "act_inject_gossip_build_invalid_beacon_block_proposer_index_wrong",
+      "rule_ids": [
+        "BEACON_BLOCK-REJECT-4df28963"
+      ],
+      "transition": {
+        "from": "CryptoReady",
+        "to": "CryptoSent",
+        "label": "stateless_beacon_block_act_inject_gossip_build_invalid_beacon_block_proposer_index_wrong_a1c4248c",
+        "weight": 10,
+        "description": "generated stateless probe for BEACON_BLOCK-REJECT-4df28963",
+        "condition_desc": "when block.proposer_index \u003e= len(state.validators)",
+        "tags": [
+          "conditional"
+        ],
+        "spec_refs": [
+          "BEACON_BLOCK-REJECT-4df28963"
+        ],
+        "action": {
+          "type": "ActInjectGossip",
+          "protocol": "beacon_block",
+          "payload": {
+            "kind": "builder",
+            "wrap": "raw",
+            "name": "buildInvalidBeaconBlockProposerIndexWrong"
+          }
+        },
+        "oracle": {
+          "differential": true,
+          "expected": "REJECT",
+          "must_not": [
+            "CRASH",
+            "ACCEPT"
+          ],
+          "spec_predicate": "accepted == 0",
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "cryptomsg.generated.beacon_block.act_inject_gossip_build_invalid_beacon_block_proposer_index_wrong.c918a5e7",
+      "category": "cryptomsg",
+      "domain": "cryptomsg",
+      "surface": "beacon_block",
+      "probe": "act_inject_gossip_build_invalid_beacon_block_proposer_index_wrong",
+      "rule_ids": [
+        "BEACON_BLOCK-REJECT-a3e807db"
+      ],
+      "transition": {
+        "from": "CryptoReady",
+        "to": "CryptoSent",
+        "label": "stateless_beacon_block_act_inject_gossip_build_invalid_beacon_block_proposer_index_wrong_c918a5e7",
+        "weight": 10,
+        "description": "generated stateless probe for BEACON_BLOCK-REJECT-a3e807db",
+        "condition_desc": "when block.proposer_index != expected_proposer",
+        "tags": [
+          "conditional"
+        ],
+        "spec_refs": [
+          "BEACON_BLOCK-REJECT-a3e807db"
+        ],
+        "action": {
+          "type": "ActInjectGossip",
+          "protocol": "beacon_block",
+          "payload": {
+            "kind": "builder",
+            "wrap": "raw",
+            "name": "buildInvalidBeaconBlockProposerIndexWrong"
+          }
+        },
+        "oracle": {
+          "differential": true
+        }
+      }
+    },
+    {
+      "id": "cryptomsg.generated.beacon_block.act_inject_gossip_build_invalid_beacon_block_sig_invalid.c3df4350",
+      "category": "cryptomsg",
+      "domain": "cryptomsg",
+      "surface": "beacon_block",
+      "probe": "act_inject_gossip_build_invalid_beacon_block_sig_invalid",
+      "rule_ids": [
+        "BEACON_BLOCK-IGNORE-2b120cd4",
+        "BEACON_BLOCK-REJECT-3fd28bdc"
+      ],
+      "transition": {
+        "from": "CryptoReady",
+        "to": "CryptoSent",
+        "label": "stateless_beacon_block_act_inject_gossip_build_invalid_beacon_block_sig_invalid_c3df4350",
+        "weight": 10,
+        "description": "generated stateless probe for BEACON_BLOCK-IGNORE-2b120cd4, BEACON_BLOCK-REJECT-3fd28bdc",
+        "condition_desc": "when proposer_slot_key in seen.proposer_slots",
+        "tags": [
+          "conditional"
+        ],
+        "spec_refs": [
+          "BEACON_BLOCK-IGNORE-2b120cd4",
+          "BEACON_BLOCK-REJECT-3fd28bdc"
+        ],
+        "action": {
+          "type": "ActInjectGossip",
+          "protocol": "beacon_block",
+          "payload": {
+            "kind": "builder",
+            "wrap": "raw",
+            "name": "buildInvalidBeaconBlockSigInvalid"
+          }
+        },
+        "oracle": {
+          "differential": true,
+          "expected": "REJECT",
+          "must_not": [
+            "CRASH",
+            "ACCEPT"
+          ],
+          "spec_predicate": "accepted == 0",
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "cryptomsg.generated.beacon_block.act_inject_gossip_build_invalid_beacon_block_slot_future.f19b6f01",
+      "category": "cryptomsg",
+      "domain": "cryptomsg",
+      "surface": "beacon_block",
+      "probe": "act_inject_gossip_build_invalid_beacon_block_slot_future",
+      "rule_ids": [
+        "BEACON_BLOCK-IGNORE-451f432d"
+      ],
+      "transition": {
+        "from": "CryptoReady",
+        "to": "CryptoSent",
+        "label": "stateless_beacon_block_act_inject_gossip_build_invalid_beacon_block_slot_future_f19b6f01",
+        "weight": 10,
+        "description": "generated stateless probe for BEACON_BLOCK-IGNORE-451f432d",
+        "condition_desc": "when is_future_slot(store, block.slot, current_time_ms)",
+        "tags": [
+          "conditional"
+        ],
+        "spec_refs": [
+          "BEACON_BLOCK-IGNORE-451f432d"
+        ],
+        "action": {
+          "type": "ActInjectGossip",
+          "protocol": "beacon_block",
+          "payload": {
+            "kind": "builder",
+            "wrap": "raw",
+            "name": "buildInvalidBeaconBlockSlotFuture"
+          }
+        },
+        "oracle": {
+          "differential": true,
+          "expected": "REJECT",
+          "must_not": [
+            "CRASH",
+            "ACCEPT"
+          ],
+          "spec_predicate": "accepted == 0",
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "cryptomsg.generated.beacon_block.act_inject_gossip_build_invalid_beacon_block_timestamp_correct.864ecc2c",
+      "category": "cryptomsg",
+      "domain": "cryptomsg",
+      "surface": "beacon_block",
+      "probe": "act_inject_gossip_build_invalid_beacon_block_timestamp_correct",
+      "rule_ids": [
+        "BEACON_BLOCK-REJECT-83dcef19"
+      ],
+      "transition": {
+        "from": "CryptoReady",
+        "to": "CryptoSent",
+        "label": "stateless_beacon_block_act_inject_gossip_build_invalid_beacon_block_timestamp_correct_864ecc2c",
+        "weight": 10,
+        "description": "generated stateless probe for BEACON_BLOCK-REJECT-83dcef19",
+        "condition_desc": "when is_execution_enabled(state, block.body) and execution_payload.timestamp != compute_time_at_slot(state, block.slot)",
+        "tags": [
+          "conditional"
+        ],
+        "spec_refs": [
+          "BEACON_BLOCK-REJECT-83dcef19"
+        ],
+        "action": {
+          "type": "ActInjectGossip",
+          "protocol": "beacon_block",
+          "payload": {
+            "kind": "builder",
+            "wrap": "raw",
+            "name": "buildInvalidBeaconBlockTimestampCorrect"
+          }
+        },
+        "guard": {
+          "fork_gte": "bellatrix"
+        },
+        "oracle": {
+          "differential": true,
+          "expected": "REJECT",
+          "must_not": [
+            "CRASH",
+            "ACCEPT"
+          ],
+          "spec_predicate": "accepted == 0",
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "cryptomsg.generated.beacon_block.act_inject_gossip_build_valid_beacon_block.154e1125",
+      "category": "cryptomsg",
+      "domain": "cryptomsg",
+      "surface": "beacon_block",
+      "probe": "act_inject_gossip_build_valid_beacon_block",
+      "rule_ids": [
+        "BEACON_BLOCK-IGNORE-e183d5a9",
+        "BEACON_BLOCK-REJECT-dbd5e1e1"
+      ],
+      "transition": {
+        "from": "CryptoReady",
+        "to": "CryptoSent",
+        "label": "stateless_beacon_block_act_inject_gossip_build_valid_beacon_block_154e1125",
+        "weight": 10,
+        "description": "generated stateless probe for BEACON_BLOCK-IGNORE-e183d5a9, BEACON_BLOCK-REJECT-dbd5e1e1",
+        "condition_desc": "when block.slot \u003c= finalized_slot",
+        "tags": [
+          "conditional"
+        ],
+        "spec_refs": [
+          "BEACON_BLOCK-IGNORE-e183d5a9",
+          "BEACON_BLOCK-REJECT-dbd5e1e1"
+        ],
+        "action": {
+          "type": "ActInjectGossip",
+          "protocol": "beacon_block",
+          "payload": {
+            "kind": "builder",
+            "wrap": "raw",
+            "name": "buildValidBeaconBlock"
+          }
+        },
+        "oracle": {
+          "differential": true
+        }
+      }
+    },
+    {
+      "id": "cryptomsg.generated.blob_sidecar.act_inject_gossip_build_invalid_blob_sidecar_index_oob.622507ae",
+      "category": "cryptomsg",
+      "domain": "cryptomsg",
+      "surface": "blob_sidecar",
+      "probe": "act_inject_gossip_build_invalid_blob_sidecar_index_oob",
+      "rule_ids": [
+        "BLOB_SIDECAR-REJECT-5e9003ab"
+      ],
+      "transition": {
+        "from": "CryptoReady",
+        "to": "CryptoSent",
+        "label": "stateless_blob_sidecar_act_inject_gossip_build_invalid_blob_sidecar_index_oob_622507ae",
+        "weight": 10,
+        "description": "generated stateless probe for BLOB_SIDECAR-REJECT-5e9003ab",
+        "condition_desc": "when blob_sidecar.index \u003e= MAX_BLOBS_PER_BLOCK_ELECTRA",
+        "tags": [
+          "conditional"
+        ],
+        "spec_refs": [
+          "BLOB_SIDECAR-REJECT-5e9003ab"
+        ],
+        "action": {
+          "type": "ActInjectGossip",
+          "protocol": "blob_sidecar_0",
+          "payload": {
+            "kind": "builder",
+            "wrap": "raw",
+            "name": "buildInvalidBlobSidecarIndexOob"
+          }
+        },
+        "guard": {
+          "fork_gte": "electra"
+        },
+        "oracle": {
+          "differential": true,
+          "expected": "REJECT",
+          "must_not": [
+            "CRASH",
+            "ACCEPT"
+          ],
+          "spec_predicate": "accepted == 0",
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "cryptomsg.generated.blob_sidecar.act_inject_gossip_build_invalid_blob_sidecar_index_oob.ce341e78",
+      "category": "cryptomsg",
+      "domain": "cryptomsg",
+      "surface": "blob_sidecar",
+      "probe": "act_inject_gossip_build_invalid_blob_sidecar_index_oob",
+      "rule_ids": [
+        "BLOB_SIDECAR-REJECT-e13efefd"
+      ],
+      "transition": {
+        "from": "CryptoReady",
+        "to": "CryptoSent",
+        "label": "stateless_blob_sidecar_act_inject_gossip_build_invalid_blob_sidecar_index_oob_ce341e78",
+        "weight": 10,
+        "description": "generated stateless probe for BLOB_SIDECAR-REJECT-e13efefd",
+        "condition_desc": "when blob_sidecar.index \u003e= MAX_BLOBS_PER_BLOCK",
+        "tags": [
+          "conditional"
+        ],
+        "spec_refs": [
+          "BLOB_SIDECAR-REJECT-e13efefd"
+        ],
+        "action": {
+          "type": "ActInjectGossip",
+          "protocol": "blob_sidecar_0",
+          "payload": {
+            "kind": "builder",
+            "wrap": "raw",
+            "name": "buildInvalidBlobSidecarIndexOob"
+          }
+        },
+        "guard": {
+          "fork_gte": "deneb"
+        },
+        "oracle": {
+          "differential": true,
+          "expected": "REJECT",
+          "must_not": [
+            "CRASH",
+            "ACCEPT"
+          ],
+          "spec_predicate": "accepted == 0",
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "cryptomsg.generated.blob_sidecar.act_inject_gossip_build_invalid_blob_sidecar_kzg_proof.e0a45e3b",
+      "category": "cryptomsg",
+      "domain": "cryptomsg",
+      "surface": "blob_sidecar",
+      "probe": "act_inject_gossip_build_invalid_blob_sidecar_kzg_proof",
+      "rule_ids": [
+        "BLOB_SIDECAR-REJECT-124b7dda",
+        "BLOB_SIDECAR-REJECT-190a8460"
+      ],
+      "transition": {
+        "from": "CryptoReady",
+        "to": "CryptoSent",
+        "label": "stateless_blob_sidecar_act_inject_gossip_build_invalid_blob_sidecar_kzg_proof_e0a45e3b",
+        "weight": 10,
+        "description": "generated stateless probe for BLOB_SIDECAR-REJECT-124b7dda, BLOB_SIDECAR-REJECT-190a8460",
+        "condition_desc": "when not verify_blob_sidecar_inclusion_proof(blob_sidecar)",
+        "tags": [
+          "conditional"
+        ],
+        "spec_refs": [
+          "BLOB_SIDECAR-REJECT-124b7dda",
+          "BLOB_SIDECAR-REJECT-190a8460"
+        ],
+        "action": {
+          "type": "ActInjectGossip",
+          "protocol": "blob_sidecar_0",
+          "payload": {
+            "kind": "builder",
+            "wrap": "raw",
+            "name": "buildInvalidBlobSidecarKzgProof"
+          }
+        },
+        "guard": {
+          "fork_gte": "deneb"
+        },
+        "oracle": {
+          "differential": true,
+          "expected": "REJECT",
+          "must_not": [
+            "CRASH",
+            "ACCEPT"
+          ],
+          "spec_predicate": "accepted == 0",
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "cryptomsg.generated.blob_sidecar.act_inject_gossip_build_invalid_blob_sidecar_proposer_index_wrong.8499aafd",
+      "category": "cryptomsg",
+      "domain": "cryptomsg",
+      "surface": "blob_sidecar",
+      "probe": "act_inject_gossip_build_invalid_blob_sidecar_proposer_index_wrong",
+      "rule_ids": [
+        "BLOB_SIDECAR-REJECT-4df28963"
+      ],
+      "transition": {
+        "from": "CryptoReady",
+        "to": "CryptoSent",
+        "label": "stateless_blob_sidecar_act_inject_gossip_build_invalid_blob_sidecar_proposer_index_wrong_8499aafd",
+        "weight": 10,
+        "description": "generated stateless probe for BLOB_SIDECAR-REJECT-4df28963",
+        "condition_desc": "when block_header.proposer_index \u003e= len(state.validators)",
+        "tags": [
+          "conditional"
+        ],
+        "spec_refs": [
+          "BLOB_SIDECAR-REJECT-4df28963"
+        ],
+        "action": {
+          "type": "ActInjectGossip",
+          "protocol": "blob_sidecar_0",
+          "payload": {
+            "kind": "builder",
+            "wrap": "raw",
+            "name": "buildInvalidBlobSidecarProposerIndexWrong"
+          }
+        },
+        "guard": {
+          "fork_gte": "deneb"
+        },
+        "oracle": {
+          "differential": true,
+          "expected": "REJECT",
+          "must_not": [
+            "CRASH",
+            "ACCEPT"
+          ],
+          "spec_predicate": "accepted == 0",
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "cryptomsg.generated.blob_sidecar.act_inject_gossip_build_invalid_blob_sidecar_proposer_index_wrong.ac886ecf",
+      "category": "cryptomsg",
+      "domain": "cryptomsg",
+      "surface": "blob_sidecar",
+      "probe": "act_inject_gossip_build_invalid_blob_sidecar_proposer_index_wrong",
+      "rule_ids": [
+        "BLOB_SIDECAR-REJECT-28436443"
+      ],
+      "transition": {
+        "from": "CryptoReady",
+        "to": "CryptoSent",
+        "label": "stateless_blob_sidecar_act_inject_gossip_build_invalid_blob_sidecar_proposer_index_wrong_ac886ecf",
+        "weight": 10,
+        "description": "generated stateless probe for BLOB_SIDECAR-REJECT-28436443",
+        "condition_desc": "when block_header.proposer_index != expected_proposer",
+        "tags": [
+          "conditional"
+        ],
+        "spec_refs": [
+          "BLOB_SIDECAR-REJECT-28436443"
+        ],
+        "action": {
+          "type": "ActInjectGossip",
+          "protocol": "blob_sidecar_0",
+          "payload": {
+            "kind": "builder",
+            "wrap": "raw",
+            "name": "buildInvalidBlobSidecarProposerIndexWrong"
+          }
+        },
+        "guard": {
+          "fork_gte": "deneb"
+        },
+        "oracle": {
+          "differential": true
+        }
+      }
+    },
+    {
+      "id": "cryptomsg.generated.blob_sidecar.act_inject_gossip_build_invalid_blob_sidecar_sig_invalid.99d4641c",
+      "category": "cryptomsg",
+      "domain": "cryptomsg",
+      "surface": "blob_sidecar",
+      "probe": "act_inject_gossip_build_invalid_blob_sidecar_sig_invalid",
+      "rule_ids": [
+        "BLOB_SIDECAR-REJECT-c9c1666b"
+      ],
+      "transition": {
+        "from": "CryptoReady",
+        "to": "CryptoSent",
+        "label": "stateless_blob_sidecar_act_inject_gossip_build_invalid_blob_sidecar_sig_invalid_99d4641c",
+        "weight": 10,
+        "description": "generated stateless probe for BLOB_SIDECAR-REJECT-c9c1666b",
+        "condition_desc": "when not bls.Verify(proposer.pubkey, signing_root, blob_sidecar.signed_block_header.signature)",
+        "tags": [
+          "conditional"
+        ],
+        "spec_refs": [
+          "BLOB_SIDECAR-REJECT-c9c1666b"
+        ],
+        "action": {
+          "type": "ActInjectGossip",
+          "protocol": "blob_sidecar_0",
+          "payload": {
+            "kind": "builder",
+            "wrap": "raw",
+            "name": "buildInvalidBlobSidecarSigInvalid"
+          }
+        },
+        "guard": {
+          "fork_gte": "deneb"
+        },
+        "oracle": {
+          "differential": true,
+          "expected": "REJECT",
+          "must_not": [
+            "CRASH",
+            "ACCEPT"
+          ],
+          "spec_predicate": "accepted == 0",
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "cryptomsg.generated.blob_sidecar.act_inject_gossip_build_invalid_blob_sidecar_slot_future.5b21c870",
+      "category": "cryptomsg",
+      "domain": "cryptomsg",
+      "surface": "blob_sidecar",
+      "probe": "act_inject_gossip_build_invalid_blob_sidecar_slot_future",
+      "rule_ids": [
+        "BLOB_SIDECAR-IGNORE-8cf6775b"
+      ],
+      "transition": {
+        "from": "CryptoReady",
+        "to": "CryptoSent",
+        "label": "stateless_blob_sidecar_act_inject_gossip_build_invalid_blob_sidecar_slot_future_5b21c870",
+        "weight": 10,
+        "description": "generated stateless probe for BLOB_SIDECAR-IGNORE-8cf6775b",
+        "condition_desc": "when is_future_slot(store, block_header.slot, current_time_ms)",
+        "tags": [
+          "conditional"
+        ],
+        "spec_refs": [
+          "BLOB_SIDECAR-IGNORE-8cf6775b"
+        ],
+        "action": {
+          "type": "ActInjectGossip",
+          "protocol": "blob_sidecar_0",
+          "payload": {
+            "kind": "builder",
+            "wrap": "raw",
+            "name": "buildInvalidBlobSidecarSlotFuture"
+          }
+        },
+        "guard": {
+          "fork_gte": "deneb"
+        },
+        "oracle": {
+          "differential": true,
+          "expected": "REJECT",
+          "must_not": [
+            "CRASH",
+            "ACCEPT"
+          ],
+          "spec_predicate": "accepted == 0",
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "cryptomsg.generated.blob_sidecar.act_inject_gossip_build_valid_blob_sidecar.90aa687d",
+      "category": "cryptomsg",
+      "domain": "cryptomsg",
+      "surface": "blob_sidecar",
+      "probe": "act_inject_gossip_build_valid_blob_sidecar",
+      "rule_ids": [
+        "BLOB_SIDECAR-REJECT-c094c7ea"
+      ],
+      "transition": {
+        "from": "CryptoReady",
+        "to": "CryptoSent",
+        "label": "stateless_blob_sidecar_act_inject_gossip_build_valid_blob_sidecar_90aa687d",
+        "weight": 10,
+        "description": "generated stateless probe for BLOB_SIDECAR-REJECT-c094c7ea",
+        "condition_desc": "when compute_subnet_for_blob_sidecar(blob_sidecar.index) != subnet_id",
+        "tags": [
+          "conditional"
+        ],
+        "spec_refs": [
+          "BLOB_SIDECAR-REJECT-c094c7ea"
+        ],
+        "action": {
+          "type": "ActInjectGossip",
+          "protocol": "blob_sidecar_1",
+          "payload": {
+            "kind": "builder",
+            "wrap": "raw",
+            "name": "buildValidBlobSidecar"
+          }
+        },
+        "guard": {
+          "fork_gte": "deneb"
+        },
+        "oracle": {
+          "differential": true,
+          "expected": "REJECT",
+          "must_not": [
+            "CRASH",
+            "ACCEPT"
+          ],
+          "spec_predicate": "accepted == 0",
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "cryptomsg.generated.blob_sidecar.act_inject_gossip_build_valid_blob_sidecar.b93bcb6e",
+      "category": "cryptomsg",
+      "domain": "cryptomsg",
+      "surface": "blob_sidecar",
+      "probe": "act_inject_gossip_build_valid_blob_sidecar",
+      "rule_ids": [
+        "BLOB_SIDECAR-IGNORE-6478f02b",
+        "BLOB_SIDECAR-IGNORE-80194614",
+        "BLOB_SIDECAR-REJECT-5f6c65a0",
+        "BLOB_SIDECAR-REJECT-f5bf199b",
+        "BLOB_SIDECAR-REJECT-fb4868ac"
+      ],
+      "transition": {
+        "from": "CryptoReady",
+        "to": "CryptoSent",
+        "label": "stateless_blob_sidecar_act_inject_gossip_build_valid_blob_sidecar_b93bcb6e",
+        "weight": 10,
+        "description": "generated stateless probe for BLOB_SIDECAR-IGNORE-6478f02b, BLOB_SIDECAR-IGNORE-80194614, BLOB_SIDECAR-REJECT-5f6c65a0, BLOB_SIDECAR-REJECT-f5bf199b, BLOB_SIDECAR-REJECT-fb4868ac",
+        "condition_desc": "when block_header.slot \u003c= finalized_slot",
+        "tags": [
+          "conditional"
+        ],
+        "spec_refs": [
+          "BLOB_SIDECAR-IGNORE-6478f02b",
+          "BLOB_SIDECAR-IGNORE-80194614",
+          "BLOB_SIDECAR-REJECT-5f6c65a0",
+          "BLOB_SIDECAR-REJECT-f5bf199b",
+          "BLOB_SIDECAR-REJECT-fb4868ac"
+        ],
+        "action": {
+          "type": "ActInjectGossip",
+          "protocol": "blob_sidecar_0",
+          "payload": {
+            "kind": "builder",
+            "wrap": "raw",
+            "name": "buildValidBlobSidecar"
+          }
+        },
+        "guard": {
+          "fork_gte": "deneb"
+        },
+        "oracle": {
+          "differential": true
+        }
+      }
+    },
+    {
+      "id": "cryptomsg.generated.bls_to_execution_change.act_inject_gossip_build_invalid_bls_to_execution_change_field_equality.86630b9d",
+      "category": "cryptomsg",
+      "domain": "cryptomsg",
+      "surface": "bls_to_execution_change",
+      "probe": "act_inject_gossip_build_invalid_bls_to_execution_change_field_equality",
+      "rule_ids": [
+        "BLS_TO_EXECUTION_CHANGE-REJECT-3869cf36",
+        "BLS_TO_EXECUTION_CHANGE-REJECT-c61b3034"
+      ],
+      "transition": {
+        "from": "CryptoReady",
+        "to": "CryptoSent",
+        "label": "stateless_bls_to_execution_change_act_inject_gossip_build_invalid_bls_to_execution_change_field_equality_86630b9d",
+        "weight": 10,
+        "description": "generated stateless probe for BLS_TO_EXECUTION_CHANGE-REJECT-3869cf36, BLS_TO_EXECUTION_CHANGE-REJECT-c61b3034",
+        "condition_desc": "when validator.withdrawal_credentials[:1] != BLS_WITHDRAWAL_PREFIX",
+        "tags": [
+          "conditional"
+        ],
+        "spec_refs": [
+          "BLS_TO_EXECUTION_CHANGE-REJECT-3869cf36",
+          "BLS_TO_EXECUTION_CHANGE-REJECT-c61b3034"
+        ],
+        "action": {
+          "type": "ActInjectGossip",
+          "protocol": "bls_to_execution_change",
+          "payload": {
+            "kind": "builder",
+            "wrap": "raw",
+            "name": "buildInvalidBlsToExecutionChangeFieldEquality"
+          }
+        },
+        "guard": {
+          "fork_gte": "capella"
+        },
+        "oracle": {
+          "differential": true,
+          "expected": "REJECT",
+          "must_not": [
+            "CRASH",
+            "ACCEPT"
+          ],
+          "spec_predicate": "accepted == 0",
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "cryptomsg.generated.bls_to_execution_change.act_inject_gossip_build_invalid_bls_to_execution_change_index_oob.6fc6ee1c",
+      "category": "cryptomsg",
+      "domain": "cryptomsg",
+      "surface": "bls_to_execution_change",
+      "probe": "act_inject_gossip_build_invalid_bls_to_execution_change_index_oob",
+      "rule_ids": [
+        "BLS_TO_EXECUTION_CHANGE-REJECT-3aa5be35"
+      ],
+      "transition": {
+        "from": "CryptoReady",
+        "to": "CryptoSent",
+        "label": "stateless_bls_to_execution_change_act_inject_gossip_build_invalid_bls_to_execution_change_index_oob_6fc6ee1c",
+        "weight": 10,
+        "description": "generated stateless probe for BLS_TO_EXECUTION_CHANGE-REJECT-3aa5be35",
+        "condition_desc": "when validator_index \u003e= len(state.validators)",
+        "tags": [
+          "conditional"
+        ],
+        "spec_refs": [
+          "BLS_TO_EXECUTION_CHANGE-REJECT-3aa5be35"
+        ],
+        "action": {
+          "type": "ActInjectGossip",
+          "protocol": "bls_to_execution_change",
+          "payload": {
+            "kind": "builder",
+            "wrap": "raw",
+            "name": "buildInvalidBlsToExecutionChangeIndexOob"
+          }
+        },
+        "guard": {
+          "fork_gte": "capella"
+        },
+        "oracle": {
+          "differential": true,
+          "expected": "REJECT",
+          "must_not": [
+            "CRASH",
+            "ACCEPT"
+          ],
+          "spec_predicate": "accepted == 0",
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "cryptomsg.generated.bls_to_execution_change.act_inject_gossip_build_invalid_bls_to_execution_change_sig_invalid.26c6ac7d",
+      "category": "cryptomsg",
+      "domain": "cryptomsg",
+      "surface": "bls_to_execution_change",
+      "probe": "act_inject_gossip_build_invalid_bls_to_execution_change_sig_invalid",
+      "rule_ids": [
+        "BLS_TO_EXECUTION_CHANGE-REJECT-cc9547b7"
+      ],
+      "transition": {
+        "from": "CryptoReady",
+        "to": "CryptoSent",
+        "label": "stateless_bls_to_execution_change_act_inject_gossip_build_invalid_bls_to_execution_change_sig_invalid_26c6ac7d",
+        "weight": 10,
+        "description": "generated stateless probe for BLS_TO_EXECUTION_CHANGE-REJECT-cc9547b7",
+        "condition_desc": "when not bls.Verify(pubkey, signing_root, signed_bls_to_execution_change.signature)",
+        "tags": [
+          "conditional"
+        ],
+        "spec_refs": [
+          "BLS_TO_EXECUTION_CHANGE-REJECT-cc9547b7"
+        ],
+        "action": {
+          "type": "ActInjectGossip",
+          "protocol": "bls_to_execution_change",
+          "payload": {
+            "kind": "builder",
+            "wrap": "raw",
+            "name": "buildInvalidBlsToExecutionChangeSigInvalid"
+          }
+        },
+        "guard": {
+          "fork_gte": "capella"
+        },
+        "oracle": {
+          "differential": true,
+          "expected": "REJECT",
+          "must_not": [
+            "CRASH",
+            "ACCEPT"
+          ],
+          "spec_predicate": "accepted == 0",
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "cryptomsg.generated.data_column_sidecar.act_inject_gossip_build_invalid_data_column_sidecar_kzg_proof.251441c4",
+      "category": "cryptomsg",
+      "domain": "cryptomsg",
+      "surface": "data_column_sidecar",
+      "probe": "act_inject_gossip_build_invalid_data_column_sidecar_kzg_proof",
+      "rule_ids": [
+        "DATA_COLUMN_SIDECAR-REJECT-459b0d39",
+        "DATA_COLUMN_SIDECAR-REJECT-9a465758",
+        "DATA_COLUMN_SIDECAR-REJECT-f173b70c"
+      ],
+      "transition": {
+        "from": "CryptoReady",
+        "to": "CryptoSent",
+        "label": "stateless_data_column_sidecar_act_inject_gossip_build_invalid_data_column_sidecar_kzg_proof_251441c4",
+        "weight": 10,
+        "description": "generated stateless probe for DATA_COLUMN_SIDECAR-REJECT-459b0d39, DATA_COLUMN_SIDECAR-REJECT-9a465758, DATA_COLUMN_SIDECAR-REJECT-f173b70c",
+        "condition_desc": "when not verify_data_column_sidecar(sidecar)",
+        "tags": [
+          "conditional"
+        ],
+        "spec_refs": [
+          "DATA_COLUMN_SIDECAR-REJECT-459b0d39",
+          "DATA_COLUMN_SIDECAR-REJECT-9a465758",
+          "DATA_COLUMN_SIDECAR-REJECT-f173b70c"
+        ],
+        "action": {
+          "type": "ActInjectGossip",
+          "protocol": "data_column_sidecar_0",
+          "payload": {
+            "kind": "builder",
+            "wrap": "raw",
+            "name": "buildInvalidDataColumnSidecarKzgProof"
+          }
+        },
+        "guard": {
+          "fork_gte": "fulu"
+        },
+        "oracle": {
+          "differential": true,
+          "expected": "REJECT",
+          "must_not": [
+            "CRASH",
+            "ACCEPT"
+          ],
+          "spec_predicate": "accepted == 0",
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "cryptomsg.generated.data_column_sidecar.act_inject_gossip_build_invalid_data_column_sidecar_proposer_index_wrong.3c0f4b60",
+      "category": "cryptomsg",
+      "domain": "cryptomsg",
+      "surface": "data_column_sidecar",
+      "probe": "act_inject_gossip_build_invalid_data_column_sidecar_proposer_index_wrong",
+      "rule_ids": [
+        "DATA_COLUMN_SIDECAR-REJECT-28436443"
+      ],
+      "transition": {
+        "from": "CryptoReady",
+        "to": "CryptoSent",
+        "label": "stateless_data_column_sidecar_act_inject_gossip_build_invalid_data_column_sidecar_proposer_index_wrong_3c0f4b60",
+        "weight": 10,
+        "description": "generated stateless probe for DATA_COLUMN_SIDECAR-REJECT-28436443",
+        "condition_desc": "when block_header.proposer_index != expected_proposer",
+        "tags": [
+          "conditional"
+        ],
+        "spec_refs": [
+          "DATA_COLUMN_SIDECAR-REJECT-28436443"
+        ],
+        "action": {
+          "type": "ActInjectGossip",
+          "protocol": "data_column_sidecar_0",
+          "payload": {
+            "kind": "builder",
+            "wrap": "raw",
+            "name": "buildInvalidDataColumnSidecarProposerIndexWrong"
+          }
+        },
+        "guard": {
+          "fork_gte": "fulu"
+        },
+        "oracle": {
+          "differential": true
+        }
+      }
+    },
+    {
+      "id": "cryptomsg.generated.data_column_sidecar.act_inject_gossip_build_invalid_data_column_sidecar_proposer_index_wrong.76a5c4e9",
+      "category": "cryptomsg",
+      "domain": "cryptomsg",
+      "surface": "data_column_sidecar",
+      "probe": "act_inject_gossip_build_invalid_data_column_sidecar_proposer_index_wrong",
+      "rule_ids": [
+        "DATA_COLUMN_SIDECAR-REJECT-4df28963"
+      ],
+      "transition": {
+        "from": "CryptoReady",
+        "to": "CryptoSent",
+        "label": "stateless_data_column_sidecar_act_inject_gossip_build_invalid_data_column_sidecar_proposer_index_wrong_76a5c4e9",
+        "weight": 10,
+        "description": "generated stateless probe for DATA_COLUMN_SIDECAR-REJECT-4df28963",
+        "condition_desc": "when block_header.proposer_index \u003e= len(state.validators)",
+        "tags": [
+          "conditional"
+        ],
+        "spec_refs": [
+          "DATA_COLUMN_SIDECAR-REJECT-4df28963"
+        ],
+        "action": {
+          "type": "ActInjectGossip",
+          "protocol": "data_column_sidecar_0",
+          "payload": {
+            "kind": "builder",
+            "wrap": "raw",
+            "name": "buildInvalidDataColumnSidecarProposerIndexWrong"
+          }
+        },
+        "guard": {
+          "fork_gte": "fulu"
+        },
+        "oracle": {
+          "differential": true,
+          "expected": "REJECT",
+          "must_not": [
+            "CRASH",
+            "ACCEPT"
+          ],
+          "spec_predicate": "accepted == 0",
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "cryptomsg.generated.data_column_sidecar.act_inject_gossip_build_invalid_data_column_sidecar_sig_invalid.c30a5bff",
+      "category": "cryptomsg",
+      "domain": "cryptomsg",
+      "surface": "data_column_sidecar",
+      "probe": "act_inject_gossip_build_invalid_data_column_sidecar_sig_invalid",
+      "rule_ids": [
+        "DATA_COLUMN_SIDECAR-REJECT-b049ffd8"
+      ],
+      "transition": {
+        "from": "CryptoReady",
+        "to": "CryptoSent",
+        "label": "stateless_data_column_sidecar_act_inject_gossip_build_invalid_data_column_sidecar_sig_invalid_c30a5bff",
+        "weight": 10,
+        "description": "generated stateless probe for DATA_COLUMN_SIDECAR-REJECT-b049ffd8",
+        "condition_desc": "when not bls.Verify(proposer.pubkey, signing_root, sidecar.signed_block_header.signature)",
+        "tags": [
+          "conditional"
+        ],
+        "spec_refs": [
+          "DATA_COLUMN_SIDECAR-REJECT-b049ffd8"
+        ],
+        "action": {
+          "type": "ActInjectGossip",
+          "protocol": "data_column_sidecar_0",
+          "payload": {
+            "kind": "builder",
+            "wrap": "raw",
+            "name": "buildInvalidDataColumnSidecarSigInvalid"
+          }
+        },
+        "guard": {
+          "fork_gte": "fulu"
+        },
+        "oracle": {
+          "differential": true,
+          "expected": "REJECT",
+          "must_not": [
+            "CRASH",
+            "ACCEPT"
+          ],
+          "spec_predicate": "accepted == 0",
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "cryptomsg.generated.data_column_sidecar.act_inject_gossip_build_invalid_data_column_sidecar_slot_future.e09d58f6",
+      "category": "cryptomsg",
+      "domain": "cryptomsg",
+      "surface": "data_column_sidecar",
+      "probe": "act_inject_gossip_build_invalid_data_column_sidecar_slot_future",
+      "rule_ids": [
+        "DATA_COLUMN_SIDECAR-IGNORE-8cf6775b"
+      ],
+      "transition": {
+        "from": "CryptoReady",
+        "to": "CryptoSent",
+        "label": "stateless_data_column_sidecar_act_inject_gossip_build_invalid_data_column_sidecar_slot_future_e09d58f6",
+        "weight": 10,
+        "description": "generated stateless probe for DATA_COLUMN_SIDECAR-IGNORE-8cf6775b",
+        "condition_desc": "when is_future_slot(store, block_header.slot, current_time_ms)",
+        "tags": [
+          "conditional"
+        ],
+        "spec_refs": [
+          "DATA_COLUMN_SIDECAR-IGNORE-8cf6775b"
+        ],
+        "action": {
+          "type": "ActInjectGossip",
+          "protocol": "data_column_sidecar_0",
+          "payload": {
+            "kind": "builder",
+            "wrap": "raw",
+            "name": "buildInvalidDataColumnSidecarSlotFuture"
+          }
+        },
+        "guard": {
+          "fork_gte": "fulu"
+        },
+        "oracle": {
+          "differential": true,
+          "expected": "REJECT",
+          "must_not": [
+            "CRASH",
+            "ACCEPT"
+          ],
+          "spec_predicate": "accepted == 0",
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "cryptomsg.generated.data_column_sidecar.act_inject_gossip_build_valid_data_column_sidecar.0b38f41c",
+      "category": "cryptomsg",
+      "domain": "cryptomsg",
+      "surface": "data_column_sidecar",
+      "probe": "act_inject_gossip_build_valid_data_column_sidecar",
+      "rule_ids": [
+        "DATA_COLUMN_SIDECAR-REJECT-c094c7ea"
+      ],
+      "transition": {
+        "from": "CryptoReady",
+        "to": "CryptoSent",
+        "label": "stateless_data_column_sidecar_act_inject_gossip_build_valid_data_column_sidecar_0b38f41c",
+        "weight": 10,
+        "description": "generated stateless probe for DATA_COLUMN_SIDECAR-REJECT-c094c7ea",
+        "condition_desc": "when compute_subnet_for_data_column_sidecar(sidecar.index) != subnet_id",
+        "tags": [
+          "conditional"
+        ],
+        "spec_refs": [
+          "DATA_COLUMN_SIDECAR-REJECT-c094c7ea"
+        ],
+        "action": {
+          "type": "ActInjectGossip",
+          "protocol": "data_column_sidecar_1",
+          "payload": {
+            "kind": "builder",
+            "wrap": "raw",
+            "name": "buildValidDataColumnSidecar"
+          }
+        },
+        "guard": {
+          "fork_gte": "fulu"
+        },
+        "oracle": {
+          "differential": true,
+          "expected": "REJECT",
+          "must_not": [
+            "CRASH",
+            "ACCEPT"
+          ],
+          "spec_predicate": "accepted == 0",
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "cryptomsg.generated.data_column_sidecar.act_inject_gossip_build_valid_data_column_sidecar.d7807ad2",
+      "category": "cryptomsg",
+      "domain": "cryptomsg",
+      "surface": "data_column_sidecar",
+      "probe": "act_inject_gossip_build_valid_data_column_sidecar",
+      "rule_ids": [
+        "DATA_COLUMN_SIDECAR-IGNORE-6478f02b",
+        "DATA_COLUMN_SIDECAR-IGNORE-80194614",
+        "DATA_COLUMN_SIDECAR-REJECT-5f6c65a0",
+        "DATA_COLUMN_SIDECAR-REJECT-f5bf199b",
+        "DATA_COLUMN_SIDECAR-REJECT-fb4868ac"
+      ],
+      "transition": {
+        "from": "CryptoReady",
+        "to": "CryptoSent",
+        "label": "stateless_data_column_sidecar_act_inject_gossip_build_valid_data_column_sidecar_d7807ad2",
+        "weight": 10,
+        "description": "generated stateless probe for DATA_COLUMN_SIDECAR-IGNORE-6478f02b, DATA_COLUMN_SIDECAR-IGNORE-80194614, DATA_COLUMN_SIDECAR-REJECT-5f6c65a0, DATA_COLUMN_SIDECAR-REJECT-f5bf199b, DATA_COLUMN_SIDECAR-REJECT-fb4868ac",
+        "condition_desc": "when block_header.slot \u003c= finalized_slot",
+        "tags": [
+          "conditional"
+        ],
+        "spec_refs": [
+          "DATA_COLUMN_SIDECAR-IGNORE-6478f02b",
+          "DATA_COLUMN_SIDECAR-IGNORE-80194614",
+          "DATA_COLUMN_SIDECAR-REJECT-5f6c65a0",
+          "DATA_COLUMN_SIDECAR-REJECT-f5bf199b",
+          "DATA_COLUMN_SIDECAR-REJECT-fb4868ac"
+        ],
+        "action": {
+          "type": "ActInjectGossip",
+          "protocol": "data_column_sidecar_0",
+          "payload": {
+            "kind": "builder",
+            "wrap": "raw",
+            "name": "buildValidDataColumnSidecar"
+          }
+        },
+        "guard": {
+          "fork_gte": "fulu"
+        },
+        "oracle": {
+          "differential": true
+        }
+      }
+    },
+    {
+      "id": "cryptomsg.generated.proposer_slashing.act_inject_gossip_build_invalid_proposer_slashing_field_equality.b6c1f974",
+      "category": "cryptomsg",
+      "domain": "cryptomsg",
+      "surface": "proposer_slashing",
+      "probe": "act_inject_gossip_build_invalid_proposer_slashing_field_equality",
+      "rule_ids": [
+        "PROPOSER_SLASHING-REJECT-1248d8f2",
+        "PROPOSER_SLASHING-REJECT-54d620b6",
+        "PROPOSER_SLASHING-REJECT-bb7fb86d",
+        "PROPOSER_SLASHING-REJECT-be80525c"
+      ],
+      "transition": {
+        "from": "CryptoReady",
+        "to": "CryptoSent",
+        "label": "stateless_proposer_slashing_act_inject_gossip_build_invalid_proposer_slashing_field_equality_b6c1f974",
+        "weight": 10,
+        "description": "generated stateless probe for PROPOSER_SLASHING-REJECT-1248d8f2, PROPOSER_SLASHING-REJECT-54d620b6, PROPOSER_SLASHING-REJECT-bb7fb86d, PROPOSER_SLASHING-REJECT-be80525c",
+        "condition_desc": "when header_1 == header_2",
+        "tags": [
+          "conditional"
+        ],
+        "spec_refs": [
+          "PROPOSER_SLASHING-REJECT-1248d8f2",
+          "PROPOSER_SLASHING-REJECT-54d620b6",
+          "PROPOSER_SLASHING-REJECT-bb7fb86d",
+          "PROPOSER_SLASHING-REJECT-be80525c"
+        ],
+        "action": {
+          "type": "ActInjectGossip",
+          "protocol": "proposer_slashing",
+          "payload": {
+            "kind": "builder",
+            "wrap": "raw",
+            "name": "buildInvalidProposerSlashingFieldEquality"
+          }
+        },
+        "oracle": {
+          "differential": true,
+          "expected": "REJECT",
+          "must_not": [
+            "CRASH",
+            "ACCEPT"
+          ],
+          "spec_predicate": "accepted == 0",
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "cryptomsg.generated.proposer_slashing.act_inject_gossip_build_invalid_proposer_slashing_index_oob.85c194b2",
+      "category": "cryptomsg",
+      "domain": "cryptomsg",
+      "surface": "proposer_slashing",
+      "probe": "act_inject_gossip_build_invalid_proposer_slashing_index_oob",
+      "rule_ids": [
+        "PROPOSER_SLASHING-IGNORE-a4a13783",
+        "PROPOSER_SLASHING-REJECT-4df28963"
+      ],
+      "transition": {
+        "from": "CryptoReady",
+        "to": "CryptoSent",
+        "label": "stateless_proposer_slashing_act_inject_gossip_build_invalid_proposer_slashing_index_oob_85c194b2",
+        "weight": 10,
+        "description": "generated stateless probe for PROPOSER_SLASHING-IGNORE-a4a13783, PROPOSER_SLASHING-REJECT-4df28963",
+        "condition_desc": "when proposer_index in seen.proposer_slashing_indices",
+        "tags": [
+          "conditional"
+        ],
+        "spec_refs": [
+          "PROPOSER_SLASHING-IGNORE-a4a13783",
+          "PROPOSER_SLASHING-REJECT-4df28963"
+        ],
+        "action": {
+          "type": "ActInjectGossip",
+          "protocol": "proposer_slashing",
+          "payload": {
+            "kind": "builder",
+            "wrap": "raw",
+            "name": "buildInvalidProposerSlashingIndexOob"
+          }
+        },
+        "oracle": {
+          "differential": true,
+          "expected": "REJECT",
+          "must_not": [
+            "CRASH",
+            "ACCEPT"
+          ],
+          "spec_predicate": "accepted == 0",
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "cryptomsg.generated.proposer_slashing.act_inject_gossip_build_invalid_proposer_slashing_sig_invalid.9ed226b2",
+      "category": "cryptomsg",
+      "domain": "cryptomsg",
+      "surface": "proposer_slashing",
+      "probe": "act_inject_gossip_build_invalid_proposer_slashing_sig_invalid",
+      "rule_ids": [
+        "PROPOSER_SLASHING-REJECT-4e6c2331"
+      ],
+      "transition": {
+        "from": "CryptoReady",
+        "to": "CryptoSent",
+        "label": "stateless_proposer_slashing_act_inject_gossip_build_invalid_proposer_slashing_sig_invalid_9ed226b2",
+        "weight": 10,
+        "description": "generated stateless probe for PROPOSER_SLASHING-REJECT-4e6c2331",
+        "condition_desc": "when not bls.Verify(proposer.pubkey, signing_root, signed_header.signature)",
+        "tags": [
+          "conditional"
+        ],
+        "spec_refs": [
+          "PROPOSER_SLASHING-REJECT-4e6c2331"
+        ],
+        "action": {
+          "type": "ActInjectGossip",
+          "protocol": "proposer_slashing",
+          "payload": {
+            "kind": "builder",
+            "wrap": "raw",
+            "name": "buildInvalidProposerSlashingSigInvalid"
+          }
+        },
+        "oracle": {
+          "differential": true,
+          "expected": "REJECT",
+          "must_not": [
+            "CRASH",
+            "ACCEPT"
+          ],
+          "spec_predicate": "accepted == 0",
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "cryptomsg.generated.sync_committee_contribution_and_proof.act_inject_gossip_build_invalid_sync_committee_contribution_and_proof_index_oob.3ff2bb16",
+      "category": "cryptomsg",
+      "domain": "cryptomsg",
+      "surface": "sync_committee_contribution_and_proof",
+      "probe": "act_inject_gossip_build_invalid_sync_committee_contribution_and_proof_index_oob",
+      "rule_ids": [
+        "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-IGNORE-85bd91b0",
+        "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-IGNORE-db9ed2c2",
+        "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-1d325814",
+        "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-5bdbca46"
+      ],
+      "transition": {
+        "from": "CryptoReady",
+        "to": "CryptoSent",
+        "label": "stateless_sync_committee_contribution_and_proof_act_inject_gossip_build_invalid_sync_committee_contribution_and_proof_index_oob_3ff2bb16",
+        "weight": 10,
+        "description": "generated stateless probe for SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-IGNORE-85bd91b0, SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-IGNORE-db9ed2c2, SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-1d325814, SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-5bdbca46",
+        "condition_desc": "when is_non_strict_superset(seen_bits, contribution_bits)",
+        "tags": [
+          "conditional"
+        ],
+        "spec_refs": [
+          "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-IGNORE-85bd91b0",
+          "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-IGNORE-db9ed2c2",
+          "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-1d325814",
+          "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-5bdbca46"
+        ],
+        "action": {
+          "type": "ActInjectGossip",
+          "protocol": "sync_committee_contribution_and_proof",
+          "payload": {
+            "kind": "builder",
+            "wrap": "raw",
+            "name": "buildInvalidSyncCommitteeContributionAndProofIndexOob"
+          }
+        },
+        "guard": {
+          "fork_gte": "altair"
+        },
+        "oracle": {
+          "differential": true,
+          "expected": "REJECT",
+          "must_not": [
+            "CRASH",
+            "ACCEPT"
+          ],
+          "spec_predicate": "accepted == 0",
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "cryptomsg.generated.sync_committee_contribution_and_proof.act_inject_gossip_build_invalid_sync_committee_contribution_and_proof_length_limit.6772d5a6",
+      "category": "cryptomsg",
+      "domain": "cryptomsg",
+      "surface": "sync_committee_contribution_and_proof",
+      "probe": "act_inject_gossip_build_invalid_sync_committee_contribution_and_proof_length_limit",
+      "rule_ids": [
+        "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-5d5257a1"
+      ],
+      "transition": {
+        "from": "CryptoReady",
+        "to": "CryptoSent",
+        "label": "stateless_sync_committee_contribution_and_proof_act_inject_gossip_build_invalid_sync_committee_contribution_and_proof_length_limit_6772d5a6",
+        "weight": 10,
+        "description": "generated stateless probe for SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-5d5257a1",
+        "condition_desc": "when not any(contribution.aggregation_bits)",
+        "tags": [
+          "conditional"
+        ],
+        "spec_refs": [
+          "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-5d5257a1"
+        ],
+        "action": {
+          "type": "ActInjectGossip",
+          "protocol": "sync_committee_contribution_and_proof",
+          "payload": {
+            "kind": "builder",
+            "wrap": "raw",
+            "name": "buildInvalidSyncCommitteeContributionAndProofLengthLimit"
+          }
+        },
+        "guard": {
+          "fork_gte": "altair"
+        },
+        "oracle": {
+          "differential": true,
+          "expected": "REJECT",
+          "must_not": [
+            "CRASH",
+            "ACCEPT"
+          ],
+          "spec_predicate": "accepted == 0",
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "cryptomsg.generated.sync_committee_contribution_and_proof.act_inject_gossip_build_invalid_sync_committee_contribution_and_proof_sig_invalid.80e42129",
+      "category": "cryptomsg",
+      "domain": "cryptomsg",
+      "surface": "sync_committee_contribution_and_proof",
+      "probe": "act_inject_gossip_build_invalid_sync_committee_contribution_and_proof_sig_invalid",
+      "rule_ids": [
+        "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-08097fc1",
+        "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-52168aa3",
+        "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-5448167e",
+        "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-5dd820ac"
+      ],
+      "transition": {
+        "from": "CryptoReady",
+        "to": "CryptoSent",
+        "label": "stateless_sync_committee_contribution_and_proof_act_inject_gossip_build_invalid_sync_committee_contribution_and_proof_sig_invalid_80e42129",
+        "weight": 10,
+        "description": "generated stateless probe for SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-08097fc1, SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-52168aa3, SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-5448167e, SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-5dd820ac",
+        "condition_desc": "when not bls.Verify(aggregator_pubkey, signing_root, signed_contribution_and_proof.signature)",
+        "tags": [
+          "conditional"
+        ],
+        "spec_refs": [
+          "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-08097fc1",
+          "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-52168aa3",
+          "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-5448167e",
+          "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-5dd820ac"
+        ],
+        "action": {
+          "type": "ActInjectGossip",
+          "protocol": "sync_committee_contribution_and_proof",
+          "payload": {
+            "kind": "builder",
+            "wrap": "raw",
+            "name": "buildInvalidSyncCommitteeContributionAndProofSigInvalid"
+          }
+        },
+        "guard": {
+          "fork_gte": "altair"
+        },
+        "oracle": {
+          "differential": true,
+          "expected": "REJECT",
+          "must_not": [
+            "CRASH",
+            "ACCEPT"
+          ],
+          "spec_predicate": "accepted == 0",
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "cryptomsg.generated.sync_committee_contribution_and_proof.act_inject_gossip_build_invalid_sync_committee_contribution_and_proof_slot_epoch_range.9479204d",
+      "category": "cryptomsg",
+      "domain": "cryptomsg",
+      "surface": "sync_committee_contribution_and_proof",
+      "probe": "act_inject_gossip_build_invalid_sync_committee_contribution_and_proof_slot_epoch_range",
+      "rule_ids": [
+        "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-IGNORE-908a6bf7"
+      ],
+      "transition": {
+        "from": "CryptoReady",
+        "to": "CryptoSent",
+        "label": "stateless_sync_committee_contribution_and_proof_act_inject_gossip_build_invalid_sync_committee_contribution_and_proof_slot_epoch_range_9479204d",
+        "weight": 10,
+        "description": "generated stateless probe for SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-IGNORE-908a6bf7",
+        "condition_desc": "when not is_current_slot(store, contribution.slot, current_time_ms)",
+        "tags": [
+          "conditional"
+        ],
+        "spec_refs": [
+          "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-IGNORE-908a6bf7"
+        ],
+        "action": {
+          "type": "ActInjectGossip",
+          "protocol": "sync_committee_contribution_and_proof",
+          "payload": {
+            "kind": "builder",
+            "wrap": "raw",
+            "name": "buildInvalidSyncCommitteeContributionAndProofSlotEpochRange"
+          }
+        },
+        "guard": {
+          "fork_gte": "altair"
+        },
+        "oracle": {
+          "differential": true,
+          "expected": "REJECT",
+          "must_not": [
+            "CRASH",
+            "ACCEPT"
+          ],
+          "spec_predicate": "accepted == 0",
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "cryptomsg.generated.sync_committee_message.act_inject_gossip_build_invalid_sync_committee_message_index_oob.31dc970c",
+      "category": "cryptomsg",
+      "domain": "cryptomsg",
+      "surface": "sync_committee_message",
+      "probe": "act_inject_gossip_build_invalid_sync_committee_message_index_oob",
+      "rule_ids": [
+        "SYNC_COMMITTEE_MESSAGE-REJECT-3aa5be35"
+      ],
+      "transition": {
+        "from": "CryptoReady",
+        "to": "CryptoSent",
+        "label": "stateless_sync_committee_message_act_inject_gossip_build_invalid_sync_committee_message_index_oob_31dc970c",
+        "weight": 10,
+        "description": "generated stateless probe for SYNC_COMMITTEE_MESSAGE-REJECT-3aa5be35",
+        "condition_desc": "when sync_committee_message.validator_index \u003e= len(state.validators)",
+        "tags": [
+          "conditional"
+        ],
+        "spec_refs": [
+          "SYNC_COMMITTEE_MESSAGE-REJECT-3aa5be35"
+        ],
+        "action": {
+          "type": "ActInjectGossip",
+          "protocol": "sync_committee_0",
+          "payload": {
+            "kind": "builder",
+            "wrap": "raw",
+            "name": "buildInvalidSyncCommitteeMessageIndexOob"
+          }
+        },
+        "guard": {
+          "fork_gte": "altair"
+        },
+        "oracle": {
+          "differential": true,
+          "expected": "REJECT",
+          "must_not": [
+            "CRASH",
+            "ACCEPT"
+          ],
+          "spec_predicate": "accepted == 0",
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "cryptomsg.generated.sync_committee_message.act_inject_gossip_build_invalid_sync_committee_message_sig_invalid.e167668f",
+      "category": "cryptomsg",
+      "domain": "cryptomsg",
+      "surface": "sync_committee_message",
+      "probe": "act_inject_gossip_build_invalid_sync_committee_message_sig_invalid",
+      "rule_ids": [
+        "SYNC_COMMITTEE_MESSAGE-REJECT-cc9547b7"
+      ],
+      "transition": {
+        "from": "CryptoReady",
+        "to": "CryptoSent",
+        "label": "stateless_sync_committee_message_act_inject_gossip_build_invalid_sync_committee_message_sig_invalid_e167668f",
+        "weight": 10,
+        "description": "generated stateless probe for SYNC_COMMITTEE_MESSAGE-REJECT-cc9547b7",
+        "condition_desc": "when not bls.Verify(validator.pubkey, signing_root, sync_committee_message.signature)",
+        "tags": [
+          "conditional"
+        ],
+        "spec_refs": [
+          "SYNC_COMMITTEE_MESSAGE-REJECT-cc9547b7"
+        ],
+        "action": {
+          "type": "ActInjectGossip",
+          "protocol": "sync_committee_0",
+          "payload": {
+            "kind": "builder",
+            "wrap": "raw",
+            "name": "buildInvalidSyncCommitteeMessageSigInvalid"
+          }
+        },
+        "guard": {
+          "fork_gte": "altair"
+        },
+        "oracle": {
+          "differential": true,
+          "expected": "REJECT",
+          "must_not": [
+            "CRASH",
+            "ACCEPT"
+          ],
+          "spec_predicate": "accepted == 0",
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "cryptomsg.generated.sync_committee_message.act_inject_gossip_build_invalid_sync_committee_message_slot_epoch_range.bac90b84",
+      "category": "cryptomsg",
+      "domain": "cryptomsg",
+      "surface": "sync_committee_message",
+      "probe": "act_inject_gossip_build_invalid_sync_committee_message_slot_epoch_range",
+      "rule_ids": [
+        "SYNC_COMMITTEE_MESSAGE-IGNORE-dddd9a14"
+      ],
+      "transition": {
+        "from": "CryptoReady",
+        "to": "CryptoSent",
+        "label": "stateless_sync_committee_message_act_inject_gossip_build_invalid_sync_committee_message_slot_epoch_range_bac90b84",
+        "weight": 10,
+        "description": "generated stateless probe for SYNC_COMMITTEE_MESSAGE-IGNORE-dddd9a14",
+        "condition_desc": "when not is_current_slot(store, sync_committee_message.slot, current_time_ms)",
+        "tags": [
+          "conditional"
+        ],
+        "spec_refs": [
+          "SYNC_COMMITTEE_MESSAGE-IGNORE-dddd9a14"
+        ],
+        "action": {
+          "type": "ActInjectGossip",
+          "protocol": "sync_committee_0",
+          "payload": {
+            "kind": "builder",
+            "wrap": "raw",
+            "name": "buildInvalidSyncCommitteeMessageSlotEpochRange"
+          }
+        },
+        "guard": {
+          "fork_gte": "altair"
+        },
+        "oracle": {
+          "differential": true,
+          "expected": "REJECT",
+          "must_not": [
+            "CRASH",
+            "ACCEPT"
+          ],
+          "spec_predicate": "accepted == 0",
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "cryptomsg.generated.sync_committee_message.act_inject_gossip_build_valid_sync_committee_message.eaa5fd2b",
+      "category": "cryptomsg",
+      "domain": "cryptomsg",
+      "surface": "sync_committee_message",
+      "probe": "act_inject_gossip_build_valid_sync_committee_message",
+      "rule_ids": [
+        "SYNC_COMMITTEE_MESSAGE-REJECT-c428cd4e"
+      ],
+      "transition": {
+        "from": "CryptoReady",
+        "to": "CryptoSent",
+        "label": "stateless_sync_committee_message_act_inject_gossip_build_valid_sync_committee_message_eaa5fd2b",
+        "weight": 10,
+        "description": "generated stateless probe for SYNC_COMMITTEE_MESSAGE-REJECT-c428cd4e",
+        "condition_desc": "when subnet_id not in valid_subnets",
+        "tags": [
+          "conditional"
+        ],
+        "spec_refs": [
+          "SYNC_COMMITTEE_MESSAGE-REJECT-c428cd4e"
+        ],
+        "action": {
+          "type": "ActInjectGossip",
+          "protocol": "sync_committee_0",
+          "payload": {
+            "kind": "builder",
+            "wrap": "raw",
+            "name": "buildValidSyncCommitteeMessage"
+          }
+        },
+        "guard": {
+          "fork_gte": "altair"
+        },
+        "oracle": {
+          "differential": true
+        }
+      }
+    },
+    {
+      "id": "cryptomsg.generated.voluntary_exit.act_inject_gossip_build_invalid_voluntary_exit_index_oob.3bc09832",
+      "category": "cryptomsg",
+      "domain": "cryptomsg",
+      "surface": "voluntary_exit",
+      "probe": "act_inject_gossip_build_invalid_voluntary_exit_index_oob",
+      "rule_ids": [
+        "VOLUNTARY_EXIT-REJECT-3aa5be35"
+      ],
+      "transition": {
+        "from": "CryptoReady",
+        "to": "CryptoSent",
+        "label": "stateless_voluntary_exit_act_inject_gossip_build_invalid_voluntary_exit_index_oob_3bc09832",
+        "weight": 10,
+        "description": "generated stateless probe for VOLUNTARY_EXIT-REJECT-3aa5be35",
+        "condition_desc": "when validator_index \u003e= len(state.validators)",
+        "tags": [
+          "conditional"
+        ],
+        "spec_refs": [
+          "VOLUNTARY_EXIT-REJECT-3aa5be35"
+        ],
+        "action": {
+          "type": "ActInjectGossip",
+          "protocol": "voluntary_exit",
+          "payload": {
+            "kind": "builder",
+            "wrap": "raw",
+            "name": "buildInvalidVoluntaryExitIndexOob"
+          }
+        },
+        "oracle": {
+          "differential": true,
+          "expected": "REJECT",
+          "must_not": [
+            "CRASH",
+            "ACCEPT"
+          ],
+          "spec_predicate": "accepted == 0",
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "cryptomsg.generated.voluntary_exit.act_inject_gossip_build_invalid_voluntary_exit_sig_invalid.b5a5c420",
+      "category": "cryptomsg",
+      "domain": "cryptomsg",
+      "surface": "voluntary_exit",
+      "probe": "act_inject_gossip_build_invalid_voluntary_exit_sig_invalid",
+      "rule_ids": [
+        "VOLUNTARY_EXIT-REJECT-cc9547b7"
+      ],
+      "transition": {
+        "from": "CryptoReady",
+        "to": "CryptoSent",
+        "label": "stateless_voluntary_exit_act_inject_gossip_build_invalid_voluntary_exit_sig_invalid_b5a5c420",
+        "weight": 10,
+        "description": "generated stateless probe for VOLUNTARY_EXIT-REJECT-cc9547b7",
+        "condition_desc": "when not bls.Verify(validator.pubkey, signing_root, signed_voluntary_exit.signature)",
+        "tags": [
+          "conditional"
+        ],
+        "spec_refs": [
+          "VOLUNTARY_EXIT-REJECT-cc9547b7"
+        ],
+        "action": {
+          "type": "ActInjectGossip",
+          "protocol": "voluntary_exit",
+          "payload": {
+            "kind": "builder",
+            "wrap": "raw",
+            "name": "buildInvalidVoluntaryExitSigInvalid"
+          }
+        },
+        "oracle": {
+          "differential": true,
+          "expected": "REJECT",
+          "must_not": [
+            "CRASH",
+            "ACCEPT"
+          ],
+          "spec_predicate": "accepted == 0",
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "cryptomsg.generated.voluntary_exit.act_inject_gossip_build_invalid_voluntary_exit_slot_future.32c8209c",
+      "category": "cryptomsg",
+      "domain": "cryptomsg",
+      "surface": "voluntary_exit",
+      "probe": "act_inject_gossip_build_invalid_voluntary_exit_slot_future",
+      "rule_ids": [
+        "VOLUNTARY_EXIT-IGNORE-a324eca6"
+      ],
+      "transition": {
+        "from": "CryptoReady",
+        "to": "CryptoSent",
+        "label": "stateless_voluntary_exit_act_inject_gossip_build_invalid_voluntary_exit_slot_future_32c8209c",
+        "weight": 10,
+        "description": "generated stateless probe for VOLUNTARY_EXIT-IGNORE-a324eca6",
+        "condition_desc": "when is_future_epoch(store, voluntary_exit.epoch, current_time_ms)",
+        "tags": [
+          "conditional"
+        ],
+        "spec_refs": [
+          "VOLUNTARY_EXIT-IGNORE-a324eca6"
+        ],
+        "action": {
+          "type": "ActInjectGossip",
+          "protocol": "voluntary_exit",
+          "payload": {
+            "kind": "builder",
+            "wrap": "raw",
+            "name": "buildInvalidVoluntaryExitSlotFuture"
+          }
+        },
+        "oracle": {
+          "differential": true,
+          "expected": "REJECT",
+          "must_not": [
+            "CRASH",
+            "ACCEPT"
+          ],
+          "spec_predicate": "accepted == 0",
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "cryptomsg.generated.voluntary_exit.act_inject_gossip_build_valid_voluntary_exit.11d03ee8",
+      "category": "cryptomsg",
+      "domain": "cryptomsg",
+      "surface": "voluntary_exit",
+      "probe": "act_inject_gossip_build_valid_voluntary_exit",
+      "rule_ids": [
+        "VOLUNTARY_EXIT-REJECT-15cadc01",
+        "VOLUNTARY_EXIT-REJECT-f5f33715"
+      ],
+      "transition": {
+        "from": "CryptoReady",
+        "to": "CryptoSent",
+        "label": "stateless_voluntary_exit_act_inject_gossip_build_valid_voluntary_exit_11d03ee8",
+        "weight": 10,
+        "description": "generated stateless probe for VOLUNTARY_EXIT-REJECT-15cadc01, VOLUNTARY_EXIT-REJECT-f5f33715",
+        "condition_desc": "when not is_active_validator(validator, current_epoch)",
+        "tags": [
+          "conditional"
+        ],
+        "spec_refs": [
+          "VOLUNTARY_EXIT-REJECT-15cadc01",
+          "VOLUNTARY_EXIT-REJECT-f5f33715"
+        ],
+        "action": {
+          "type": "ActInjectGossip",
+          "protocol": "voluntary_exit",
+          "payload": {
+            "kind": "builder",
+            "wrap": "raw",
+            "name": "buildValidVoluntaryExit"
+          }
+        },
+        "oracle": {
+          "differential": true
+        }
+      }
+    },
+    {
+      "id": "discovery.generated.discovery.act_query_enr.a3fd9ab9",
+      "category": "discovery",
+      "domain": "discovery",
+      "surface": "discovery",
+      "probe": "act_query_enr",
+      "rule_ids": [
+        "PROSE-MAY-f46586f6"
+      ],
+      "transition": {
+        "from": "DiscBaseline",
+        "to": "DiscProbing",
+        "label": "stateless_discovery_act_query_enr_a3fd9ab9",
+        "weight": 2,
+        "description": "generated stateless probe for PROSE-MAY-f46586f6",
+        "spec_refs": [
+          "PROSE-MAY-f46586f6"
+        ],
+        "action": {
+          "type": "ActQueryENR"
+        },
+        "oracle": {
+          "differential": true,
+          "must_not": [
+            "CRASH"
+          ],
+          "strength": "MAY"
+        }
+      }
+    },
+    {
+      "id": "discovery.generated.discovery.act_query_enr.cc0155ea",
+      "category": "discovery",
+      "domain": "discovery",
+      "surface": "discovery",
+      "probe": "act_query_enr",
+      "rule_ids": [
+        "PROSE-MUST-9812f11c",
+        "PROSE-MUST-bdd581d1"
+      ],
+      "transition": {
+        "from": "DiscBaseline",
+        "to": "DiscProbing",
+        "label": "stateless_discovery_act_query_enr_cc0155ea",
+        "weight": 10,
+        "description": "generated stateless probe for PROSE-MUST-9812f11c, PROSE-MUST-bdd581d1",
+        "spec_refs": [
+          "PROSE-MUST-9812f11c",
+          "PROSE-MUST-bdd581d1"
+        ],
+        "action": {
+          "type": "ActQueryENR"
+        },
+        "oracle": {
+          "differential": true,
+          "must_not": [
+            "CRASH"
+          ],
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "discovery.generated.discovery.act_verify_enrbehavior_attnets.87897b87",
+      "category": "discovery",
+      "domain": "discovery",
+      "surface": "discovery",
+      "probe": "act_verify_enrbehavior_attnets",
+      "rule_ids": [
+        "PROSE-MUST-0648388b"
+      ],
+      "transition": {
+        "from": "DiscBaseline",
+        "to": "DiscProbing",
+        "label": "stateless_discovery_act_verify_enrbehavior_attnets_87897b87",
+        "weight": 10,
+        "description": "generated stateless probe for PROSE-MUST-0648388b",
+        "condition_desc": "when a node's MetaData.attnets has any non-zero bit",
+        "tags": [
+          "conditional"
+        ],
+        "spec_refs": [
+          "PROSE-MUST-0648388b"
+        ],
+        "action": {
+          "type": "ActVerifyENRBehavior",
+          "protocol": "attnets"
+        },
+        "oracle": {
+          "differential": true,
+          "must_not": [
+            "CRASH"
+          ],
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "discovery.generated.discovery.act_verify_enrbehavior_attnets.a9b24dfb",
+      "category": "discovery",
+      "domain": "discovery",
+      "surface": "discovery",
+      "probe": "act_verify_enrbehavior_attnets",
+      "rule_ids": [
+        "PROSE-MAY-cd1cb27a"
+      ],
+      "transition": {
+        "from": "DiscBaseline",
+        "to": "DiscProbing",
+        "label": "stateless_discovery_act_verify_enrbehavior_attnets_a9b24dfb",
+        "weight": 2,
+        "description": "generated stateless probe for PROSE-MAY-cd1cb27a",
+        "condition_desc": "when a node's MetaData.attnets is composed of all zeros",
+        "tags": [
+          "conditional"
+        ],
+        "spec_refs": [
+          "PROSE-MAY-cd1cb27a"
+        ],
+        "action": {
+          "type": "ActVerifyENRBehavior",
+          "protocol": "attnets"
+        },
+        "oracle": {
+          "differential": true,
+          "must_not": [
+            "CRASH"
+          ],
+          "strength": "MAY"
+        }
+      }
+    },
+    {
+      "id": "discovery.generated.discovery.act_verify_enrbehavior_nfd.e9386c37",
+      "category": "discovery",
+      "domain": "discovery",
+      "surface": "discovery",
+      "probe": "act_verify_enrbehavior_nfd",
+      "rule_ids": [
+        "PROSE-MUST-eb253094"
+      ],
+      "transition": {
+        "from": "DiscBaseline",
+        "to": "DiscProbing",
+        "label": "stateless_discovery_act_verify_enrbehavior_nfd_e9386c37",
+        "weight": 10,
+        "description": "generated stateless probe for PROSE-MUST-eb253094",
+        "condition_desc": "when discovering and interfacing with peers",
+        "tags": [
+          "conditional"
+        ],
+        "spec_refs": [
+          "PROSE-MUST-eb253094"
+        ],
+        "action": {
+          "type": "ActVerifyENRBehavior",
+          "protocol": "nfd"
+        },
+        "guard": {
+          "fork_gte": "fulu"
+        },
+        "oracle": {
+          "differential": true,
+          "must_not": [
+            "CRASH"
+          ],
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "gossipsub.generated.data_column_sidecar_subnet_id.act_inject_gossip_build_invalid_data_column_sidecar_kzg_proof.52c2148e",
+      "category": "gossipsub",
+      "domain": "gossip",
+      "surface": "data_column_sidecar_{subnet_id}",
+      "probe": "act_inject_gossip_build_invalid_data_column_sidecar_kzg_proof",
+      "rule_ids": [
+        "DATA_COLUMN_SIDECAR_SUBNET_ID-MUST-aa0e3ac7"
+      ],
+      "transition": {
+        "from": "GossipReady",
+        "to": "GossipSent",
+        "label": "stateless_data_column_sidecar_subnet_id_act_inject_gossip_build_invalid_data_column_sidecar_kzg_proof_52c2148e",
+        "weight": 10,
+        "description": "generated stateless probe for DATA_COLUMN_SIDECAR_SUBNET_ID-MUST-aa0e3ac7",
+        "spec_refs": [
+          "DATA_COLUMN_SIDECAR_SUBNET_ID-MUST-aa0e3ac7"
+        ],
+        "action": {
+          "type": "ActInjectGossip",
+          "protocol": "data_column_sidecar_0",
+          "payload": {
+            "kind": "builder",
+            "wrap": "raw",
+            "name": "buildInvalidDataColumnSidecarKzgProof"
+          }
+        },
+        "guard": {
+          "fork_gte": "fulu"
+        },
+        "oracle": {
+          "differential": true,
+          "expected": "REJECT",
+          "must_not": [
+            "CRASH",
+            "ACCEPT"
+          ],
+          "spec_predicate": "accepted == 0",
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "gossipsub.generated.partial_data_column_sidecar.act_inject_gossip_build_invalid_partial_data_column_empty.daf77800",
+      "category": "gossipsub",
+      "domain": "gossip",
+      "surface": "partial_data_column_sidecar",
+      "probe": "act_inject_gossip_build_invalid_partial_data_column_empty",
+      "rule_ids": [
+        "PARTIAL_DATA_COLUMN_SIDECAR-REJECT-47e00126"
+      ],
+      "transition": {
+        "from": "GossipReady",
+        "to": "GossipSent",
+        "label": "stateless_partial_data_column_sidecar_act_inject_gossip_build_invalid_partial_data_column_empty_daf77800",
+        "weight": 10,
+        "description": "generated stateless probe for PARTIAL_DATA_COLUMN_SIDECAR-REJECT-47e00126",
+        "condition_desc": "when not (has_header or has_cells)",
+        "tags": [
+          "conditional"
+        ],
+        "spec_refs": [
+          "PARTIAL_DATA_COLUMN_SIDECAR-REJECT-47e00126"
+        ],
+        "action": {
+          "type": "ActInjectGossip",
+          "protocol": "data_column_sidecar_0",
+          "payload": {
+            "kind": "builder",
+            "wrap": "raw",
+            "name": "buildInvalidPartialDataColumnEmpty"
+          }
+        },
+        "guard": {
+          "fork_gte": "fulu"
+        },
+        "oracle": {
+          "differential": true,
+          "expected": "REJECT",
+          "must_not": [
+            "CRASH",
+            "ACCEPT"
+          ],
+          "spec_predicate": "accepted == 0",
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "gossipsub.generated.partial_data_column_sidecar.act_inject_gossip_build_invalid_partial_data_column_header_no_commitments.630386ce",
+      "category": "gossipsub",
+      "domain": "gossip",
+      "surface": "partial_data_column_sidecar",
+      "probe": "act_inject_gossip_build_invalid_partial_data_column_header_no_commitments",
+      "rule_ids": [
+        "PARTIAL_DATA_COLUMN_SIDECAR-REJECT-023db612"
+      ],
+      "transition": {
+        "from": "GossipReady",
+        "to": "GossipSent",
+        "label": "stateless_partial_data_column_sidecar_act_inject_gossip_build_invalid_partial_data_column_header_no_commitments_630386ce",
+        "weight": 10,
+        "description": "generated stateless probe for PARTIAL_DATA_COLUMN_SIDECAR-REJECT-023db612",
+        "condition_desc": "when has_header and len(header.kzg_commitments) == 0",
+        "tags": [
+          "conditional"
+        ],
+        "spec_refs": [
+          "PARTIAL_DATA_COLUMN_SIDECAR-REJECT-023db612"
+        ],
+        "action": {
+          "type": "ActInjectGossip",
+          "protocol": "data_column_sidecar_0",
+          "payload": {
+            "kind": "builder",
+            "wrap": "raw",
+            "name": "buildInvalidPartialDataColumnHeaderNoCommitments"
+          }
+        },
+        "guard": {
+          "fork_gte": "fulu"
+        },
+        "oracle": {
+          "differential": true,
+          "expected": "REJECT",
+          "must_not": [
+            "CRASH",
+            "ACCEPT"
+          ],
+          "spec_predicate": "accepted == 0",
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "gossipsub.generated.partial_data_column_sidecar.act_inject_gossip_build_invalid_partial_data_column_sig_invalid.ee7c7330",
+      "category": "gossipsub",
+      "domain": "gossip",
+      "surface": "partial_data_column_sidecar",
+      "probe": "act_inject_gossip_build_invalid_partial_data_column_sig_invalid",
+      "rule_ids": [
+        "PARTIAL_DATA_COLUMN_SIDECAR-REJECT-84dab49d"
+      ],
+      "transition": {
+        "from": "GossipReady",
+        "to": "GossipSent",
+        "label": "stateless_partial_data_column_sidecar_act_inject_gossip_build_invalid_partial_data_column_sig_invalid_ee7c7330",
+        "weight": 10,
+        "description": "generated stateless probe for PARTIAL_DATA_COLUMN_SIDECAR-REJECT-84dab49d",
+        "condition_desc": "when has_header and not bls.Verify(proposer.pubkey, signing_root, header.signed_block_header.signature)",
+        "tags": [
+          "conditional"
+        ],
+        "spec_refs": [
+          "PARTIAL_DATA_COLUMN_SIDECAR-REJECT-84dab49d"
+        ],
+        "action": {
+          "type": "ActInjectGossip",
+          "protocol": "data_column_sidecar_0",
+          "payload": {
+            "kind": "builder",
+            "wrap": "raw",
+            "name": "buildInvalidPartialDataColumnSigInvalid"
+          }
+        },
+        "guard": {
+          "fork_gte": "fulu"
+        },
+        "oracle": {
+          "differential": true,
+          "must_not": [
+            "CRASH"
+          ],
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "gossipsub.generated.partial_data_column_sidecar.act_inject_gossip_build_invalid_partial_data_column_slot_future.e6347a91",
+      "category": "gossipsub",
+      "domain": "gossip",
+      "surface": "partial_data_column_sidecar",
+      "probe": "act_inject_gossip_build_invalid_partial_data_column_slot_future",
+      "rule_ids": [
+        "PARTIAL_DATA_COLUMN_SIDECAR-IGNORE-64fbc194",
+        "PARTIAL_DATA_COLUMN_SIDECAR-IGNORE-93b9b10e"
+      ],
+      "transition": {
+        "from": "GossipReady",
+        "to": "GossipSent",
+        "label": "stateless_partial_data_column_sidecar_act_inject_gossip_build_invalid_partial_data_column_slot_future_e6347a91",
+        "weight": 10,
+        "description": "generated stateless probe for PARTIAL_DATA_COLUMN_SIDECAR-IGNORE-64fbc194, PARTIAL_DATA_COLUMN_SIDECAR-IGNORE-93b9b10e",
+        "condition_desc": "when has_cells and is_future_slot(store, block_header.slot, current_time_ms)",
+        "tags": [
+          "conditional"
+        ],
+        "spec_refs": [
+          "PARTIAL_DATA_COLUMN_SIDECAR-IGNORE-64fbc194",
+          "PARTIAL_DATA_COLUMN_SIDECAR-IGNORE-93b9b10e"
+        ],
+        "action": {
+          "type": "ActInjectGossip",
+          "protocol": "data_column_sidecar_0",
+          "payload": {
+            "kind": "builder",
+            "wrap": "raw",
+            "name": "buildInvalidPartialDataColumnSlotFuture"
+          }
+        },
+        "guard": {
+          "fork_gte": "fulu"
+        },
+        "oracle": {
+          "differential": true,
+          "must_not": [
+            "CRASH"
+          ],
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "gossipsub.generated.partial_data_column_sidecar.act_inject_gossip_build_valid_partial_data_column_sidecar.885558d5",
+      "category": "gossipsub",
+      "domain": "gossip",
+      "surface": "partial_data_column_sidecar",
+      "probe": "act_inject_gossip_build_valid_partial_data_column_sidecar",
+      "rule_ids": [
+        "PARTIAL_DATA_COLUMN_SIDECAR-IGNORE-73fe21ca",
+        "PARTIAL_DATA_COLUMN_SIDECAR-IGNORE-e843ba36",
+        "PARTIAL_DATA_COLUMN_SIDECAR-REJECT-0a994b43",
+        "PARTIAL_DATA_COLUMN_SIDECAR-REJECT-1191de75",
+        "PARTIAL_DATA_COLUMN_SIDECAR-REJECT-4df28963",
+        "PARTIAL_DATA_COLUMN_SIDECAR-REJECT-819b18b6",
+        "PARTIAL_DATA_COLUMN_SIDECAR-REJECT-97a846a9",
+        "PARTIAL_DATA_COLUMN_SIDECAR-REJECT-a18636bd",
+        "PARTIAL_DATA_COLUMN_SIDECAR-REJECT-ba7e950d"
+      ],
+      "transition": {
+        "from": "GossipReady",
+        "to": "GossipSent",
+        "label": "stateless_partial_data_column_sidecar_act_inject_gossip_build_valid_partial_data_column_sidecar_885558d5",
+        "weight": 10,
+        "description": "generated stateless probe for PARTIAL_DATA_COLUMN_SIDECAR-IGNORE-73fe21ca, PARTIAL_DATA_COLUMN_SIDECAR-IGNORE-e843ba36, PARTIAL_DATA_COLUMN_SIDECAR-REJECT-0a994b43, PARTIAL_DATA_COLUMN_SIDECAR-REJECT-1191de75, PARTIAL_DATA_COLUMN_SIDECAR-REJECT-4df28963, PARTIAL_DATA_COLUMN_SIDECAR-REJECT-819b18b6, PARTIAL_DATA_COLUMN_SIDECAR-REJECT-97a846a9, PARTIAL_DATA_COLUMN_SIDECAR-REJECT-a18636bd, PARTIAL_DATA_COLUMN_SIDECAR-REJECT-ba7e950d",
+        "condition_desc": "when has_header and block_header.slot \u003c= finalized_slot",
+        "tags": [
+          "conditional"
+        ],
+        "spec_refs": [
+          "PARTIAL_DATA_COLUMN_SIDECAR-IGNORE-73fe21ca",
+          "PARTIAL_DATA_COLUMN_SIDECAR-IGNORE-e843ba36",
+          "PARTIAL_DATA_COLUMN_SIDECAR-REJECT-0a994b43",
+          "PARTIAL_DATA_COLUMN_SIDECAR-REJECT-1191de75",
+          "PARTIAL_DATA_COLUMN_SIDECAR-REJECT-4df28963",
+          "PARTIAL_DATA_COLUMN_SIDECAR-REJECT-819b18b6",
+          "PARTIAL_DATA_COLUMN_SIDECAR-REJECT-97a846a9",
+          "PARTIAL_DATA_COLUMN_SIDECAR-REJECT-a18636bd",
+          "PARTIAL_DATA_COLUMN_SIDECAR-REJECT-ba7e950d"
+        ],
+        "action": {
+          "type": "ActInjectGossip",
+          "protocol": "data_column_sidecar_0",
+          "payload": {
+            "kind": "builder",
+            "wrap": "raw",
+            "name": "buildValidPartialDataColumnSidecar"
+          }
+        },
+        "guard": {
+          "fork_gte": "fulu"
+        },
+        "oracle": {
+          "differential": true,
+          "must_not": [
+            "CRASH"
+          ],
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "reqresp.generated.eth2_beacon_chain_req_beacon_blocks_by_head_1_ssz_snappy.act_send_req_resp_build_blocks_by_head_head_root.33928414",
+      "category": "reqresp",
+      "domain": "reqresp",
+      "surface": "/eth2/beacon_chain/req/beacon_blocks_by_head/1/ssz_snappy",
+      "probe": "act_send_req_resp_build_blocks_by_head_head_root",
+      "rule_ids": [
+        "PROSE-MUST-f986db81"
+      ],
+      "transition": {
+        "from": "Connected",
+        "to": "Completed",
+        "label": "stateless_eth2_beacon_chain_req_beacon_blocks_by_head_1_ssz_snappy_act_send_req_resp_build_blocks_by_head_head_root_33928414",
+        "weight": 10,
+        "description": "generated stateless probe for PROSE-MUST-f986db81",
+        "spec_refs": [
+          "PROSE-MUST-f986db81"
+        ],
+        "action": {
+          "type": "ActSendReqResp",
+          "protocol": "/eth2/beacon_chain/req/beacon_blocks_by_head/1/ssz_snappy",
+          "payload": {
+            "kind": "builder",
+            "wrap": "ssz_snappy",
+            "name": "buildBlocksByHeadHeadRoot"
+          },
+          "timeout_ms": 10000
+        },
+        "guard": {
+          "fork_gte": "fulu"
+        },
+        "oracle": {
+          "differential": true,
+          "must_not": [
+            "CRASH"
+          ],
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "reqresp.generated.eth2_beacon_chain_req_beacon_blocks_by_head_1_ssz_snappy.act_send_req_resp_build_blocks_by_range_half_open.1894728d",
+      "category": "reqresp",
+      "domain": "reqresp",
+      "surface": "/eth2/beacon_chain/req/beacon_blocks_by_head/1/ssz_snappy",
+      "probe": "act_send_req_resp_build_blocks_by_range_half_open",
+      "rule_ids": [
+        "PROSE-MUST-caedc19d"
+      ],
+      "transition": {
+        "from": "Connected",
+        "to": "Completed",
+        "label": "stateless_eth2_beacon_chain_req_beacon_blocks_by_head_1_ssz_snappy_act_send_req_resp_build_blocks_by_range_half_open_1894728d",
+        "weight": 10,
+        "description": "generated stateless probe for PROSE-MUST-caedc19d",
+        "spec_refs": [
+          "PROSE-MUST-caedc19d"
+        ],
+        "action": {
+          "type": "ActSendReqResp",
+          "protocol": "/eth2/beacon_chain/req/beacon_blocks_by_range/2/ssz_snappy",
+          "payload": {
+            "kind": "builder",
+            "wrap": "ssz_snappy",
+            "name": "buildBlocksByRangeHalfOpen"
+          },
+          "timeout_ms": 5000
+        },
+        "guard": {
+          "fork_gte": "fulu"
+        },
+        "oracle": {
+          "differential": true,
+          "must_not": [
+            "CRASH"
+          ],
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "reqresp.generated.eth2_beacon_chain_req_beacon_blocks_by_head_1_ssz_snappy.act_send_req_resp_build_root_list_head_root.1468abbd",
+      "category": "reqresp",
+      "domain": "reqresp",
+      "surface": "/eth2/beacon_chain/req/beacon_blocks_by_head/1/ssz_snappy",
+      "probe": "act_send_req_resp_build_root_list_head_root",
+      "rule_ids": [
+        "PROSE-MUST-8a9d0925"
+      ],
+      "transition": {
+        "from": "Connected",
+        "to": "Completed",
+        "label": "stateless_eth2_beacon_chain_req_beacon_blocks_by_head_1_ssz_snappy_act_send_req_resp_build_root_list_head_root_1468abbd",
+        "weight": 10,
+        "description": "generated stateless probe for PROSE-MUST-8a9d0925",
+        "condition_desc": "when they have the block at beacon_root",
+        "tags": [
+          "conditional"
+        ],
+        "spec_refs": [
+          "PROSE-MUST-8a9d0925"
+        ],
+        "action": {
+          "type": "ActSendReqResp",
+          "protocol": "/eth2/beacon_chain/req/beacon_blocks_by_root/2/ssz_snappy",
+          "payload": {
+            "kind": "builder",
+            "wrap": "ssz_snappy",
+            "name": "buildRootListHeadRoot"
+          },
+          "timeout_ms": 5000
+        },
+        "guard": {
+          "fork_gte": "fulu"
+        },
+        "oracle": {
+          "differential": true,
+          "must_not": [
+            "CRASH"
+          ],
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "reqresp.generated.eth2_beacon_chain_req_beacon_blocks_by_range_1_ssz_snappy.act_send_req_resp_build_beacon_blocks_by_range_v2_near_head.40778bba",
+      "category": "reqresp",
+      "domain": "reqresp",
+      "surface": "/eth2/beacon_chain/req/beacon_blocks_by_range/1/ssz_snappy",
+      "probe": "act_send_req_resp_build_beacon_blocks_by_range_v2_near_head",
+      "rule_ids": [
+        "PROSE-MAY-fcec2240"
+      ],
+      "transition": {
+        "from": "Connected",
+        "to": "Completed",
+        "label": "stateless_eth2_beacon_chain_req_beacon_blocks_by_range_1_ssz_snappy_act_send_req_resp_build_beacon_blocks_by_range_v2_near_head_40778bba",
+        "weight": 2,
+        "description": "generated stateless probe for PROSE-MAY-fcec2240",
+        "spec_refs": [
+          "PROSE-MAY-fcec2240"
+        ],
+        "action": {
+          "type": "ActSendReqResp",
+          "protocol": "/eth2/beacon_chain/req/beacon_blocks_by_range/2/ssz_snappy",
+          "payload": {
+            "kind": "builder",
+            "wrap": "ssz_snappy",
+            "name": "buildBeaconBlocksByRangeV2NearHead"
+          },
+          "timeout_ms": 10000
+        },
+        "oracle": {
+          "differential": true,
+          "must_not": [
+            "CRASH"
+          ],
+          "strength": "MAY"
+        }
+      }
+    },
+    {
+      "id": "reqresp.generated.eth2_beacon_chain_req_beacon_blocks_by_range_1_ssz_snappy.act_send_req_resp_build_beacon_blocks_by_range_v2_near_head.dafcdc22",
+      "category": "reqresp",
+      "domain": "reqresp",
+      "surface": "/eth2/beacon_chain/req/beacon_blocks_by_range/1/ssz_snappy",
+      "probe": "act_send_req_resp_build_beacon_blocks_by_range_v2_near_head",
+      "rule_ids": [
+        "PROSE-MUST-24a00daf",
+        "PROSE-MUST-2d2c1f61",
+        "PROSE-MUST-77241d04",
+        "PROSE-MUST-a43e7b78",
+        "PROSE-MUST-be2b4f69",
+        "PROSE-MUST-beb326de",
+        "PROSE-MUST-fb96c768"
+      ],
+      "transition": {
+        "from": "Connected",
+        "to": "Completed",
+        "label": "stateless_eth2_beacon_chain_req_beacon_blocks_by_range_1_ssz_snappy_act_send_req_resp_build_beacon_blocks_by_range_v2_near_head_dafcdc22",
+        "weight": 10,
+        "description": "generated stateless probe for PROSE-MUST-24a00daf, PROSE-MUST-2d2c1f61, PROSE-MUST-77241d04, PROSE-MUST-a43e7b78, PROSE-MUST-be2b4f69, PROSE-MUST-beb326de, PROSE-MUST-fb96c768",
+        "spec_refs": [
+          "PROSE-MUST-24a00daf",
+          "PROSE-MUST-2d2c1f61",
+          "PROSE-MUST-77241d04",
+          "PROSE-MUST-a43e7b78",
+          "PROSE-MUST-be2b4f69",
+          "PROSE-MUST-beb326de",
+          "PROSE-MUST-fb96c768"
+        ],
+        "action": {
+          "type": "ActSendReqResp",
+          "protocol": "/eth2/beacon_chain/req/beacon_blocks_by_range/2/ssz_snappy",
+          "payload": {
+            "kind": "builder",
+            "wrap": "ssz_snappy",
+            "name": "buildBeaconBlocksByRangeV2NearHead"
+          },
+          "timeout_ms": 10000
+        },
+        "oracle": {
+          "differential": true,
+          "expected": "SUCCESS",
+          "must_not": [
+            "CRASH"
+          ],
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "reqresp.generated.eth2_beacon_chain_req_beacon_blocks_by_range_1_ssz_snappy.act_send_req_resp_build_blocks_by_range_v1_probe.2f133a19",
+      "category": "reqresp",
+      "domain": "reqresp",
+      "surface": "/eth2/beacon_chain/req/beacon_blocks_by_range/1/ssz_snappy",
+      "probe": "act_send_req_resp_build_blocks_by_range_v1_probe",
+      "rule_ids": [
+        "PROSE-MUST-06696858",
+        "PROSE-MUST-585a5daf",
+        "PROSE-MUST-5aed4805",
+        "PROSE-MUST-7359b5d6",
+        "PROSE-MUST-ab4ff3da"
+      ],
+      "transition": {
+        "from": "Connected",
+        "to": "Completed",
+        "label": "stateless_eth2_beacon_chain_req_beacon_blocks_by_range_1_ssz_snappy_act_send_req_resp_build_blocks_by_range_v1_probe_2f133a19",
+        "weight": 10,
+        "description": "generated stateless probe for PROSE-MUST-06696858, PROSE-MUST-585a5daf, PROSE-MUST-5aed4805, PROSE-MUST-7359b5d6, PROSE-MUST-ab4ff3da",
+        "spec_refs": [
+          "PROSE-MUST-06696858",
+          "PROSE-MUST-585a5daf",
+          "PROSE-MUST-5aed4805",
+          "PROSE-MUST-7359b5d6",
+          "PROSE-MUST-ab4ff3da"
+        ],
+        "action": {
+          "type": "ActSendReqResp",
+          "protocol": "/eth2/beacon_chain/req/beacon_blocks_by_range/1/ssz_snappy",
+          "payload": {
+            "kind": "builder",
+            "wrap": "ssz_snappy",
+            "name": "buildBlocksByRangeV1Probe"
+          },
+          "timeout_ms": 5000
+        },
+        "oracle": {
+          "differential": true,
+          "must_not": [
+            "CRASH"
+          ],
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "reqresp.generated.eth2_beacon_chain_req_beacon_blocks_by_range_1_ssz_snappy.act_validate_response_order_build_blocks_by_range_ordering.0ddc72fa",
+      "category": "reqresp",
+      "domain": "reqresp",
+      "surface": "/eth2/beacon_chain/req/beacon_blocks_by_range/1/ssz_snappy",
+      "probe": "act_validate_response_order_build_blocks_by_range_ordering",
+      "rule_ids": [
+        "PROSE-MUST-2e44df54"
+      ],
+      "transition": {
+        "from": "Connected",
+        "to": "Completed",
+        "label": "stateless_eth2_beacon_chain_req_beacon_blocks_by_range_1_ssz_snappy_act_validate_response_order_build_blocks_by_range_ordering_0ddc72fa",
+        "weight": 10,
+        "description": "generated stateless probe for PROSE-MUST-2e44df54",
+        "spec_refs": [
+          "PROSE-MUST-2e44df54"
+        ],
+        "action": {
+          "type": "ActValidateResponseOrder",
+          "protocol": "/eth2/beacon_chain/req/beacon_blocks_by_range/2/ssz_snappy",
+          "payload": {
+            "kind": "builder",
+            "wrap": "ssz_snappy",
+            "name": "buildBlocksByRangeOrdering"
+          },
+          "timeout_ms": 10000
+        },
+        "oracle": {
+          "differential": true,
+          "expected": "RESP_ORDER_CORRECT",
+          "must_not": [
+            "CRASH"
+          ],
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "reqresp.generated.eth2_beacon_chain_req_beacon_blocks_by_root_1_ssz_snappy.act_send_req_resp_build_root_list_head_root.258495ce",
+      "category": "reqresp",
+      "domain": "reqresp",
+      "surface": "/eth2/beacon_chain/req/beacon_blocks_by_root/1/ssz_snappy",
+      "probe": "act_send_req_resp_build_root_list_head_root",
+      "rule_ids": [
+        "PROSE-MUST-ea82e3d1",
+        "PROSE-MUST-ef0e0e97",
+        "PROSE-MUST-f719d380"
+      ],
+      "transition": {
+        "from": "Connected",
+        "to": "Completed",
+        "label": "stateless_eth2_beacon_chain_req_beacon_blocks_by_root_1_ssz_snappy_act_send_req_resp_build_root_list_head_root_258495ce",
+        "weight": 10,
+        "description": "generated stateless probe for PROSE-MUST-ea82e3d1, PROSE-MUST-ef0e0e97, PROSE-MUST-f719d380",
+        "condition_desc": "when they have it",
+        "tags": [
+          "conditional"
+        ],
+        "spec_refs": [
+          "PROSE-MUST-ea82e3d1",
+          "PROSE-MUST-ef0e0e97",
+          "PROSE-MUST-f719d380"
+        ],
+        "action": {
+          "type": "ActSendReqResp",
+          "protocol": "/eth2/beacon_chain/req/beacon_blocks_by_root/2/ssz_snappy",
+          "payload": {
+            "kind": "builder",
+            "wrap": "ssz_snappy",
+            "name": "buildRootListHeadRoot"
+          },
+          "timeout_ms": 10000
+        },
+        "oracle": {
+          "differential": true,
+          "expected": "SUCCESS",
+          "must_not": [
+            "CRASH"
+          ],
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "reqresp.generated.eth2_beacon_chain_req_beacon_blocks_by_root_2_ssz_snappy.act_send_req_resp_build_root_list_head_root.c67264c9",
+      "category": "reqresp",
+      "domain": "reqresp",
+      "surface": "/eth2/beacon_chain/req/beacon_blocks_by_root/2/ssz_snappy",
+      "probe": "act_send_req_resp_build_root_list_head_root",
+      "rule_ids": [
+        "PROSE-MUST-ddb66335"
+      ],
+      "transition": {
+        "from": "Connected",
+        "to": "Completed",
+        "label": "stateless_eth2_beacon_chain_req_beacon_blocks_by_root_2_ssz_snappy_act_send_req_resp_build_root_list_head_root_c67264c9",
+        "weight": 10,
+        "description": "generated stateless probe for PROSE-MUST-ddb66335",
+        "spec_refs": [
+          "PROSE-MUST-ddb66335"
+        ],
+        "action": {
+          "type": "ActSendReqResp",
+          "protocol": "/eth2/beacon_chain/req/beacon_blocks_by_root/2/ssz_snappy",
+          "payload": {
+            "kind": "builder",
+            "wrap": "ssz_snappy",
+            "name": "buildRootListHeadRoot"
+          },
+          "timeout_ms": 10000
+        },
+        "oracle": {
+          "differential": true,
+          "expected": "SUCCESS",
+          "must_not": [
+            "CRASH"
+          ],
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "reqresp.generated.eth2_beacon_chain_req_blob_sidecars_by_range_1_ssz_snappy.act_send_req_resp_build_blocks_by_range_half_open.047c1535",
+      "category": "reqresp",
+      "domain": "reqresp",
+      "surface": "/eth2/beacon_chain/req/blob_sidecars_by_range/1/ssz_snappy",
+      "probe": "act_send_req_resp_build_blocks_by_range_half_open",
+      "rule_ids": [
+        "PROSE-MUST-d6e27745"
+      ],
+      "transition": {
+        "from": "Connected",
+        "to": "Completed",
+        "label": "stateless_eth2_beacon_chain_req_blob_sidecars_by_range_1_ssz_snappy_act_send_req_resp_build_blocks_by_range_half_open_047c1535",
+        "weight": 10,
+        "description": "generated stateless probe for PROSE-MUST-d6e27745",
+        "spec_refs": [
+          "PROSE-MUST-d6e27745"
+        ],
+        "action": {
+          "type": "ActSendReqResp",
+          "protocol": "/eth2/beacon_chain/req/beacon_blocks_by_range/2/ssz_snappy",
+          "payload": {
+            "kind": "builder",
+            "wrap": "ssz_snappy",
+            "name": "buildBlocksByRangeHalfOpen"
+          },
+          "timeout_ms": 5000
+        },
+        "guard": {
+          "fork_gte": "deneb"
+        },
+        "oracle": {
+          "differential": true,
+          "must_not": [
+            "CRASH"
+          ],
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "reqresp.generated.eth2_beacon_chain_req_blob_sidecars_by_range_1_ssz_snappy.act_send_req_resp_build_blocks_by_range_near_head.1590f2ac",
+      "category": "reqresp",
+      "domain": "reqresp",
+      "surface": "/eth2/beacon_chain/req/blob_sidecars_by_range/1/ssz_snappy",
+      "probe": "act_send_req_resp_build_blocks_by_range_near_head",
+      "rule_ids": [
+        "PROSE-MAY-27b2aa87"
+      ],
+      "transition": {
+        "from": "Connected",
+        "to": "Completed",
+        "label": "stateless_eth2_beacon_chain_req_blob_sidecars_by_range_1_ssz_snappy_act_send_req_resp_build_blocks_by_range_near_head_1590f2ac",
+        "weight": 2,
+        "description": "generated stateless probe for PROSE-MAY-27b2aa87",
+        "spec_refs": [
+          "PROSE-MAY-27b2aa87"
+        ],
+        "action": {
+          "type": "ActSendReqResp",
+          "protocol": "/eth2/beacon_chain/req/blob_sidecars_by_range/1/ssz_snappy",
+          "payload": {
+            "kind": "builder",
+            "wrap": "ssz_snappy",
+            "name": "buildBlocksByRangeNearHead"
+          },
+          "timeout_ms": 10000
+        },
+        "guard": {
+          "fork_gte": "deneb"
+        },
+        "oracle": {
+          "differential": true,
+          "must_not": [
+            "CRASH"
+          ],
+          "strength": "MAY"
+        }
+      }
+    },
+    {
+      "id": "reqresp.generated.eth2_beacon_chain_req_blob_sidecars_by_range_1_ssz_snappy.act_send_req_resp_build_blocks_by_range_near_head.734f49ef",
+      "category": "reqresp",
+      "domain": "reqresp",
+      "surface": "/eth2/beacon_chain/req/blob_sidecars_by_range/1/ssz_snappy",
+      "probe": "act_send_req_resp_build_blocks_by_range_near_head",
+      "rule_ids": [
+        "PROSE-SHOULD-e922a14f"
+      ],
+      "transition": {
+        "from": "Connected",
+        "to": "Completed",
+        "label": "stateless_eth2_beacon_chain_req_blob_sidecars_by_range_1_ssz_snappy_act_send_req_resp_build_blocks_by_range_near_head_734f49ef",
+        "weight": 5,
+        "description": "generated stateless probe for PROSE-SHOULD-e922a14f",
+        "spec_refs": [
+          "PROSE-SHOULD-e922a14f"
+        ],
+        "action": {
+          "type": "ActSendReqResp",
+          "protocol": "/eth2/beacon_chain/req/blob_sidecars_by_range/1/ssz_snappy",
+          "payload": {
+            "kind": "builder",
+            "wrap": "ssz_snappy",
+            "name": "buildBlocksByRangeNearHead"
+          },
+          "timeout_ms": 10000
+        },
+        "guard": {
+          "fork_gte": "deneb"
+        },
+        "oracle": {
+          "differential": true,
+          "must_not": [
+            "CRASH"
+          ],
+          "strength": "SHOULD"
+        }
+      }
+    },
+    {
+      "id": "reqresp.generated.eth2_beacon_chain_req_blob_sidecars_by_range_1_ssz_snappy.act_send_req_resp_build_blocks_by_range_near_head.e3c607dd",
+      "category": "reqresp",
+      "domain": "reqresp",
+      "surface": "/eth2/beacon_chain/req/blob_sidecars_by_range/1/ssz_snappy",
+      "probe": "act_send_req_resp_build_blocks_by_range_near_head",
+      "rule_ids": [
+        "PROSE-MUST-000fd139",
+        "PROSE-MUST-9c40cb32",
+        "PROSE-MUST-b18cebcf",
+        "PROSE-MUST-bcca3fad"
+      ],
+      "transition": {
+        "from": "Connected",
+        "to": "Completed",
+        "label": "stateless_eth2_beacon_chain_req_blob_sidecars_by_range_1_ssz_snappy_act_send_req_resp_build_blocks_by_range_near_head_e3c607dd",
+        "weight": 10,
+        "description": "generated stateless probe for PROSE-MUST-000fd139, PROSE-MUST-9c40cb32, PROSE-MUST-b18cebcf, PROSE-MUST-bcca3fad",
+        "spec_refs": [
+          "PROSE-MUST-000fd139",
+          "PROSE-MUST-9c40cb32",
+          "PROSE-MUST-b18cebcf",
+          "PROSE-MUST-bcca3fad"
+        ],
+        "action": {
+          "type": "ActSendReqResp",
+          "protocol": "/eth2/beacon_chain/req/blob_sidecars_by_range/1/ssz_snappy",
+          "payload": {
+            "kind": "builder",
+            "wrap": "ssz_snappy",
+            "name": "buildBlocksByRangeNearHead"
+          },
+          "timeout_ms": 10000
+        },
+        "guard": {
+          "fork_gte": "deneb"
+        },
+        "oracle": {
+          "differential": true,
+          "must_not": [
+            "CRASH"
+          ],
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "reqresp.generated.eth2_beacon_chain_req_blob_sidecars_by_range_1_ssz_snappy.act_send_req_resp_build_blocks_by_range_v1_probe.1c7fdfe3",
+      "category": "reqresp",
+      "domain": "reqresp",
+      "surface": "/eth2/beacon_chain/req/blob_sidecars_by_range/1/ssz_snappy",
+      "probe": "act_send_req_resp_build_blocks_by_range_v1_probe",
+      "rule_ids": [
+        "PROSE-MUST-9cd4be04"
+      ],
+      "transition": {
+        "from": "Connected",
+        "to": "Completed",
+        "label": "stateless_eth2_beacon_chain_req_blob_sidecars_by_range_1_ssz_snappy_act_send_req_resp_build_blocks_by_range_v1_probe_1c7fdfe3",
+        "weight": 10,
+        "description": "generated stateless probe for PROSE-MUST-9cd4be04",
+        "condition_desc": "when the requested range includes any epochs in this interval.",
+        "tags": [
+          "conditional"
+        ],
+        "spec_refs": [
+          "PROSE-MUST-9cd4be04"
+        ],
+        "action": {
+          "type": "ActSendReqResp",
+          "protocol": "/eth2/beacon_chain/req/blob_sidecars_by_range/1/ssz_snappy",
+          "payload": {
+            "kind": "builder",
+            "wrap": "ssz_snappy",
+            "name": "buildBlocksByRangeV1Probe"
+          },
+          "timeout_ms": 5000
+        },
+        "guard": {
+          "fork_gte": "fulu"
+        },
+        "oracle": {
+          "differential": true,
+          "must_not": [
+            "CRASH"
+          ],
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "reqresp.generated.eth2_beacon_chain_req_blob_sidecars_by_range_1_ssz_snappy.act_send_req_resp_build_blocks_by_range_v1_probe.7b1b76cd",
+      "category": "reqresp",
+      "domain": "reqresp",
+      "surface": "/eth2/beacon_chain/req/blob_sidecars_by_range/1/ssz_snappy",
+      "probe": "act_send_req_resp_build_blocks_by_range_v1_probe",
+      "rule_ids": [
+        "PROSE-MUST-621e66c7",
+        "PROSE-MUST-78397db4",
+        "PROSE-MUST-7a65230f",
+        "PROSE-MUST-eab58464",
+        "PROSE-MUST-ef01bacf",
+        "PROSE-MUST-fa8679e2"
+      ],
+      "transition": {
+        "from": "Connected",
+        "to": "Completed",
+        "label": "stateless_eth2_beacon_chain_req_blob_sidecars_by_range_1_ssz_snappy_act_send_req_resp_build_blocks_by_range_v1_probe_7b1b76cd",
+        "weight": 10,
+        "description": "generated stateless probe for PROSE-MUST-621e66c7, PROSE-MUST-78397db4, PROSE-MUST-7a65230f, PROSE-MUST-eab58464, PROSE-MUST-ef01bacf, PROSE-MUST-fa8679e2",
+        "spec_refs": [
+          "PROSE-MUST-621e66c7",
+          "PROSE-MUST-78397db4",
+          "PROSE-MUST-7a65230f",
+          "PROSE-MUST-eab58464",
+          "PROSE-MUST-ef01bacf",
+          "PROSE-MUST-fa8679e2"
+        ],
+        "action": {
+          "type": "ActSendReqResp",
+          "protocol": "/eth2/beacon_chain/req/blob_sidecars_by_range/1/ssz_snappy",
+          "payload": {
+            "kind": "builder",
+            "wrap": "ssz_snappy",
+            "name": "buildBlocksByRangeV1Probe"
+          },
+          "timeout_ms": 5000
+        },
+        "guard": {
+          "fork_gte": "deneb"
+        },
+        "oracle": {
+          "differential": true,
+          "must_not": [
+            "CRASH"
+          ],
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "reqresp.generated.eth2_beacon_chain_req_blob_sidecars_by_root_1_ssz_snappy.act_send_req_resp_build_blob_identifier_head_root.8cdc93f4",
+      "category": "reqresp",
+      "domain": "reqresp",
+      "surface": "/eth2/beacon_chain/req/blob_sidecars_by_root/1/ssz_snappy",
+      "probe": "act_send_req_resp_build_blob_identifier_head_root",
+      "rule_ids": [
+        "PROSE-MAY-ab6cf530",
+        "PROSE-MAY-d27b1369"
+      ],
+      "transition": {
+        "from": "Connected",
+        "to": "Completed",
+        "label": "stateless_eth2_beacon_chain_req_blob_sidecars_by_root_1_ssz_snappy_act_send_req_resp_build_blob_identifier_head_root_8cdc93f4",
+        "weight": 2,
+        "description": "generated stateless probe for PROSE-MAY-ab6cf530, PROSE-MAY-d27b1369",
+        "spec_refs": [
+          "PROSE-MAY-ab6cf530",
+          "PROSE-MAY-d27b1369"
+        ],
+        "action": {
+          "type": "ActSendReqResp",
+          "protocol": "/eth2/beacon_chain/req/blob_sidecars_by_root/1/ssz_snappy",
+          "payload": {
+            "kind": "builder",
+            "wrap": "ssz_snappy",
+            "name": "buildBlobIdentifierHeadRoot"
+          },
+          "timeout_ms": 10000
+        },
+        "guard": {
+          "fork_gte": "deneb"
+        },
+        "oracle": {
+          "differential": true,
+          "must_not": [
+            "CRASH"
+          ],
+          "strength": "MAY"
+        }
+      }
+    },
+    {
+      "id": "reqresp.generated.eth2_beacon_chain_req_blob_sidecars_by_root_1_ssz_snappy.act_send_req_resp_build_blob_identifier_head_root.b9bbfa87",
+      "category": "reqresp",
+      "domain": "reqresp",
+      "surface": "/eth2/beacon_chain/req/blob_sidecars_by_root/1/ssz_snappy",
+      "probe": "act_send_req_resp_build_blob_identifier_head_root",
+      "rule_ids": [
+        "PROSE-MUST-baa6186c"
+      ],
+      "transition": {
+        "from": "Connected",
+        "to": "Completed",
+        "label": "stateless_eth2_beacon_chain_req_blob_sidecars_by_root_1_ssz_snappy_act_send_req_resp_build_blob_identifier_head_root_b9bbfa87",
+        "weight": 10,
+        "description": "generated stateless probe for PROSE-MUST-baa6186c",
+        "spec_refs": [
+          "PROSE-MUST-baa6186c"
+        ],
+        "action": {
+          "type": "ActSendReqResp",
+          "protocol": "/eth2/beacon_chain/req/blob_sidecars_by_root/1/ssz_snappy",
+          "payload": {
+            "kind": "builder",
+            "wrap": "ssz_snappy",
+            "name": "buildBlobIdentifierHeadRoot"
+          },
+          "timeout_ms": 10000
+        },
+        "guard": {
+          "fork_gte": "deneb"
+        },
+        "oracle": {
+          "differential": true,
+          "must_not": [
+            "CRASH"
+          ],
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "reqresp.generated.eth2_beacon_chain_req_blob_sidecars_by_root_1_ssz_snappy.act_send_req_resp_build_blocks_by_range_v1_probe.4811ba40",
+      "category": "reqresp",
+      "domain": "reqresp",
+      "surface": "/eth2/beacon_chain/req/blob_sidecars_by_root/1/ssz_snappy",
+      "probe": "act_send_req_resp_build_blocks_by_range_v1_probe",
+      "rule_ids": [
+        "PROSE-MUST-363af130"
+      ],
+      "transition": {
+        "from": "Connected",
+        "to": "Completed",
+        "label": "stateless_eth2_beacon_chain_req_blob_sidecars_by_root_1_ssz_snappy_act_send_req_resp_build_blocks_by_range_v1_probe_4811ba40",
+        "weight": 10,
+        "description": "generated stateless probe for PROSE-MUST-363af130",
+        "condition_desc": "when they have it",
+        "tags": [
+          "conditional"
+        ],
+        "spec_refs": [
+          "PROSE-MUST-363af130"
+        ],
+        "action": {
+          "type": "ActSendReqResp",
+          "protocol": "/eth2/beacon_chain/req/blob_sidecars_by_range/1/ssz_snappy",
+          "payload": {
+            "kind": "builder",
+            "wrap": "ssz_snappy",
+            "name": "buildBlocksByRangeV1Probe"
+          },
+          "timeout_ms": 5000
+        },
+        "guard": {
+          "fork_gte": "deneb"
+        },
+        "oracle": {
+          "differential": true,
+          "must_not": [
+            "CRASH"
+          ],
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "reqresp.generated.eth2_beacon_chain_req_blob_sidecars_by_root_1_ssz_snappy.act_send_req_resp_build_blocks_by_range_v1_probe.4cef972e",
+      "category": "reqresp",
+      "domain": "reqresp",
+      "surface": "/eth2/beacon_chain/req/blob_sidecars_by_root/1/ssz_snappy",
+      "probe": "act_send_req_resp_build_blocks_by_range_v1_probe",
+      "rule_ids": [
+        "PROSE-MUST-4bfaa766"
+      ],
+      "transition": {
+        "from": "Connected",
+        "to": "Completed",
+        "label": "stateless_eth2_beacon_chain_req_blob_sidecars_by_root_1_ssz_snappy_act_send_req_resp_build_blocks_by_range_v1_probe_4cef972e",
+        "weight": 10,
+        "description": "generated stateless probe for PROSE-MUST-4bfaa766",
+        "condition_desc": "when any of the requested roots correspond to blocks in this interval.",
+        "tags": [
+          "conditional"
+        ],
+        "spec_refs": [
+          "PROSE-MUST-4bfaa766"
+        ],
+        "action": {
+          "type": "ActSendReqResp",
+          "protocol": "/eth2/beacon_chain/req/blob_sidecars_by_range/1/ssz_snappy",
+          "payload": {
+            "kind": "builder",
+            "wrap": "ssz_snappy",
+            "name": "buildBlocksByRangeV1Probe"
+          },
+          "timeout_ms": 5000
+        },
+        "guard": {
+          "fork_gte": "fulu"
+        },
+        "oracle": {
+          "differential": true,
+          "must_not": [
+            "CRASH"
+          ],
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "reqresp.generated.eth2_beacon_chain_req_data_column_sidecars_by_range_1_ssz_snappy.act_send_req_resp_build_blocks_by_range_half_open.7415cf49",
+      "category": "reqresp",
+      "domain": "reqresp",
+      "surface": "/eth2/beacon_chain/req/data_column_sidecars_by_range/1/ssz_snappy",
+      "probe": "act_send_req_resp_build_blocks_by_range_half_open",
+      "rule_ids": [
+        "PROSE-MUST-85dfc232"
+      ],
+      "transition": {
+        "from": "Connected",
+        "to": "Completed",
+        "label": "stateless_eth2_beacon_chain_req_data_column_sidecars_by_range_1_ssz_snappy_act_send_req_resp_build_blocks_by_range_half_open_7415cf49",
+        "weight": 10,
+        "description": "generated stateless probe for PROSE-MUST-85dfc232",
+        "spec_refs": [
+          "PROSE-MUST-85dfc232"
+        ],
+        "action": {
+          "type": "ActSendReqResp",
+          "protocol": "/eth2/beacon_chain/req/beacon_blocks_by_range/2/ssz_snappy",
+          "payload": {
+            "kind": "builder",
+            "wrap": "ssz_snappy",
+            "name": "buildBlocksByRangeHalfOpen"
+          },
+          "timeout_ms": 5000
+        },
+        "guard": {
+          "fork_gte": "fulu"
+        },
+        "oracle": {
+          "differential": true,
+          "must_not": [
+            "CRASH"
+          ],
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "reqresp.generated.eth2_beacon_chain_req_data_column_sidecars_by_range_1_ssz_snappy.act_send_req_resp_build_data_columns010.ab447b11",
+      "category": "reqresp",
+      "domain": "reqresp",
+      "surface": "/eth2/beacon_chain/req/data_column_sidecars_by_range/1/ssz_snappy",
+      "probe": "act_send_req_resp_build_data_columns010",
+      "rule_ids": [
+        "PROSE-MUST-496fac48",
+        "PROSE-MUST-53017fdb",
+        "PROSE-MUST-6ac612dd",
+        "PROSE-MUST-8329fc6d",
+        "PROSE-MUST-dc077cf0"
+      ],
+      "transition": {
+        "from": "Connected",
+        "to": "Completed",
+        "label": "stateless_eth2_beacon_chain_req_data_column_sidecars_by_range_1_ssz_snappy_act_send_req_resp_build_data_columns010_ab447b11",
+        "weight": 10,
+        "description": "generated stateless probe for PROSE-MUST-496fac48, PROSE-MUST-53017fdb, PROSE-MUST-6ac612dd, PROSE-MUST-8329fc6d, PROSE-MUST-dc077cf0",
+        "spec_refs": [
+          "PROSE-MUST-496fac48",
+          "PROSE-MUST-53017fdb",
+          "PROSE-MUST-6ac612dd",
+          "PROSE-MUST-8329fc6d",
+          "PROSE-MUST-dc077cf0"
+        ],
+        "action": {
+          "type": "ActSendReqResp",
+          "protocol": "/eth2/beacon_chain/req/data_column_sidecars_by_range/1/ssz_snappy",
+          "payload": {
+            "kind": "builder",
+            "wrap": "ssz_snappy",
+            "name": "buildDataColumns010"
+          },
+          "timeout_ms": 5000
+        },
+        "guard": {
+          "fork_gte": "fulu"
+        },
+        "oracle": {
+          "differential": true,
+          "must_not": [
+            "CRASH"
+          ],
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "reqresp.generated.eth2_beacon_chain_req_data_column_sidecars_by_range_1_ssz_snappy.act_send_req_resp_build_data_columns_ordering.8b7af533",
+      "category": "reqresp",
+      "domain": "reqresp",
+      "surface": "/eth2/beacon_chain/req/data_column_sidecars_by_range/1/ssz_snappy",
+      "probe": "act_send_req_resp_build_data_columns_ordering",
+      "rule_ids": [
+        "PROSE-SHOULD-591bb836"
+      ],
+      "transition": {
+        "from": "Connected",
+        "to": "Completed",
+        "label": "stateless_eth2_beacon_chain_req_data_column_sidecars_by_range_1_ssz_snappy_act_send_req_resp_build_data_columns_ordering_8b7af533",
+        "weight": 5,
+        "description": "generated stateless probe for PROSE-SHOULD-591bb836",
+        "spec_refs": [
+          "PROSE-SHOULD-591bb836"
+        ],
+        "action": {
+          "type": "ActSendReqResp",
+          "protocol": "/eth2/beacon_chain/req/data_column_sidecars_by_range/1/ssz_snappy",
+          "payload": {
+            "kind": "builder",
+            "wrap": "raw",
+            "name": "buildDataColumnsOrdering"
+          },
+          "timeout_ms": 10000
+        },
+        "guard": {
+          "fork_gte": "fulu"
+        },
+        "oracle": {
+          "differential": true,
+          "must_not": [
+            "CRASH"
+          ],
+          "strength": "SHOULD"
+        }
+      }
+    },
+    {
+      "id": "reqresp.generated.eth2_beacon_chain_req_data_column_sidecars_by_range_1_ssz_snappy.act_send_req_resp_build_data_columns_ordering.a4b5adb5",
+      "category": "reqresp",
+      "domain": "reqresp",
+      "surface": "/eth2/beacon_chain/req/data_column_sidecars_by_range/1/ssz_snappy",
+      "probe": "act_send_req_resp_build_data_columns_ordering",
+      "rule_ids": [
+        "PROSE-MUST-3d5cb37f",
+        "PROSE-MUST-62b7152d",
+        "PROSE-MUST-9d59d4cc"
+      ],
+      "transition": {
+        "from": "Connected",
+        "to": "Completed",
+        "label": "stateless_eth2_beacon_chain_req_data_column_sidecars_by_range_1_ssz_snappy_act_send_req_resp_build_data_columns_ordering_a4b5adb5",
+        "weight": 10,
+        "description": "generated stateless probe for PROSE-MUST-3d5cb37f, PROSE-MUST-62b7152d, PROSE-MUST-9d59d4cc",
+        "spec_refs": [
+          "PROSE-MUST-3d5cb37f",
+          "PROSE-MUST-62b7152d",
+          "PROSE-MUST-9d59d4cc"
+        ],
+        "action": {
+          "type": "ActSendReqResp",
+          "protocol": "/eth2/beacon_chain/req/data_column_sidecars_by_range/1/ssz_snappy",
+          "payload": {
+            "kind": "builder",
+            "wrap": "raw",
+            "name": "buildDataColumnsOrdering"
+          },
+          "timeout_ms": 10000
+        },
+        "guard": {
+          "fork_gte": "fulu"
+        },
+        "oracle": {
+          "differential": true,
+          "must_not": [
+            "CRASH"
+          ],
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "reqresp.generated.eth2_beacon_chain_req_data_column_sidecars_by_range_1_ssz_snappy.act_send_req_resp_build_data_columns_ordering.ce456bc4",
+      "category": "reqresp",
+      "domain": "reqresp",
+      "surface": "/eth2/beacon_chain/req/data_column_sidecars_by_range/1/ssz_snappy",
+      "probe": "act_send_req_resp_build_data_columns_ordering",
+      "rule_ids": [
+        "PROSE-MAY-f34f7c72"
+      ],
+      "transition": {
+        "from": "Connected",
+        "to": "Completed",
+        "label": "stateless_eth2_beacon_chain_req_data_column_sidecars_by_range_1_ssz_snappy_act_send_req_resp_build_data_columns_ordering_ce456bc4",
+        "weight": 2,
+        "description": "generated stateless probe for PROSE-MAY-f34f7c72",
+        "spec_refs": [
+          "PROSE-MAY-f34f7c72"
+        ],
+        "action": {
+          "type": "ActSendReqResp",
+          "protocol": "/eth2/beacon_chain/req/data_column_sidecars_by_range/1/ssz_snappy",
+          "payload": {
+            "kind": "builder",
+            "wrap": "raw",
+            "name": "buildDataColumnsOrdering"
+          },
+          "timeout_ms": 10000
+        },
+        "guard": {
+          "fork_gte": "fulu"
+        },
+        "oracle": {
+          "differential": true,
+          "must_not": [
+            "CRASH"
+          ],
+          "strength": "MAY"
+        }
+      }
+    },
+    {
+      "id": "reqresp.generated.eth2_beacon_chain_req_data_column_sidecars_by_range_1_ssz_snappy.act_validate_response_order_build_data_columns_all_or_none.ffeb3664",
+      "category": "reqresp",
+      "domain": "reqresp",
+      "surface": "/eth2/beacon_chain/req/data_column_sidecars_by_range/1/ssz_snappy",
+      "probe": "act_validate_response_order_build_data_columns_all_or_none",
+      "rule_ids": [
+        "PROSE-MUST-35b3af29"
+      ],
+      "transition": {
+        "from": "Connected",
+        "to": "Completed",
+        "label": "stateless_eth2_beacon_chain_req_data_column_sidecars_by_range_1_ssz_snappy_act_validate_response_order_build_data_columns_all_or_none_ffeb3664",
+        "weight": 10,
+        "description": "generated stateless probe for PROSE-MUST-35b3af29",
+        "spec_refs": [
+          "PROSE-MUST-35b3af29"
+        ],
+        "action": {
+          "type": "ActValidateResponseOrder",
+          "protocol": "/eth2/beacon_chain/req/data_column_sidecars_by_range/1/ssz_snappy",
+          "payload": {
+            "kind": "builder",
+            "wrap": "raw",
+            "name": "buildDataColumnsAllOrNone"
+          },
+          "timeout_ms": 10000
+        },
+        "guard": {
+          "fork_gte": "fulu"
+        },
+        "oracle": {
+          "differential": true,
+          "expected": "RESP_ORDER_CORRECT",
+          "must_not": [
+            "CRASH"
+          ],
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "reqresp.generated.eth2_beacon_chain_req_data_column_sidecars_by_range_1_ssz_snappy.act_validate_response_order_build_data_columns_ordering.df71a10e",
+      "category": "reqresp",
+      "domain": "reqresp",
+      "surface": "/eth2/beacon_chain/req/data_column_sidecars_by_range/1/ssz_snappy",
+      "probe": "act_validate_response_order_build_data_columns_ordering",
+      "rule_ids": [
+        "PROSE-MUST-c9531b0b"
+      ],
+      "transition": {
+        "from": "Connected",
+        "to": "Completed",
+        "label": "stateless_eth2_beacon_chain_req_data_column_sidecars_by_range_1_ssz_snappy_act_validate_response_order_build_data_columns_ordering_df71a10e",
+        "weight": 10,
+        "description": "generated stateless probe for PROSE-MUST-c9531b0b",
+        "spec_refs": [
+          "PROSE-MUST-c9531b0b"
+        ],
+        "action": {
+          "type": "ActValidateResponseOrder",
+          "protocol": "/eth2/beacon_chain/req/data_column_sidecars_by_range/1/ssz_snappy",
+          "payload": {
+            "kind": "builder",
+            "wrap": "raw",
+            "name": "buildDataColumnsOrdering"
+          },
+          "timeout_ms": 10000
+        },
+        "guard": {
+          "fork_gte": "fulu"
+        },
+        "oracle": {
+          "differential": true,
+          "expected": "RESP_ORDER_CORRECT",
+          "must_not": [
+            "CRASH"
+          ],
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "reqresp.generated.eth2_beacon_chain_req_light_client_bootstrap_1_ssz_snappy.act_send_req_resp_build_root_list_head_root.6293fe13",
+      "category": "reqresp",
+      "domain": "reqresp",
+      "surface": "/eth2/beacon_chain/req/light_client_bootstrap/1/ssz_snappy",
+      "probe": "act_send_req_resp_build_root_list_head_root",
+      "rule_ids": [
+        "PROSE-SHOULD-81bd4ace",
+        "PROSE-SHOULD-e06a5bbe"
+      ],
+      "transition": {
+        "from": "Connected",
+        "to": "Completed",
+        "label": "stateless_eth2_beacon_chain_req_light_client_bootstrap_1_ssz_snappy_act_send_req_resp_build_root_list_head_root_6293fe13",
+        "weight": 5,
+        "description": "generated stateless probe for PROSE-SHOULD-81bd4ace, PROSE-SHOULD-e06a5bbe",
+        "spec_refs": [
+          "PROSE-SHOULD-81bd4ace",
+          "PROSE-SHOULD-e06a5bbe"
+        ],
+        "action": {
+          "type": "ActSendReqResp",
+          "protocol": "/eth2/beacon_chain/req/light_client_bootstrap/1/ssz_snappy",
+          "payload": {
+            "kind": "builder",
+            "wrap": "ssz_snappy",
+            "name": "buildRootListHeadRoot"
+          },
+          "timeout_ms": 10000
+        },
+        "guard": {
+          "fork_gte": "altair"
+        },
+        "oracle": {
+          "differential": true,
+          "must_not": [
+            "CRASH"
+          ],
+          "strength": "SHOULD"
+        }
+      }
+    },
+    {
+      "id": "reqresp.generated.eth2_beacon_chain_req_light_client_finality_update_1_ssz_snappy.act_send_req_resp_eth2_beacon_chain_req_light_client_finality_update_1_ssz_snappy.e366406c",
+      "category": "reqresp",
+      "domain": "reqresp",
+      "surface": "/eth2/beacon_chain/req/light_client_finality_update/1/ssz_snappy",
+      "probe": "act_send_req_resp_eth2_beacon_chain_req_light_client_finality_update_1_ssz_snappy",
+      "rule_ids": [
+        "PROSE-SHOULD-822a6a04",
+        "PROSE-SHOULD-c164ee6e"
+      ],
+      "transition": {
+        "from": "Connected",
+        "to": "Completed",
+        "label": "stateless_eth2_beacon_chain_req_light_client_finality_update_1_ssz_snappy_act_send_req_resp_eth2_beacon_chain_req_light_client_finality_update_1_ssz_snappy_e366406c",
+        "weight": 5,
+        "description": "generated stateless probe for PROSE-SHOULD-822a6a04, PROSE-SHOULD-c164ee6e",
+        "condition_desc": "when no LightClientFinalityUpdate is available",
+        "tags": [
+          "conditional"
+        ],
+        "spec_refs": [
+          "PROSE-SHOULD-822a6a04",
+          "PROSE-SHOULD-c164ee6e"
+        ],
+        "action": {
+          "type": "ActSendReqResp",
+          "protocol": "/eth2/beacon_chain/req/light_client_finality_update/1/ssz_snappy",
+          "timeout_ms": 10000
+        },
+        "guard": {
+          "fork_gte": "altair"
+        },
+        "oracle": {
+          "differential": true,
+          "must_not": [
+            "CRASH"
+          ],
+          "strength": "SHOULD"
+        }
+      }
+    },
+    {
+      "id": "reqresp.generated.eth2_beacon_chain_req_light_client_optimistic_update_1_ssz_snappy.act_send_req_resp_eth2_beacon_chain_req_light_client_optimistic_update_1_ssz_snappy.db61a819",
+      "category": "reqresp",
+      "domain": "reqresp",
+      "surface": "/eth2/beacon_chain/req/light_client_optimistic_update/1/ssz_snappy",
+      "probe": "act_send_req_resp_eth2_beacon_chain_req_light_client_optimistic_update_1_ssz_snappy",
+      "rule_ids": [
+        "PROSE-SHOULD-3618142a",
+        "PROSE-SHOULD-dae2d63f"
+      ],
+      "transition": {
+        "from": "Connected",
+        "to": "Completed",
+        "label": "stateless_eth2_beacon_chain_req_light_client_optimistic_update_1_ssz_snappy_act_send_req_resp_eth2_beacon_chain_req_light_client_optimistic_update_1_ssz_snappy_db61a819",
+        "weight": 5,
+        "description": "generated stateless probe for PROSE-SHOULD-3618142a, PROSE-SHOULD-dae2d63f",
+        "spec_refs": [
+          "PROSE-SHOULD-3618142a",
+          "PROSE-SHOULD-dae2d63f"
+        ],
+        "action": {
+          "type": "ActSendReqResp",
+          "protocol": "/eth2/beacon_chain/req/light_client_optimistic_update/1/ssz_snappy",
+          "timeout_ms": 10000
+        },
+        "guard": {
+          "fork_gte": "altair"
+        },
+        "oracle": {
+          "differential": true,
+          "must_not": [
+            "CRASH"
+          ],
+          "strength": "SHOULD"
+        }
+      }
+    },
+    {
+      "id": "reqresp.generated.eth2_beacon_chain_req_light_client_updates_by_range_1_ssz_snappy.act_send_req_resp_build_lcupdates_by_range1_ssz.95e1c8e5",
+      "category": "reqresp",
+      "domain": "reqresp",
+      "surface": "/eth2/beacon_chain/req/light_client_updates_by_range/1/ssz_snappy",
+      "probe": "act_send_req_resp_build_lcupdates_by_range1_ssz",
+      "rule_ids": [
+        "PROSE-MUST-a2e8c252",
+        "PROSE-MUST-a8fa23ea",
+        "PROSE-MUST-e2caef55",
+        "PROSE-MUST_NOT-57d1f23a"
+      ],
+      "transition": {
+        "from": "Connected",
+        "to": "Completed",
+        "label": "stateless_eth2_beacon_chain_req_light_client_updates_by_range_1_ssz_snappy_act_send_req_resp_build_lcupdates_by_range1_ssz_95e1c8e5",
+        "weight": 10,
+        "description": "generated stateless probe for PROSE-MUST-a2e8c252, PROSE-MUST-a8fa23ea, PROSE-MUST-e2caef55, PROSE-MUST_NOT-57d1f23a",
+        "spec_refs": [
+          "PROSE-MUST-a2e8c252",
+          "PROSE-MUST-a8fa23ea",
+          "PROSE-MUST-e2caef55",
+          "PROSE-MUST_NOT-57d1f23a"
+        ],
+        "action": {
+          "type": "ActSendReqResp",
+          "protocol": "/eth2/beacon_chain/req/light_client_updates_by_range/1/ssz_snappy",
+          "payload": {
+            "kind": "builder",
+            "wrap": "ssz_snappy",
+            "name": "buildLCUpdatesByRange1SSZ"
+          },
+          "timeout_ms": 10000
+        },
+        "guard": {
+          "fork_gte": "altair"
+        },
+        "oracle": {
+          "differential": true,
+          "must_not": [
+            "CRASH"
+          ],
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "reqresp.generated.eth2_beacon_chain_req_light_client_updates_by_range_1_ssz_snappy.act_send_req_resp_build_lcupdates_by_range1_ssz.e0e4f975",
+      "category": "reqresp",
+      "domain": "reqresp",
+      "surface": "/eth2/beacon_chain/req/light_client_updates_by_range/1/ssz_snappy",
+      "probe": "act_send_req_resp_build_lcupdates_by_range1_ssz",
+      "rule_ids": [
+        "PROSE-SHOULD-d31e4b85"
+      ],
+      "transition": {
+        "from": "Connected",
+        "to": "Completed",
+        "label": "stateless_eth2_beacon_chain_req_light_client_updates_by_range_1_ssz_snappy_act_send_req_resp_build_lcupdates_by_range1_ssz_e0e4f975",
+        "weight": 5,
+        "description": "generated stateless probe for PROSE-SHOULD-d31e4b85",
+        "spec_refs": [
+          "PROSE-SHOULD-d31e4b85"
+        ],
+        "action": {
+          "type": "ActSendReqResp",
+          "protocol": "/eth2/beacon_chain/req/light_client_updates_by_range/1/ssz_snappy",
+          "payload": {
+            "kind": "builder",
+            "wrap": "ssz_snappy",
+            "name": "buildLCUpdatesByRange1SSZ"
+          },
+          "timeout_ms": 10000
+        },
+        "guard": {
+          "fork_gte": "altair"
+        },
+        "oracle": {
+          "differential": true,
+          "must_not": [
+            "CRASH"
+          ],
+          "strength": "SHOULD"
+        }
+      }
+    },
+    {
+      "id": "reqresp.generated.eth2_beacon_chain_req_metadata_1_ssz_snappy.act_send_req_resp_eth2_beacon_chain_req_metadata_3_ssz_snappy.c2e1c935",
+      "category": "reqresp",
+      "domain": "reqresp",
+      "surface": "/eth2/beacon_chain/req/metadata/1/ssz_snappy",
+      "probe": "act_send_req_resp_eth2_beacon_chain_req_metadata_3_ssz_snappy",
+      "rule_ids": [
+        "PROSE-MUST-24bad2a7"
+      ],
+      "transition": {
+        "from": "Connected",
+        "to": "Completed",
+        "label": "stateless_eth2_beacon_chain_req_metadata_1_ssz_snappy_act_send_req_resp_eth2_beacon_chain_req_metadata_3_ssz_snappy_c2e1c935",
+        "weight": 10,
+        "description": "generated stateless probe for PROSE-MUST-24bad2a7",
+        "spec_refs": [
+          "PROSE-MUST-24bad2a7"
+        ],
+        "action": {
+          "type": "ActSendReqResp",
+          "protocol": "/eth2/beacon_chain/req/metadata/3/ssz_snappy",
+          "timeout_ms": 5000
+        },
+        "oracle": {
+          "differential": true,
+          "expected": "SUCCESS",
+          "must_not": [
+            "CRASH"
+          ],
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "reqresp.generated.reqresp.act_send_req_resp_build_blocks_by_range_half_open.2fd9599a",
+      "category": "reqresp",
+      "domain": "reqresp",
+      "surface": "reqresp",
+      "probe": "act_send_req_resp_build_blocks_by_range_half_open",
+      "rule_ids": [
+        "PROSE-MUST-0b68b894",
+        "PROSE-MUST-27157b02",
+        "PROSE-MUST-2b3162f6",
+        "PROSE-MUST-49d953b3",
+        "PROSE-MUST-530de565",
+        "PROSE-MUST-5e68552b",
+        "PROSE-MUST-8b1fde57",
+        "PROSE-MUST-8e3ad988",
+        "PROSE-MUST-bc7717a4",
+        "PROSE-MUST-c33e5e4e",
+        "PROSE-MUST-c8f1e7f8",
+        "PROSE-MUST-da21bde4",
+        "PROSE-MUST-e4fbee1a"
+      ],
+      "transition": {
+        "from": "Connected",
+        "to": "Completed",
+        "label": "stateless_reqresp_act_send_req_resp_build_blocks_by_range_half_open_2fd9599a",
+        "weight": 10,
+        "description": "generated stateless probe for PROSE-MUST-0b68b894, PROSE-MUST-27157b02, PROSE-MUST-2b3162f6, PROSE-MUST-49d953b3, PROSE-MUST-530de565, PROSE-MUST-5e68552b, PROSE-MUST-8b1fde57, PROSE-MUST-8e3ad988, PROSE-MUST-bc7717a4, PROSE-MUST-c33e5e4e, PROSE-MUST-c8f1e7f8, PROSE-MUST-da21bde4, PROSE-MUST-e4fbee1a",
+        "spec_refs": [
+          "PROSE-MUST-0b68b894",
+          "PROSE-MUST-27157b02",
+          "PROSE-MUST-2b3162f6",
+          "PROSE-MUST-49d953b3",
+          "PROSE-MUST-530de565",
+          "PROSE-MUST-5e68552b",
+          "PROSE-MUST-8b1fde57",
+          "PROSE-MUST-8e3ad988",
+          "PROSE-MUST-bc7717a4",
+          "PROSE-MUST-c33e5e4e",
+          "PROSE-MUST-c8f1e7f8",
+          "PROSE-MUST-da21bde4",
+          "PROSE-MUST-e4fbee1a"
+        ],
+        "action": {
+          "type": "ActSendReqResp",
+          "protocol": "/eth2/beacon_chain/req/beacon_blocks_by_range/2/ssz_snappy",
+          "payload": {
+            "kind": "builder",
+            "wrap": "ssz_snappy",
+            "name": "buildBlocksByRangeHalfOpen"
+          },
+          "timeout_ms": 5000
+        },
+        "oracle": {
+          "differential": true,
+          "must_not": [
+            "CRASH"
+          ],
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "reqresp.generated.reqresp.act_send_req_resp_build_blocks_by_range_half_open.705da545",
+      "category": "reqresp",
+      "domain": "reqresp",
+      "surface": "reqresp",
+      "probe": "act_send_req_resp_build_blocks_by_range_half_open",
+      "rule_ids": [
+        "PROSE-MUST-bbfdea7c",
+        "PROSE-MUST-f3f75081"
+      ],
+      "transition": {
+        "from": "Connected",
+        "to": "Completed",
+        "label": "stateless_reqresp_act_send_req_resp_build_blocks_by_range_half_open_705da545",
+        "weight": 10,
+        "description": "generated stateless probe for PROSE-MUST-bbfdea7c, PROSE-MUST-f3f75081",
+        "condition_desc": "when of an invalid input (header or payload) and From requests",
+        "tags": [
+          "conditional"
+        ],
+        "spec_refs": [
+          "PROSE-MUST-bbfdea7c",
+          "PROSE-MUST-f3f75081"
+        ],
+        "action": {
+          "type": "ActSendReqResp",
+          "protocol": "/eth2/beacon_chain/req/beacon_blocks_by_range/2/ssz_snappy",
+          "payload": {
+            "kind": "builder",
+            "wrap": "raw",
+            "name": "buildBlocksByRangeHalfOpen"
+          },
+          "timeout_ms": 5000
+        },
+        "oracle": {
+          "differential": true,
+          "expected": "REJECT",
+          "must_not": [
+            "CRASH",
+            "ACCEPT"
+          ],
+          "spec_predicate": "accepted == 0",
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "reqresp.generated.reqresp.act_send_req_resp_build_blocks_by_range_v1_probe.71e63b50",
+      "category": "reqresp",
+      "domain": "reqresp",
+      "surface": "reqresp",
+      "probe": "act_send_req_resp_build_blocks_by_range_v1_probe",
+      "rule_ids": [
+        "PROSE-MUST-76da50a4"
+      ],
+      "transition": {
+        "from": "Connected",
+        "to": "Completed",
+        "label": "stateless_reqresp_act_send_req_resp_build_blocks_by_range_v1_probe_71e63b50",
+        "weight": 10,
+        "description": "generated stateless probe for PROSE-MUST-76da50a4",
+        "spec_refs": [
+          "PROSE-MUST-76da50a4"
+        ],
+        "action": {
+          "type": "ActSendReqResp",
+          "protocol": "/eth2/beacon_chain/req/beacon_blocks_by_range/1/ssz_snappy",
+          "payload": {
+            "kind": "builder",
+            "wrap": "ssz_snappy",
+            "name": "buildBlocksByRangeV1Probe"
+          },
+          "timeout_ms": 5000
+        },
+        "guard": {
+          "fork_gte": "altair"
+        },
+        "oracle": {
+          "differential": true,
+          "expected": "INVALID_REQUEST",
+          "must_not": [
+            "CRASH",
+            "ACCEPT"
+          ],
+          "spec_predicate": "accepted == 0",
+          "strength": "MUST"
+        }
+      }
+    },
+    {
+      "id": "reqresp.generated.reqresp.act_send_req_resp_build_blocks_by_range_v1_probe.dd551ceb",
+      "category": "reqresp",
+      "domain": "reqresp",
+      "surface": "reqresp",
+      "probe": "act_send_req_resp_build_blocks_by_range_v1_probe",
+      "rule_ids": [
+        "PROSE-MAY-40110397"
+      ],
+      "transition": {
+        "from": "Connected",
+        "to": "Completed",
+        "label": "stateless_reqresp_act_send_req_resp_build_blocks_by_range_v1_probe_dd551ceb",
+        "weight": 2,
+        "description": "generated stateless probe for PROSE-MAY-40110397",
+        "spec_refs": [
+          "PROSE-MAY-40110397"
+        ],
+        "action": {
+          "type": "ActSendReqResp",
+          "protocol": "/eth2/beacon_chain/req/beacon_blocks_by_range/1/ssz_snappy",
+          "payload": {
+            "kind": "builder",
+            "wrap": "ssz_snappy",
+            "name": "buildBlocksByRangeV1Probe"
+          },
+          "timeout_ms": 5000
+        },
+        "guard": {
+          "fork_gte": "altair"
+        },
+        "oracle": {
+          "differential": true,
+          "must_not": [
+            "CRASH"
+          ],
+          "strength": "MAY"
+        }
+      }
+    },
+    {
+      "id": "reqresp.generated.reqresp.act_send_req_resp_build_ping_stream_count_ssz.ca7ccfee",
+      "category": "reqresp",
+      "domain": "reqresp",
+      "surface": "reqresp",
+      "probe": "act_send_req_resp_build_ping_stream_count_ssz",
+      "rule_ids": [
+        "PROSE-MUST_NOT-89347b2a"
+      ],
+      "transition": {
+        "from": "Connected",
+        "to": "Completed",
+        "label": "stateless_reqresp_act_send_req_resp_build_ping_stream_count_ssz_ca7ccfee",
+        "weight": 10,
+        "description": "generated stateless probe for PROSE-MUST_NOT-89347b2a",
+        "condition_desc": "when rate limiting.",
+        "tags": [
+          "conditional"
+        ],
+        "spec_refs": [
+          "PROSE-MUST_NOT-89347b2a"
+        ],
+        "action": {
+          "type": "ActSendReqResp",
+          "protocol": "/eth2/beacon_chain/req/ping/1/ssz_snappy",
+          "payload": {
+            "kind": "builder",
+            "wrap": "ssz_snappy",
+            "name": "buildPingStreamCountSSZ"
+          },
+          "timeout_ms": 5000
+        },
+        "oracle": {
+          "differential": true,
+          "must_not": [
+            "CRASH"
+          ],
+          "strength": "MUST"
+        }
+      }
+    }
+  ]
+}

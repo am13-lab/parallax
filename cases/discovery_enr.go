@@ -35,7 +35,7 @@ func enrOf(ctx context.Context, c runner.Client) (*enr.ENRRecord, string) {
 // divergeValues compares raw values across clients: agreement passes, more
 // than one distinct value yields a divergence whose outliers are the
 // minority value groups.
-func divergeValues(id string, te runner.TestEnv, divType runner.DivergenceType,
+func divergeValues(id, category string, te runner.TestEnv, divType runner.DivergenceType,
 	severity runner.Severity, results map[string]string) []runner.Divergence {
 
 	byValue := map[string][]string{}
@@ -52,21 +52,31 @@ func divergeValues(id string, te runner.TestEnv, divType runner.DivergenceType,
 		}
 	}
 	var outliers []string
-	var lines []string
+	var expected, expectedNames string
+	var deviating []string
 	for _, value := range sortedValueKeys(byValue) {
 		ns := byValue[value]
-		lines = append(lines, fmt.Sprintf("%s: %v", value, ns))
-		if len(ns) < majority {
-			outliers = append(outliers, ns...)
+		if len(ns) == majority && expected == "" {
+			expected = value
+			expectedNames = strings.Join(ns, ", ")
+			continue
 		}
+		outliers = append(outliers, ns...)
+		deviating = append(deviating, fmt.Sprintf("%s got %q", strings.Join(ns, ", "), value))
+	}
+	desc := fmt.Sprintf("%s: %d/%d clients agree on %q (%s)",
+		id, majority, len(results), expected, expectedNames)
+	if len(deviating) > 0 {
+		desc += "; diverged: " + strings.Join(deviating, "; ")
 	}
 	return []runner.Divergence{{
 		TestID:         id,
-		Category:       "discovery",
+		Category:       category,
 		SpecRuleIDs:    te.Meta.SpecRules,
 		Type:           divType,
 		Severity:       severity,
-		Description:    id + ": " + strings.Join(lines, "; "),
+		Description:    desc,
+		Expected:       expected,
 		ClientResults:  results,
 		OutlierClients: outliers,
 	}}
@@ -91,15 +101,34 @@ func verdict(ok bool) string {
 // enrSpecs returns the discovery ENR structure, sequence, consistency and
 // metadata families. Property checks classify each client compliant
 // ("accept") or violating ("reject"); value checks compare raw values.
+// whatForDiscovery explains a discovery case in one sentence, derived from
+// its ID.
+func whatForDiscovery(id string) string {
+	switch {
+	case strings.Contains(id, "custody"):
+		return "Reads each client's advertised custody group count via ENR/metadata; the value must meet the spec requirement and match across clients."
+	case strings.Contains(id, "seq_number"):
+		return "Compares ENR/metadata sequence numbers; node-internal counters must simply be present and well-formed."
+	case strings.Contains(id, "fork_digest"):
+		return "Compares the fork digest each client reports via discovery; all clients on the same chain must agree."
+	case strings.Contains(id, "eth2"):
+		return "Checks the ENR eth2 field (fork digest + next fork epoch) is present and correctly sized."
+	case strings.Contains(id, "attnets") || strings.Contains(id, "syncnets"):
+		return "Checks the ENR subnet bitfields are present and correctly sized for the client's subscriptions."
+	}
+	return "Compares a discovery-layer property across clients; spec-constrained fields must be valid and consistent."
+}
+
 func enrSpecs() []runner.Spec {
 	// structure: one spec per ENR property rule.
 	prop := func(id, rule string, check func(*enr.ENRRecord) bool) runner.Spec {
 		return runner.Spec{
 			ID:       id,
 			Category: "discovery",
+			What:     whatForDiscovery(id),
 			Metadata: runner.Metadata{SpecRules: []string{rule}},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
-				results := map[string]string{}
+				results, details := map[string]string{}, map[string]string{}
 				for _, c := range te.Clients {
 					rec, out := enrOf(ctx, c)
 					if out != "" {
@@ -108,7 +137,7 @@ func enrSpecs() []runner.Spec {
 					}
 					results[c.Name()] = verdict(check(rec))
 				}
-				return diverge(id, "discovery", te.Meta, results)
+				return diverge(id, "discovery", te.Meta, results, details)
 			},
 		}
 	}
@@ -118,13 +147,14 @@ func enrSpecs() []runner.Spec {
 		return runner.Spec{
 			ID:       id,
 			Category: "discovery",
+			What:     whatForDiscovery(id),
 			Metadata: runner.Metadata{SpecRules: []string{rule}},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				results := map[string]string{}
 				for _, c := range te.Clients {
 					results[c.Name()] = get(ctx, te, c)
 				}
-				return divergeValues(id, te, divType, sev, results)
+				return divergeValues(id, "discovery", te, divType, sev, results)
 			},
 		}
 	}

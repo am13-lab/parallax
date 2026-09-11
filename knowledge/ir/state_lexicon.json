@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "source": "hand-curated; maps a spec temporal-edge to_ref phrase to a semantic state. States are validated against ir/sm_ir_templates/statemachine_template.json by cmd/irderive.",
+  "note": "Used only to override the FROM state of upon/once/after temporal edges when it resolves to a real, non-terminal state that is neither the binding's from nor to (no self-loops). Keyed by template machine name; add sections as more stateful surfaces are formalized. Caution: match a state by its ACTUAL modeled meaning, not its name. In ReqResp, RequestWritten is reached only via ActWritePartial (one raw byte), so it models a PARTIAL/malformed write; do not anchor 'finishes writing the request' there (that valid write-then-close rule is already the binding default StreamOpen->RequestHalfClosed via ActWriteAndClose).",
+  "machines": {
+    "ReqResp": [
+      {"match": "reading the ssz length-prefix", "state": "FirstChunkSeen"},
+      {"match": "reading a valid header", "state": "FirstChunkSeen"},
+      {"match": "consuming the next response chunk", "state": "FirstChunkSeen"},
+      {"match": "a new stream", "state": "StreamOpen"}
+    ]
+  }
+}
