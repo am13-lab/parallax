@@ -29,6 +29,7 @@ type TestResult struct {
 	TestID          string       `json:"test_id"`
 	Category        string       `json:"category"`
 	What            string       `json:"description,omitempty"`
+	SpecRuleIDs     []string     `json:"spec_rule_ids,omitempty"`
 	Status          Status       `json:"status"`
 	SkipReason      string       `json:"skip_reason,omitempty"`
 	ExcludedClients []string     `json:"excluded_clients,omitempty"`
@@ -289,6 +290,9 @@ func Run(ctx context.Context, specs []Spec, clients []Client, environment env.En
 
 	store := func(idx int, result TestResult, divs []Divergence) {
 		s := &selected[idx]
+		if len(result.SpecRuleIDs) == 0 && len(s.Metadata.SpecRules) > 0 {
+			result.SpecRuleIDs = s.Metadata.SpecRules
+		}
 		for j := range divs {
 			if divs[j].TestID == "" {
 				divs[j].TestID = s.ID
