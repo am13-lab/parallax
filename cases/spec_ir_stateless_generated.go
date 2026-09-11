@@ -14,7 +14,7 @@ import (
 func irStatelessSpecs() []runner.Spec {
 	var specs []runner.Spec
 	{
-		id := "ir_stateless.cryptomsg.generated.attester_slashing.actinjectgossip_buildinvalidattesterslashingfieldequality.32436903"
+		id := "ir_stateless.cryptomsg.generated.attester_slashing.act_inject_gossip_build_invalid_attester_slashing_field_equality.32436903"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "cryptomsg",
 			What:     "generated stateless probe for ATTESTER_SLASHING-IGNORE-647ecfb9, ATTESTER_SLASHING-REJECT-6cea922f (expected reject)",
@@ -33,12 +33,12 @@ func irStatelessSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -47,7 +47,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.cryptomsg.generated.attester_slashing.actinjectgossip_buildinvalidattesterslashingindexoob.e3b36a09"
+		id := "ir_stateless.cryptomsg.generated.attester_slashing.act_inject_gossip_build_invalid_attester_slashing_index_oob.e3b36a09"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "cryptomsg",
 			What:     "generated stateless probe for ATTESTER_SLASHING-REJECT-02169118, ATTESTER_SLASHING-REJECT-6425e9b8, ATTESTER_SLASHING-REJECT-8adc7b7d, ATTESTER_SLASHING-REJECT-e0453bd4 (expected reject)",
@@ -66,12 +66,12 @@ func irStatelessSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -80,7 +80,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.cryptomsg.generated.attester_slashing.actinjectgossip_buildinvalidattesterslashinglengthlimit.5fae4735"
+		id := "ir_stateless.cryptomsg.generated.attester_slashing.act_inject_gossip_build_invalid_attester_slashing_length_limit.5fae4735"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "cryptomsg",
 			What:     "generated stateless probe for ATTESTER_SLASHING-REJECT-2d878548 (expected reject)",
@@ -99,12 +99,12 @@ func irStatelessSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -113,7 +113,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.cryptomsg.generated.beacon_aggregate_and_proof.actinjectgossip_buildinvalidbeaconaggregateandproofaggregatesiginvalid.ce55aac1"
+		id := "ir_stateless.cryptomsg.generated.beacon_aggregate_and_proof.act_inject_gossip_build_invalid_beacon_aggregate_and_proof_aggregate_sig_invalid.ce55aac1"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "cryptomsg",
 			What:     "generated stateless probe for BEACON_AGGREGATE_AND_PROOF-REJECT-14282100 (expected reject)",
@@ -132,12 +132,12 @@ func irStatelessSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -146,7 +146,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.cryptomsg.generated.beacon_aggregate_and_proof.actinjectgossip_buildinvalidbeaconaggregateandproofdataindexnonzero.190c199a"
+		id := "ir_stateless.cryptomsg.generated.beacon_aggregate_and_proof.act_inject_gossip_build_invalid_beacon_aggregate_and_proof_data_index_non_zero.190c199a"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "cryptomsg",
 			What:     "generated stateless probe for BEACON_AGGREGATE_AND_PROOF-MUST-20b37b69, BEACON_AGGREGATE_AND_PROOF-REJECT-ab7fb155 (expected reject)",
@@ -165,12 +165,12 @@ func irStatelessSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -179,7 +179,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.cryptomsg.generated.beacon_aggregate_and_proof.actinjectgossip_buildinvalidbeaconaggregateandproofmultiplecommitteebits.06664bd0"
+		id := "ir_stateless.cryptomsg.generated.beacon_aggregate_and_proof.act_inject_gossip_build_invalid_beacon_aggregate_and_proof_multiple_committee_bits.06664bd0"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "cryptomsg",
 			What:     "generated stateless probe for BEACON_AGGREGATE_AND_PROOF-REJECT-b0b9c377 (expected reject)",
@@ -198,12 +198,12 @@ func irStatelessSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -212,7 +212,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.cryptomsg.generated.beacon_aggregate_and_proof.actinjectgossip_buildinvalidbeaconaggregateandproofmultiplecommitteebits.45d472d5"
+		id := "ir_stateless.cryptomsg.generated.beacon_aggregate_and_proof.act_inject_gossip_build_invalid_beacon_aggregate_and_proof_multiple_committee_bits.45d472d5"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "cryptomsg",
 			What:     "generated stateless probe for BEACON_AGGREGATE_AND_PROOF-IGNORE-0e37cd0e (expected reject)",
@@ -231,12 +231,12 @@ func irStatelessSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -245,7 +245,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.cryptomsg.generated.beacon_aggregate_and_proof.actinjectgossip_buildinvalidbeaconaggregateandproofmultiplecommitteebits.607f975d"
+		id := "ir_stateless.cryptomsg.generated.beacon_aggregate_and_proof.act_inject_gossip_build_invalid_beacon_aggregate_and_proof_multiple_committee_bits.607f975d"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "cryptomsg",
 			What:     "generated stateless probe for BEACON_AGGREGATE_AND_PROOF-REJECT-f41bc7a4",
@@ -264,12 +264,12 @@ func irStatelessSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -278,7 +278,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.cryptomsg.generated.beacon_aggregate_and_proof.actinjectgossip_buildinvalidbeaconaggregateandproofnoparticipants.2b051b17"
+		id := "ir_stateless.cryptomsg.generated.beacon_aggregate_and_proof.act_inject_gossip_build_invalid_beacon_aggregate_and_proof_no_participants.2b051b17"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "cryptomsg",
 			What:     "generated stateless probe for BEACON_AGGREGATE_AND_PROOF-REJECT-b6185e7c (expected reject)",
@@ -297,12 +297,12 @@ func irStatelessSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -311,7 +311,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.cryptomsg.generated.beacon_aggregate_and_proof.actinjectgossip_buildinvalidbeaconaggregateandproofoutersiginvalid.b55369fa"
+		id := "ir_stateless.cryptomsg.generated.beacon_aggregate_and_proof.act_inject_gossip_build_invalid_beacon_aggregate_and_proof_outer_sig_invalid.b55369fa"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "cryptomsg",
 			What:     "generated stateless probe for BEACON_AGGREGATE_AND_PROOF-REJECT-b10dbef1 (expected reject)",
@@ -330,12 +330,12 @@ func irStatelessSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -344,7 +344,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.cryptomsg.generated.beacon_aggregate_and_proof.actinjectgossip_buildinvalidbeaconaggregateandproofselectionproofsiginvalid.3d53817e"
+		id := "ir_stateless.cryptomsg.generated.beacon_aggregate_and_proof.act_inject_gossip_build_invalid_beacon_aggregate_and_proof_selection_proof_sig_invalid.3d53817e"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "cryptomsg",
 			What:     "generated stateless probe for BEACON_AGGREGATE_AND_PROOF-REJECT-2fa7d152, BEACON_AGGREGATE_AND_PROOF-REJECT-863359b5 (expected reject)",
@@ -363,12 +363,12 @@ func irStatelessSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -377,7 +377,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.cryptomsg.generated.beacon_aggregate_and_proof.actinjectgossip_buildinvalidbeaconaggregateandproofslotepochrange.2b19e14f"
+		id := "ir_stateless.cryptomsg.generated.beacon_aggregate_and_proof.act_inject_gossip_build_invalid_beacon_aggregate_and_proof_slot_epoch_range.2b19e14f"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "cryptomsg",
 			What:     "generated stateless probe for BEACON_AGGREGATE_AND_PROOF-IGNORE-ebee640a, BEACON_AGGREGATE_AND_PROOF-REJECT-02e06dcb (expected reject)",
@@ -396,12 +396,12 @@ func irStatelessSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -410,7 +410,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.cryptomsg.generated.beacon_aggregate_and_proof.actinjectgossip_buildinvalidbeaconaggregateandproofslotepochrange.d9fb3f82"
+		id := "ir_stateless.cryptomsg.generated.beacon_aggregate_and_proof.act_inject_gossip_build_invalid_beacon_aggregate_and_proof_slot_epoch_range.d9fb3f82"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "cryptomsg",
 			What:     "generated stateless probe for BEACON_AGGREGATE_AND_PROOF-IGNORE-85b80178 (expected reject)",
@@ -429,12 +429,12 @@ func irStatelessSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -443,7 +443,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.cryptomsg.generated.beacon_aggregate_and_proof.actinjectgossip_buildinvalidbeaconaggregateandproofslotfuture.dd871bbd"
+		id := "ir_stateless.cryptomsg.generated.beacon_aggregate_and_proof.act_inject_gossip_build_invalid_beacon_aggregate_and_proof_slot_future.dd871bbd"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "cryptomsg",
 			What:     "generated stateless probe for BEACON_AGGREGATE_AND_PROOF-IGNORE-67149835 (expected reject)",
@@ -462,12 +462,12 @@ func irStatelessSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -476,7 +476,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.cryptomsg.generated.beacon_aggregate_and_proof.actinjectgossip_buildvalidbeaconaggregateandproof.5d4f0a8f"
+		id := "ir_stateless.cryptomsg.generated.beacon_aggregate_and_proof.act_inject_gossip_build_valid_beacon_aggregate_and_proof.5d4f0a8f"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "cryptomsg",
 			What:     "generated stateless probe for BEACON_AGGREGATE_AND_PROOF-IGNORE-19a3a197, BEACON_AGGREGATE_AND_PROOF-IGNORE-dc38af01, BEACON_AGGREGATE_AND_PROOF-REJECT-544ecc21, BEACON_AGGREGATE_AND_PROOF-REJECT-5658ca54, BEACON_AGGREGATE_AND_PROOF-REJECT-fc3dd3a9",
@@ -495,12 +495,12 @@ func irStatelessSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -509,7 +509,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.cryptomsg.generated.beacon_attestation.actinjectgossip_buildinvalidbeaconattestationfinalizedancestor.220731b7"
+		id := "ir_stateless.cryptomsg.generated.beacon_attestation.act_inject_gossip_build_invalid_beacon_attestation_finalized_ancestor.220731b7"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "cryptomsg",
 			What:     "generated stateless probe for BEACON_ATTESTATION-IGNORE-e55933f5 (expected reject)",
@@ -528,12 +528,12 @@ func irStatelessSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -542,7 +542,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.cryptomsg.generated.beacon_attestation.actinjectgossip_buildinvalidbeaconattestationindexoob.c40928dd"
+		id := "ir_stateless.cryptomsg.generated.beacon_attestation.act_inject_gossip_build_invalid_beacon_attestation_index_oob.c40928dd"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "cryptomsg",
 			What:     "generated stateless probe for BEACON_ATTESTATION-REJECT-36fd424b, BEACON_ATTESTATION_SUBNET_ID-MUST-454af71d (expected reject)",
@@ -561,12 +561,12 @@ func irStatelessSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -575,7 +575,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.cryptomsg.generated.beacon_attestation.actinjectgossip_buildinvalidbeaconattestationsiginvalid.c789a9e8"
+		id := "ir_stateless.cryptomsg.generated.beacon_attestation.act_inject_gossip_build_invalid_beacon_attestation_sig_invalid.c789a9e8"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "cryptomsg",
 			What:     "generated stateless probe for BEACON_ATTESTATION-REJECT-f7a87fa4 (expected reject)",
@@ -594,12 +594,12 @@ func irStatelessSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -608,7 +608,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.cryptomsg.generated.beacon_attestation.actinjectgossip_buildinvalidbeaconattestationslotepochrange.584942c7"
+		id := "ir_stateless.cryptomsg.generated.beacon_attestation.act_inject_gossip_build_invalid_beacon_attestation_slot_epoch_range.584942c7"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "cryptomsg",
 			What:     "generated stateless probe for BEACON_ATTESTATION-IGNORE-493398b9 (expected reject)",
@@ -627,12 +627,12 @@ func irStatelessSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -641,7 +641,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.cryptomsg.generated.beacon_attestation.actinjectgossip_buildinvalidbeaconattestationslotepochrange.760fefdb"
+		id := "ir_stateless.cryptomsg.generated.beacon_attestation.act_inject_gossip_build_invalid_beacon_attestation_slot_epoch_range.760fefdb"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "cryptomsg",
 			What:     "generated stateless probe for BEACON_ATTESTATION-IGNORE-9dbc7051, BEACON_ATTESTATION-REJECT-2d8f2580, BEACON_ATTESTATION-REJECT-fc3dd3a9 (expected reject)",
@@ -660,12 +660,12 @@ func irStatelessSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -674,7 +674,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.cryptomsg.generated.beacon_attestation.actinjectgossip_buildinvalidbeaconattestationslotfuture.844b06a3"
+		id := "ir_stateless.cryptomsg.generated.beacon_attestation.act_inject_gossip_build_invalid_beacon_attestation_slot_future.844b06a3"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "cryptomsg",
 			What:     "generated stateless probe for BEACON_ATTESTATION-IGNORE-5da40ec3 (expected reject)",
@@ -693,12 +693,12 @@ func irStatelessSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -707,7 +707,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.cryptomsg.generated.beacon_attestation.actinjectgossip_buildinvalidbeaconattestationtargetrootconsistent.cb463ed7"
+		id := "ir_stateless.cryptomsg.generated.beacon_attestation.act_inject_gossip_build_invalid_beacon_attestation_target_root_consistent.cb463ed7"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "cryptomsg",
 			What:     "generated stateless probe for BEACON_ATTESTATION-REJECT-cb7a1c7e (expected reject)",
@@ -726,12 +726,12 @@ func irStatelessSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -740,7 +740,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.cryptomsg.generated.beacon_attestation.actinjectgossip_buildvalidbeaconattestation.35f8f8f5"
+		id := "ir_stateless.cryptomsg.generated.beacon_attestation.act_inject_gossip_build_valid_beacon_attestation.35f8f8f5"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "cryptomsg",
 			What:     "generated stateless probe for BEACON_ATTESTATION-REJECT-20aed41d",
@@ -759,12 +759,12 @@ func irStatelessSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -773,7 +773,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.cryptomsg.generated.beacon_attestation.actinjectgossip_buildvalidbeaconattestation.946766e6"
+		id := "ir_stateless.cryptomsg.generated.beacon_attestation.act_inject_gossip_build_valid_beacon_attestation.946766e6"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "cryptomsg",
 			What:     "generated stateless probe for BEACON_ATTESTATION-REJECT-551474a5, BEACON_ATTESTATION-REJECT-f41bc7a4",
@@ -792,12 +792,12 @@ func irStatelessSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -806,7 +806,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.cryptomsg.generated.beacon_attestation.actinjectgossip_buildvalidbeaconattestation.eae9dee5"
+		id := "ir_stateless.cryptomsg.generated.beacon_attestation.act_inject_gossip_build_valid_beacon_attestation.eae9dee5"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "cryptomsg",
 			What:     "generated stateless probe for BEACON_ATTESTATION-REJECT-02f714ed (expected reject)",
@@ -825,12 +825,12 @@ func irStatelessSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -839,7 +839,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.cryptomsg.generated.beacon_block.actinjectgossip_buildinvalidbeaconblockkzgproof.deb5ba6f"
+		id := "ir_stateless.cryptomsg.generated.beacon_block.act_inject_gossip_build_invalid_beacon_block_kzg_proof.deb5ba6f"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "cryptomsg",
 			What:     "generated stateless probe for BEACON_BLOCK-REJECT-29379623 (expected reject)",
@@ -858,12 +858,12 @@ func irStatelessSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -872,7 +872,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.cryptomsg.generated.beacon_block.actinjectgossip_buildinvalidbeaconblockparentknownvalid.23fa2260"
+		id := "ir_stateless.cryptomsg.generated.beacon_block.act_inject_gossip_build_invalid_beacon_block_parent_known_valid.23fa2260"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "cryptomsg",
 			What:     "generated stateless probe for BEACON_BLOCK-IGNORE-6f3dc923, BEACON_BLOCK-IGNORE-a98db703, BEACON_BLOCK-REJECT-6e147d11 (expected reject)",
@@ -891,12 +891,12 @@ func irStatelessSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -905,7 +905,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.cryptomsg.generated.beacon_block.actinjectgossip_buildinvalidbeaconblockparentknownvalid.3e6b40e8"
+		id := "ir_stateless.cryptomsg.generated.beacon_block.act_inject_gossip_build_invalid_beacon_block_parent_known_valid.3e6b40e8"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "cryptomsg",
 			What:     "generated stateless probe for BEACON_BLOCK-IGNORE-b127f4ef, BEACON_BLOCK-REJECT-33eeeb94, BEACON_BLOCK-REJECT-5f829684 (expected reject)",
@@ -924,12 +924,12 @@ func irStatelessSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -938,7 +938,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.cryptomsg.generated.beacon_block.actinjectgossip_buildinvalidbeaconblockparentknownvalid.67875b1c"
+		id := "ir_stateless.cryptomsg.generated.beacon_block.act_inject_gossip_build_invalid_beacon_block_parent_known_valid.67875b1c"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "cryptomsg",
 			What:     "generated stateless probe for BEACON_BLOCK-REJECT-48c14af0 (expected reject)",
@@ -957,12 +957,12 @@ func irStatelessSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -971,7 +971,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.cryptomsg.generated.beacon_block.actinjectgossip_buildinvalidbeaconblockproposerindexwrong.a1c4248c"
+		id := "ir_stateless.cryptomsg.generated.beacon_block.act_inject_gossip_build_invalid_beacon_block_proposer_index_wrong.a1c4248c"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "cryptomsg",
 			What:     "generated stateless probe for BEACON_BLOCK-REJECT-4df28963 (expected reject)",
@@ -990,12 +990,12 @@ func irStatelessSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -1004,7 +1004,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.cryptomsg.generated.beacon_block.actinjectgossip_buildinvalidbeaconblockproposerindexwrong.c918a5e7"
+		id := "ir_stateless.cryptomsg.generated.beacon_block.act_inject_gossip_build_invalid_beacon_block_proposer_index_wrong.c918a5e7"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "cryptomsg",
 			What:     "generated stateless probe for BEACON_BLOCK-REJECT-a3e807db",
@@ -1023,12 +1023,12 @@ func irStatelessSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -1037,7 +1037,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.cryptomsg.generated.beacon_block.actinjectgossip_buildinvalidbeaconblocksiginvalid.c3df4350"
+		id := "ir_stateless.cryptomsg.generated.beacon_block.act_inject_gossip_build_invalid_beacon_block_sig_invalid.c3df4350"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "cryptomsg",
 			What:     "generated stateless probe for BEACON_BLOCK-IGNORE-2b120cd4, BEACON_BLOCK-REJECT-3fd28bdc (expected reject)",
@@ -1056,12 +1056,12 @@ func irStatelessSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -1070,7 +1070,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.cryptomsg.generated.beacon_block.actinjectgossip_buildinvalidbeaconblockslotfuture.f19b6f01"
+		id := "ir_stateless.cryptomsg.generated.beacon_block.act_inject_gossip_build_invalid_beacon_block_slot_future.f19b6f01"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "cryptomsg",
 			What:     "generated stateless probe for BEACON_BLOCK-IGNORE-451f432d (expected reject)",
@@ -1089,12 +1089,12 @@ func irStatelessSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -1103,7 +1103,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.cryptomsg.generated.beacon_block.actinjectgossip_buildinvalidbeaconblocktimestampcorrect.864ecc2c"
+		id := "ir_stateless.cryptomsg.generated.beacon_block.act_inject_gossip_build_invalid_beacon_block_timestamp_correct.864ecc2c"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "cryptomsg",
 			What:     "generated stateless probe for BEACON_BLOCK-REJECT-83dcef19 (expected reject)",
@@ -1122,12 +1122,12 @@ func irStatelessSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -1136,7 +1136,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.cryptomsg.generated.beacon_block.actinjectgossip_buildvalidbeaconblock.154e1125"
+		id := "ir_stateless.cryptomsg.generated.beacon_block.act_inject_gossip_build_valid_beacon_block.154e1125"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "cryptomsg",
 			What:     "generated stateless probe for BEACON_BLOCK-IGNORE-e183d5a9, BEACON_BLOCK-REJECT-dbd5e1e1",
@@ -1155,12 +1155,12 @@ func irStatelessSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -1169,7 +1169,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.cryptomsg.generated.blob_sidecar.actinjectgossip_buildinvalidblobsidecarindexoob.622507ae"
+		id := "ir_stateless.cryptomsg.generated.blob_sidecar.act_inject_gossip_build_invalid_blob_sidecar_index_oob.622507ae"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "cryptomsg",
 			What:     "generated stateless probe for BLOB_SIDECAR-REJECT-5e9003ab (expected reject)",
@@ -1188,12 +1188,12 @@ func irStatelessSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -1202,7 +1202,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.cryptomsg.generated.blob_sidecar.actinjectgossip_buildinvalidblobsidecarindexoob.ce341e78"
+		id := "ir_stateless.cryptomsg.generated.blob_sidecar.act_inject_gossip_build_invalid_blob_sidecar_index_oob.ce341e78"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "cryptomsg",
 			What:     "generated stateless probe for BLOB_SIDECAR-REJECT-e13efefd (expected reject)",
@@ -1221,12 +1221,12 @@ func irStatelessSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -1235,7 +1235,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.cryptomsg.generated.blob_sidecar.actinjectgossip_buildinvalidblobsidecarkzgproof.e0a45e3b"
+		id := "ir_stateless.cryptomsg.generated.blob_sidecar.act_inject_gossip_build_invalid_blob_sidecar_kzg_proof.e0a45e3b"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "cryptomsg",
 			What:     "generated stateless probe for BLOB_SIDECAR-REJECT-124b7dda, BLOB_SIDECAR-REJECT-190a8460 (expected reject)",
@@ -1254,12 +1254,12 @@ func irStatelessSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -1268,7 +1268,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.cryptomsg.generated.blob_sidecar.actinjectgossip_buildinvalidblobsidecarproposerindexwrong.8499aafd"
+		id := "ir_stateless.cryptomsg.generated.blob_sidecar.act_inject_gossip_build_invalid_blob_sidecar_proposer_index_wrong.8499aafd"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "cryptomsg",
 			What:     "generated stateless probe for BLOB_SIDECAR-REJECT-4df28963 (expected reject)",
@@ -1287,12 +1287,12 @@ func irStatelessSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -1301,7 +1301,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.cryptomsg.generated.blob_sidecar.actinjectgossip_buildinvalidblobsidecarproposerindexwrong.ac886ecf"
+		id := "ir_stateless.cryptomsg.generated.blob_sidecar.act_inject_gossip_build_invalid_blob_sidecar_proposer_index_wrong.ac886ecf"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "cryptomsg",
 			What:     "generated stateless probe for BLOB_SIDECAR-REJECT-28436443",
@@ -1320,12 +1320,12 @@ func irStatelessSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -1334,7 +1334,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.cryptomsg.generated.blob_sidecar.actinjectgossip_buildinvalidblobsidecarsiginvalid.99d4641c"
+		id := "ir_stateless.cryptomsg.generated.blob_sidecar.act_inject_gossip_build_invalid_blob_sidecar_sig_invalid.99d4641c"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "cryptomsg",
 			What:     "generated stateless probe for BLOB_SIDECAR-REJECT-c9c1666b (expected reject)",
@@ -1353,12 +1353,12 @@ func irStatelessSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -1367,7 +1367,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.cryptomsg.generated.blob_sidecar.actinjectgossip_buildinvalidblobsidecarslotfuture.5b21c870"
+		id := "ir_stateless.cryptomsg.generated.blob_sidecar.act_inject_gossip_build_invalid_blob_sidecar_slot_future.5b21c870"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "cryptomsg",
 			What:     "generated stateless probe for BLOB_SIDECAR-IGNORE-8cf6775b (expected reject)",
@@ -1386,12 +1386,12 @@ func irStatelessSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -1400,7 +1400,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.cryptomsg.generated.blob_sidecar.actinjectgossip_buildvalidblobsidecar.90aa687d"
+		id := "ir_stateless.cryptomsg.generated.blob_sidecar.act_inject_gossip_build_valid_blob_sidecar.90aa687d"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "cryptomsg",
 			What:     "generated stateless probe for BLOB_SIDECAR-REJECT-c094c7ea (expected reject)",
@@ -1419,12 +1419,12 @@ func irStatelessSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -1433,7 +1433,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.cryptomsg.generated.blob_sidecar.actinjectgossip_buildvalidblobsidecar.b93bcb6e"
+		id := "ir_stateless.cryptomsg.generated.blob_sidecar.act_inject_gossip_build_valid_blob_sidecar.b93bcb6e"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "cryptomsg",
 			What:     "generated stateless probe for BLOB_SIDECAR-IGNORE-6478f02b, BLOB_SIDECAR-IGNORE-80194614, BLOB_SIDECAR-REJECT-5f6c65a0, BLOB_SIDECAR-REJECT-f5bf199b, BLOB_SIDECAR-REJECT-fb4868ac",
@@ -1452,12 +1452,12 @@ func irStatelessSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -1466,7 +1466,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.cryptomsg.generated.bls_to_execution_change.actinjectgossip_buildinvalidblstoexecutionchangefieldequality.86630b9d"
+		id := "ir_stateless.cryptomsg.generated.bls_to_execution_change.act_inject_gossip_build_invalid_bls_to_execution_change_field_equality.86630b9d"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "cryptomsg",
 			What:     "generated stateless probe for BLS_TO_EXECUTION_CHANGE-REJECT-3869cf36, BLS_TO_EXECUTION_CHANGE-REJECT-c61b3034 (expected reject)",
@@ -1485,12 +1485,12 @@ func irStatelessSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -1499,7 +1499,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.cryptomsg.generated.bls_to_execution_change.actinjectgossip_buildinvalidblstoexecutionchangeindexoob.6fc6ee1c"
+		id := "ir_stateless.cryptomsg.generated.bls_to_execution_change.act_inject_gossip_build_invalid_bls_to_execution_change_index_oob.6fc6ee1c"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "cryptomsg",
 			What:     "generated stateless probe for BLS_TO_EXECUTION_CHANGE-REJECT-3aa5be35 (expected reject)",
@@ -1518,12 +1518,12 @@ func irStatelessSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -1532,7 +1532,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.cryptomsg.generated.bls_to_execution_change.actinjectgossip_buildinvalidblstoexecutionchangesiginvalid.26c6ac7d"
+		id := "ir_stateless.cryptomsg.generated.bls_to_execution_change.act_inject_gossip_build_invalid_bls_to_execution_change_sig_invalid.26c6ac7d"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "cryptomsg",
 			What:     "generated stateless probe for BLS_TO_EXECUTION_CHANGE-REJECT-cc9547b7 (expected reject)",
@@ -1551,12 +1551,12 @@ func irStatelessSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -1565,7 +1565,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.cryptomsg.generated.data_column_sidecar.actinjectgossip_buildinvaliddatacolumnsidecarkzgproof.251441c4"
+		id := "ir_stateless.cryptomsg.generated.data_column_sidecar.act_inject_gossip_build_invalid_data_column_sidecar_kzg_proof.251441c4"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "cryptomsg",
 			What:     "generated stateless probe for DATA_COLUMN_SIDECAR-REJECT-459b0d39, DATA_COLUMN_SIDECAR-REJECT-9a465758, DATA_COLUMN_SIDECAR-REJECT-f173b70c (expected reject)",
@@ -1584,12 +1584,12 @@ func irStatelessSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -1598,7 +1598,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.cryptomsg.generated.data_column_sidecar.actinjectgossip_buildinvaliddatacolumnsidecarproposerindexwrong.3c0f4b60"
+		id := "ir_stateless.cryptomsg.generated.data_column_sidecar.act_inject_gossip_build_invalid_data_column_sidecar_proposer_index_wrong.3c0f4b60"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "cryptomsg",
 			What:     "generated stateless probe for DATA_COLUMN_SIDECAR-REJECT-28436443",
@@ -1617,12 +1617,12 @@ func irStatelessSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -1631,7 +1631,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.cryptomsg.generated.data_column_sidecar.actinjectgossip_buildinvaliddatacolumnsidecarproposerindexwrong.76a5c4e9"
+		id := "ir_stateless.cryptomsg.generated.data_column_sidecar.act_inject_gossip_build_invalid_data_column_sidecar_proposer_index_wrong.76a5c4e9"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "cryptomsg",
 			What:     "generated stateless probe for DATA_COLUMN_SIDECAR-REJECT-4df28963 (expected reject)",
@@ -1650,12 +1650,12 @@ func irStatelessSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -1664,7 +1664,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.cryptomsg.generated.data_column_sidecar.actinjectgossip_buildinvaliddatacolumnsidecarsiginvalid.c30a5bff"
+		id := "ir_stateless.cryptomsg.generated.data_column_sidecar.act_inject_gossip_build_invalid_data_column_sidecar_sig_invalid.c30a5bff"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "cryptomsg",
 			What:     "generated stateless probe for DATA_COLUMN_SIDECAR-REJECT-b049ffd8 (expected reject)",
@@ -1683,12 +1683,12 @@ func irStatelessSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -1697,7 +1697,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.cryptomsg.generated.data_column_sidecar.actinjectgossip_buildinvaliddatacolumnsidecarslotfuture.e09d58f6"
+		id := "ir_stateless.cryptomsg.generated.data_column_sidecar.act_inject_gossip_build_invalid_data_column_sidecar_slot_future.e09d58f6"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "cryptomsg",
 			What:     "generated stateless probe for DATA_COLUMN_SIDECAR-IGNORE-8cf6775b (expected reject)",
@@ -1716,12 +1716,12 @@ func irStatelessSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -1730,7 +1730,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.cryptomsg.generated.data_column_sidecar.actinjectgossip_buildvaliddatacolumnsidecar.0b38f41c"
+		id := "ir_stateless.cryptomsg.generated.data_column_sidecar.act_inject_gossip_build_valid_data_column_sidecar.0b38f41c"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "cryptomsg",
 			What:     "generated stateless probe for DATA_COLUMN_SIDECAR-REJECT-c094c7ea (expected reject)",
@@ -1749,12 +1749,12 @@ func irStatelessSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -1763,7 +1763,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.cryptomsg.generated.data_column_sidecar.actinjectgossip_buildvaliddatacolumnsidecar.d7807ad2"
+		id := "ir_stateless.cryptomsg.generated.data_column_sidecar.act_inject_gossip_build_valid_data_column_sidecar.d7807ad2"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "cryptomsg",
 			What:     "generated stateless probe for DATA_COLUMN_SIDECAR-IGNORE-6478f02b, DATA_COLUMN_SIDECAR-IGNORE-80194614, DATA_COLUMN_SIDECAR-REJECT-5f6c65a0, DATA_COLUMN_SIDECAR-REJECT-f5bf199b, DATA_COLUMN_SIDECAR-REJECT-fb4868ac",
@@ -1782,12 +1782,12 @@ func irStatelessSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -1796,7 +1796,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.cryptomsg.generated.proposer_slashing.actinjectgossip_buildinvalidproposerslashingfieldequality.b6c1f974"
+		id := "ir_stateless.cryptomsg.generated.proposer_slashing.act_inject_gossip_build_invalid_proposer_slashing_field_equality.b6c1f974"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "cryptomsg",
 			What:     "generated stateless probe for PROPOSER_SLASHING-REJECT-1248d8f2, PROPOSER_SLASHING-REJECT-54d620b6, PROPOSER_SLASHING-REJECT-bb7fb86d, PROPOSER_SLASHING-REJECT-be80525c (expected reject)",
@@ -1815,12 +1815,12 @@ func irStatelessSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -1829,7 +1829,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.cryptomsg.generated.proposer_slashing.actinjectgossip_buildinvalidproposerslashingindexoob.85c194b2"
+		id := "ir_stateless.cryptomsg.generated.proposer_slashing.act_inject_gossip_build_invalid_proposer_slashing_index_oob.85c194b2"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "cryptomsg",
 			What:     "generated stateless probe for PROPOSER_SLASHING-IGNORE-a4a13783, PROPOSER_SLASHING-REJECT-4df28963 (expected reject)",
@@ -1848,12 +1848,12 @@ func irStatelessSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -1862,7 +1862,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.cryptomsg.generated.proposer_slashing.actinjectgossip_buildinvalidproposerslashingsiginvalid.9ed226b2"
+		id := "ir_stateless.cryptomsg.generated.proposer_slashing.act_inject_gossip_build_invalid_proposer_slashing_sig_invalid.9ed226b2"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "cryptomsg",
 			What:     "generated stateless probe for PROPOSER_SLASHING-REJECT-4e6c2331 (expected reject)",
@@ -1881,12 +1881,12 @@ func irStatelessSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -1895,11 +1895,11 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.cryptomsg.generated.sync_committee_contribution_and_proof.actinjectgossip_buildinvalidsynccommitteecontributionandproofindexoob.3ff2bb16"
+		id := "ir_stateless.cryptomsg.generated.sync_committee_contribution_and_proof.act_inject_gossip_build_invalid_sync_committee_contribution_and_proof_index_oob.3ff2bb16"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "cryptomsg",
-			What:     "generated stateless probe for SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-IGNORE-85bd91b0, SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-IGNORE-db9ed2c2, SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-1d325814, SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-5bdbca46, SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-c33e885a (expected reject)",
-			Metadata: runner.Metadata{SpecRules: []string{"SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-IGNORE-85bd91b0", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-IGNORE-db9ed2c2", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-1d325814", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-5bdbca46", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-c33e885a"}, MinClients: 2},
+			What:     "generated stateless probe for SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-IGNORE-85bd91b0, SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-IGNORE-db9ed2c2, SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-1d325814, SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-5bdbca46 (expected reject)",
+			Metadata: runner.Metadata{SpecRules: []string{"SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-IGNORE-85bd91b0", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-IGNORE-db9ed2c2", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-1d325814", "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-5bdbca46"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				ictx := irNewContext(te)
 				topic := irFullGossipTopic(ictx, "sync_committee_contribution_and_proof")
@@ -1914,12 +1914,12 @@ func irStatelessSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -1928,7 +1928,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.cryptomsg.generated.sync_committee_contribution_and_proof.actinjectgossip_buildinvalidsynccommitteecontributionandprooflengthlimit.6772d5a6"
+		id := "ir_stateless.cryptomsg.generated.sync_committee_contribution_and_proof.act_inject_gossip_build_invalid_sync_committee_contribution_and_proof_length_limit.6772d5a6"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "cryptomsg",
 			What:     "generated stateless probe for SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-5d5257a1 (expected reject)",
@@ -1947,12 +1947,12 @@ func irStatelessSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -1961,7 +1961,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.cryptomsg.generated.sync_committee_contribution_and_proof.actinjectgossip_buildinvalidsynccommitteecontributionandproofsiginvalid.80e42129"
+		id := "ir_stateless.cryptomsg.generated.sync_committee_contribution_and_proof.act_inject_gossip_build_invalid_sync_committee_contribution_and_proof_sig_invalid.80e42129"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "cryptomsg",
 			What:     "generated stateless probe for SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-08097fc1, SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-52168aa3, SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-5448167e, SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-5dd820ac (expected reject)",
@@ -1980,12 +1980,12 @@ func irStatelessSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -1994,7 +1994,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.cryptomsg.generated.sync_committee_contribution_and_proof.actinjectgossip_buildinvalidsynccommitteecontributionandproofslotepochrange.9479204d"
+		id := "ir_stateless.cryptomsg.generated.sync_committee_contribution_and_proof.act_inject_gossip_build_invalid_sync_committee_contribution_and_proof_slot_epoch_range.9479204d"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "cryptomsg",
 			What:     "generated stateless probe for SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-IGNORE-908a6bf7 (expected reject)",
@@ -2013,12 +2013,12 @@ func irStatelessSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -2027,7 +2027,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.cryptomsg.generated.sync_committee_message.actinjectgossip_buildinvalidsynccommitteemessageindexoob.31dc970c"
+		id := "ir_stateless.cryptomsg.generated.sync_committee_message.act_inject_gossip_build_invalid_sync_committee_message_index_oob.31dc970c"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "cryptomsg",
 			What:     "generated stateless probe for SYNC_COMMITTEE_MESSAGE-REJECT-3aa5be35 (expected reject)",
@@ -2046,12 +2046,12 @@ func irStatelessSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -2060,7 +2060,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.cryptomsg.generated.sync_committee_message.actinjectgossip_buildinvalidsynccommitteemessagesiginvalid.e167668f"
+		id := "ir_stateless.cryptomsg.generated.sync_committee_message.act_inject_gossip_build_invalid_sync_committee_message_sig_invalid.e167668f"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "cryptomsg",
 			What:     "generated stateless probe for SYNC_COMMITTEE_MESSAGE-REJECT-cc9547b7 (expected reject)",
@@ -2079,12 +2079,12 @@ func irStatelessSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -2093,7 +2093,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.cryptomsg.generated.sync_committee_message.actinjectgossip_buildinvalidsynccommitteemessageslotepochrange.bac90b84"
+		id := "ir_stateless.cryptomsg.generated.sync_committee_message.act_inject_gossip_build_invalid_sync_committee_message_slot_epoch_range.bac90b84"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "cryptomsg",
 			What:     "generated stateless probe for SYNC_COMMITTEE_MESSAGE-IGNORE-dddd9a14 (expected reject)",
@@ -2112,12 +2112,12 @@ func irStatelessSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -2126,7 +2126,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.cryptomsg.generated.sync_committee_message.actinjectgossip_buildvalidsynccommitteemessage.eaa5fd2b"
+		id := "ir_stateless.cryptomsg.generated.sync_committee_message.act_inject_gossip_build_valid_sync_committee_message.eaa5fd2b"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "cryptomsg",
 			What:     "generated stateless probe for SYNC_COMMITTEE_MESSAGE-REJECT-c428cd4e",
@@ -2145,12 +2145,12 @@ func irStatelessSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -2159,7 +2159,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.cryptomsg.generated.voluntary_exit.actinjectgossip_buildinvalidvoluntaryexitindexoob.3bc09832"
+		id := "ir_stateless.cryptomsg.generated.voluntary_exit.act_inject_gossip_build_invalid_voluntary_exit_index_oob.3bc09832"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "cryptomsg",
 			What:     "generated stateless probe for VOLUNTARY_EXIT-REJECT-3aa5be35 (expected reject)",
@@ -2178,12 +2178,12 @@ func irStatelessSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -2192,7 +2192,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.cryptomsg.generated.voluntary_exit.actinjectgossip_buildinvalidvoluntaryexitsiginvalid.b5a5c420"
+		id := "ir_stateless.cryptomsg.generated.voluntary_exit.act_inject_gossip_build_invalid_voluntary_exit_sig_invalid.b5a5c420"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "cryptomsg",
 			What:     "generated stateless probe for VOLUNTARY_EXIT-REJECT-cc9547b7 (expected reject)",
@@ -2211,12 +2211,12 @@ func irStatelessSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -2225,7 +2225,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.cryptomsg.generated.voluntary_exit.actinjectgossip_buildinvalidvoluntaryexitslotfuture.32c8209c"
+		id := "ir_stateless.cryptomsg.generated.voluntary_exit.act_inject_gossip_build_invalid_voluntary_exit_slot_future.32c8209c"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "cryptomsg",
 			What:     "generated stateless probe for VOLUNTARY_EXIT-IGNORE-a324eca6 (expected reject)",
@@ -2244,12 +2244,12 @@ func irStatelessSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -2258,7 +2258,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.cryptomsg.generated.voluntary_exit.actinjectgossip_buildvalidvoluntaryexit.11d03ee8"
+		id := "ir_stateless.cryptomsg.generated.voluntary_exit.act_inject_gossip_build_valid_voluntary_exit.11d03ee8"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "cryptomsg",
 			What:     "generated stateless probe for VOLUNTARY_EXIT-REJECT-15cadc01, VOLUNTARY_EXIT-REJECT-f5f33715",
@@ -2277,12 +2277,12 @@ func irStatelessSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -2291,13 +2291,13 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.discovery.generated.discovery.actqueryenr.a3fd9ab9"
+		id := "ir_stateless.discovery.generated.discovery.act_query_enr.a3fd9ab9"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "discovery",
 			What:     "generated stateless probe for PROSE-MAY-f46586f6",
 			Metadata: runner.Metadata{SpecRules: []string{"PROSE-MAY-f46586f6"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					if _, err := c.State(ctx); err != nil {
 						results[c.Name()] = "state_unavailable"
@@ -2305,7 +2305,7 @@ func irStatelessSpecs() []runner.Spec {
 						results[c.Name()] = "state_available"
 					}
 				}
-				divs := diverge(id, "discovery", te.Meta, results, details)
+				divs := diverge(id, "discovery", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -2314,13 +2314,13 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.discovery.generated.discovery.actqueryenr.cc0155ea"
+		id := "ir_stateless.discovery.generated.discovery.act_query_enr.cc0155ea"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "discovery",
 			What:     "generated stateless probe for PROSE-MUST-9812f11c, PROSE-MUST-bdd581d1",
 			Metadata: runner.Metadata{SpecRules: []string{"PROSE-MUST-9812f11c", "PROSE-MUST-bdd581d1"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					if _, err := c.State(ctx); err != nil {
 						results[c.Name()] = "state_unavailable"
@@ -2328,7 +2328,7 @@ func irStatelessSpecs() []runner.Spec {
 						results[c.Name()] = "state_available"
 					}
 				}
-				divs := diverge(id, "discovery", te.Meta, results, details)
+				divs := diverge(id, "discovery", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -2337,13 +2337,13 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.discovery.generated.discovery.actverifyenrbehavior_attnets.87897b87"
+		id := "ir_stateless.discovery.generated.discovery.act_verify_enrbehavior_attnets.87897b87"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "discovery",
 			What:     "generated stateless probe for PROSE-MUST-0648388b",
 			Metadata: runner.Metadata{SpecRules: []string{"PROSE-MUST-0648388b"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					if _, err := c.State(ctx); err != nil {
 						results[c.Name()] = "state_unavailable"
@@ -2351,7 +2351,7 @@ func irStatelessSpecs() []runner.Spec {
 						results[c.Name()] = "state_available"
 					}
 				}
-				divs := diverge(id, "discovery", te.Meta, results, details)
+				divs := diverge(id, "discovery", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -2360,13 +2360,13 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.discovery.generated.discovery.actverifyenrbehavior_attnets.a9b24dfb"
+		id := "ir_stateless.discovery.generated.discovery.act_verify_enrbehavior_attnets.a9b24dfb"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "discovery",
 			What:     "generated stateless probe for PROSE-MAY-cd1cb27a",
 			Metadata: runner.Metadata{SpecRules: []string{"PROSE-MAY-cd1cb27a"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					if _, err := c.State(ctx); err != nil {
 						results[c.Name()] = "state_unavailable"
@@ -2374,7 +2374,7 @@ func irStatelessSpecs() []runner.Spec {
 						results[c.Name()] = "state_available"
 					}
 				}
-				divs := diverge(id, "discovery", te.Meta, results, details)
+				divs := diverge(id, "discovery", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -2383,13 +2383,13 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.discovery.generated.discovery.actverifyenrbehavior_nfd.e9386c37"
+		id := "ir_stateless.discovery.generated.discovery.act_verify_enrbehavior_nfd.e9386c37"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "discovery",
 			What:     "generated stateless probe for PROSE-MUST-eb253094",
 			Metadata: runner.Metadata{SpecRules: []string{"PROSE-MUST-eb253094"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					if _, err := c.State(ctx); err != nil {
 						results[c.Name()] = "state_unavailable"
@@ -2397,7 +2397,7 @@ func irStatelessSpecs() []runner.Spec {
 						results[c.Name()] = "state_available"
 					}
 				}
-				divs := diverge(id, "discovery", te.Meta, results, details)
+				divs := diverge(id, "discovery", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -2406,7 +2406,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.gossipsub.generated.data_column_sidecar_subnet_id.actinjectgossip_buildinvaliddatacolumnsidecarkzgproof.52c2148e"
+		id := "ir_stateless.gossipsub.generated.data_column_sidecar_subnet_id.act_inject_gossip_build_invalid_data_column_sidecar_kzg_proof.52c2148e"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "gossipsub",
 			What:     "generated stateless probe for DATA_COLUMN_SIDECAR_SUBNET_ID-MUST-aa0e3ac7 (expected reject)",
@@ -2425,12 +2425,12 @@ func irStatelessSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "gossipsub", te.Meta, results, details)
+				divs := diverge(id, "gossipsub", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -2439,7 +2439,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.gossipsub.generated.partial_data_column_sidecar.actinjectgossip_buildinvalidpartialdatacolumnempty.daf77800"
+		id := "ir_stateless.gossipsub.generated.partial_data_column_sidecar.act_inject_gossip_build_invalid_partial_data_column_empty.daf77800"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "gossipsub",
 			What:     "generated stateless probe for PARTIAL_DATA_COLUMN_SIDECAR-REJECT-47e00126 (expected reject)",
@@ -2458,12 +2458,12 @@ func irStatelessSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "gossipsub", te.Meta, results, details)
+				divs := diverge(id, "gossipsub", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -2472,7 +2472,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.gossipsub.generated.partial_data_column_sidecar.actinjectgossip_buildinvalidpartialdatacolumnheadernocommitments.630386ce"
+		id := "ir_stateless.gossipsub.generated.partial_data_column_sidecar.act_inject_gossip_build_invalid_partial_data_column_header_no_commitments.630386ce"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "gossipsub",
 			What:     "generated stateless probe for PARTIAL_DATA_COLUMN_SIDECAR-REJECT-023db612 (expected reject)",
@@ -2491,12 +2491,12 @@ func irStatelessSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "gossipsub", te.Meta, results, details)
+				divs := diverge(id, "gossipsub", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -2505,7 +2505,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.gossipsub.generated.partial_data_column_sidecar.actinjectgossip_buildinvalidpartialdatacolumnsiginvalid.ee7c7330"
+		id := "ir_stateless.gossipsub.generated.partial_data_column_sidecar.act_inject_gossip_build_invalid_partial_data_column_sig_invalid.ee7c7330"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "gossipsub",
 			What:     "generated stateless probe for PARTIAL_DATA_COLUMN_SIDECAR-REJECT-84dab49d",
@@ -2524,12 +2524,12 @@ func irStatelessSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "gossipsub", te.Meta, results, details)
+				divs := diverge(id, "gossipsub", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -2538,7 +2538,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.gossipsub.generated.partial_data_column_sidecar.actinjectgossip_buildinvalidpartialdatacolumnslotfuture.e6347a91"
+		id := "ir_stateless.gossipsub.generated.partial_data_column_sidecar.act_inject_gossip_build_invalid_partial_data_column_slot_future.e6347a91"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "gossipsub",
 			What:     "generated stateless probe for PARTIAL_DATA_COLUMN_SIDECAR-IGNORE-64fbc194, PARTIAL_DATA_COLUMN_SIDECAR-IGNORE-93b9b10e",
@@ -2557,12 +2557,12 @@ func irStatelessSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "gossipsub", te.Meta, results, details)
+				divs := diverge(id, "gossipsub", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -2571,7 +2571,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.gossipsub.generated.partial_data_column_sidecar.actinjectgossip_buildvalidpartialdatacolumnsidecar.885558d5"
+		id := "ir_stateless.gossipsub.generated.partial_data_column_sidecar.act_inject_gossip_build_valid_partial_data_column_sidecar.885558d5"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "gossipsub",
 			What:     "generated stateless probe for PARTIAL_DATA_COLUMN_SIDECAR-IGNORE-73fe21ca, PARTIAL_DATA_COLUMN_SIDECAR-IGNORE-e843ba36, PARTIAL_DATA_COLUMN_SIDECAR-REJECT-0a994b43, PARTIAL_DATA_COLUMN_SIDECAR-REJECT-1191de75, PARTIAL_DATA_COLUMN_SIDECAR-REJECT-4df28963, PARTIAL_DATA_COLUMN_SIDECAR-REJECT-819b18b6, PARTIAL_DATA_COLUMN_SIDECAR-REJECT-97a846a9, PARTIAL_DATA_COLUMN_SIDECAR-REJECT-a18636bd, PARTIAL_DATA_COLUMN_SIDECAR-REJECT-ba7e950d",
@@ -2590,12 +2590,12 @@ func irStatelessSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "gossipsub", te.Meta, results, details)
+				divs := diverge(id, "gossipsub", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -2604,7 +2604,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.reqresp.generated.eth2_beacon_chain_req_beacon_blocks_by_head_1_ssz_snappy.actsendreqresp_buildblocksbyheadheadroot.33928414"
+		id := "ir_stateless.reqresp.generated.eth2_beacon_chain_req_beacon_blocks_by_head_1_ssz_snappy.act_send_req_resp_build_blocks_by_head_head_root.33928414"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "reqresp",
 			What:     "generated stateless probe for PROSE-MUST-f986db81",
@@ -2613,12 +2613,11 @@ func irStatelessSpecs() []runner.Spec {
 				ictx := irNewContext(te)
 				timeout := 10000 * time.Millisecond
 				body := buildBlocksByHeadHeadRoot(ictx)
-				results, details := map[string]string{}, map[string]string{}
-				for _, c := range te.Clients {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/beacon_blocks_by_head/1/ssz_snappy", body, timeout)
-					recordOutcome(results, details, c.Name(), res, err)
-				}
-				divs := diverge(id, "reqresp", te.Meta, results, details)
+					return outcome(res, err)
+				})
+				divs := diverge(id, "reqresp", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -2627,7 +2626,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.reqresp.generated.eth2_beacon_chain_req_beacon_blocks_by_head_1_ssz_snappy.actsendreqresp_buildblocksbyrangehalfopen.1894728d"
+		id := "ir_stateless.reqresp.generated.eth2_beacon_chain_req_beacon_blocks_by_head_1_ssz_snappy.act_send_req_resp_build_blocks_by_range_half_open.1894728d"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "reqresp",
 			What:     "generated stateless probe for PROSE-MUST-caedc19d",
@@ -2636,12 +2635,11 @@ func irStatelessSpecs() []runner.Spec {
 				ictx := irNewContext(te)
 				timeout := 5000 * time.Millisecond
 				body := buildBlocksByRangeHalfOpen(ictx)
-				results, details := map[string]string{}, map[string]string{}
-				for _, c := range te.Clients {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/beacon_blocks_by_range/2/ssz_snappy", body, timeout)
-					recordOutcome(results, details, c.Name(), res, err)
-				}
-				divs := diverge(id, "reqresp", te.Meta, results, details)
+					return outcome(res, err)
+				})
+				divs := diverge(id, "reqresp", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -2650,7 +2648,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.reqresp.generated.eth2_beacon_chain_req_beacon_blocks_by_head_1_ssz_snappy.actsendreqresp_buildrootlistheadroot.1468abbd"
+		id := "ir_stateless.reqresp.generated.eth2_beacon_chain_req_beacon_blocks_by_head_1_ssz_snappy.act_send_req_resp_build_root_list_head_root.1468abbd"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "reqresp",
 			What:     "generated stateless probe for PROSE-MUST-8a9d0925",
@@ -2659,12 +2657,11 @@ func irStatelessSpecs() []runner.Spec {
 				ictx := irNewContext(te)
 				timeout := 5000 * time.Millisecond
 				body := buildRootListHeadRoot(ictx)
-				results, details := map[string]string{}, map[string]string{}
-				for _, c := range te.Clients {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/beacon_blocks_by_root/2/ssz_snappy", body, timeout)
-					recordOutcome(results, details, c.Name(), res, err)
-				}
-				divs := diverge(id, "reqresp", te.Meta, results, details)
+					return outcome(res, err)
+				})
+				divs := diverge(id, "reqresp", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -2673,7 +2670,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.reqresp.generated.eth2_beacon_chain_req_beacon_blocks_by_range_1_ssz_snappy.actsendreqresp_buildbeaconblocksbyrangev2nearhead.40778bba"
+		id := "ir_stateless.reqresp.generated.eth2_beacon_chain_req_beacon_blocks_by_range_1_ssz_snappy.act_send_req_resp_build_beacon_blocks_by_range_v2_near_head.40778bba"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "reqresp",
 			What:     "generated stateless probe for PROSE-MAY-fcec2240",
@@ -2682,12 +2679,11 @@ func irStatelessSpecs() []runner.Spec {
 				ictx := irNewContext(te)
 				timeout := 10000 * time.Millisecond
 				body := buildBeaconBlocksByRangeV2NearHead(ictx)
-				results, details := map[string]string{}, map[string]string{}
-				for _, c := range te.Clients {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/beacon_blocks_by_range/2/ssz_snappy", body, timeout)
-					recordOutcome(results, details, c.Name(), res, err)
-				}
-				divs := diverge(id, "reqresp", te.Meta, results, details)
+					return outcome(res, err)
+				})
+				divs := diverge(id, "reqresp", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -2696,7 +2692,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.reqresp.generated.eth2_beacon_chain_req_beacon_blocks_by_range_1_ssz_snappy.actsendreqresp_buildbeaconblocksbyrangev2nearhead.dafcdc22"
+		id := "ir_stateless.reqresp.generated.eth2_beacon_chain_req_beacon_blocks_by_range_1_ssz_snappy.act_send_req_resp_build_beacon_blocks_by_range_v2_near_head.dafcdc22"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "reqresp",
 			What:     "generated stateless probe for PROSE-MUST-24a00daf, PROSE-MUST-2d2c1f61, PROSE-MUST-77241d04, PROSE-MUST-a43e7b78, PROSE-MUST-be2b4f69, PROSE-MUST-beb326de, PROSE-MUST-fb96c768 (expected accept)",
@@ -2705,12 +2701,11 @@ func irStatelessSpecs() []runner.Spec {
 				ictx := irNewContext(te)
 				timeout := 10000 * time.Millisecond
 				body := buildBeaconBlocksByRangeV2NearHead(ictx)
-				results, details := map[string]string{}, map[string]string{}
-				for _, c := range te.Clients {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/beacon_blocks_by_range/2/ssz_snappy", body, timeout)
-					recordOutcome(results, details, c.Name(), res, err)
-				}
-				divs := diverge(id, "reqresp", te.Meta, results, details)
+					return outcome(res, err)
+				})
+				divs := diverge(id, "reqresp", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -2719,7 +2714,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.reqresp.generated.eth2_beacon_chain_req_beacon_blocks_by_range_1_ssz_snappy.actsendreqresp_buildblocksbyrangev1probe.2f133a19"
+		id := "ir_stateless.reqresp.generated.eth2_beacon_chain_req_beacon_blocks_by_range_1_ssz_snappy.act_send_req_resp_build_blocks_by_range_v1_probe.2f133a19"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "reqresp",
 			What:     "generated stateless probe for PROSE-MUST-06696858, PROSE-MUST-585a5daf, PROSE-MUST-5aed4805, PROSE-MUST-7359b5d6, PROSE-MUST-ab4ff3da",
@@ -2728,12 +2723,11 @@ func irStatelessSpecs() []runner.Spec {
 				ictx := irNewContext(te)
 				timeout := 5000 * time.Millisecond
 				body := buildBlocksByRangeV1Probe(ictx)
-				results, details := map[string]string{}, map[string]string{}
-				for _, c := range te.Clients {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/beacon_blocks_by_range/1/ssz_snappy", body, timeout)
-					recordOutcome(results, details, c.Name(), res, err)
-				}
-				divs := diverge(id, "reqresp", te.Meta, results, details)
+					return outcome(res, err)
+				})
+				divs := diverge(id, "reqresp", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -2742,7 +2736,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.reqresp.generated.eth2_beacon_chain_req_beacon_blocks_by_range_1_ssz_snappy.actvalidateresponseorder_buildblocksbyrangeordering.0ddc72fa"
+		id := "ir_stateless.reqresp.generated.eth2_beacon_chain_req_beacon_blocks_by_range_1_ssz_snappy.act_validate_response_order_build_blocks_by_range_ordering.0ddc72fa"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "reqresp",
 			What:     "generated stateless probe for PROSE-MUST-2e44df54 (expected resp_order_correct)",
@@ -2750,11 +2744,11 @@ func irStatelessSpecs() []runner.Spec {
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				ictx := irNewContext(te)
 				body := buildBlocksByRangeOrdering(ictx)
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					results[c.Name()] = irOrderCheck(ctx, c, "/eth2/beacon_chain/req/beacon_blocks_by_range/2/ssz_snappy", id, body, 10000)
 				}
-				divs := diverge(id, "reqresp", te.Meta, results, details)
+				divs := diverge(id, "reqresp", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -2763,7 +2757,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.reqresp.generated.eth2_beacon_chain_req_beacon_blocks_by_root_1_ssz_snappy.actsendreqresp_buildrootlistheadroot.258495ce"
+		id := "ir_stateless.reqresp.generated.eth2_beacon_chain_req_beacon_blocks_by_root_1_ssz_snappy.act_send_req_resp_build_root_list_head_root.258495ce"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "reqresp",
 			What:     "generated stateless probe for PROSE-MUST-ea82e3d1, PROSE-MUST-ef0e0e97, PROSE-MUST-f719d380 (expected accept)",
@@ -2772,12 +2766,11 @@ func irStatelessSpecs() []runner.Spec {
 				ictx := irNewContext(te)
 				timeout := 10000 * time.Millisecond
 				body := buildRootListHeadRoot(ictx)
-				results, details := map[string]string{}, map[string]string{}
-				for _, c := range te.Clients {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/beacon_blocks_by_root/2/ssz_snappy", body, timeout)
-					recordOutcome(results, details, c.Name(), res, err)
-				}
-				divs := diverge(id, "reqresp", te.Meta, results, details)
+					return outcome(res, err)
+				})
+				divs := diverge(id, "reqresp", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -2786,7 +2779,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.reqresp.generated.eth2_beacon_chain_req_beacon_blocks_by_root_2_ssz_snappy.actsendreqresp_buildrootlistheadroot.c67264c9"
+		id := "ir_stateless.reqresp.generated.eth2_beacon_chain_req_beacon_blocks_by_root_2_ssz_snappy.act_send_req_resp_build_root_list_head_root.c67264c9"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "reqresp",
 			What:     "generated stateless probe for PROSE-MUST-ddb66335 (expected accept)",
@@ -2795,12 +2788,11 @@ func irStatelessSpecs() []runner.Spec {
 				ictx := irNewContext(te)
 				timeout := 10000 * time.Millisecond
 				body := buildRootListHeadRoot(ictx)
-				results, details := map[string]string{}, map[string]string{}
-				for _, c := range te.Clients {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/beacon_blocks_by_root/2/ssz_snappy", body, timeout)
-					recordOutcome(results, details, c.Name(), res, err)
-				}
-				divs := diverge(id, "reqresp", te.Meta, results, details)
+					return outcome(res, err)
+				})
+				divs := diverge(id, "reqresp", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -2809,7 +2801,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.reqresp.generated.eth2_beacon_chain_req_blob_sidecars_by_range_1_ssz_snappy.actsendreqresp_buildblocksbyrangehalfopen.047c1535"
+		id := "ir_stateless.reqresp.generated.eth2_beacon_chain_req_blob_sidecars_by_range_1_ssz_snappy.act_send_req_resp_build_blocks_by_range_half_open.047c1535"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "reqresp",
 			What:     "generated stateless probe for PROSE-MUST-d6e27745",
@@ -2818,12 +2810,11 @@ func irStatelessSpecs() []runner.Spec {
 				ictx := irNewContext(te)
 				timeout := 5000 * time.Millisecond
 				body := buildBlocksByRangeHalfOpen(ictx)
-				results, details := map[string]string{}, map[string]string{}
-				for _, c := range te.Clients {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/beacon_blocks_by_range/2/ssz_snappy", body, timeout)
-					recordOutcome(results, details, c.Name(), res, err)
-				}
-				divs := diverge(id, "reqresp", te.Meta, results, details)
+					return outcome(res, err)
+				})
+				divs := diverge(id, "reqresp", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -2832,7 +2823,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.reqresp.generated.eth2_beacon_chain_req_blob_sidecars_by_range_1_ssz_snappy.actsendreqresp_buildblocksbyrangenearhead.1590f2ac"
+		id := "ir_stateless.reqresp.generated.eth2_beacon_chain_req_blob_sidecars_by_range_1_ssz_snappy.act_send_req_resp_build_blocks_by_range_near_head.1590f2ac"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "reqresp",
 			What:     "generated stateless probe for PROSE-MAY-27b2aa87",
@@ -2841,12 +2832,11 @@ func irStatelessSpecs() []runner.Spec {
 				ictx := irNewContext(te)
 				timeout := 10000 * time.Millisecond
 				body := buildBlocksByRangeNearHead(ictx)
-				results, details := map[string]string{}, map[string]string{}
-				for _, c := range te.Clients {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/blob_sidecars_by_range/1/ssz_snappy", body, timeout)
-					recordOutcome(results, details, c.Name(), res, err)
-				}
-				divs := diverge(id, "reqresp", te.Meta, results, details)
+					return outcome(res, err)
+				})
+				divs := diverge(id, "reqresp", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -2855,7 +2845,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.reqresp.generated.eth2_beacon_chain_req_blob_sidecars_by_range_1_ssz_snappy.actsendreqresp_buildblocksbyrangenearhead.734f49ef"
+		id := "ir_stateless.reqresp.generated.eth2_beacon_chain_req_blob_sidecars_by_range_1_ssz_snappy.act_send_req_resp_build_blocks_by_range_near_head.734f49ef"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "reqresp",
 			What:     "generated stateless probe for PROSE-SHOULD-e922a14f",
@@ -2864,12 +2854,11 @@ func irStatelessSpecs() []runner.Spec {
 				ictx := irNewContext(te)
 				timeout := 10000 * time.Millisecond
 				body := buildBlocksByRangeNearHead(ictx)
-				results, details := map[string]string{}, map[string]string{}
-				for _, c := range te.Clients {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/blob_sidecars_by_range/1/ssz_snappy", body, timeout)
-					recordOutcome(results, details, c.Name(), res, err)
-				}
-				divs := diverge(id, "reqresp", te.Meta, results, details)
+					return outcome(res, err)
+				})
+				divs := diverge(id, "reqresp", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -2878,7 +2867,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.reqresp.generated.eth2_beacon_chain_req_blob_sidecars_by_range_1_ssz_snappy.actsendreqresp_buildblocksbyrangenearhead.e3c607dd"
+		id := "ir_stateless.reqresp.generated.eth2_beacon_chain_req_blob_sidecars_by_range_1_ssz_snappy.act_send_req_resp_build_blocks_by_range_near_head.e3c607dd"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "reqresp",
 			What:     "generated stateless probe for PROSE-MUST-000fd139, PROSE-MUST-9c40cb32, PROSE-MUST-b18cebcf, PROSE-MUST-bcca3fad",
@@ -2887,12 +2876,11 @@ func irStatelessSpecs() []runner.Spec {
 				ictx := irNewContext(te)
 				timeout := 10000 * time.Millisecond
 				body := buildBlocksByRangeNearHead(ictx)
-				results, details := map[string]string{}, map[string]string{}
-				for _, c := range te.Clients {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/blob_sidecars_by_range/1/ssz_snappy", body, timeout)
-					recordOutcome(results, details, c.Name(), res, err)
-				}
-				divs := diverge(id, "reqresp", te.Meta, results, details)
+					return outcome(res, err)
+				})
+				divs := diverge(id, "reqresp", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -2901,7 +2889,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.reqresp.generated.eth2_beacon_chain_req_blob_sidecars_by_range_1_ssz_snappy.actsendreqresp_buildblocksbyrangev1probe.1c7fdfe3"
+		id := "ir_stateless.reqresp.generated.eth2_beacon_chain_req_blob_sidecars_by_range_1_ssz_snappy.act_send_req_resp_build_blocks_by_range_v1_probe.1c7fdfe3"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "reqresp",
 			What:     "generated stateless probe for PROSE-MUST-9cd4be04",
@@ -2910,12 +2898,11 @@ func irStatelessSpecs() []runner.Spec {
 				ictx := irNewContext(te)
 				timeout := 5000 * time.Millisecond
 				body := buildBlocksByRangeV1Probe(ictx)
-				results, details := map[string]string{}, map[string]string{}
-				for _, c := range te.Clients {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/blob_sidecars_by_range/1/ssz_snappy", body, timeout)
-					recordOutcome(results, details, c.Name(), res, err)
-				}
-				divs := diverge(id, "reqresp", te.Meta, results, details)
+					return outcome(res, err)
+				})
+				divs := diverge(id, "reqresp", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -2924,7 +2911,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.reqresp.generated.eth2_beacon_chain_req_blob_sidecars_by_range_1_ssz_snappy.actsendreqresp_buildblocksbyrangev1probe.7b1b76cd"
+		id := "ir_stateless.reqresp.generated.eth2_beacon_chain_req_blob_sidecars_by_range_1_ssz_snappy.act_send_req_resp_build_blocks_by_range_v1_probe.7b1b76cd"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "reqresp",
 			What:     "generated stateless probe for PROSE-MUST-621e66c7, PROSE-MUST-78397db4, PROSE-MUST-7a65230f, PROSE-MUST-eab58464, PROSE-MUST-ef01bacf, PROSE-MUST-fa8679e2",
@@ -2933,12 +2920,11 @@ func irStatelessSpecs() []runner.Spec {
 				ictx := irNewContext(te)
 				timeout := 5000 * time.Millisecond
 				body := buildBlocksByRangeV1Probe(ictx)
-				results, details := map[string]string{}, map[string]string{}
-				for _, c := range te.Clients {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/blob_sidecars_by_range/1/ssz_snappy", body, timeout)
-					recordOutcome(results, details, c.Name(), res, err)
-				}
-				divs := diverge(id, "reqresp", te.Meta, results, details)
+					return outcome(res, err)
+				})
+				divs := diverge(id, "reqresp", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -2947,7 +2933,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.reqresp.generated.eth2_beacon_chain_req_blob_sidecars_by_root_1_ssz_snappy.actsendreqresp_buildblobidentifierheadroot.8cdc93f4"
+		id := "ir_stateless.reqresp.generated.eth2_beacon_chain_req_blob_sidecars_by_root_1_ssz_snappy.act_send_req_resp_build_blob_identifier_head_root.8cdc93f4"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "reqresp",
 			What:     "generated stateless probe for PROSE-MAY-ab6cf530, PROSE-MAY-d27b1369",
@@ -2956,12 +2942,11 @@ func irStatelessSpecs() []runner.Spec {
 				ictx := irNewContext(te)
 				timeout := 10000 * time.Millisecond
 				body := buildBlobIdentifierHeadRoot(ictx)
-				results, details := map[string]string{}, map[string]string{}
-				for _, c := range te.Clients {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/blob_sidecars_by_root/1/ssz_snappy", body, timeout)
-					recordOutcome(results, details, c.Name(), res, err)
-				}
-				divs := diverge(id, "reqresp", te.Meta, results, details)
+					return outcome(res, err)
+				})
+				divs := diverge(id, "reqresp", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -2970,7 +2955,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.reqresp.generated.eth2_beacon_chain_req_blob_sidecars_by_root_1_ssz_snappy.actsendreqresp_buildblobidentifierheadroot.b9bbfa87"
+		id := "ir_stateless.reqresp.generated.eth2_beacon_chain_req_blob_sidecars_by_root_1_ssz_snappy.act_send_req_resp_build_blob_identifier_head_root.b9bbfa87"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "reqresp",
 			What:     "generated stateless probe for PROSE-MUST-baa6186c",
@@ -2979,12 +2964,11 @@ func irStatelessSpecs() []runner.Spec {
 				ictx := irNewContext(te)
 				timeout := 10000 * time.Millisecond
 				body := buildBlobIdentifierHeadRoot(ictx)
-				results, details := map[string]string{}, map[string]string{}
-				for _, c := range te.Clients {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/blob_sidecars_by_root/1/ssz_snappy", body, timeout)
-					recordOutcome(results, details, c.Name(), res, err)
-				}
-				divs := diverge(id, "reqresp", te.Meta, results, details)
+					return outcome(res, err)
+				})
+				divs := diverge(id, "reqresp", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -2993,7 +2977,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.reqresp.generated.eth2_beacon_chain_req_blob_sidecars_by_root_1_ssz_snappy.actsendreqresp_buildblocksbyrangev1probe.4811ba40"
+		id := "ir_stateless.reqresp.generated.eth2_beacon_chain_req_blob_sidecars_by_root_1_ssz_snappy.act_send_req_resp_build_blocks_by_range_v1_probe.4811ba40"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "reqresp",
 			What:     "generated stateless probe for PROSE-MUST-363af130",
@@ -3002,12 +2986,11 @@ func irStatelessSpecs() []runner.Spec {
 				ictx := irNewContext(te)
 				timeout := 5000 * time.Millisecond
 				body := buildBlocksByRangeV1Probe(ictx)
-				results, details := map[string]string{}, map[string]string{}
-				for _, c := range te.Clients {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/blob_sidecars_by_range/1/ssz_snappy", body, timeout)
-					recordOutcome(results, details, c.Name(), res, err)
-				}
-				divs := diverge(id, "reqresp", te.Meta, results, details)
+					return outcome(res, err)
+				})
+				divs := diverge(id, "reqresp", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -3016,7 +2999,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.reqresp.generated.eth2_beacon_chain_req_blob_sidecars_by_root_1_ssz_snappy.actsendreqresp_buildblocksbyrangev1probe.4cef972e"
+		id := "ir_stateless.reqresp.generated.eth2_beacon_chain_req_blob_sidecars_by_root_1_ssz_snappy.act_send_req_resp_build_blocks_by_range_v1_probe.4cef972e"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "reqresp",
 			What:     "generated stateless probe for PROSE-MUST-4bfaa766",
@@ -3025,12 +3008,11 @@ func irStatelessSpecs() []runner.Spec {
 				ictx := irNewContext(te)
 				timeout := 5000 * time.Millisecond
 				body := buildBlocksByRangeV1Probe(ictx)
-				results, details := map[string]string{}, map[string]string{}
-				for _, c := range te.Clients {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/blob_sidecars_by_range/1/ssz_snappy", body, timeout)
-					recordOutcome(results, details, c.Name(), res, err)
-				}
-				divs := diverge(id, "reqresp", te.Meta, results, details)
+					return outcome(res, err)
+				})
+				divs := diverge(id, "reqresp", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -3039,7 +3021,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.reqresp.generated.eth2_beacon_chain_req_data_column_sidecars_by_range_1_ssz_snappy.actsendreqresp_buildblocksbyrangehalfopen.7415cf49"
+		id := "ir_stateless.reqresp.generated.eth2_beacon_chain_req_data_column_sidecars_by_range_1_ssz_snappy.act_send_req_resp_build_blocks_by_range_half_open.7415cf49"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "reqresp",
 			What:     "generated stateless probe for PROSE-MUST-85dfc232",
@@ -3048,12 +3030,11 @@ func irStatelessSpecs() []runner.Spec {
 				ictx := irNewContext(te)
 				timeout := 5000 * time.Millisecond
 				body := buildBlocksByRangeHalfOpen(ictx)
-				results, details := map[string]string{}, map[string]string{}
-				for _, c := range te.Clients {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/beacon_blocks_by_range/2/ssz_snappy", body, timeout)
-					recordOutcome(results, details, c.Name(), res, err)
-				}
-				divs := diverge(id, "reqresp", te.Meta, results, details)
+					return outcome(res, err)
+				})
+				divs := diverge(id, "reqresp", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -3062,7 +3043,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.reqresp.generated.eth2_beacon_chain_req_data_column_sidecars_by_range_1_ssz_snappy.actsendreqresp_builddatacolumns010.ab447b11"
+		id := "ir_stateless.reqresp.generated.eth2_beacon_chain_req_data_column_sidecars_by_range_1_ssz_snappy.act_send_req_resp_build_data_columns010.ab447b11"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "reqresp",
 			What:     "generated stateless probe for PROSE-MUST-496fac48, PROSE-MUST-53017fdb, PROSE-MUST-6ac612dd, PROSE-MUST-8329fc6d, PROSE-MUST-dc077cf0",
@@ -3071,12 +3052,11 @@ func irStatelessSpecs() []runner.Spec {
 				ictx := irNewContext(te)
 				timeout := 5000 * time.Millisecond
 				body := buildDataColumns010(ictx)
-				results, details := map[string]string{}, map[string]string{}
-				for _, c := range te.Clients {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/data_column_sidecars_by_range/1/ssz_snappy", body, timeout)
-					recordOutcome(results, details, c.Name(), res, err)
-				}
-				divs := diverge(id, "reqresp", te.Meta, results, details)
+					return outcome(res, err)
+				})
+				divs := diverge(id, "reqresp", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -3085,7 +3065,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.reqresp.generated.eth2_beacon_chain_req_data_column_sidecars_by_range_1_ssz_snappy.actsendreqresp_builddatacolumnsordering.8b7af533"
+		id := "ir_stateless.reqresp.generated.eth2_beacon_chain_req_data_column_sidecars_by_range_1_ssz_snappy.act_send_req_resp_build_data_columns_ordering.8b7af533"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "reqresp",
 			What:     "generated stateless probe for PROSE-SHOULD-591bb836",
@@ -3094,12 +3074,11 @@ func irStatelessSpecs() []runner.Spec {
 				ictx := irNewContext(te)
 				timeout := 10000 * time.Millisecond
 				body := buildDataColumnsOrdering(ictx)
-				results, details := map[string]string{}, map[string]string{}
-				for _, c := range te.Clients {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/data_column_sidecars_by_range/1/ssz_snappy", body, timeout)
-					recordOutcome(results, details, c.Name(), res, err)
-				}
-				divs := diverge(id, "reqresp", te.Meta, results, details)
+					return outcome(res, err)
+				})
+				divs := diverge(id, "reqresp", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -3108,7 +3087,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.reqresp.generated.eth2_beacon_chain_req_data_column_sidecars_by_range_1_ssz_snappy.actsendreqresp_builddatacolumnsordering.a4b5adb5"
+		id := "ir_stateless.reqresp.generated.eth2_beacon_chain_req_data_column_sidecars_by_range_1_ssz_snappy.act_send_req_resp_build_data_columns_ordering.a4b5adb5"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "reqresp",
 			What:     "generated stateless probe for PROSE-MUST-3d5cb37f, PROSE-MUST-62b7152d, PROSE-MUST-9d59d4cc",
@@ -3117,12 +3096,11 @@ func irStatelessSpecs() []runner.Spec {
 				ictx := irNewContext(te)
 				timeout := 10000 * time.Millisecond
 				body := buildDataColumnsOrdering(ictx)
-				results, details := map[string]string{}, map[string]string{}
-				for _, c := range te.Clients {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/data_column_sidecars_by_range/1/ssz_snappy", body, timeout)
-					recordOutcome(results, details, c.Name(), res, err)
-				}
-				divs := diverge(id, "reqresp", te.Meta, results, details)
+					return outcome(res, err)
+				})
+				divs := diverge(id, "reqresp", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -3131,7 +3109,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.reqresp.generated.eth2_beacon_chain_req_data_column_sidecars_by_range_1_ssz_snappy.actsendreqresp_builddatacolumnsordering.ce456bc4"
+		id := "ir_stateless.reqresp.generated.eth2_beacon_chain_req_data_column_sidecars_by_range_1_ssz_snappy.act_send_req_resp_build_data_columns_ordering.ce456bc4"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "reqresp",
 			What:     "generated stateless probe for PROSE-MAY-f34f7c72",
@@ -3140,12 +3118,11 @@ func irStatelessSpecs() []runner.Spec {
 				ictx := irNewContext(te)
 				timeout := 10000 * time.Millisecond
 				body := buildDataColumnsOrdering(ictx)
-				results, details := map[string]string{}, map[string]string{}
-				for _, c := range te.Clients {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/data_column_sidecars_by_range/1/ssz_snappy", body, timeout)
-					recordOutcome(results, details, c.Name(), res, err)
-				}
-				divs := diverge(id, "reqresp", te.Meta, results, details)
+					return outcome(res, err)
+				})
+				divs := diverge(id, "reqresp", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -3154,7 +3131,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.reqresp.generated.eth2_beacon_chain_req_data_column_sidecars_by_range_1_ssz_snappy.actvalidateresponseorder_builddatacolumnsallornone.ffeb3664"
+		id := "ir_stateless.reqresp.generated.eth2_beacon_chain_req_data_column_sidecars_by_range_1_ssz_snappy.act_validate_response_order_build_data_columns_all_or_none.ffeb3664"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "reqresp",
 			What:     "generated stateless probe for PROSE-MUST-35b3af29 (expected resp_order_correct)",
@@ -3162,11 +3139,11 @@ func irStatelessSpecs() []runner.Spec {
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				ictx := irNewContext(te)
 				body := buildDataColumnsAllOrNone(ictx)
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					results[c.Name()] = irOrderCheck(ctx, c, "/eth2/beacon_chain/req/data_column_sidecars_by_range/1/ssz_snappy", id, body, 10000)
 				}
-				divs := diverge(id, "reqresp", te.Meta, results, details)
+				divs := diverge(id, "reqresp", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -3175,7 +3152,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.reqresp.generated.eth2_beacon_chain_req_data_column_sidecars_by_range_1_ssz_snappy.actvalidateresponseorder_builddatacolumnsordering.df71a10e"
+		id := "ir_stateless.reqresp.generated.eth2_beacon_chain_req_data_column_sidecars_by_range_1_ssz_snappy.act_validate_response_order_build_data_columns_ordering.df71a10e"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "reqresp",
 			What:     "generated stateless probe for PROSE-MUST-c9531b0b (expected resp_order_correct)",
@@ -3183,11 +3160,11 @@ func irStatelessSpecs() []runner.Spec {
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				ictx := irNewContext(te)
 				body := buildDataColumnsOrdering(ictx)
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					results[c.Name()] = irOrderCheck(ctx, c, "/eth2/beacon_chain/req/data_column_sidecars_by_range/1/ssz_snappy", id, body, 10000)
 				}
-				divs := diverge(id, "reqresp", te.Meta, results, details)
+				divs := diverge(id, "reqresp", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -3196,7 +3173,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.reqresp.generated.eth2_beacon_chain_req_light_client_bootstrap_1_ssz_snappy.actsendreqresp_buildrootlistheadroot.6293fe13"
+		id := "ir_stateless.reqresp.generated.eth2_beacon_chain_req_light_client_bootstrap_1_ssz_snappy.act_send_req_resp_build_root_list_head_root.6293fe13"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "reqresp",
 			What:     "generated stateless probe for PROSE-SHOULD-81bd4ace, PROSE-SHOULD-e06a5bbe",
@@ -3205,12 +3182,11 @@ func irStatelessSpecs() []runner.Spec {
 				ictx := irNewContext(te)
 				timeout := 10000 * time.Millisecond
 				body := buildRootListHeadRoot(ictx)
-				results, details := map[string]string{}, map[string]string{}
-				for _, c := range te.Clients {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/light_client_bootstrap/1/ssz_snappy", body, timeout)
-					recordOutcome(results, details, c.Name(), res, err)
-				}
-				divs := diverge(id, "reqresp", te.Meta, results, details)
+					return outcome(res, err)
+				})
+				divs := diverge(id, "reqresp", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -3219,7 +3195,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.reqresp.generated.eth2_beacon_chain_req_light_client_finality_update_1_ssz_snappy.actsendreqresp_eth2_beacon_chain_req_light_client_finality_update_1_ssz_snappy.e366406c"
+		id := "ir_stateless.reqresp.generated.eth2_beacon_chain_req_light_client_finality_update_1_ssz_snappy.act_send_req_resp_eth2_beacon_chain_req_light_client_finality_update_1_ssz_snappy.e366406c"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "reqresp",
 			What:     "generated stateless probe for PROSE-SHOULD-822a6a04, PROSE-SHOULD-c164ee6e",
@@ -3227,12 +3203,11 @@ func irStatelessSpecs() []runner.Spec {
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				timeout := 10000 * time.Millisecond
 				body := []byte(nil)
-				results, details := map[string]string{}, map[string]string{}
-				for _, c := range te.Clients {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/light_client_finality_update/1/ssz_snappy", body, timeout)
-					recordOutcome(results, details, c.Name(), res, err)
-				}
-				divs := diverge(id, "reqresp", te.Meta, results, details)
+					return outcome(res, err)
+				})
+				divs := diverge(id, "reqresp", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -3241,7 +3216,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.reqresp.generated.eth2_beacon_chain_req_light_client_optimistic_update_1_ssz_snappy.actsendreqresp_eth2_beacon_chain_req_light_client_optimistic_update_1_ssz_snappy.db61a819"
+		id := "ir_stateless.reqresp.generated.eth2_beacon_chain_req_light_client_optimistic_update_1_ssz_snappy.act_send_req_resp_eth2_beacon_chain_req_light_client_optimistic_update_1_ssz_snappy.db61a819"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "reqresp",
 			What:     "generated stateless probe for PROSE-SHOULD-3618142a, PROSE-SHOULD-dae2d63f",
@@ -3249,12 +3224,11 @@ func irStatelessSpecs() []runner.Spec {
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				timeout := 10000 * time.Millisecond
 				body := []byte(nil)
-				results, details := map[string]string{}, map[string]string{}
-				for _, c := range te.Clients {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/light_client_optimistic_update/1/ssz_snappy", body, timeout)
-					recordOutcome(results, details, c.Name(), res, err)
-				}
-				divs := diverge(id, "reqresp", te.Meta, results, details)
+					return outcome(res, err)
+				})
+				divs := diverge(id, "reqresp", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -3263,7 +3237,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.reqresp.generated.eth2_beacon_chain_req_light_client_updates_by_range_1_ssz_snappy.actsendreqresp_buildlcupdatesbyrange1ssz.95e1c8e5"
+		id := "ir_stateless.reqresp.generated.eth2_beacon_chain_req_light_client_updates_by_range_1_ssz_snappy.act_send_req_resp_build_lcupdates_by_range1_ssz.95e1c8e5"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "reqresp",
 			What:     "generated stateless probe for PROSE-MUST-a2e8c252, PROSE-MUST-a8fa23ea, PROSE-MUST-e2caef55, PROSE-MUST_NOT-57d1f23a",
@@ -3272,12 +3246,11 @@ func irStatelessSpecs() []runner.Spec {
 				ictx := irNewContext(te)
 				timeout := 10000 * time.Millisecond
 				body := buildLCUpdatesByRange1SSZ(ictx)
-				results, details := map[string]string{}, map[string]string{}
-				for _, c := range te.Clients {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/light_client_updates_by_range/1/ssz_snappy", body, timeout)
-					recordOutcome(results, details, c.Name(), res, err)
-				}
-				divs := diverge(id, "reqresp", te.Meta, results, details)
+					return outcome(res, err)
+				})
+				divs := diverge(id, "reqresp", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -3286,7 +3259,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.reqresp.generated.eth2_beacon_chain_req_light_client_updates_by_range_1_ssz_snappy.actsendreqresp_buildlcupdatesbyrange1ssz.e0e4f975"
+		id := "ir_stateless.reqresp.generated.eth2_beacon_chain_req_light_client_updates_by_range_1_ssz_snappy.act_send_req_resp_build_lcupdates_by_range1_ssz.e0e4f975"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "reqresp",
 			What:     "generated stateless probe for PROSE-SHOULD-d31e4b85",
@@ -3295,12 +3268,11 @@ func irStatelessSpecs() []runner.Spec {
 				ictx := irNewContext(te)
 				timeout := 10000 * time.Millisecond
 				body := buildLCUpdatesByRange1SSZ(ictx)
-				results, details := map[string]string{}, map[string]string{}
-				for _, c := range te.Clients {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/light_client_updates_by_range/1/ssz_snappy", body, timeout)
-					recordOutcome(results, details, c.Name(), res, err)
-				}
-				divs := diverge(id, "reqresp", te.Meta, results, details)
+					return outcome(res, err)
+				})
+				divs := diverge(id, "reqresp", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -3309,7 +3281,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.reqresp.generated.eth2_beacon_chain_req_metadata_1_ssz_snappy.actsendreqresp_eth2_beacon_chain_req_metadata_3_ssz_snappy.c2e1c935"
+		id := "ir_stateless.reqresp.generated.eth2_beacon_chain_req_metadata_1_ssz_snappy.act_send_req_resp_eth2_beacon_chain_req_metadata_3_ssz_snappy.c2e1c935"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "reqresp",
 			What:     "generated stateless probe for PROSE-MUST-24bad2a7 (expected accept)",
@@ -3317,12 +3289,11 @@ func irStatelessSpecs() []runner.Spec {
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				timeout := 5000 * time.Millisecond
 				body := []byte(nil)
-				results, details := map[string]string{}, map[string]string{}
-				for _, c := range te.Clients {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/metadata/3/ssz_snappy", body, timeout)
-					recordOutcome(results, details, c.Name(), res, err)
-				}
-				divs := diverge(id, "reqresp", te.Meta, results, details)
+					return outcome(res, err)
+				})
+				divs := diverge(id, "reqresp", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -3331,7 +3302,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.reqresp.generated.reqresp.actsendreqresp_buildblocksbyrangehalfopen.2fd9599a"
+		id := "ir_stateless.reqresp.generated.reqresp.act_send_req_resp_build_blocks_by_range_half_open.2fd9599a"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "reqresp",
 			What:     "generated stateless probe for PROSE-MUST-0b68b894, PROSE-MUST-27157b02, PROSE-MUST-2b3162f6, PROSE-MUST-49d953b3, PROSE-MUST-530de565, PROSE-MUST-5e68552b, PROSE-MUST-8b1fde57, PROSE-MUST-8e3ad988, PROSE-MUST-bc7717a4, PROSE-MUST-c33e5e4e, PROSE-MUST-c8f1e7f8, PROSE-MUST-da21bde4, PROSE-MUST-e4fbee1a",
@@ -3340,12 +3311,11 @@ func irStatelessSpecs() []runner.Spec {
 				ictx := irNewContext(te)
 				timeout := 5000 * time.Millisecond
 				body := buildBlocksByRangeHalfOpen(ictx)
-				results, details := map[string]string{}, map[string]string{}
-				for _, c := range te.Clients {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/beacon_blocks_by_range/2/ssz_snappy", body, timeout)
-					recordOutcome(results, details, c.Name(), res, err)
-				}
-				divs := diverge(id, "reqresp", te.Meta, results, details)
+					return outcome(res, err)
+				})
+				divs := diverge(id, "reqresp", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -3354,7 +3324,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.reqresp.generated.reqresp.actsendreqresp_buildblocksbyrangehalfopen.705da545"
+		id := "ir_stateless.reqresp.generated.reqresp.act_send_req_resp_build_blocks_by_range_half_open.705da545"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "reqresp",
 			What:     "generated stateless probe for PROSE-MUST-bbfdea7c, PROSE-MUST-f3f75081 (expected reject)",
@@ -3363,12 +3333,11 @@ func irStatelessSpecs() []runner.Spec {
 				ictx := irNewContext(te)
 				timeout := 5000 * time.Millisecond
 				body := buildBlocksByRangeHalfOpen(ictx)
-				results, details := map[string]string{}, map[string]string{}
-				for _, c := range te.Clients {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/beacon_blocks_by_range/2/ssz_snappy", body, timeout)
-					recordOutcome(results, details, c.Name(), res, err)
-				}
-				divs := diverge(id, "reqresp", te.Meta, results, details)
+					return outcome(res, err)
+				})
+				divs := diverge(id, "reqresp", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -3377,7 +3346,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.reqresp.generated.reqresp.actsendreqresp_buildblocksbyrangev1probe.71e63b50"
+		id := "ir_stateless.reqresp.generated.reqresp.act_send_req_resp_build_blocks_by_range_v1_probe.71e63b50"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "reqresp",
 			What:     "generated stateless probe for PROSE-MUST-76da50a4 (expected reject)",
@@ -3386,12 +3355,11 @@ func irStatelessSpecs() []runner.Spec {
 				ictx := irNewContext(te)
 				timeout := 5000 * time.Millisecond
 				body := buildBlocksByRangeV1Probe(ictx)
-				results, details := map[string]string{}, map[string]string{}
-				for _, c := range te.Clients {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/beacon_blocks_by_range/1/ssz_snappy", body, timeout)
-					recordOutcome(results, details, c.Name(), res, err)
-				}
-				divs := diverge(id, "reqresp", te.Meta, results, details)
+					return outcome(res, err)
+				})
+				divs := diverge(id, "reqresp", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -3400,7 +3368,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.reqresp.generated.reqresp.actsendreqresp_buildblocksbyrangev1probe.dd551ceb"
+		id := "ir_stateless.reqresp.generated.reqresp.act_send_req_resp_build_blocks_by_range_v1_probe.dd551ceb"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "reqresp",
 			What:     "generated stateless probe for PROSE-MAY-40110397",
@@ -3409,12 +3377,11 @@ func irStatelessSpecs() []runner.Spec {
 				ictx := irNewContext(te)
 				timeout := 5000 * time.Millisecond
 				body := buildBlocksByRangeV1Probe(ictx)
-				results, details := map[string]string{}, map[string]string{}
-				for _, c := range te.Clients {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/beacon_blocks_by_range/1/ssz_snappy", body, timeout)
-					recordOutcome(results, details, c.Name(), res, err)
-				}
-				divs := diverge(id, "reqresp", te.Meta, results, details)
+					return outcome(res, err)
+				})
+				divs := diverge(id, "reqresp", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -3423,7 +3390,7 @@ func irStatelessSpecs() []runner.Spec {
 		})
 	}
 	{
-		id := "ir_stateless.reqresp.generated.reqresp.actsendreqresp_buildpingstreamcountssz.ca7ccfee"
+		id := "ir_stateless.reqresp.generated.reqresp.act_send_req_resp_build_ping_stream_count_ssz.ca7ccfee"
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "reqresp",
 			What:     "generated stateless probe for PROSE-MUST_NOT-89347b2a",
@@ -3432,12 +3399,11 @@ func irStatelessSpecs() []runner.Spec {
 				ictx := irNewContext(te)
 				timeout := 5000 * time.Millisecond
 				body := buildPingStreamCountSSZ(ictx)
-				results, details := map[string]string{}, map[string]string{}
-				for _, c := range te.Clients {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/ping/1/ssz_snappy", body, timeout)
-					recordOutcome(results, details, c.Name(), res, err)
-				}
-				divs := diverge(id, "reqresp", te.Meta, results, details)
+					return outcome(res, err)
+				})
+				divs := diverge(id, "reqresp", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}

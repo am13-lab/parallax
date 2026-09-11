@@ -7,9 +7,9 @@
     "cryptomsg": {
       "mapped": 0,
       "stateful_supported": 6,
-      "stateless_supported": 114,
+      "stateless_supported": 113,
       "pending_future": 16,
-      "pending_inspector": 5
+      "pending_inspector": 6
     },
     "discovery": {
       "mapped": 4,
@@ -32,7 +32,7 @@
       "mapped": 24,
       "stateful_supported": 24,
       "stateless_supported": 83,
-      "pending_future": 13,
+      "pending_future": 15,
       "pending_inspector": 19,
       "unsupported": 13
     }
@@ -42,18 +42,18 @@
       "conn": 14,
       "discovery": 12,
       "gossip": 342,
-      "reqresp": 152
+      "reqresp": 154
     },
     "unresolved": 28
   },
   "total_mapped": 61,
   "total_stateful_supported": 67,
-  "total_stateless_supported": 218,
+  "total_stateless_supported": 217,
   "total_audit_only": 29,
-  "total_pending_future": 118,
+  "total_pending_future": 120,
   "total_pending_builder": 21,
   "total_pending_live_builder": 0,
-  "total_pending_inspector": 51,
+  "total_pending_inspector": 52,
   "total_pending_sequence_template": 1,
   "total_unsupported": 43,
   "semantic": {
@@ -2590,21 +2590,18 @@
       "raw_text": "[REJECT] The aggregate signature is valid for the message beacon_block_root (and aggregate pubkey derived from the participation info in aggregation_bits) (for the subcommittee specified by the contribution.subcommittee_index)"
     },
     {
-      "rule_id": "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-c33e885a",
+      "rule_id": "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-7a39f62f",
       "domain": "cryptomsg",
       "surface": "sync_committee_contribution_and_proof",
-      "class": "index_oob",
+      "class": "committee_member",
       "fork": "altair",
       "execution_kind": "stateless",
-      "support_status": "supported",
-      "emit_target": "stateless_followup",
-      "builder": "buildInvalidSyncCommitteeContributionAndProofIndexOob",
-      "action": "ActInjectGossip",
-      "protocol": "sync_committee_contribution_and_proof",
+      "support_status": "pending_inspector",
+      "emit_target": "none",
       "topic": "sync_committee_contribution_and_proof",
-      "oracle": "REJECT",
       "classification_source": "heuristic",
-      "raw_text": "[REJECT] The aggregator's validator index is in the declared subcommittee (of the current sync committee)"
+      "reason": "signed-message rule depends on live chain state or receiver history",
+      "raw_text": "[REJECT] The aggregator is a member of the committee"
     },
     {
       "rule_id": "SYNC_COMMITTEE_MESSAGE-IGNORE-7708bbcf",
@@ -6845,6 +6842,19 @@
       "raw_text": "Clients MUST keep a record of blob sidecars seen on the epoch range blob_serve_range where current_epoch is defined by the current wall-clock time, and clients"
     },
     {
+      "rule_id": "PROSE-MUST-b9d8a0e4",
+      "domain": "reqresp",
+      "surface": "/eth2/beacon_chain/req/execution_payload_envelopes_by_range/1/ssz_snappy",
+      "fork": "gloas",
+      "execution_kind": "pending_future",
+      "support_status": "unsupported",
+      "emit_target": "none",
+      "protocol": "/eth2/beacon_chain/req/execution_payload_envelopes_by_range/1/ssz_snappy",
+      "classification_source": "hard_rule",
+      "reason": "future-fork or feature rule is not enabled for the current generated runtime",
+      "raw_text": "Clients MUST respond with execution payload envelopes from their view of the current fork choice -- that is, envelopes of payloads that are part of the single chain defined by the current head"
+    },
+    {
       "rule_id": "PROSE-MUST-ba7f0888",
       "domain": "reqresp",
       "surface": "reqresp",
@@ -7313,6 +7323,19 @@
       "classification_source": "heuristic",
       "reason": "no dictionary match for this surface/class",
       "raw_text": "The requester MUST_NOT make more than MAX_CONCURRENT_REQUESTS concurrent requests with the same protocol ID."
+    },
+    {
+      "rule_id": "PROSE-MUST_NOT-3b155ff3",
+      "domain": "reqresp",
+      "surface": "/eth2/beacon_chain/req/execution_payload_envelopes_by_range/1/ssz_snappy",
+      "fork": "gloas",
+      "execution_kind": "pending_future",
+      "support_status": "unsupported",
+      "emit_target": "none",
+      "protocol": "/eth2/beacon_chain/req/execution_payload_envelopes_by_range/1/ssz_snappy",
+      "classification_source": "hard_rule",
+      "reason": "future-fork or feature rule is not enabled for the current generated runtime",
+      "raw_text": "Clients MUST_NOT include envelopes for blocks whose ForkChoiceNode in that chain has payload_status equal to PAYLOAD_STATUS_EMPTY"
     },
     {
       "rule_id": "PROSE-MUST_NOT-57d1f23a",
@@ -8564,6 +8587,13 @@
       "class": "pending_future",
       "reason": "future-fork signed gossip builder not enabled for this rule",
       "raw_text": "[REJECT] The sidecar's slot matches the slot of the block"
+    },
+    {
+      "rule_id": "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-7a39f62f",
+      "domain": "cryptomsg",
+      "class": "pending_inspector",
+      "reason": "signed-message rule depends on live chain state or receiver history",
+      "raw_text": "[REJECT] The aggregator is a member of the committee"
     },
     {
       "rule_id": "VOLUNTARY_EXIT-IGNORE-9a1bff04",
@@ -9917,6 +9947,13 @@
       "raw_text": "Clients MUST support requesting payload envelopes on the epoch range [max(GLOAS_FORK_EPOCH, current_epoch - compute_min_epochs_for_block_requests()), current_epoch]"
     },
     {
+      "rule_id": "PROSE-MUST-b9d8a0e4",
+      "domain": "reqresp",
+      "class": "pending_future",
+      "reason": "future-fork or feature rule is not enabled for the current generated runtime",
+      "raw_text": "Clients MUST respond with execution payload envelopes from their view of the current fork choice -- that is, envelopes of payloads that are part of the single chain defined by the current head"
+    },
+    {
       "rule_id": "PROSE-MUST-ba7f0888",
       "domain": "reqresp",
       "class": "unsupported",
@@ -9957,6 +9994,13 @@
       "class": "unsupported",
       "reason": "no dictionary match for this surface/class",
       "raw_text": "The requester MUST_NOT make more than MAX_CONCURRENT_REQUESTS concurrent requests with the same protocol ID."
+    },
+    {
+      "rule_id": "PROSE-MUST_NOT-3b155ff3",
+      "domain": "reqresp",
+      "class": "pending_future",
+      "reason": "future-fork or feature rule is not enabled for the current generated runtime",
+      "raw_text": "Clients MUST_NOT include envelopes for blocks whose ForkChoiceNode in that chain has payload_status equal to PAYLOAD_STATUS_EMPTY"
     },
     {
       "rule_id": "PROSE-MUST_NOT-bf674136",

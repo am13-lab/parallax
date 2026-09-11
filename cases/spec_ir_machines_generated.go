@@ -761,7 +761,6 @@ func irMachineDefs() []*irMachine {
 				},
 				{
 					From: "CryptoReady", To: "CryptoSent", Label: "cm_invalid_sync_committee_contribution_and_proof_index_oob_9d2116ba", Weight: 10,
-					SpecRefs:   []string{"SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-c33e885a"},
 					ForkGte:    "altair",
 					ActionType: "ActInjectGossip",
 					Protocol:   "sync_committee_contribution_and_proof",

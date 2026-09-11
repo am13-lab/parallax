@@ -43,7 +43,7 @@ func irConcurrentSpecs() []runner.Spec {
 				buf := make([]byte, 8)
 				binary.LittleEndian.PutUint64(buf[0:8], 1)
 				body := wire.BuildSSZSnappy(buf)
-				results, details := irProbeAllD(te, func(c runner.Client) string {
+				results := irProbeAll(te, func(c runner.Client) string {
 					ir, err := c.OpenStream(ctx, "/eth2/beacon_chain/req/ping/1/ssz_snappy")
 					if err != nil {
 						return "other:" + err.Error()
@@ -56,7 +56,7 @@ func irConcurrentSpecs() []runner.Spec {
 					}
 					return "opened"
 				})
-				divs := diverge(id, "ir_concurrent", te.Meta, results, details)
+				divs := diverge(id, "ir_concurrent", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -77,7 +77,7 @@ func irConcurrentSpecs() []runner.Spec {
 				binary.LittleEndian.PutUint64(buf[0:8], 0)
 				binary.LittleEndian.PutUint64(buf[8:16], 1)
 				body := wire.BuildSSZSnappy(buf)
-				results, details := irProbeAllD(te, func(c runner.Client) string {
+				results := irProbeAll(te, func(c runner.Client) string {
 					ir, err := c.OpenStream(ctx, "/eth2/beacon_chain/req/beacon_blocks_by_range/2/ssz_snappy")
 					if err != nil {
 						return "other:" + err.Error()
@@ -90,7 +90,7 @@ func irConcurrentSpecs() []runner.Spec {
 					}
 					return "opened"
 				})
-				divs := diverge(id, "ir_concurrent", te.Meta, results, details)
+				divs := diverge(id, "ir_concurrent", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -108,7 +108,7 @@ func irConcurrentSpecs() []runner.Spec {
 				ctx, cancel := context.WithTimeout(ctx, 10000*time.Millisecond)
 				defer cancel()
 				body := []byte(nil)
-				results, details := irProbeAllD(te, func(c runner.Client) string {
+				results := irProbeAll(te, func(c runner.Client) string {
 					ir, err := c.OpenStream(ctx, "/eth2/beacon_chain/req/metadata/3/ssz_snappy")
 					if err != nil {
 						return "other:" + err.Error()
@@ -121,7 +121,7 @@ func irConcurrentSpecs() []runner.Spec {
 					}
 					return "opened"
 				})
-				divs := diverge(id, "ir_concurrent", te.Meta, results, details)
+				divs := diverge(id, "ir_concurrent", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -141,7 +141,7 @@ func irConcurrentSpecs() []runner.Spec {
 				buf := make([]byte, 8)
 				binary.LittleEndian.PutUint64(buf[0:8], 2)
 				body := wire.BuildSSZSnappy(buf)
-				results, details := irProbeAllD(te, func(c runner.Client) string {
+				results := irProbeAll(te, func(c runner.Client) string {
 					ir, err := c.OpenStream(ctx, "/eth2/beacon_chain/req/ping/1/ssz_snappy")
 					if err != nil {
 						return "other:" + err.Error()
@@ -154,7 +154,7 @@ func irConcurrentSpecs() []runner.Spec {
 					}
 					return "opened"
 				})
-				divs := diverge(id, "ir_concurrent", te.Meta, results, details)
+				divs := diverge(id, "ir_concurrent", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -174,7 +174,7 @@ func irConcurrentSpecs() []runner.Spec {
 				buf := make([]byte, 8)
 				binary.LittleEndian.PutUint64(buf[0:8], 99)
 				body := wire.BuildSSZSnappy(buf)
-				results, details := irProbeAllD(te, func(c runner.Client) string {
+				results := irProbeAll(te, func(c runner.Client) string {
 					ir, err := c.OpenStream(ctx, "/eth2/beacon_chain/req/ping/1/ssz_snappy")
 					if err != nil {
 						return "other:" + err.Error()
@@ -187,7 +187,7 @@ func irConcurrentSpecs() []runner.Spec {
 					}
 					return "opened"
 				})
-				divs := diverge(id, "ir_concurrent", te.Meta, results, details)
+				divs := diverge(id, "ir_concurrent", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -204,11 +204,11 @@ func irConcurrentSpecs() []runner.Spec {
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				timeout := 10000 * time.Millisecond
 				body := []byte(nil)
-				results, details := irProbeAllD(te, func(c runner.Client) string {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/ping/1/ssz_snappy", body, timeout)
 					return outcome(res, err)
 				})
-				divs := diverge(id, "ir_concurrent", te.Meta, results, details)
+				divs := diverge(id, "ir_concurrent", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -225,11 +225,11 @@ func irConcurrentSpecs() []runner.Spec {
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				timeout := 10000 * time.Millisecond
 				body := []byte(nil)
-				results, details := irProbeAllD(te, func(c runner.Client) string {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/ping/1/ssz_snappy", body, timeout)
 					return outcome(res, err)
 				})
-				divs := diverge(id, "ir_concurrent", te.Meta, results, details)
+				divs := diverge(id, "ir_concurrent", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -246,11 +246,11 @@ func irConcurrentSpecs() []runner.Spec {
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				timeout := 10000 * time.Millisecond
 				body := []byte(nil)
-				results, details := irProbeAllD(te, func(c runner.Client) string {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/ping/1/ssz_snappy", body, timeout)
 					return outcome(res, err)
 				})
-				divs := diverge(id, "ir_concurrent", te.Meta, results, details)
+				divs := diverge(id, "ir_concurrent", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -269,11 +269,11 @@ func irConcurrentSpecs() []runner.Spec {
 				buf := make([]byte, 8)
 				binary.LittleEndian.PutUint64(buf[0:8], 42)
 				body := wire.BuildSSZSnappy(buf)
-				results, details := irProbeAllD(te, func(c runner.Client) string {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/ping/1/ssz_snappy", body, timeout)
 					return outcome(res, err)
 				})
-				divs := diverge(id, "ir_concurrent", te.Meta, results, details)
+				divs := diverge(id, "ir_concurrent", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -288,7 +288,7 @@ func irConcurrentSpecs() []runner.Spec {
 			What:     "conc_check_connected (ConcMultiStream -> ConcMultiStream)",
 			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					if err := c.Health(ctx); err != nil {
 						results[c.Name()] = "not_connected"
@@ -296,7 +296,7 @@ func irConcurrentSpecs() []runner.Spec {
 						results[c.Name()] = "connected"
 					}
 				}
-				divs := diverge(id, "ir_concurrent", te.Meta, results, details)
+				divs := diverge(id, "ir_concurrent", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -311,7 +311,7 @@ func irConcurrentSpecs() []runner.Spec {
 			What:     "conc_check_at_limit (ConcAtLimit -> ConcAtLimit)",
 			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					if err := c.Health(ctx); err != nil {
 						results[c.Name()] = "not_connected"
@@ -319,7 +319,7 @@ func irConcurrentSpecs() []runner.Spec {
 						results[c.Name()] = "connected"
 					}
 				}
-				divs := diverge(id, "ir_concurrent", te.Meta, results, details)
+				divs := diverge(id, "ir_concurrent", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -336,7 +336,7 @@ func irConcurrentSpecs() []runner.Spec {
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				timeout := 100 * time.Millisecond
 				time.Sleep(timeout)
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					if c.Health(ctx) != nil {
 						results[c.Name()] = "dropped"
@@ -344,7 +344,7 @@ func irConcurrentSpecs() []runner.Spec {
 						results[c.Name()] = "connected"
 					}
 				}
-				divs := diverge(id, "ir_concurrent", te.Meta, results, details)
+				divs := diverge(id, "ir_concurrent", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -361,7 +361,7 @@ func irConcurrentSpecs() []runner.Spec {
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				timeout := 100 * time.Millisecond
 				time.Sleep(timeout)
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					if c.Health(ctx) != nil {
 						results[c.Name()] = "dropped"
@@ -369,7 +369,7 @@ func irConcurrentSpecs() []runner.Spec {
 						results[c.Name()] = "connected"
 					}
 				}
-				divs := diverge(id, "ir_concurrent", te.Meta, results, details)
+				divs := diverge(id, "ir_concurrent", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -386,7 +386,7 @@ func irConcurrentSpecs() []runner.Spec {
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				timeout := 500 * time.Millisecond
 				time.Sleep(timeout)
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					if c.Health(ctx) != nil {
 						results[c.Name()] = "dropped"
@@ -394,7 +394,7 @@ func irConcurrentSpecs() []runner.Spec {
 						results[c.Name()] = "connected"
 					}
 				}
-				divs := diverge(id, "ir_concurrent", te.Meta, results, details)
+				divs := diverge(id, "ir_concurrent", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -412,7 +412,7 @@ func irConcurrentSpecs() []runner.Spec {
 				buf := make([]byte, 8)
 				binary.LittleEndian.PutUint64(buf[0:8], 1)
 				body := wire.BuildSSZSnappy(buf)
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					half := body
 					if len(body) > 1 {
@@ -424,7 +424,7 @@ func irConcurrentSpecs() []runner.Spec {
 						results[c.Name()] = "sent_partial"
 					}
 				}
-				divs := diverge(id, "ir_concurrent", te.Meta, results, details)
+				divs := diverge(id, "ir_concurrent", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -441,11 +441,11 @@ func irConcurrentSpecs() []runner.Spec {
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				timeout := 5000 * time.Millisecond
 				body := []byte(nil)
-				results, details := irProbeAllD(te, func(c runner.Client) string {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/ping/1/ssz_snappy", body, timeout)
 					return outcome(res, err)
 				})
-				divs := diverge(id, "ir_concurrent", te.Meta, results, details)
+				divs := diverge(id, "ir_concurrent", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -463,7 +463,7 @@ func irConcurrentSpecs() []runner.Spec {
 				ctx, cancel := context.WithTimeout(ctx, 5000*time.Millisecond)
 				defer cancel()
 				body := []byte(nil)
-				results, details := irProbeAllD(te, func(c runner.Client) string {
+				results := irProbeAll(te, func(c runner.Client) string {
 					ir, err := c.OpenStream(ctx, "/eth2/beacon_chain/req/ping/1/ssz_snappy")
 					if err != nil {
 						return "other:" + err.Error()
@@ -476,7 +476,7 @@ func irConcurrentSpecs() []runner.Spec {
 					}
 					return "opened"
 				})
-				divs := diverge(id, "ir_concurrent", te.Meta, results, details)
+				divs := diverge(id, "ir_concurrent", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -497,7 +497,7 @@ func irConnLifecycleSpecs() []runner.Spec {
 			What:     "reference backbone: active peer connection is available before protocol exchange",
 			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					if err := c.Health(ctx); err != nil {
 						results[c.Name()] = "not_connected"
@@ -505,7 +505,7 @@ func irConnLifecycleSpecs() []runner.Spec {
 						results[c.Name()] = "connected"
 					}
 				}
-				divs := diverge(id, "ir_connlifecycle", te.Meta, results, details)
+				divs := diverge(id, "ir_connlifecycle", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -523,11 +523,11 @@ func irConnLifecycleSpecs() []runner.Spec {
 				ictx := irNewContext(te)
 				timeout := 5000 * time.Millisecond
 				body := buildStatusV2SSZ(ictx)
-				results, details := irProbeAllD(te, func(c runner.Client) string {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/status/2/ssz_snappy", body, timeout)
 					return outcome(res, err)
 				})
-				divs := diverge(id, "ir_connlifecycle", te.Meta, results, details)
+				divs := diverge(id, "ir_connlifecycle", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -547,11 +547,11 @@ func irConnLifecycleSpecs() []runner.Spec {
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				timeout := 5000 * time.Millisecond
 				body := []byte(nil)
-				results, details := irProbeAllD(te, func(c runner.Client) string {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/metadata/3/ssz_snappy", body, timeout)
 					return outcome(res, err)
 				})
-				divs := diverge(id, "ir_connlifecycle", te.Meta, results, details)
+				divs := diverge(id, "ir_connlifecycle", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -569,11 +569,11 @@ func irConnLifecycleSpecs() []runner.Spec {
 				ictx := irNewContext(te)
 				timeout := 10000 * time.Millisecond
 				body := buildBeaconBlocksByRangeV2NearHead(ictx)
-				results, details := irProbeAllD(te, func(c runner.Client) string {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/beacon_blocks_by_range/2/ssz_snappy", body, timeout)
 					return outcome(res, err)
 				})
-				divs := diverge(id, "ir_connlifecycle", te.Meta, results, details)
+				divs := diverge(id, "ir_connlifecycle", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -592,11 +592,11 @@ func irConnLifecycleSpecs() []runner.Spec {
 				buf := make([]byte, 8)
 				binary.LittleEndian.PutUint64(buf[0:8], 1)
 				body := wire.BuildSSZSnappy(buf)
-				results, details := irProbeAllD(te, func(c runner.Client) string {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/goodbye/1/ssz_snappy", body, timeout)
 					return outcome(res, err)
 				})
-				divs := diverge(id, "ir_connlifecycle", te.Meta, results, details)
+				divs := diverge(id, "ir_connlifecycle", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -611,7 +611,7 @@ func irConnLifecycleSpecs() []runner.Spec {
 			What:     "reference backbone: repeat protocol probes while the connection remains live",
 			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					if err := c.Health(ctx); err != nil {
 						results[c.Name()] = "not_connected"
@@ -619,7 +619,7 @@ func irConnLifecycleSpecs() []runner.Spec {
 						results[c.Name()] = "connected"
 					}
 				}
-				divs := diverge(id, "ir_connlifecycle", te.Meta, results, details)
+				divs := diverge(id, "ir_connlifecycle", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -634,11 +634,11 @@ func irConnLifecycleSpecs() []runner.Spec {
 			What:     "reference backbone: Goodbye terminates the connection lifecycle path",
 			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					results[c.Name()] = irDisconnectAndRestore(ctx, c)
 				}
-				divs := diverge(id, "ir_connlifecycle", te.Meta, results, details)
+				divs := diverge(id, "ir_connlifecycle", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -653,7 +653,7 @@ func irConnLifecycleSpecs() []runner.Spec {
 			What:     "reference backbone: terminal path from an established protocol connection",
 			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					if err := c.Health(ctx); err != nil {
 						results[c.Name()] = "not_connected"
@@ -661,7 +661,7 @@ func irConnLifecycleSpecs() []runner.Spec {
 						results[c.Name()] = "connected"
 					}
 				}
-				divs := diverge(id, "ir_connlifecycle", te.Meta, results, details)
+				divs := diverge(id, "ir_connlifecycle", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -682,11 +682,11 @@ func irConnLifecycleSpecs() []runner.Spec {
 				ictx := irNewContext(te)
 				timeout := 5000 * time.Millisecond
 				body := buildStatusV2SSZ(ictx)
-				results, details := irProbeAllD(te, func(c runner.Client) string {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/status/2/ssz_snappy", body, timeout)
 					return outcome(res, err)
 				})
-				divs := diverge(id, "ir_connlifecycle", te.Meta, results, details)
+				divs := diverge(id, "ir_connlifecycle", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -707,11 +707,11 @@ func irConnLifecycleSpecs() []runner.Spec {
 				ictx := irNewContext(te)
 				timeout := 5000 * time.Millisecond
 				body := buildStatusV2SSZ(ictx)
-				results, details := irProbeAllD(te, func(c runner.Client) string {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/status/2/ssz_snappy", body, timeout)
 					return outcome(res, err)
 				})
-				divs := diverge(id, "ir_connlifecycle", te.Meta, results, details)
+				divs := diverge(id, "ir_connlifecycle", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -729,11 +729,11 @@ func irConnLifecycleSpecs() []runner.Spec {
 				ictx := irNewContext(te)
 				timeout := 5000 * time.Millisecond
 				body := buildStatusV2SSZ(ictx)
-				results, details := irProbeAllD(te, func(c runner.Client) string {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/status/2/ssz_snappy", body, timeout)
 					return outcome(res, err)
 				})
-				divs := diverge(id, "ir_connlifecycle", te.Meta, results, details)
+				divs := diverge(id, "ir_connlifecycle", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -751,11 +751,11 @@ func irConnLifecycleSpecs() []runner.Spec {
 				ictx := irNewContext(te)
 				timeout := 5000 * time.Millisecond
 				body := buildStatusV2SSZ(ictx)
-				results, details := irProbeAllD(te, func(c runner.Client) string {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/status/2/ssz_snappy", body, timeout)
 					return outcome(res, err)
 				})
-				divs := diverge(id, "ir_connlifecycle", te.Meta, results, details)
+				divs := diverge(id, "ir_connlifecycle", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -773,11 +773,11 @@ func irConnLifecycleSpecs() []runner.Spec {
 				ictx := irNewContext(te)
 				timeout := 5000 * time.Millisecond
 				body := buildStatusV2SSZ(ictx)
-				results, details := irProbeAllD(te, func(c runner.Client) string {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/status/2/ssz_snappy", body, timeout)
 					return outcome(res, err)
 				})
-				divs := diverge(id, "ir_connlifecycle", te.Meta, results, details)
+				divs := diverge(id, "ir_connlifecycle", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -798,11 +798,11 @@ func irConnLifecycleSpecs() []runner.Spec {
 				ictx := irNewContext(te)
 				timeout := 5000 * time.Millisecond
 				body := buildStatusV2SSZ(ictx)
-				results, details := irProbeAllD(te, func(c runner.Client) string {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/status/2/ssz_snappy", body, timeout)
 					return outcome(res, err)
 				})
-				divs := diverge(id, "ir_connlifecycle", te.Meta, results, details)
+				divs := diverge(id, "ir_connlifecycle", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -820,11 +820,11 @@ func irConnLifecycleSpecs() []runner.Spec {
 				ictx := irNewContext(te)
 				timeout := 5000 * time.Millisecond
 				body := buildStatusV2ForkFlipped(ictx)
-				results, details := irProbeAllD(te, func(c runner.Client) string {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/status/2/ssz_snappy", body, timeout)
 					return outcome(res, err)
 				})
-				divs := diverge(id, "ir_connlifecycle", te.Meta, results, details)
+				divs := diverge(id, "ir_connlifecycle", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -841,11 +841,11 @@ func irConnLifecycleSpecs() []runner.Spec {
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				timeout := 5000 * time.Millisecond
 				body := []byte(nil)
-				results, details := irProbeAllD(te, func(c runner.Client) string {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/metadata/3/ssz_snappy", body, timeout)
 					return outcome(res, err)
 				})
-				divs := diverge(id, "ir_connlifecycle", te.Meta, results, details)
+				divs := diverge(id, "ir_connlifecycle", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -864,11 +864,11 @@ func irConnLifecycleSpecs() []runner.Spec {
 				buf := make([]byte, 8)
 				binary.LittleEndian.PutUint64(buf[0:8], 2)
 				body := wire.BuildSSZSnappy(buf)
-				results, details := irProbeAllD(te, func(c runner.Client) string {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/goodbye/1/ssz_snappy", body, timeout)
 					return outcome(res, err)
 				})
-				divs := diverge(id, "ir_connlifecycle", te.Meta, results, details)
+				divs := diverge(id, "ir_connlifecycle", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -887,11 +887,11 @@ func irConnLifecycleSpecs() []runner.Spec {
 				buf := make([]byte, 8)
 				binary.LittleEndian.PutUint64(buf[0:8], 129)
 				body := wire.BuildSSZSnappy(buf)
-				results, details := irProbeAllD(te, func(c runner.Client) string {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/goodbye/1/ssz_snappy", body, timeout)
 					return outcome(res, err)
 				})
-				divs := diverge(id, "ir_connlifecycle", te.Meta, results, details)
+				divs := diverge(id, "ir_connlifecycle", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -910,11 +910,11 @@ func irConnLifecycleSpecs() []runner.Spec {
 				buf := make([]byte, 8)
 				binary.LittleEndian.PutUint64(buf[0:8], 1)
 				body := wire.BuildSSZSnappy(buf)
-				results, details := irProbeAllD(te, func(c runner.Client) string {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/goodbye/1/ssz_snappy", body, timeout)
 					return outcome(res, err)
 				})
-				divs := diverge(id, "ir_connlifecycle", te.Meta, results, details)
+				divs := diverge(id, "ir_connlifecycle", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -933,11 +933,11 @@ func irConnLifecycleSpecs() []runner.Spec {
 				buf := make([]byte, 8)
 				binary.LittleEndian.PutUint64(buf[0:8], 1)
 				body := wire.BuildSSZSnappy(buf)
-				results, details := irProbeAllD(te, func(c runner.Client) string {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/goodbye/1/ssz_snappy", body, timeout)
 					return outcome(res, err)
 				})
-				divs := diverge(id, "ir_connlifecycle", te.Meta, results, details)
+				divs := diverge(id, "ir_connlifecycle", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -955,11 +955,11 @@ func irConnLifecycleSpecs() []runner.Spec {
 				ictx := irNewContext(te)
 				timeout := 10000 * time.Millisecond
 				body := buildBeaconBlocksByRangeV2NearHead(ictx)
-				results, details := irProbeAllD(te, func(c runner.Client) string {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/beacon_blocks_by_range/2/ssz_snappy", body, timeout)
 					return outcome(res, err)
 				})
-				divs := diverge(id, "ir_connlifecycle", te.Meta, results, details)
+				divs := diverge(id, "ir_connlifecycle", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -978,11 +978,11 @@ func irConnLifecycleSpecs() []runner.Spec {
 				buf := make([]byte, 8)
 				binary.LittleEndian.PutUint64(buf[0:8], 1)
 				body := wire.BuildSSZSnappy(buf)
-				results, details := irProbeAllD(te, func(c runner.Client) string {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/ping/1/ssz_snappy", body, timeout)
 					return outcome(res, err)
 				})
-				divs := diverge(id, "ir_connlifecycle", te.Meta, results, details)
+				divs := diverge(id, "ir_connlifecycle", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -1003,7 +1003,7 @@ func irCryptoMsgSpecs() []runner.Spec {
 			What:     "backbone: liveness check",
 			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					if err := c.Health(ctx); err != nil {
 						results[c.Name()] = "not_connected"
@@ -1011,7 +1011,7 @@ func irCryptoMsgSpecs() []runner.Spec {
 						results[c.Name()] = "connected"
 					}
 				}
-				divs := diverge(id, "ir_cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "ir_cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -1026,7 +1026,7 @@ func irCryptoMsgSpecs() []runner.Spec {
 			What:     "backbone: cycle back",
 			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					if err := c.Health(ctx); err != nil {
 						results[c.Name()] = "not_connected"
@@ -1034,7 +1034,7 @@ func irCryptoMsgSpecs() []runner.Spec {
 						results[c.Name()] = "connected"
 					}
 				}
-				divs := diverge(id, "ir_cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "ir_cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -1049,7 +1049,7 @@ func irCryptoMsgSpecs() []runner.Spec {
 			What:     "backbone: terminal path",
 			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					if err := c.Health(ctx); err != nil {
 						results[c.Name()] = "not_connected"
@@ -1057,7 +1057,7 @@ func irCryptoMsgSpecs() []runner.Spec {
 						results[c.Name()] = "connected"
 					}
 				}
-				divs := diverge(id, "ir_cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "ir_cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -1085,12 +1085,12 @@ func irCryptoMsgSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "ir_cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "ir_cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -1118,12 +1118,12 @@ func irCryptoMsgSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "ir_cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "ir_cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -1151,12 +1151,12 @@ func irCryptoMsgSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "ir_cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "ir_cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -1184,12 +1184,12 @@ func irCryptoMsgSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "ir_cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "ir_cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -1217,12 +1217,12 @@ func irCryptoMsgSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "ir_cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "ir_cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -1250,12 +1250,12 @@ func irCryptoMsgSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "ir_cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "ir_cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -1283,12 +1283,12 @@ func irCryptoMsgSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "ir_cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "ir_cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -1316,12 +1316,12 @@ func irCryptoMsgSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "ir_cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "ir_cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -1349,12 +1349,12 @@ func irCryptoMsgSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "ir_cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "ir_cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -1382,12 +1382,12 @@ func irCryptoMsgSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "ir_cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "ir_cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -1415,12 +1415,12 @@ func irCryptoMsgSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "ir_cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "ir_cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -1448,12 +1448,12 @@ func irCryptoMsgSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "ir_cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "ir_cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -1481,12 +1481,12 @@ func irCryptoMsgSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "ir_cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "ir_cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -1517,12 +1517,12 @@ func irCryptoMsgSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "ir_cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "ir_cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -1553,12 +1553,12 @@ func irCryptoMsgSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "ir_cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "ir_cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -1586,12 +1586,12 @@ func irCryptoMsgSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "ir_cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "ir_cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -1619,12 +1619,12 @@ func irCryptoMsgSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "ir_cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "ir_cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -1652,12 +1652,12 @@ func irCryptoMsgSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "ir_cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "ir_cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -1685,12 +1685,12 @@ func irCryptoMsgSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "ir_cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "ir_cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -1721,12 +1721,12 @@ func irCryptoMsgSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "ir_cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "ir_cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -1754,12 +1754,12 @@ func irCryptoMsgSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "ir_cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "ir_cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -1787,12 +1787,12 @@ func irCryptoMsgSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "ir_cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "ir_cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -1820,12 +1820,12 @@ func irCryptoMsgSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "ir_cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "ir_cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -1853,12 +1853,12 @@ func irCryptoMsgSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "ir_cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "ir_cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -1889,12 +1889,12 @@ func irCryptoMsgSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "ir_cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "ir_cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -1925,12 +1925,12 @@ func irCryptoMsgSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "ir_cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "ir_cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -1958,12 +1958,12 @@ func irCryptoMsgSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "ir_cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "ir_cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -1991,12 +1991,12 @@ func irCryptoMsgSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "ir_cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "ir_cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -2027,12 +2027,12 @@ func irCryptoMsgSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "ir_cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "ir_cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -2060,12 +2060,12 @@ func irCryptoMsgSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "ir_cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "ir_cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -2093,12 +2093,12 @@ func irCryptoMsgSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "ir_cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "ir_cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -2126,12 +2126,12 @@ func irCryptoMsgSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "ir_cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "ir_cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -2159,12 +2159,12 @@ func irCryptoMsgSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "ir_cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "ir_cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -2195,12 +2195,12 @@ func irCryptoMsgSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "ir_cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "ir_cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -2231,12 +2231,12 @@ func irCryptoMsgSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "ir_cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "ir_cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -2267,12 +2267,12 @@ func irCryptoMsgSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "ir_cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "ir_cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -2303,12 +2303,12 @@ func irCryptoMsgSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "ir_cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "ir_cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -2339,12 +2339,12 @@ func irCryptoMsgSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "ir_cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "ir_cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -2375,12 +2375,12 @@ func irCryptoMsgSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "ir_cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "ir_cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -2411,12 +2411,12 @@ func irCryptoMsgSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "ir_cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "ir_cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -2447,12 +2447,12 @@ func irCryptoMsgSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "ir_cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "ir_cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -2483,12 +2483,12 @@ func irCryptoMsgSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "ir_cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "ir_cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -2516,12 +2516,12 @@ func irCryptoMsgSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "ir_cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "ir_cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -2549,12 +2549,12 @@ func irCryptoMsgSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "ir_cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "ir_cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -2582,12 +2582,12 @@ func irCryptoMsgSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "ir_cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "ir_cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -2618,12 +2618,12 @@ func irCryptoMsgSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "ir_cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "ir_cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -2654,12 +2654,12 @@ func irCryptoMsgSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "ir_cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "ir_cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -2690,12 +2690,12 @@ func irCryptoMsgSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "ir_cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "ir_cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -2726,12 +2726,12 @@ func irCryptoMsgSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "ir_cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "ir_cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -2762,12 +2762,12 @@ func irCryptoMsgSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "ir_cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "ir_cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -2798,12 +2798,12 @@ func irCryptoMsgSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "ir_cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "ir_cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -2834,12 +2834,12 @@ func irCryptoMsgSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "ir_cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "ir_cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -2870,12 +2870,12 @@ func irCryptoMsgSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "ir_cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "ir_cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -2888,7 +2888,7 @@ func irCryptoMsgSpecs() []runner.Spec {
 		specs = append(specs, runner.Spec{
 			ID: id, Category: "ir_cryptomsg",
 			What:     "[REJECT] The aggregator's validator index is in the declared subcommittee (of the current sync committee) [failure: aggregator_pubkey not in subcommittee_pubkeys] (expected reject)",
-			Metadata: runner.Metadata{SpecRules: []string{"SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-c33e885a"}, MinClients: 2},
+			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
 			Preflight: func(ctx context.Context, chain runner.ChainConfig, cs []runner.Client) runner.PreflightResult {
 				return irPreflightFork(ctx, cs, "altair", []string{})
 			},
@@ -2906,12 +2906,12 @@ func irCryptoMsgSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "ir_cryptomsg", te.Meta, results, details)
+				divs := diverge(id, "ir_cryptomsg", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -2932,7 +2932,7 @@ func irDiscoverySpecs() []runner.Spec {
 			What:     "backbone: liveness check",
 			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					if err := c.Health(ctx); err != nil {
 						results[c.Name()] = "not_connected"
@@ -2940,7 +2940,7 @@ func irDiscoverySpecs() []runner.Spec {
 						results[c.Name()] = "connected"
 					}
 				}
-				divs := diverge(id, "ir_discovery", te.Meta, results, details)
+				divs := diverge(id, "ir_discovery", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -2955,7 +2955,7 @@ func irDiscoverySpecs() []runner.Spec {
 			What:     "backbone: cycle back",
 			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					if err := c.Health(ctx); err != nil {
 						results[c.Name()] = "not_connected"
@@ -2963,7 +2963,7 @@ func irDiscoverySpecs() []runner.Spec {
 						results[c.Name()] = "connected"
 					}
 				}
-				divs := diverge(id, "ir_discovery", te.Meta, results, details)
+				divs := diverge(id, "ir_discovery", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -2978,7 +2978,7 @@ func irDiscoverySpecs() []runner.Spec {
 			What:     "backbone: terminal path",
 			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					if err := c.Health(ctx); err != nil {
 						results[c.Name()] = "not_connected"
@@ -2986,7 +2986,7 @@ func irDiscoverySpecs() []runner.Spec {
 						results[c.Name()] = "connected"
 					}
 				}
-				divs := diverge(id, "ir_discovery", te.Meta, results, details)
+				divs := diverge(id, "ir_discovery", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -3001,7 +3001,7 @@ func irDiscoverySpecs() []runner.Spec {
 			What:     "If a node's MetaData.attnets is composed of all zeros, the ENR MAY optionally include the attnets entry or leave it out entirely.",
 			Metadata: runner.Metadata{SpecRules: []string{"PROSE-MAY-cd1cb27a"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					if _, err := c.State(ctx); err != nil {
 						results[c.Name()] = "state_unavailable"
@@ -3009,7 +3009,7 @@ func irDiscoverySpecs() []runner.Spec {
 						results[c.Name()] = "state_available"
 					}
 				}
-				divs := diverge(id, "ir_discovery", te.Meta, results, details)
+				divs := diverge(id, "ir_discovery", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -3024,7 +3024,7 @@ func irDiscoverySpecs() []runner.Spec {
 			What:     "The ENR MAY contain the following entries:",
 			Metadata: runner.Metadata{SpecRules: []string{"PROSE-MAY-f46586f6"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					if _, err := c.State(ctx); err != nil {
 						results[c.Name()] = "state_unavailable"
@@ -3032,7 +3032,7 @@ func irDiscoverySpecs() []runner.Spec {
 						results[c.Name()] = "state_available"
 					}
 				}
-				divs := diverge(id, "ir_discovery", te.Meta, results, details)
+				divs := diverge(id, "ir_discovery", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -3047,7 +3047,7 @@ func irDiscoverySpecs() []runner.Spec {
 			What:     "If a node's MetaData.attnets has any non-zero bit, the ENR MUST include the attnets entry with the same value as MetaData.attnets.",
 			Metadata: runner.Metadata{SpecRules: []string{"PROSE-MUST-0648388b"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					if _, err := c.State(ctx); err != nil {
 						results[c.Name()] = "state_unavailable"
@@ -3055,7 +3055,7 @@ func irDiscoverySpecs() []runner.Spec {
 						results[c.Name()] = "state_available"
 					}
 				}
-				divs := diverge(id, "ir_discovery", te.Meta, results, details)
+				divs := diverge(id, "ir_discovery", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -3070,7 +3070,7 @@ func irDiscoverySpecs() []runner.Spec {
 			What:     "The Ethereum Node Record (ENR) for an Ethereum consensus client MUST be present in an ENR):",
 			Metadata: runner.Metadata{SpecRules: []string{"PROSE-MUST-9812f11c"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					if _, err := c.State(ctx); err != nil {
 						results[c.Name()] = "state_unavailable"
@@ -3078,7 +3078,7 @@ func irDiscoverySpecs() []runner.Spec {
 						results[c.Name()] = "state_available"
 					}
 				}
-				divs := diverge(id, "ir_discovery", te.Meta, results, details)
+				divs := diverge(id, "ir_discovery", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -3093,7 +3093,7 @@ func irDiscoverySpecs() []runner.Spec {
 			What:     "The Ethereum Node Record (ENR) for an Ethereum consensus client MUST contain the following entries (exclusive of the sequence number and signature, which",
 			Metadata: runner.Metadata{SpecRules: []string{"PROSE-MUST-bdd581d1"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					if _, err := c.State(ctx); err != nil {
 						results[c.Name()] = "state_unavailable"
@@ -3101,7 +3101,7 @@ func irDiscoverySpecs() []runner.Spec {
 						results[c.Name()] = "state_available"
 					}
 				}
-				divs := diverge(id, "ir_discovery", te.Meta, results, details)
+				divs := diverge(id, "ir_discovery", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -3119,7 +3119,7 @@ func irDiscoverySpecs() []runner.Spec {
 				return irPreflightFork(ctx, cs, "fulu", []string{})
 			},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					if _, err := c.State(ctx); err != nil {
 						results[c.Name()] = "state_unavailable"
@@ -3127,7 +3127,7 @@ func irDiscoverySpecs() []runner.Spec {
 						results[c.Name()] = "state_available"
 					}
 				}
-				divs := diverge(id, "ir_discovery", te.Meta, results, details)
+				divs := diverge(id, "ir_discovery", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -3145,7 +3145,7 @@ func irDiscoverySpecs() []runner.Spec {
 				return irPreflightFork(ctx, cs, "fulu", []string{})
 			},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					if _, err := c.State(ctx); err != nil {
 						results[c.Name()] = "state_unavailable"
@@ -3153,7 +3153,7 @@ func irDiscoverySpecs() []runner.Spec {
 						results[c.Name()] = "state_available"
 					}
 				}
-				divs := diverge(id, "ir_discovery", te.Meta, results, details)
+				divs := diverge(id, "ir_discovery", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -3171,7 +3171,7 @@ func irDiscoverySpecs() []runner.Spec {
 				return irPreflightFork(ctx, cs, "fulu", []string{})
 			},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					if _, err := c.State(ctx); err != nil {
 						results[c.Name()] = "state_unavailable"
@@ -3179,7 +3179,7 @@ func irDiscoverySpecs() []runner.Spec {
 						results[c.Name()] = "state_available"
 					}
 				}
-				divs := diverge(id, "ir_discovery", te.Meta, results, details)
+				divs := diverge(id, "ir_discovery", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -3197,7 +3197,7 @@ func irDiscoverySpecs() []runner.Spec {
 				return irPreflightFork(ctx, cs, "fulu", []string{})
 			},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					if _, err := c.State(ctx); err != nil {
 						results[c.Name()] = "state_unavailable"
@@ -3205,7 +3205,7 @@ func irDiscoverySpecs() []runner.Spec {
 						results[c.Name()] = "state_available"
 					}
 				}
-				divs := diverge(id, "ir_discovery", te.Meta, results, details)
+				divs := diverge(id, "ir_discovery", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -3223,7 +3223,7 @@ func irDiscoverySpecs() []runner.Spec {
 				return irPreflightFork(ctx, cs, "fulu", []string{})
 			},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					if _, err := c.State(ctx); err != nil {
 						results[c.Name()] = "state_unavailable"
@@ -3231,7 +3231,7 @@ func irDiscoverySpecs() []runner.Spec {
 						results[c.Name()] = "state_available"
 					}
 				}
-				divs := diverge(id, "ir_discovery", te.Meta, results, details)
+				divs := diverge(id, "ir_discovery", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -3255,11 +3255,11 @@ func irForkTransitionSpecs() []runner.Spec {
 				ictx := irNewContext(te)
 				timeout := 5000 * time.Millisecond
 				body := buildStatusV2SSZ(ictx)
-				results, details := irProbeAllD(te, func(c runner.Client) string {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/status/2/ssz_snappy", body, timeout)
 					return outcome(res, err)
 				})
-				divs := diverge(id, "ir_forktransition", te.Meta, results, details)
+				divs := diverge(id, "ir_forktransition", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -3277,11 +3277,11 @@ func irForkTransitionSpecs() []runner.Spec {
 				ictx := irNewContext(te)
 				timeout := 5000 * time.Millisecond
 				body := buildStatusV2ForkFlipped(ictx)
-				results, details := irProbeAllD(te, func(c runner.Client) string {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/status/2/ssz_snappy", body, timeout)
 					return outcome(res, err)
 				})
-				divs := diverge(id, "ir_forktransition", te.Meta, results, details)
+				divs := diverge(id, "ir_forktransition", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -3313,12 +3313,12 @@ func irForkTransitionSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "ir_forktransition", te.Meta, results, details)
+				divs := diverge(id, "ir_forktransition", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -3333,11 +3333,11 @@ func irForkTransitionSpecs() []runner.Spec {
 			What:     "reference backbone: fork mismatch or cleanup can end the peer session",
 			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					results[c.Name()] = irDisconnectAndRestore(ctx, c)
 				}
-				divs := diverge(id, "ir_forktransition", te.Meta, results, details)
+				divs := diverge(id, "ir_forktransition", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -3360,7 +3360,7 @@ func irGossipValidationSpecs() []runner.Spec {
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				ictx := irNewContext(te)
 				topic := irFullGossipTopic(ictx, "beacon_block")
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					if err := c.PrepareGossipTopic(ctx, topic); err != nil {
 						results[c.Name()] = "other:" + err.Error()
@@ -3368,7 +3368,7 @@ func irGossipValidationSpecs() []runner.Spec {
 						results[c.Name()] = "subscribed"
 					}
 				}
-				divs := diverge(id, "ir_gossipvalidation", te.Meta, results, details)
+				divs := diverge(id, "ir_gossipvalidation", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -3396,12 +3396,12 @@ func irGossipValidationSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "ir_gossipvalidation", te.Meta, results, details)
+				divs := diverge(id, "ir_gossipvalidation", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -3429,12 +3429,12 @@ func irGossipValidationSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "ir_gossipvalidation", te.Meta, results, details)
+				divs := diverge(id, "ir_gossipvalidation", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -3462,12 +3462,12 @@ func irGossipValidationSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "ir_gossipvalidation", te.Meta, results, details)
+				divs := diverge(id, "ir_gossipvalidation", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -3498,12 +3498,12 @@ func irGossipValidationSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "ir_gossipvalidation", te.Meta, results, details)
+				divs := diverge(id, "ir_gossipvalidation", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -3518,7 +3518,7 @@ func irGossipValidationSpecs() []runner.Spec {
 			What:     "reference backbone: repeated invalid/duplicate behavior may affect scoring",
 			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					if err := c.Health(ctx); err != nil {
 						results[c.Name()] = "not_connected"
@@ -3526,7 +3526,7 @@ func irGossipValidationSpecs() []runner.Spec {
 						results[c.Name()] = "connected"
 					}
 				}
-				divs := diverge(id, "ir_gossipvalidation", te.Meta, results, details)
+				divs := diverge(id, "ir_gossipvalidation", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -3541,7 +3541,7 @@ func irGossipValidationSpecs() []runner.Spec {
 			What:     "reference backbone: equivocation/conflict paths feed peer scoring",
 			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					if err := c.Health(ctx); err != nil {
 						results[c.Name()] = "not_connected"
@@ -3549,7 +3549,7 @@ func irGossipValidationSpecs() []runner.Spec {
 						results[c.Name()] = "connected"
 					}
 				}
-				divs := diverge(id, "ir_gossipvalidation", te.Meta, results, details)
+				divs := diverge(id, "ir_gossipvalidation", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -3564,7 +3564,7 @@ func irGossipValidationSpecs() []runner.Spec {
 			What:     "reference backbone: deferred work eventually returns to subscribed validation",
 			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					if err := c.Health(ctx); err != nil {
 						results[c.Name()] = "not_connected"
@@ -3572,7 +3572,7 @@ func irGossipValidationSpecs() []runner.Spec {
 						results[c.Name()] = "connected"
 					}
 				}
-				divs := diverge(id, "ir_gossipvalidation", te.Meta, results, details)
+				divs := diverge(id, "ir_gossipvalidation", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -3587,11 +3587,11 @@ func irGossipValidationSpecs() []runner.Spec {
 			What:     "reference backbone: severe peer-score outcomes can end the session",
 			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					results[c.Name()] = irDisconnectAndRestore(ctx, c)
 				}
-				divs := diverge(id, "ir_gossipvalidation", te.Meta, results, details)
+				divs := diverge(id, "ir_gossipvalidation", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -3606,7 +3606,7 @@ func irGossipValidationSpecs() []runner.Spec {
 			What:     "AST bind: stateful gossip validation rule: After genesis values are known, the bootnodes SHOULD update ENRs to participate in normal discovery operations.",
 			Metadata: runner.Metadata{SpecRules: []string{"ETH2-SHOULD-50cecb99"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					if _, err := c.State(ctx); err != nil {
 						results[c.Name()] = "state_unavailable"
@@ -3614,7 +3614,7 @@ func irGossipValidationSpecs() []runner.Spec {
 						results[c.Name()] = "state_available"
 					}
 				}
-				divs := diverge(id, "ir_gossipvalidation", te.Meta, results, details)
+				divs := diverge(id, "ir_gossipvalidation", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -3629,7 +3629,7 @@ func irGossipValidationSpecs() []runner.Spec {
 			What:     "AST bind: stateful gossip validation rule: Due to this, clients SHOULD_NOT form ENRs and begin peer discovery until genesis values are known",
 			Metadata: runner.Metadata{SpecRules: []string{"ETH2-SHOULD_NOT-5cba6dbb"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					if _, err := c.State(ctx); err != nil {
 						results[c.Name()] = "state_unavailable"
@@ -3637,7 +3637,7 @@ func irGossipValidationSpecs() []runner.Spec {
 						results[c.Name()] = "state_available"
 					}
 				}
-				divs := diverge(id, "ir_gossipvalidation", te.Meta, results, details)
+				divs := diverge(id, "ir_gossipvalidation", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -3669,12 +3669,12 @@ func irGossipValidationSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "ir_gossipvalidation", te.Meta, results, details)
+				divs := diverge(id, "ir_gossipvalidation", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -3706,12 +3706,12 @@ func irGossipValidationSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "ir_gossipvalidation", te.Meta, results, details)
+				divs := diverge(id, "ir_gossipvalidation", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -3743,12 +3743,12 @@ func irGossipValidationSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "ir_gossipvalidation", te.Meta, results, details)
+				divs := diverge(id, "ir_gossipvalidation", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -3780,12 +3780,12 @@ func irGossipValidationSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "ir_gossipvalidation", te.Meta, results, details)
+				divs := diverge(id, "ir_gossipvalidation", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -3817,12 +3817,12 @@ func irGossipValidationSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "ir_gossipvalidation", te.Meta, results, details)
+				divs := diverge(id, "ir_gossipvalidation", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -3854,12 +3854,12 @@ func irGossipValidationSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "ir_gossipvalidation", te.Meta, results, details)
+				divs := diverge(id, "ir_gossipvalidation", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -3891,12 +3891,12 @@ func irGossipValidationSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "ir_gossipvalidation", te.Meta, results, details)
+				divs := diverge(id, "ir_gossipvalidation", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -3928,12 +3928,12 @@ func irGossipValidationSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "ir_gossipvalidation", te.Meta, results, details)
+				divs := diverge(id, "ir_gossipvalidation", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -3965,12 +3965,12 @@ func irGossipValidationSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "ir_gossipvalidation", te.Meta, results, details)
+				divs := diverge(id, "ir_gossipvalidation", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -4001,12 +4001,12 @@ func irGossipValidationSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "ir_gossipvalidation", te.Meta, results, details)
+				divs := diverge(id, "ir_gossipvalidation", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -4025,11 +4025,11 @@ func irGossipValidationSpecs() []runner.Spec {
 			},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				ictx := irNewContext(te)
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					results[c.Name()] = irCustodyRequest(ctx, c, ictx, "custody")
 				}
-				divs := diverge(id, "ir_gossipvalidation", te.Meta, results, details)
+				divs := diverge(id, "ir_gossipvalidation", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -4060,12 +4060,12 @@ func irGossipValidationSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "ir_gossipvalidation", te.Meta, results, details)
+				divs := diverge(id, "ir_gossipvalidation", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -4096,12 +4096,12 @@ func irGossipValidationSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "ir_gossipvalidation", te.Meta, results, details)
+				divs := diverge(id, "ir_gossipvalidation", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -4133,12 +4133,12 @@ func irGossipValidationSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "ir_gossipvalidation", te.Meta, results, details)
+				divs := diverge(id, "ir_gossipvalidation", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -4157,11 +4157,11 @@ func irGossipValidationSpecs() []runner.Spec {
 			},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				ictx := irNewContext(te)
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					results[c.Name()] = irCustodyRequest(ctx, c, ictx, "custody")
 				}
-				divs := diverge(id, "ir_gossipvalidation", te.Meta, results, details)
+				divs := diverge(id, "ir_gossipvalidation", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -4192,12 +4192,12 @@ func irGossipValidationSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "ir_gossipvalidation", te.Meta, results, details)
+				divs := diverge(id, "ir_gossipvalidation", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -4212,7 +4212,7 @@ func irGossipValidationSpecs() []runner.Spec {
 			What:     "AST bind: stateful gossip validation rule: Due to this, clients SHOULD_NOT subscribe to gossipsub topics until these genesis values are known.",
 			Metadata: runner.Metadata{SpecRules: []string{"PROSE-SHOULD_NOT-c1b17ff2"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					if _, err := c.State(ctx); err != nil {
 						results[c.Name()] = "state_unavailable"
@@ -4220,7 +4220,7 @@ func irGossipValidationSpecs() []runner.Spec {
 						results[c.Name()] = "state_available"
 					}
 				}
-				divs := diverge(id, "ir_gossipvalidation", te.Meta, results, details)
+				divs := diverge(id, "ir_gossipvalidation", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -4246,11 +4246,11 @@ func irLightClientSpecs() []runner.Spec {
 				buf := make([]byte, 32)
 				copy(buf[0:32], ictx.FinalizedRoot[:])
 				body := wire.BuildSSZSnappy(buf)
-				results, details := irProbeAllD(te, func(c runner.Client) string {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/light_client_bootstrap/1/ssz_snappy", body, timeout)
 					return outcome(res, err)
 				})
-				divs := diverge(id, "ir_lightclient", te.Meta, results, details)
+				divs := diverge(id, "ir_lightclient", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -4269,11 +4269,11 @@ func irLightClientSpecs() []runner.Spec {
 				timeout := 10000 * time.Millisecond
 				body := make([]byte, 32)
 				body = irApplyMutator("random_bytes", body, ictx.Rng)
-				results, details := irProbeAllD(te, func(c runner.Client) string {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/light_client_bootstrap/1/ssz_snappy", body, timeout)
 					return outcome(res, err)
 				})
-				divs := diverge(id, "ir_lightclient", te.Meta, results, details)
+				divs := diverge(id, "ir_lightclient", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -4292,11 +4292,11 @@ func irLightClientSpecs() []runner.Spec {
 				timeout := 10000 * time.Millisecond
 				body := make([]byte, 32)
 				body = irApplyMutator("truncate_half", body, ictx.Rng)
-				results, details := irProbeAllD(te, func(c runner.Client) string {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/light_client_bootstrap/1/ssz_snappy", body, timeout)
 					return outcome(res, err)
 				})
-				divs := diverge(id, "ir_lightclient", te.Meta, results, details)
+				divs := diverge(id, "ir_lightclient", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -4315,11 +4315,11 @@ func irLightClientSpecs() []runner.Spec {
 				timeout := 10000 * time.Millisecond
 				body := make([]byte, 32)
 				body = irApplyMutator("break_snappy", body, ictx.Rng)
-				results, details := irProbeAllD(te, func(c runner.Client) string {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/light_client_bootstrap/1/ssz_snappy", body, timeout)
 					return outcome(res, err)
 				})
-				divs := diverge(id, "ir_lightclient", te.Meta, results, details)
+				divs := diverge(id, "ir_lightclient", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -4338,11 +4338,11 @@ func irLightClientSpecs() []runner.Spec {
 				timeout := 10000 * time.Millisecond
 				body := make([]byte, 32)
 				body = irApplyMutator("append_garbage", body, ictx.Rng)
-				results, details := irProbeAllD(te, func(c runner.Client) string {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/light_client_bootstrap/1/ssz_snappy", body, timeout)
 					return outcome(res, err)
 				})
-				divs := diverge(id, "ir_lightclient", te.Meta, results, details)
+				divs := diverge(id, "ir_lightclient", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -4360,11 +4360,11 @@ func irLightClientSpecs() []runner.Spec {
 				ictx := irNewContext(te)
 				timeout := 10000 * time.Millisecond
 				body := buildLCUpdatesByRange1SSZ(ictx)
-				results, details := irProbeAllD(te, func(c runner.Client) string {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/light_client_updates_by_range/1/ssz_snappy", body, timeout)
 					return outcome(res, err)
 				})
-				divs := diverge(id, "ir_lightclient", te.Meta, results, details)
+				divs := diverge(id, "ir_lightclient", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -4383,11 +4383,11 @@ func irLightClientSpecs() []runner.Spec {
 				timeout := 10000 * time.Millisecond
 				body := []byte(nil)
 				body = irApplyMutator("count_zero", body, ictx.Rng)
-				results, details := irProbeAllD(te, func(c runner.Client) string {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/light_client_updates_by_range/1/ssz_snappy", body, timeout)
 					return outcome(res, err)
 				})
-				divs := diverge(id, "ir_lightclient", te.Meta, results, details)
+				divs := diverge(id, "ir_lightclient", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -4406,11 +4406,11 @@ func irLightClientSpecs() []runner.Spec {
 				timeout := 10000 * time.Millisecond
 				body := []byte(nil)
 				body = irApplyMutator("count_over_max", body, ictx.Rng)
-				results, details := irProbeAllD(te, func(c runner.Client) string {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/light_client_updates_by_range/1/ssz_snappy", body, timeout)
 					return outcome(res, err)
 				})
-				divs := diverge(id, "ir_lightclient", te.Meta, results, details)
+				divs := diverge(id, "ir_lightclient", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -4429,11 +4429,11 @@ func irLightClientSpecs() []runner.Spec {
 				timeout := 10000 * time.Millisecond
 				body := make([]byte, 16)
 				body = irApplyMutator("random_bytes", body, ictx.Rng)
-				results, details := irProbeAllD(te, func(c runner.Client) string {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/light_client_updates_by_range/1/ssz_snappy", body, timeout)
 					return outcome(res, err)
 				})
-				divs := diverge(id, "ir_lightclient", te.Meta, results, details)
+				divs := diverge(id, "ir_lightclient", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -4450,11 +4450,11 @@ func irLightClientSpecs() []runner.Spec {
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				timeout := 10000 * time.Millisecond
 				body := []byte(nil)
-				results, details := irProbeAllD(te, func(c runner.Client) string {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/light_client_finality_update/1/ssz_snappy", body, timeout)
 					return outcome(res, err)
 				})
-				divs := diverge(id, "ir_lightclient", te.Meta, results, details)
+				divs := diverge(id, "ir_lightclient", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -4471,11 +4471,11 @@ func irLightClientSpecs() []runner.Spec {
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				timeout := 10000 * time.Millisecond
 				body := []byte(nil)
-				results, details := irProbeAllD(te, func(c runner.Client) string {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/light_client_optimistic_update/1/ssz_snappy", body, timeout)
 					return outcome(res, err)
 				})
-				divs := diverge(id, "ir_lightclient", te.Meta, results, details)
+				divs := diverge(id, "ir_lightclient", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -4492,11 +4492,11 @@ func irLightClientSpecs() []runner.Spec {
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				timeout := 10000 * time.Millisecond
 				body := []byte(nil)
-				results, details := irProbeAllD(te, func(c runner.Client) string {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/light_client_finality_update/1/ssz_snappy", body, timeout)
 					return outcome(res, err)
 				})
-				divs := diverge(id, "ir_lightclient", te.Meta, results, details)
+				divs := diverge(id, "ir_lightclient", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -4513,11 +4513,11 @@ func irLightClientSpecs() []runner.Spec {
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				timeout := 10000 * time.Millisecond
 				body := []byte(nil)
-				results, details := irProbeAllD(te, func(c runner.Client) string {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/light_client_optimistic_update/1/ssz_snappy", body, timeout)
 					return outcome(res, err)
 				})
-				divs := diverge(id, "ir_lightclient", te.Meta, results, details)
+				divs := diverge(id, "ir_lightclient", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -4536,11 +4536,11 @@ func irLightClientSpecs() []runner.Spec {
 				timeout := 10000 * time.Millisecond
 				body := make([]byte, 50)
 				body = irApplyMutator("random_bytes", body, ictx.Rng)
-				results, details := irProbeAllD(te, func(c runner.Client) string {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/light_client_finality_update/1/ssz_snappy", body, timeout)
 					return outcome(res, err)
 				})
-				divs := diverge(id, "ir_lightclient", te.Meta, results, details)
+				divs := diverge(id, "ir_lightclient", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -4559,11 +4559,11 @@ func irLightClientSpecs() []runner.Spec {
 				timeout := 10000 * time.Millisecond
 				body := make([]byte, 50)
 				body = irApplyMutator("random_bytes", body, ictx.Rng)
-				results, details := irProbeAllD(te, func(c runner.Client) string {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/light_client_optimistic_update/1/ssz_snappy", body, timeout)
 					return outcome(res, err)
 				})
-				divs := diverge(id, "ir_lightclient", te.Meta, results, details)
+				divs := diverge(id, "ir_lightclient", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -4581,11 +4581,11 @@ func irLightClientSpecs() []runner.Spec {
 				ictx := irNewContext(te)
 				timeout := 10000 * time.Millisecond
 				body := buildLCAdditionalUpdatesSSZ(ictx)
-				results, details := irProbeAllD(te, func(c runner.Client) string {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/light_client_updates_by_range/1/ssz_snappy", body, timeout)
 					return outcome(res, err)
 				})
-				divs := diverge(id, "ir_lightclient", te.Meta, results, details)
+				divs := diverge(id, "ir_lightclient", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -4602,7 +4602,7 @@ func irLightClientSpecs() []runner.Spec {
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				timeout := 100 * time.Millisecond
 				time.Sleep(timeout)
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					if c.Health(ctx) != nil {
 						results[c.Name()] = "dropped"
@@ -4610,7 +4610,7 @@ func irLightClientSpecs() []runner.Spec {
 						results[c.Name()] = "connected"
 					}
 				}
-				divs := diverge(id, "ir_lightclient", te.Meta, results, details)
+				divs := diverge(id, "ir_lightclient", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -4627,7 +4627,7 @@ func irLightClientSpecs() []runner.Spec {
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				timeout := 2000 * time.Millisecond
 				time.Sleep(timeout)
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					if c.Health(ctx) != nil {
 						results[c.Name()] = "dropped"
@@ -4635,7 +4635,7 @@ func irLightClientSpecs() []runner.Spec {
 						results[c.Name()] = "connected"
 					}
 				}
-				divs := diverge(id, "ir_lightclient", te.Meta, results, details)
+				divs := diverge(id, "ir_lightclient", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -4654,11 +4654,11 @@ func irLightClientSpecs() []runner.Spec {
 				buf := make([]byte, 8)
 				binary.LittleEndian.PutUint64(buf[0:8], 1)
 				body := wire.BuildSSZSnappy(buf)
-				results, details := irProbeAllD(te, func(c runner.Client) string {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/goodbye/1/ssz_snappy", body, timeout)
 					return outcome(res, err)
 				})
-				divs := diverge(id, "ir_lightclient", te.Meta, results, details)
+				divs := diverge(id, "ir_lightclient", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -4673,7 +4673,7 @@ func irLightClientSpecs() []runner.Spec {
 			What:     "lc_reconnect (LCDisconnected -> LCConnected)",
 			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					if err := c.Connect(ctx, runner.ConnectNoStatus); err != nil {
 						results[c.Name()] = "reconnect_failed"
@@ -4681,7 +4681,7 @@ func irLightClientSpecs() []runner.Spec {
 						results[c.Name()] = "reconnected"
 					}
 				}
-				divs := diverge(id, "ir_lightclient", te.Meta, results, details)
+				divs := diverge(id, "ir_lightclient", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -4698,7 +4698,7 @@ func irLightClientSpecs() []runner.Spec {
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				timeout := 100 * time.Millisecond
 				time.Sleep(timeout)
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					if c.Health(ctx) != nil {
 						results[c.Name()] = "dropped"
@@ -4706,7 +4706,7 @@ func irLightClientSpecs() []runner.Spec {
 						results[c.Name()] = "connected"
 					}
 				}
-				divs := diverge(id, "ir_lightclient", te.Meta, results, details)
+				divs := diverge(id, "ir_lightclient", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -4741,12 +4741,12 @@ func irPeerScoringSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "ir_peerscoring", te.Meta, results, details)
+				divs := diverge(id, "ir_peerscoring", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -4775,12 +4775,12 @@ func irPeerScoringSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "ir_peerscoring", te.Meta, results, details)
+				divs := diverge(id, "ir_peerscoring", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -4799,11 +4799,11 @@ func irPeerScoringSpecs() []runner.Spec {
 				timeout := 5000 * time.Millisecond
 				body := make([]byte, 8)
 				body = irApplyMutator("random_bytes", body, ictx.Rng)
-				results, details := irProbeAllD(te, func(c runner.Client) string {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/ping/1/ssz_snappy", body, timeout)
 					return outcome(res, err)
 				})
-				divs := diverge(id, "ir_peerscoring", te.Meta, results, details)
+				divs := diverge(id, "ir_peerscoring", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -4832,12 +4832,12 @@ func irPeerScoringSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "ir_peerscoring", te.Meta, results, details)
+				divs := diverge(id, "ir_peerscoring", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -4866,12 +4866,12 @@ func irPeerScoringSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "ir_peerscoring", te.Meta, results, details)
+				divs := diverge(id, "ir_peerscoring", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -4886,7 +4886,7 @@ func irPeerScoringSpecs() []runner.Spec {
 			What:     "reference backbone: repeated bad behavior crosses a penalty threshold",
 			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					if err := c.Health(ctx); err != nil {
 						results[c.Name()] = "not_connected"
@@ -4894,7 +4894,7 @@ func irPeerScoringSpecs() []runner.Spec {
 						results[c.Name()] = "connected"
 					}
 				}
-				divs := diverge(id, "ir_peerscoring", te.Meta, results, details)
+				divs := diverge(id, "ir_peerscoring", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -4909,7 +4909,7 @@ func irPeerScoringSpecs() []runner.Spec {
 			What:     "reference backbone: reconnect may fail once the peer is banned",
 			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					if err := c.Connect(ctx, runner.ConnectNoStatus); err != nil {
 						results[c.Name()] = "reconnect_failed"
@@ -4917,7 +4917,7 @@ func irPeerScoringSpecs() []runner.Spec {
 						results[c.Name()] = "reconnected"
 					}
 				}
-				divs := diverge(id, "ir_peerscoring", te.Meta, results, details)
+				divs := diverge(id, "ir_peerscoring", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -4934,7 +4934,7 @@ func irPeerScoringSpecs() []runner.Spec {
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				timeout := 1000 * time.Millisecond
 				time.Sleep(timeout)
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					if c.Health(ctx) != nil {
 						results[c.Name()] = "dropped"
@@ -4942,7 +4942,7 @@ func irPeerScoringSpecs() []runner.Spec {
 						results[c.Name()] = "connected"
 					}
 				}
-				divs := diverge(id, "ir_peerscoring", te.Meta, results, details)
+				divs := diverge(id, "ir_peerscoring", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -4966,7 +4966,7 @@ func irReqRespSpecs() []runner.Spec {
 				ctx, cancel := context.WithTimeout(ctx, 5000*time.Millisecond)
 				defer cancel()
 				body := []byte(nil)
-				results, details := irProbeAllD(te, func(c runner.Client) string {
+				results := irProbeAll(te, func(c runner.Client) string {
 					ir, err := c.OpenStream(ctx, "/eth2/beacon_chain/req/beacon_blocks_by_range/2/ssz_snappy")
 					if err != nil {
 						return "other:" + err.Error()
@@ -4979,7 +4979,7 @@ func irReqRespSpecs() []runner.Spec {
 					}
 					return "opened"
 				})
-				divs := diverge(id, "ir_reqresp", te.Meta, results, details)
+				divs := diverge(id, "ir_reqresp", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -4996,13 +4996,13 @@ func irReqRespSpecs() []runner.Spec {
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				ictx := irNewContext(te)
 				body := buildBeaconBlocksByRangeV2NearHead(ictx)
-				results, details := irProbeAllD(te, func(c runner.Client) string {
+				results := irProbeAll(te, func(c runner.Client) string {
 					if err := c.SendOnly(ctx, "/eth2/beacon_chain/req/ping/1/ssz_snappy", body); err != nil {
 						return "other:" + err.Error()
 					}
 					return "sent"
 				})
-				divs := diverge(id, "ir_reqresp", te.Meta, results, details)
+				divs := diverge(id, "ir_reqresp", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -5018,7 +5018,7 @@ func irReqRespSpecs() []runner.Spec {
 			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				body := make([]byte, 1)
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					half := body
 					if len(body) > 1 {
@@ -5030,7 +5030,7 @@ func irReqRespSpecs() []runner.Spec {
 						results[c.Name()] = "sent_partial"
 					}
 				}
-				divs := diverge(id, "ir_reqresp", te.Meta, results, details)
+				divs := diverge(id, "ir_reqresp", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -5047,11 +5047,11 @@ func irReqRespSpecs() []runner.Spec {
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				timeout := 1000 * time.Millisecond
 				body := []byte(nil)
-				results, details := irProbeAllD(te, func(c runner.Client) string {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/ping/1/ssz_snappy", body, timeout)
 					return outcome(res, err)
 				})
-				divs := diverge(id, "ir_reqresp", te.Meta, results, details)
+				divs := diverge(id, "ir_reqresp", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -5068,11 +5068,11 @@ func irReqRespSpecs() []runner.Spec {
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				timeout := 10000 * time.Millisecond
 				body := []byte(nil)
-				results, details := irProbeAllD(te, func(c runner.Client) string {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/ping/1/ssz_snappy", body, timeout)
 					return outcome(res, err)
 				})
-				divs := diverge(id, "ir_reqresp", te.Meta, results, details)
+				divs := diverge(id, "ir_reqresp", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -5087,7 +5087,7 @@ func irReqRespSpecs() []runner.Spec {
 			What:     "reference backbone: full response consumed or stream ended",
 			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					if err := c.Health(ctx); err != nil {
 						results[c.Name()] = "not_connected"
@@ -5095,7 +5095,7 @@ func irReqRespSpecs() []runner.Spec {
 						results[c.Name()] = "connected"
 					}
 				}
-				divs := diverge(id, "ir_reqresp", te.Meta, results, details)
+				divs := diverge(id, "ir_reqresp", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -5110,7 +5110,7 @@ func irReqRespSpecs() []runner.Spec {
 			What:     "reference backbone: another independent stream can be opened",
 			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					if err := c.Health(ctx); err != nil {
 						results[c.Name()] = "not_connected"
@@ -5118,7 +5118,7 @@ func irReqRespSpecs() []runner.Spec {
 						results[c.Name()] = "connected"
 					}
 				}
-				divs := diverge(id, "ir_reqresp", te.Meta, results, details)
+				divs := diverge(id, "ir_reqresp", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -5133,7 +5133,7 @@ func irReqRespSpecs() []runner.Spec {
 			What:     "reference backbone: terminal path after a complete response",
 			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					if err := c.Health(ctx); err != nil {
 						results[c.Name()] = "not_connected"
@@ -5141,7 +5141,7 @@ func irReqRespSpecs() []runner.Spec {
 						results[c.Name()] = "connected"
 					}
 				}
-				divs := diverge(id, "ir_reqresp", te.Meta, results, details)
+				divs := diverge(id, "ir_reqresp", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -5156,7 +5156,7 @@ func irReqRespSpecs() []runner.Spec {
 			What:     "reference backbone: reset/error paths close the stream",
 			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					if err := c.Health(ctx); err != nil {
 						results[c.Name()] = "not_connected"
@@ -5164,7 +5164,7 @@ func irReqRespSpecs() []runner.Spec {
 						results[c.Name()] = "connected"
 					}
 				}
-				divs := diverge(id, "ir_reqresp", te.Meta, results, details)
+				divs := diverge(id, "ir_reqresp", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -5185,11 +5185,11 @@ func irReqRespSpecs() []runner.Spec {
 				ictx := irNewContext(te)
 				timeout := 10000 * time.Millisecond
 				body := buildBlocksByRangeNearHead(ictx)
-				results, details := irProbeAllD(te, func(c runner.Client) string {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/blob_sidecars_by_range/1/ssz_snappy", body, timeout)
 					return outcome(res, err)
 				})
-				divs := diverge(id, "ir_reqresp", te.Meta, results, details)
+				divs := diverge(id, "ir_reqresp", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -5207,11 +5207,11 @@ func irReqRespSpecs() []runner.Spec {
 				ictx := irNewContext(te)
 				timeout := 10000 * time.Millisecond
 				body := buildRootListHeadRoot(ictx)
-				results, details := irProbeAllD(te, func(c runner.Client) string {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/beacon_blocks_by_root/2/ssz_snappy", body, timeout)
 					return outcome(res, err)
 				})
-				divs := diverge(id, "ir_reqresp", te.Meta, results, details)
+				divs := diverge(id, "ir_reqresp", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -5229,11 +5229,11 @@ func irReqRespSpecs() []runner.Spec {
 				ictx := irNewContext(te)
 				timeout := 10000 * time.Millisecond
 				body := buildBeaconBlocksByRangeV2NearHead(ictx)
-				results, details := irProbeAllD(te, func(c runner.Client) string {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/beacon_blocks_by_range/2/ssz_snappy", body, timeout)
 					return outcome(res, err)
 				})
-				divs := diverge(id, "ir_reqresp", te.Meta, results, details)
+				divs := diverge(id, "ir_reqresp", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -5254,11 +5254,11 @@ func irReqRespSpecs() []runner.Spec {
 				ictx := irNewContext(te)
 				timeout := 10000 * time.Millisecond
 				body := buildDataColumnsOrdering(ictx)
-				results, details := irProbeAllD(te, func(c runner.Client) string {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/data_column_sidecars_by_range/1/ssz_snappy", body, timeout)
 					return outcome(res, err)
 				})
-				divs := diverge(id, "ir_reqresp", te.Meta, results, details)
+				divs := diverge(id, "ir_reqresp", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -5276,11 +5276,11 @@ func irReqRespSpecs() []runner.Spec {
 				ictx := irNewContext(te)
 				timeout := 10000 * time.Millisecond
 				body := buildBeaconBlocksByRangeV2NearHead(ictx)
-				results, details := irProbeAllD(te, func(c runner.Client) string {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/beacon_blocks_by_range/2/ssz_snappy", body, timeout)
 					return outcome(res, err)
 				})
-				divs := diverge(id, "ir_reqresp", te.Meta, results, details)
+				divs := diverge(id, "ir_reqresp", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -5298,11 +5298,11 @@ func irReqRespSpecs() []runner.Spec {
 				ictx := irNewContext(te)
 				timeout := 10000 * time.Millisecond
 				body := buildBeaconBlocksByRangeV2NearHead(ictx)
-				results, details := irProbeAllD(te, func(c runner.Client) string {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/beacon_blocks_by_range/1/ssz_snappy", body, timeout)
 					return outcome(res, err)
 				})
-				divs := diverge(id, "ir_reqresp", te.Meta, results, details)
+				divs := diverge(id, "ir_reqresp", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -5323,11 +5323,11 @@ func irReqRespSpecs() []runner.Spec {
 				ictx := irNewContext(te)
 				timeout := 10000 * time.Millisecond
 				body := buildBlocksByRangeNearHead(ictx)
-				results, details := irProbeAllD(te, func(c runner.Client) string {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/blob_sidecars_by_range/1/ssz_snappy", body, timeout)
 					return outcome(res, err)
 				})
-				divs := diverge(id, "ir_reqresp", te.Meta, results, details)
+				divs := diverge(id, "ir_reqresp", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -5348,11 +5348,11 @@ func irReqRespSpecs() []runner.Spec {
 				ictx := irNewContext(te)
 				timeout := 10000 * time.Millisecond
 				body := buildBlobIdentifierHeadRoot(ictx)
-				results, details := irProbeAllD(te, func(c runner.Client) string {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/blob_sidecars_by_root/1/ssz_snappy", body, timeout)
 					return outcome(res, err)
 				})
-				divs := diverge(id, "ir_reqresp", te.Meta, results, details)
+				divs := diverge(id, "ir_reqresp", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -5370,11 +5370,11 @@ func irReqRespSpecs() []runner.Spec {
 				ictx := irNewContext(te)
 				timeout := 10000 * time.Millisecond
 				body := buildBeaconBlocksByRangeV2NearHead(ictx)
-				results, details := irProbeAllD(te, func(c runner.Client) string {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/beacon_blocks_by_range/2/ssz_snappy", body, timeout)
 					return outcome(res, err)
 				})
-				divs := diverge(id, "ir_reqresp", te.Meta, results, details)
+				divs := diverge(id, "ir_reqresp", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -5395,11 +5395,11 @@ func irReqRespSpecs() []runner.Spec {
 				ictx := irNewContext(te)
 				timeout := 10000 * time.Millisecond
 				body := buildBlocksByRangeNearHead(ictx)
-				results, details := irProbeAllD(te, func(c runner.Client) string {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/blob_sidecars_by_range/1/ssz_snappy", body, timeout)
 					return outcome(res, err)
 				})
-				divs := diverge(id, "ir_reqresp", te.Meta, results, details)
+				divs := diverge(id, "ir_reqresp", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -5420,11 +5420,11 @@ func irReqRespSpecs() []runner.Spec {
 				ictx := irNewContext(te)
 				timeout := 10000 * time.Millisecond
 				body := buildRootListHeadRoot(ictx)
-				results, details := irProbeAllD(te, func(c runner.Client) string {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/beacon_blocks_by_root/2/ssz_snappy", body, timeout)
 					return outcome(res, err)
 				})
-				divs := diverge(id, "ir_reqresp", te.Meta, results, details)
+				divs := diverge(id, "ir_reqresp", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -5445,11 +5445,11 @@ func irReqRespSpecs() []runner.Spec {
 				ictx := irNewContext(te)
 				timeout := 10000 * time.Millisecond
 				body := buildDataColumnsOrdering(ictx)
-				results, details := irProbeAllD(te, func(c runner.Client) string {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/data_column_sidecars_by_range/1/ssz_snappy", body, timeout)
 					return outcome(res, err)
 				})
-				divs := diverge(id, "ir_reqresp", te.Meta, results, details)
+				divs := diverge(id, "ir_reqresp", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -5470,11 +5470,11 @@ func irReqRespSpecs() []runner.Spec {
 				ictx := irNewContext(te)
 				timeout := 10000 * time.Millisecond
 				body := buildBlocksByHeadHeadRoot(ictx)
-				results, details := irProbeAllD(te, func(c runner.Client) string {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/beacon_blocks_by_head/1/ssz_snappy", body, timeout)
 					return outcome(res, err)
 				})
-				divs := diverge(id, "ir_reqresp", te.Meta, results, details)
+				divs := diverge(id, "ir_reqresp", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -5495,11 +5495,11 @@ func irReqRespSpecs() []runner.Spec {
 				ictx := irNewContext(te)
 				timeout := 10000 * time.Millisecond
 				body := buildBlobIdentifierHeadRoot(ictx)
-				results, details := irProbeAllD(te, func(c runner.Client) string {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/blob_sidecars_by_root/1/ssz_snappy", body, timeout)
 					return outcome(res, err)
 				})
-				divs := diverge(id, "ir_reqresp", te.Meta, results, details)
+				divs := diverge(id, "ir_reqresp", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -5517,7 +5517,7 @@ func irReqRespSpecs() []runner.Spec {
 				ctx, cancel := context.WithTimeout(ctx, 10000*time.Millisecond)
 				defer cancel()
 				body := []byte(nil)
-				results, details := irProbeAllD(te, func(c runner.Client) string {
+				results := irProbeAll(te, func(c runner.Client) string {
 					ir, err := c.OpenStream(ctx, "/eth2/beacon_chain/req/beacon_blocks_by_range/2/ssz_snappy")
 					if err != nil {
 						return "other:" + err.Error()
@@ -5530,7 +5530,7 @@ func irReqRespSpecs() []runner.Spec {
 					}
 					return "opened"
 				})
-				divs := diverge(id, "ir_reqresp", te.Meta, results, details)
+				divs := diverge(id, "ir_reqresp", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -5548,7 +5548,7 @@ func irReqRespSpecs() []runner.Spec {
 				ctx, cancel := context.WithTimeout(ctx, 10000*time.Millisecond)
 				defer cancel()
 				body := []byte(nil)
-				results, details := irProbeAllD(te, func(c runner.Client) string {
+				results := irProbeAll(te, func(c runner.Client) string {
 					ir, err := c.OpenStream(ctx, "/eth2/beacon_chain/req/beacon_blocks_by_range/2/ssz_snappy")
 					if err != nil {
 						return "other:" + err.Error()
@@ -5561,7 +5561,7 @@ func irReqRespSpecs() []runner.Spec {
 					}
 					return "opened"
 				})
-				divs := diverge(id, "ir_reqresp", te.Meta, results, details)
+				divs := diverge(id, "ir_reqresp", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -5579,7 +5579,7 @@ func irReqRespSpecs() []runner.Spec {
 				ctx, cancel := context.WithTimeout(ctx, 10000*time.Millisecond)
 				defer cancel()
 				body := []byte(nil)
-				results, details := irProbeAllD(te, func(c runner.Client) string {
+				results := irProbeAll(te, func(c runner.Client) string {
 					ir, err := c.OpenStream(ctx, "/eth2/beacon_chain/req/beacon_blocks_by_range/2/ssz_snappy")
 					if err != nil {
 						return "other:" + err.Error()
@@ -5592,7 +5592,7 @@ func irReqRespSpecs() []runner.Spec {
 					}
 					return "opened"
 				})
-				divs := diverge(id, "ir_reqresp", te.Meta, results, details)
+				divs := diverge(id, "ir_reqresp", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -5609,13 +5609,13 @@ func irReqRespSpecs() []runner.Spec {
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				ictx := irNewContext(te)
 				body := buildBeaconBlocksByRangeV2NearHead(ictx)
-				results, details := irProbeAllD(te, func(c runner.Client) string {
+				results := irProbeAll(te, func(c runner.Client) string {
 					if err := c.SendOnly(ctx, "/eth2/beacon_chain/req/beacon_blocks_by_range/2/ssz_snappy", body); err != nil {
 						return "other:" + err.Error()
 					}
 					return "sent"
 				})
-				divs := diverge(id, "ir_reqresp", te.Meta, results, details)
+				divs := diverge(id, "ir_reqresp", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -5632,13 +5632,13 @@ func irReqRespSpecs() []runner.Spec {
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				ictx := irNewContext(te)
 				body := buildBeaconBlocksByRangeV2NearHead(ictx)
-				results, details := irProbeAllD(te, func(c runner.Client) string {
+				results := irProbeAll(te, func(c runner.Client) string {
 					if err := c.SendOnly(ctx, "/eth2/beacon_chain/req/beacon_blocks_by_range/2/ssz_snappy", body); err != nil {
 						return "other:" + err.Error()
 					}
 					return "sent"
 				})
-				divs := diverge(id, "ir_reqresp", te.Meta, results, details)
+				divs := diverge(id, "ir_reqresp", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -5655,13 +5655,13 @@ func irReqRespSpecs() []runner.Spec {
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				ictx := irNewContext(te)
 				body := buildBeaconBlocksByRangeV2NearHead(ictx)
-				results, details := irProbeAllD(te, func(c runner.Client) string {
+				results := irProbeAll(te, func(c runner.Client) string {
 					if err := c.SendOnly(ctx, "/eth2/beacon_chain/req/beacon_blocks_by_range/2/ssz_snappy", body); err != nil {
 						return "other:" + err.Error()
 					}
 					return "sent"
 				})
-				divs := diverge(id, "ir_reqresp", te.Meta, results, details)
+				divs := diverge(id, "ir_reqresp", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -5678,11 +5678,11 @@ func irReqRespSpecs() []runner.Spec {
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				ictx := irNewContext(te)
 				body := buildBeaconBlocksByRangeV2NearHead(ictx)
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					results[c.Name()] = irOrderCheck(ctx, c, "/eth2/beacon_chain/req/beacon_blocks_by_range/2/ssz_snappy", id, body, 10000)
 				}
-				divs := diverge(id, "ir_reqresp", te.Meta, results, details)
+				divs := diverge(id, "ir_reqresp", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -5699,11 +5699,11 @@ func irReqRespSpecs() []runner.Spec {
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				ictx := irNewContext(te)
 				body := buildBeaconBlocksByRangeV2NearHead(ictx)
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					results[c.Name()] = irOrderCheck(ctx, c, "/eth2/beacon_chain/req/beacon_blocks_by_range/2/ssz_snappy", id, body, 10000)
 				}
-				divs := diverge(id, "ir_reqresp", te.Meta, results, details)
+				divs := diverge(id, "ir_reqresp", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -5720,11 +5720,11 @@ func irReqRespSpecs() []runner.Spec {
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				ictx := irNewContext(te)
 				body := buildBeaconBlocksByRangeV2NearHead(ictx)
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					results[c.Name()] = irOrderCheck(ctx, c, "/eth2/beacon_chain/req/beacon_blocks_by_range/2/ssz_snappy", id, body, 10000)
 				}
-				divs := diverge(id, "ir_reqresp", te.Meta, results, details)
+				divs := diverge(id, "ir_reqresp", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -5741,11 +5741,11 @@ func irReqRespSpecs() []runner.Spec {
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				ictx := irNewContext(te)
 				body := buildBeaconBlocksByRangeV2NearHead(ictx)
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					results[c.Name()] = irOrderCheck(ctx, c, "/eth2/beacon_chain/req/beacon_blocks_by_range/2/ssz_snappy", id, body, 10000)
 				}
-				divs := diverge(id, "ir_reqresp", te.Meta, results, details)
+				divs := diverge(id, "ir_reqresp", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -5770,11 +5770,11 @@ func irResourceExhaustionSpecs() []runner.Spec {
 				buf := make([]byte, 8)
 				binary.LittleEndian.PutUint64(buf[0:8], 1)
 				body := wire.BuildSSZSnappy(buf)
-				results, details := irProbeAllD(te, func(c runner.Client) string {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/ping/1/ssz_snappy", body, timeout)
 					return outcome(res, err)
 				})
-				divs := diverge(id, "ir_resourceexhaustion", te.Meta, results, details)
+				divs := diverge(id, "ir_resourceexhaustion", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -5802,12 +5802,12 @@ func irResourceExhaustionSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "ir_resourceexhaustion", te.Meta, results, details)
+				divs := diverge(id, "ir_resourceexhaustion", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -5824,7 +5824,7 @@ func irResourceExhaustionSpecs() []runner.Spec {
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				timeout := 1000 * time.Millisecond
 				time.Sleep(timeout)
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					if c.Health(ctx) != nil {
 						results[c.Name()] = "dropped"
@@ -5832,7 +5832,7 @@ func irResourceExhaustionSpecs() []runner.Spec {
 						results[c.Name()] = "connected"
 					}
 				}
-				divs := diverge(id, "ir_resourceexhaustion", te.Meta, results, details)
+				divs := diverge(id, "ir_resourceexhaustion", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -5853,7 +5853,7 @@ func irSubnetSubscriptionSpecs() []runner.Spec {
 			What:     "sub_query_enr (SubENRProbe -> SubENRProbe)",
 			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					if _, err := c.State(ctx); err != nil {
 						results[c.Name()] = "state_unavailable"
@@ -5861,7 +5861,7 @@ func irSubnetSubscriptionSpecs() []runner.Spec {
 						results[c.Name()] = "state_available"
 					}
 				}
-				divs := diverge(id, "ir_subnetsubscription", te.Meta, results, details)
+				divs := diverge(id, "ir_subnetsubscription", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -5879,11 +5879,11 @@ func irSubnetSubscriptionSpecs() []runner.Spec {
 				ictx := irNewContext(te)
 				timeout := 5000 * time.Millisecond
 				body := buildStatusV2SSZ(ictx)
-				results, details := irProbeAllD(te, func(c runner.Client) string {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/status/2/ssz_snappy", body, timeout)
 					return outcome(res, err)
 				})
-				divs := diverge(id, "ir_subnetsubscription", te.Meta, results, details)
+				divs := diverge(id, "ir_subnetsubscription", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -5900,11 +5900,11 @@ func irSubnetSubscriptionSpecs() []runner.Spec {
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				timeout := 5000 * time.Millisecond
 				body := []byte(nil)
-				results, details := irProbeAllD(te, func(c runner.Client) string {
+				results := irProbeAll(te, func(c runner.Client) string {
 					res, err := c.ReqResp(ctx, "/eth2/beacon_chain/req/metadata/3/ssz_snappy", body, timeout)
 					return outcome(res, err)
 				})
-				divs := diverge(id, "ir_subnetsubscription", te.Meta, results, details)
+				divs := diverge(id, "ir_subnetsubscription", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -5921,7 +5921,7 @@ func irSubnetSubscriptionSpecs() []runner.Spec {
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				timeout := 2000 * time.Millisecond
 				time.Sleep(timeout)
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					if c.Health(ctx) != nil {
 						results[c.Name()] = "dropped"
@@ -5929,7 +5929,7 @@ func irSubnetSubscriptionSpecs() []runner.Spec {
 						results[c.Name()] = "connected"
 					}
 				}
-				divs := diverge(id, "ir_subnetsubscription", te.Meta, results, details)
+				divs := diverge(id, "ir_subnetsubscription", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -5944,7 +5944,7 @@ func irSubnetSubscriptionSpecs() []runner.Spec {
 			What:     "sub_verify_attnets (SubCustodyResolve -> SubCustodyResolve)",
 			Metadata: runner.Metadata{SpecRules: []string{"PROSE-MUST-0648388b"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					if _, err := c.State(ctx); err != nil {
 						results[c.Name()] = "state_unavailable"
@@ -5952,7 +5952,7 @@ func irSubnetSubscriptionSpecs() []runner.Spec {
 						results[c.Name()] = "state_available"
 					}
 				}
-				divs := diverge(id, "ir_subnetsubscription", te.Meta, results, details)
+				divs := diverge(id, "ir_subnetsubscription", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -5967,7 +5967,7 @@ func irSubnetSubscriptionSpecs() []runner.Spec {
 			What:     "sub_verify_syncnets (SubCustodyResolve -> SubCustodyResolve)",
 			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					if _, err := c.State(ctx); err != nil {
 						results[c.Name()] = "state_unavailable"
@@ -5975,7 +5975,7 @@ func irSubnetSubscriptionSpecs() []runner.Spec {
 						results[c.Name()] = "state_available"
 					}
 				}
-				divs := diverge(id, "ir_subnetsubscription", te.Meta, results, details)
+				divs := diverge(id, "ir_subnetsubscription", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -5990,7 +5990,7 @@ func irSubnetSubscriptionSpecs() []runner.Spec {
 			What:     "sub_verify_cgc (SubCustodyResolve -> SubCustodyResolve)",
 			Metadata: runner.Metadata{SpecRules: []string{"PROSE-MAY-99c5c95f", "PROSE-MUST-56ec7740"}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					if _, err := c.State(ctx); err != nil {
 						results[c.Name()] = "state_unavailable"
@@ -5998,7 +5998,7 @@ func irSubnetSubscriptionSpecs() []runner.Spec {
 						results[c.Name()] = "state_available"
 					}
 				}
-				divs := diverge(id, "ir_subnetsubscription", te.Meta, results, details)
+				divs := diverge(id, "ir_subnetsubscription", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -6027,12 +6027,12 @@ func irSubnetSubscriptionSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "ir_subnetsubscription", te.Meta, results, details)
+				divs := diverge(id, "ir_subnetsubscription", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -6061,12 +6061,12 @@ func irSubnetSubscriptionSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "ir_subnetsubscription", te.Meta, results, details)
+				divs := diverge(id, "ir_subnetsubscription", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -6095,12 +6095,12 @@ func irSubnetSubscriptionSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "ir_subnetsubscription", te.Meta, results, details)
+				divs := diverge(id, "ir_subnetsubscription", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -6115,7 +6115,7 @@ func irSubnetSubscriptionSpecs() []runner.Spec {
 			What:     "sub_custody_check_connected (SubCustodyInject -> SubCustodyInject)",
 			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					if err := c.Health(ctx); err != nil {
 						results[c.Name()] = "not_connected"
@@ -6123,7 +6123,7 @@ func irSubnetSubscriptionSpecs() []runner.Spec {
 						results[c.Name()] = "connected"
 					}
 				}
-				divs := diverge(id, "ir_subnetsubscription", te.Meta, results, details)
+				divs := diverge(id, "ir_subnetsubscription", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -6152,12 +6152,12 @@ func irSubnetSubscriptionSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "ir_subnetsubscription", te.Meta, results, details)
+				divs := diverge(id, "ir_subnetsubscription", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -6172,7 +6172,7 @@ func irSubnetSubscriptionSpecs() []runner.Spec {
 			What:     "sub_custody_detected_disconnect (SubCustodyInject -> SubDisconnected)",
 			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					if err := c.Health(ctx); err != nil {
 						results[c.Name()] = "not_connected"
@@ -6180,7 +6180,7 @@ func irSubnetSubscriptionSpecs() []runner.Spec {
 						results[c.Name()] = "connected"
 					}
 				}
-				divs := diverge(id, "ir_subnetsubscription", te.Meta, results, details)
+				divs := diverge(id, "ir_subnetsubscription", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -6209,12 +6209,12 @@ func irSubnetSubscriptionSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "ir_subnetsubscription", te.Meta, results, details)
+				divs := diverge(id, "ir_subnetsubscription", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -6243,12 +6243,12 @@ func irSubnetSubscriptionSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "ir_subnetsubscription", te.Meta, results, details)
+				divs := diverge(id, "ir_subnetsubscription", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -6277,12 +6277,12 @@ func irSubnetSubscriptionSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "ir_subnetsubscription", te.Meta, results, details)
+				divs := diverge(id, "ir_subnetsubscription", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -6297,7 +6297,7 @@ func irSubnetSubscriptionSpecs() []runner.Spec {
 			What:     "sub_noncustody_check_connected (SubNonCustodyInject -> SubNonCustodyInject)",
 			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					if err := c.Health(ctx); err != nil {
 						results[c.Name()] = "not_connected"
@@ -6305,7 +6305,7 @@ func irSubnetSubscriptionSpecs() []runner.Spec {
 						results[c.Name()] = "connected"
 					}
 				}
-				divs := diverge(id, "ir_subnetsubscription", te.Meta, results, details)
+				divs := diverge(id, "ir_subnetsubscription", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -6334,12 +6334,12 @@ func irSubnetSubscriptionSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "ir_subnetsubscription", te.Meta, results, details)
+				divs := diverge(id, "ir_subnetsubscription", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -6354,7 +6354,7 @@ func irSubnetSubscriptionSpecs() []runner.Spec {
 			What:     "sub_noncustody_detected_disconnect (SubNonCustodyInject -> SubDisconnected)",
 			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					if err := c.Health(ctx); err != nil {
 						results[c.Name()] = "not_connected"
@@ -6362,7 +6362,7 @@ func irSubnetSubscriptionSpecs() []runner.Spec {
 						results[c.Name()] = "connected"
 					}
 				}
-				divs := diverge(id, "ir_subnetsubscription", te.Meta, results, details)
+				divs := diverge(id, "ir_subnetsubscription", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -6391,12 +6391,12 @@ func irSubnetSubscriptionSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "ir_subnetsubscription", te.Meta, results, details)
+				divs := diverge(id, "ir_subnetsubscription", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -6425,12 +6425,12 @@ func irSubnetSubscriptionSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "ir_subnetsubscription", te.Meta, results, details)
+				divs := diverge(id, "ir_subnetsubscription", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -6459,12 +6459,12 @@ func irSubnetSubscriptionSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "ir_subnetsubscription", te.Meta, results, details)
+				divs := diverge(id, "ir_subnetsubscription", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -6493,12 +6493,12 @@ func irSubnetSubscriptionSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "ir_subnetsubscription", te.Meta, results, details)
+				divs := diverge(id, "ir_subnetsubscription", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -6527,12 +6527,12 @@ func irSubnetSubscriptionSpecs() []runner.Spec {
 				if ictx.SetupInapplicableReason != "" {
 					return nil
 				}
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					v, err := c.ObserveGossip(ctx, topic, payload, gossipWait)
-					recordGossipOutcome(results, details, c.Name(), v, err)
+					results[c.Name()] = gossipOutcome(v, err)
 				}
-				divs := diverge(id, "ir_subnetsubscription", te.Meta, results, details)
+				divs := diverge(id, "ir_subnetsubscription", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -6547,7 +6547,7 @@ func irSubnetSubscriptionSpecs() []runner.Spec {
 			What:     "sub_boundary_check_connected (SubBoundaryInject -> SubBoundaryInject)",
 			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					if err := c.Health(ctx); err != nil {
 						results[c.Name()] = "not_connected"
@@ -6555,7 +6555,7 @@ func irSubnetSubscriptionSpecs() []runner.Spec {
 						results[c.Name()] = "connected"
 					}
 				}
-				divs := diverge(id, "ir_subnetsubscription", te.Meta, results, details)
+				divs := diverge(id, "ir_subnetsubscription", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -6570,7 +6570,7 @@ func irSubnetSubscriptionSpecs() []runner.Spec {
 			What:     "sub_boundary_detected_disconnect (SubBoundaryInject -> SubDisconnected)",
 			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					if err := c.Health(ctx); err != nil {
 						results[c.Name()] = "not_connected"
@@ -6578,7 +6578,7 @@ func irSubnetSubscriptionSpecs() []runner.Spec {
 						results[c.Name()] = "connected"
 					}
 				}
-				divs := diverge(id, "ir_subnetsubscription", te.Meta, results, details)
+				divs := diverge(id, "ir_subnetsubscription", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -6593,7 +6593,7 @@ func irSubnetSubscriptionSpecs() []runner.Spec {
 			What:     "sub_reconnect_full (SubDisconnected -> SubENRProbe)",
 			Metadata: runner.Metadata{SpecRules: []string{}, MinClients: 2},
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					if err := c.Connect(ctx, runner.ConnectNoStatus); err != nil {
 						results[c.Name()] = "reconnect_failed"
@@ -6601,7 +6601,7 @@ func irSubnetSubscriptionSpecs() []runner.Spec {
 						results[c.Name()] = "reconnected"
 					}
 				}
-				divs := diverge(id, "ir_subnetsubscription", te.Meta, results, details)
+				divs := diverge(id, "ir_subnetsubscription", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -6618,7 +6618,7 @@ func irSubnetSubscriptionSpecs() []runner.Spec {
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				timeout := 100 * time.Millisecond
 				time.Sleep(timeout)
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					if c.Health(ctx) != nil {
 						results[c.Name()] = "dropped"
@@ -6626,7 +6626,7 @@ func irSubnetSubscriptionSpecs() []runner.Spec {
 						results[c.Name()] = "connected"
 					}
 				}
-				divs := diverge(id, "ir_subnetsubscription", te.Meta, results, details)
+				divs := diverge(id, "ir_subnetsubscription", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}
@@ -6643,7 +6643,7 @@ func irSubnetSubscriptionSpecs() []runner.Spec {
 			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
 				timeout := 5000 * time.Millisecond
 				time.Sleep(timeout)
-				results, details := map[string]string{}, map[string]string{}
+				results := map[string]string{}
 				for _, c := range te.Clients {
 					if c.Health(ctx) != nil {
 						results[c.Name()] = "dropped"
@@ -6651,7 +6651,7 @@ func irSubnetSubscriptionSpecs() []runner.Spec {
 						results[c.Name()] = "connected"
 					}
 				}
-				divs := diverge(id, "ir_subnetsubscription", te.Meta, results, details)
+				divs := diverge(id, "ir_subnetsubscription", te.Meta, results)
 				if len(divs) > 0 {
 					divs[0].Severity = runner.SeverityHigh
 				}

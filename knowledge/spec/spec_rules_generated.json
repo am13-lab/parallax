@@ -7275,6 +7275,23 @@
       "transitions": []
     },
     {
+      "id": "PROSE-MUST-b9d8a0e4",
+      "text": "Clients MUST respond with execution payload envelopes from their view of the current fork choice -- that is, envelopes of payloads that are part of the single chain defined by the current head",
+      "strength": "MUST",
+      "protocol": "",
+      "rule_type": "behavioral",
+      "observable_in_traffic": false,
+      "formalized": "client.respond(with execution payload envelopes from their view of the current fork choice -- t)",
+      "test_ids": [],
+      "invariant_ids": [],
+      "testability": "direct",
+      "coverage_status": "untested",
+      "fork_introduced": "gloas",
+      "current_status": "local_candidate",
+      "state_machine": "",
+      "transitions": []
+    },
+    {
       "id": "PROSE-MUST-ba7f0888",
       "text": "Request/response messages MUST adhere to the encoding specified in the protocol name and follow this structure (relaxed BNF grammar):",
       "strength": "MUST",
@@ -8116,6 +8133,23 @@
       "transitions": [
         "half_open_stream"
       ]
+    },
+    {
+      "id": "PROSE-MUST_NOT-3b155ff3",
+      "text": "Clients MUST_NOT include envelopes for blocks whose ForkChoiceNode in that chain has payload_status equal to PAYLOAD_STATUS_EMPTY",
+      "strength": "MUST",
+      "protocol": "",
+      "rule_type": "behavioral",
+      "observable_in_traffic": false,
+      "formalized": "client.include(envelopes for blocks whose ForkChoiceNode in that chain has payload_status equal)",
+      "test_ids": [],
+      "invariant_ids": [],
+      "testability": "direct",
+      "coverage_status": "untested",
+      "fork_introduced": "gloas",
+      "current_status": "local_candidate",
+      "state_machine": "",
+      "transitions": []
     },
     {
       "id": "PROSE-MUST_NOT-57d1f23a",
@@ -9655,11 +9689,8 @@
       "transitions": []
     },
     {
-      "id": "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-c33e885a",
-      "legacy_ids": [
-        "SPEC-SYNCAGG-006"
-      ],
-      "text": "[REJECT] The aggregator's validator index is in the declared subcommittee (of the current sync committee)",
+      "id": "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-7a39f62f",
+      "text": "[REJECT] The aggregator is a member of the committee",
       "strength": "MUST",
       "protocol": "sync_committee_contribution_and_proof",
       "rule_type": "conditional",
@@ -9670,7 +9701,7 @@
       "testability": "direct",
       "coverage_status": "untested",
       "fork_introduced": "altair",
-      "current_status": "active",
+      "current_status": "local_candidate",
       "state_machine": "gossip",
       "transitions": []
     },

@@ -406,7 +406,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 71,
+        "line": 73,
         "anchor": "Gloas -- Networking \u003e Presets \u003e Type-specific SSZ bounds"
       }
     },
@@ -420,21 +420,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 71,
-        "anchor": "Gloas -- Networking \u003e Presets \u003e Type-specific SSZ bounds"
-      }
-    },
-    {
-      "id": "CONST-MAX_DATA_COLUMN_SIDECAR_SIZE-0d01b258",
-      "name": "MAX_DATA_COLUMN_SIDECAR_SIZE",
-      "expr": "Uint64(8585272)",
-      "value": 0,
-      "evaluated": false,
-      "introduced_fork": "gloas",
-      "source": {
-        "fork": "gloas",
-        "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 71,
+        "line": 73,
         "anchor": "Gloas -- Networking \u003e Presets \u003e Type-specific SSZ bounds"
       }
     },
@@ -448,7 +434,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 71,
+        "line": 73,
         "anchor": "Gloas -- Networking \u003e Presets \u003e Type-specific SSZ bounds"
       }
     },
@@ -462,22 +448,8 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 80,
+        "line": 81,
         "anchor": "Gloas -- Networking \u003e Configs"
-      }
-    },
-    {
-      "id": "CONST-MAX_PARTIAL_DATA_COLUMN_SIDECAR_SIZE-d9271e40",
-      "name": "MAX_PARTIAL_DATA_COLUMN_SIDECAR_SIZE",
-      "expr": "Uint64(8585741)",
-      "value": 0,
-      "evaluated": false,
-      "introduced_fork": "gloas",
-      "source": {
-        "fork": "gloas",
-        "file": "/tmp/opencode/consensus-specs/specs/gloas/partial-columns/p2p-interface.md",
-        "line": 39,
-        "anchor": "Gloas Partial Columns -- Networking \u003e Presets \u003e Type-specific SSZ bounds"
       }
     },
     {
@@ -859,7 +831,7 @@
       "source": {
         "fork": "altair",
         "file": "/tmp/opencode/consensus-specs/specs/altair/p2p-interface.md",
-        "line": 479,
+        "line": 478,
         "anchor": "Altair -- Networking \u003e The Req/Resp domain \u003e Messages \u003e BeaconBlocksByRange v2"
       }
     },
@@ -877,7 +849,7 @@
       "source": {
         "fork": "altair",
         "file": "/tmp/opencode/consensus-specs/specs/altair/p2p-interface.md",
-        "line": 498,
+        "line": 497,
         "anchor": "Altair -- Networking \u003e The Req/Resp domain \u003e Messages \u003e BeaconBlocksByRoot v2"
       }
     },
@@ -894,7 +866,7 @@
       "source": {
         "fork": "altair",
         "file": "/tmp/opencode/consensus-specs/specs/altair/p2p-interface.md",
-        "line": 517,
+        "line": 516,
         "anchor": "Altair -- Networking \u003e The Req/Resp domain \u003e Messages \u003e GetMetaData v2"
       }
     },
@@ -1037,7 +1009,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 1343,
+        "line": 1367,
         "anchor": "Gloas -- Networking \u003e The Req/Resp domain \u003e Messages \u003e ExecutionPayloadEnvelopesByRange v1"
       }
     },
@@ -1055,7 +1027,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 1382,
+        "line": 1417,
         "anchor": "Gloas -- Networking \u003e The Req/Resp domain \u003e Messages \u003e ExecutionPayloadEnvelopesByRoot v1"
       }
     },
@@ -7281,14 +7253,14 @@
       "fork_introduced": "altair"
     },
     {
-      "id": "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-c33e885a",
+      "id": "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-7a39f62f",
       "source": {
         "fork": "altair",
         "file": "/tmp/opencode/consensus-specs/specs/altair/p2p-interface.md",
         "line": 289,
         "anchor": "Altair -- Networking \u003e The gossip domain: gossipsub \u003e Topics and messages \u003e Global topics \u003e New `sync_committee_contribution_and_proof`"
       },
-      "raw_text": "[REJECT] The aggregator's validator index is in the declared subcommittee (of the current sync committee)",
+      "raw_text": "[REJECT] The aggregator is a member of the committee",
       "subject": {
         "actor": "receiver",
         "explicit": false
@@ -7296,7 +7268,7 @@
       "modal": "MUST",
       "predicate": {
         "action": "reject",
-        "object": "The aggregator's validator index is in the declared subcommittee (of the current sync committee)"
+        "object": "The aggregator is a member of the committee"
       },
       "binds_to": "topic:sync_committee_contribution_and_proof",
       "outcome": "REJECT",
@@ -7314,7 +7286,7 @@
       "source": {
         "fork": "altair",
         "file": "/tmp/opencode/consensus-specs/specs/altair/p2p-interface.md",
-        "line": 296,
+        "line": 295,
         "anchor": "Altair -- Networking \u003e The gossip domain: gossipsub \u003e Topics and messages \u003e Global topics \u003e New `sync_committee_contribution_and_proof`"
       },
       "raw_text": "[REJECT] The contribution_and_proof.selection_proof is a valid signature (of the SyncAggregatorSelectionData derived from the contribution) (by the validator with index contribution_and_proof.aggregator_index)",
@@ -7343,7 +7315,7 @@
       "source": {
         "fork": "altair",
         "file": "/tmp/opencode/consensus-specs/specs/altair/p2p-interface.md",
-        "line": 310,
+        "line": 309,
         "anchor": "Altair -- Networking \u003e The gossip domain: gossipsub \u003e Topics and messages \u003e Global topics \u003e New `sync_committee_contribution_and_proof`"
       },
       "raw_text": "[REJECT] The aggregator signature, signed_contribution_and_proof.signature, is valid",
@@ -7372,7 +7344,7 @@
       "source": {
         "fork": "altair",
         "file": "/tmp/opencode/consensus-specs/specs/altair/p2p-interface.md",
-        "line": 318,
+        "line": 317,
         "anchor": "Altair -- Networking \u003e The gossip domain: gossipsub \u003e Topics and messages \u003e Global topics \u003e New `sync_committee_contribution_and_proof`"
       },
       "raw_text": "[REJECT] The aggregate signature is valid for the message beacon_block_root (and aggregate pubkey derived from the participation info in aggregation_bits) (for the subcommittee specified by the contribution.subcommittee_index)",
@@ -7401,7 +7373,7 @@
       "source": {
         "fork": "altair",
         "file": "/tmp/opencode/consensus-specs/specs/altair/p2p-interface.md",
-        "line": 359,
+        "line": 358,
         "anchor": "Altair -- Networking \u003e The gossip domain: gossipsub \u003e Topics and messages \u003e Sync committee subnets \u003e New `sync_committee_{subnet_id}`"
       },
       "raw_text": "[IGNORE] There has been no other valid sync committee message for the declared slot (for the validator referenced by sync_committee_message.validator_index) (this validation is per topic so that for a given slot, multiple messages could be) (forwarded with the same validator_index as long as the subnet_ids are distinct)",
@@ -7430,7 +7402,7 @@
       "source": {
         "fork": "altair",
         "file": "/tmp/opencode/consensus-specs/specs/altair/p2p-interface.md",
-        "line": 367,
+        "line": 366,
         "anchor": "Altair -- Networking \u003e The gossip domain: gossipsub \u003e Topics and messages \u003e Sync committee subnets \u003e New `sync_committee_{subnet_id}`"
       },
       "raw_text": "[IGNORE] The message's slot is for the current slot",
@@ -7459,7 +7431,7 @@
       "source": {
         "fork": "altair",
         "file": "/tmp/opencode/consensus-specs/specs/altair/p2p-interface.md",
-        "line": 373,
+        "line": 372,
         "anchor": "Altair -- Networking \u003e The gossip domain: gossipsub \u003e Topics and messages \u003e Sync committee subnets \u003e New `sync_committee_{subnet_id}`"
       },
       "raw_text": "[REJECT] The validator index is valid",
@@ -7488,7 +7460,7 @@
       "source": {
         "fork": "altair",
         "file": "/tmp/opencode/consensus-specs/specs/altair/p2p-interface.md",
-        "line": 377,
+        "line": 376,
         "anchor": "Altair -- Networking \u003e The gossip domain: gossipsub \u003e Topics and messages \u003e Sync committee subnets \u003e New `sync_committee_{subnet_id}`"
       },
       "raw_text": "[REJECT] The subnet_id is valid for the given validator (this implies the validator is part of the broader current sync committee) (along with the correct subcommittee)",
@@ -7517,7 +7489,7 @@
       "source": {
         "fork": "altair",
         "file": "/tmp/opencode/consensus-specs/specs/altair/p2p-interface.md",
-        "line": 386,
+        "line": 385,
         "anchor": "Altair -- Networking \u003e The gossip domain: gossipsub \u003e Topics and messages \u003e Sync committee subnets \u003e New `sync_committee_{subnet_id}`"
       },
       "raw_text": "[REJECT] The signature is valid",
@@ -7569,7 +7541,7 @@
       "source": {
         "fork": "altair",
         "file": "/tmp/opencode/consensus-specs/specs/altair/p2p-interface.md",
-        "line": 423,
+        "line": 422,
         "anchor": "Altair -- Networking \u003e The gossip domain: gossipsub \u003e Transitioning the gossip"
       },
       "raw_text": "In advance of the fork, a node SHOULD subscribe to the post-fork variants of the topics.",
@@ -7592,7 +7564,7 @@
       "source": {
         "fork": "altair",
         "file": "/tmp/opencode/consensus-specs/specs/altair/p2p-interface.md",
-        "line": 431,
+        "line": 430,
         "anchor": "Altair -- Networking \u003e The gossip domain: gossipsub \u003e Transitioning the gossip"
       },
       "raw_text": "Messages SHOULD_NOT be re-broadcast from one fork to the other",
@@ -7615,7 +7587,7 @@
       "source": {
         "fork": "altair",
         "file": "/tmp/opencode/consensus-specs/specs/altair/p2p-interface.md",
-        "line": 436,
+        "line": 435,
         "anchor": "Altair -- Networking \u003e The gossip domain: gossipsub \u003e Transitioning the gossip"
       },
       "raw_text": "Peers who propagate messages on the post-fork topics MAY be scored negatively proportionally to time till fork, to account for clock discrepancy.",
@@ -7638,7 +7610,7 @@
       "source": {
         "fork": "altair",
         "file": "/tmp/opencode/consensus-specs/specs/altair/p2p-interface.md",
-        "line": 443,
+        "line": 442,
         "anchor": "Altair -- Networking \u003e The gossip domain: gossipsub \u003e Transitioning the gossip"
       },
       "raw_text": "Peers who propagate messages on the pre-fork topics MUST_NOT be scored negatively. Lagging IWANT may force them to.",
@@ -7661,7 +7633,7 @@
       "source": {
         "fork": "altair",
         "file": "/tmp/opencode/consensus-specs/specs/altair/p2p-interface.md",
-        "line": 448,
+        "line": 447,
         "anchor": "Altair -- Networking \u003e The gossip domain: gossipsub \u003e Transitioning the gossip"
       },
       "raw_text": "Two epochs after the fork, pre-fork topics SHOULD be unsubscribed from. This is well after the configured seen_ttl.",
@@ -7684,7 +7656,7 @@
       "source": {
         "fork": "altair",
         "file": "/tmp/opencode/consensus-specs/specs/altair/p2p-interface.md",
-        "line": 544,
+        "line": 543,
         "anchor": "Altair -- Networking \u003e The Req/Resp domain \u003e Transitioning from v1 to v2"
       },
       "raw_text": "The v1 method MAY be unregistered at the fork boundary",
@@ -7707,7 +7679,7 @@
       "source": {
         "fork": "altair",
         "file": "/tmp/opencode/consensus-specs/specs/altair/p2p-interface.md",
-        "line": 544,
+        "line": 543,
         "anchor": "Altair -- Networking \u003e The Req/Resp domain \u003e Transitioning from v1 to v2"
       },
       "raw_text": "In the event of a request on v1 for an Altair specific payload, the responder MUST return the InvalidRequest response code.",
@@ -12017,7 +11989,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 397,
+        "line": 421,
         "anchor": "Gloas -- Networking \u003e Helpers \u003e New `verify_attestation_payload_status`"
       },
       "raw_text": "[REJECT] For same-slot attestations, the payload cannot yet be present",
@@ -12046,7 +12018,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 404,
+        "line": 428,
         "anchor": "Gloas -- Networking \u003e Helpers \u003e New `verify_attestation_payload_status`"
       },
       "raw_text": "[IGNORE] The corresponding execution payload envelope has been seen and verified (MAY queue attestations for processing once the payload is retrieved and) (SHOULD request the payload envelope via ExecutionPayloadEnvelopesByRoot) (using data.beacon_block_root)",
@@ -12075,7 +12047,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 411,
+        "line": 435,
         "anchor": "Gloas -- Networking \u003e Helpers \u003e New `verify_attestation_payload_status`"
       },
       "raw_text": "[IGNORE] The attested execution payload is optimistic",
@@ -12104,7 +12076,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 416,
+        "line": 440,
         "anchor": "Gloas -- Networking \u003e Helpers \u003e New `verify_attestation_payload_status`"
       },
       "raw_text": "[REJECT] The attested execution payload is processed and invalid",
@@ -12133,7 +12105,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 431,
+        "line": 455,
         "anchor": "Gloas -- Networking \u003e Helpers \u003e New `verify_block_body_operation_limits`"
       },
       "raw_text": "[REJECT] The proposer slashing count is within the limit",
@@ -12162,7 +12134,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 435,
+        "line": 459,
         "anchor": "Gloas -- Networking \u003e Helpers \u003e New `verify_block_body_operation_limits`"
       },
       "raw_text": "[REJECT] The attester slashing count is within the limit",
@@ -12191,7 +12163,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 439,
+        "line": 463,
         "anchor": "Gloas -- Networking \u003e Helpers \u003e New `verify_block_body_operation_limits`"
       },
       "raw_text": "[REJECT] The attestation count is within the limit",
@@ -12220,7 +12192,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 443,
+        "line": 467,
         "anchor": "Gloas -- Networking \u003e Helpers \u003e New `verify_block_body_operation_limits`"
       },
       "raw_text": "[REJECT] The block contains no deposits",
@@ -12249,7 +12221,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 447,
+        "line": 471,
         "anchor": "Gloas -- Networking \u003e Helpers \u003e New `verify_block_body_operation_limits`"
       },
       "raw_text": "[REJECT] The voluntary exit count is within the limit",
@@ -12278,7 +12250,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 451,
+        "line": 475,
         "anchor": "Gloas -- Networking \u003e Helpers \u003e New `verify_block_body_operation_limits`"
       },
       "raw_text": "[REJECT] The BLS to execution change count is within the limit",
@@ -12307,7 +12279,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 455,
+        "line": 479,
         "anchor": "Gloas -- Networking \u003e Helpers \u003e New `verify_block_body_operation_limits`"
       },
       "raw_text": "[REJECT] The payload attestation count is within the limit",
@@ -12336,7 +12308,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 470,
+        "line": 494,
         "anchor": "Gloas -- Networking \u003e Helpers \u003e New `verify_execution_requests_limits`"
       },
       "raw_text": "[REJECT] The withdrawal request count is within the limit",
@@ -12368,7 +12340,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 474,
+        "line": 498,
         "anchor": "Gloas -- Networking \u003e Helpers \u003e New `verify_execution_requests_limits`"
       },
       "raw_text": "[REJECT] The consolidation request count is within the limit",
@@ -12400,7 +12372,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 478,
+        "line": 502,
         "anchor": "Gloas -- Networking \u003e Helpers \u003e New `verify_execution_requests_limits`"
       },
       "raw_text": "[REJECT] The builder deposit request count is within the limit",
@@ -12432,7 +12404,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 482,
+        "line": 506,
         "anchor": "Gloas -- Networking \u003e Helpers \u003e New `verify_execution_requests_limits`"
       },
       "raw_text": "[REJECT] The builder exit request count is within the limit",
@@ -12464,7 +12436,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 584,
+        "line": 608,
         "anchor": "Gloas -- Networking \u003e The gossip domain: gossipsub \u003e Topics and messages \u003e Global topics \u003e Modified `beacon_block`"
       },
       "raw_text": "[IGNORE] If the parent block is full, the parent payload is valid (MAY be queued until the parent payload is verified)",
@@ -12493,7 +12465,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 601,
+        "line": 625,
         "anchor": "Gloas -- Networking \u003e The gossip domain: gossipsub \u003e Topics and messages \u003e Global topics \u003e Modified `beacon_block`"
       },
       "raw_text": "[REJECT] The bid's blob KZG commitment count is within the per-epoch limit",
@@ -12522,7 +12494,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 607,
+        "line": 631,
         "anchor": "Gloas -- Networking \u003e The gossip domain: gossipsub \u003e Topics and messages \u003e Global topics \u003e Modified `beacon_block`"
       },
       "raw_text": "[REJECT] The bid's parent equals the block's parent",
@@ -12551,7 +12523,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 611,
+        "line": 635,
         "anchor": "Gloas -- Networking \u003e The gossip domain: gossipsub \u003e Topics and messages \u003e Global topics \u003e Modified `beacon_block`"
       },
       "raw_text": "[REJECT] The block is proposed by the expected proposer for the slot",
@@ -12580,7 +12552,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 619,
+        "line": 643,
         "anchor": "Gloas -- Networking \u003e The gossip domain: gossipsub \u003e Topics and messages \u003e Global topics \u003e Modified `beacon_block`"
       },
       "raw_text": "[REJECT] If the parent is not full, the bid builds on the parent's execution head",
@@ -12609,7 +12581,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 654,
+        "line": 678,
         "anchor": "Gloas -- Networking \u003e The gossip domain: gossipsub \u003e Topics and messages \u003e Global topics \u003e Modified `beacon_aggregate_and_proof`"
       },
       "raw_text": "[REJECT] The aggregate attestation's data index is 0 or 1",
@@ -12638,7 +12610,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 786,
+        "line": 810,
         "anchor": "Gloas -- Networking \u003e The gossip domain: gossipsub \u003e Topics and messages \u003e Global topics \u003e New `execution_payload`"
       },
       "raw_text": "[IGNORE] The node has not seen another valid envelope for this block root from this builder",
@@ -12667,7 +12639,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 791,
+        "line": 815,
         "anchor": "Gloas -- Networking \u003e The gossip domain: gossipsub \u003e Topics and messages \u003e Global topics \u003e New `execution_payload`"
       },
       "raw_text": "[IGNORE] The envelope's block root has been seen (via gossip or non-gossip sources) (MAY be queued until block is retrieved)",
@@ -12696,7 +12668,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 796,
+        "line": 820,
         "anchor": "Gloas -- Networking \u003e The gossip domain: gossipsub \u003e Topics and messages \u003e Global topics \u003e New `execution_payload`"
       },
       "raw_text": "[REJECT] The envelope's block passes validation",
@@ -12725,7 +12697,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 802,
+        "line": 826,
         "anchor": "Gloas -- Networking \u003e The gossip domain: gossipsub \u003e Topics and messages \u003e Global topics \u003e New `execution_payload`"
       },
       "raw_text": "[IGNORE] The envelope is from a slot greater than or equal to the latest finalized slot",
@@ -12754,7 +12726,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 810,
+        "line": 834,
         "anchor": "Gloas -- Networking \u003e The gossip domain: gossipsub \u003e Topics and messages \u003e Global topics \u003e New `execution_payload`"
       },
       "raw_text": "[REJECT] The block's slot matches the payload's slot number",
@@ -12783,7 +12755,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 814,
+        "line": 838,
         "anchor": "Gloas -- Networking \u003e The gossip domain: gossipsub \u003e Topics and messages \u003e Global topics \u003e New `execution_payload`"
       },
       "raw_text": "[REJECT] The envelope is from the builder committed to by the bid",
@@ -12812,7 +12784,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 818,
+        "line": 842,
         "anchor": "Gloas -- Networking \u003e The gossip domain: gossipsub \u003e Topics and messages \u003e Global topics \u003e New `execution_payload`"
       },
       "raw_text": "[REJECT] The payload's block hash matches the bid's block hash",
@@ -12841,7 +12813,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 822,
+        "line": 846,
         "anchor": "Gloas -- Networking \u003e The gossip domain: gossipsub \u003e Topics and messages \u003e Global topics \u003e New `execution_payload`"
       },
       "raw_text": "[REJECT] The envelope's execution requests root matches the bid's execution requests root",
@@ -12870,7 +12842,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 829,
+        "line": 853,
         "anchor": "Gloas -- Networking \u003e The gossip domain: gossipsub \u003e Topics and messages \u003e Global topics \u003e New `execution_payload`"
       },
       "raw_text": "[REJECT] The number of withdrawals is within the limit",
@@ -12899,7 +12871,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 833,
+        "line": 857,
         "anchor": "Gloas -- Networking \u003e The gossip domain: gossipsub \u003e Topics and messages \u003e Global topics \u003e New `execution_payload`"
       },
       "raw_text": "[REJECT] The envelope signature is valid",
@@ -12928,7 +12900,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 860,
+        "line": 884,
         "anchor": "Gloas -- Networking \u003e The gossip domain: gossipsub \u003e Topics and messages \u003e Global topics \u003e New `payload_attestation_message`"
       },
       "raw_text": "[IGNORE] This is the first valid payload attestation from this validator index",
@@ -12957,7 +12929,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 865,
+        "line": 889,
         "anchor": "Gloas -- Networking \u003e The gossip domain: gossipsub \u003e Topics and messages \u003e Global topics \u003e New `payload_attestation_message`"
       },
       "raw_text": "[IGNORE] The payload attestation's slot is for the current slot",
@@ -12986,7 +12958,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 869,
+        "line": 893,
         "anchor": "Gloas -- Networking \u003e The gossip domain: gossipsub \u003e Topics and messages \u003e Global topics \u003e New `payload_attestation_message`"
       },
       "raw_text": "[IGNORE] The payload attestation's block has been seen (via gossip or non-gossip sources) (MAY be queued until block is retrieved)",
@@ -13015,7 +12987,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 874,
+        "line": 898,
         "anchor": "Gloas -- Networking \u003e The gossip domain: gossipsub \u003e Topics and messages \u003e Global topics \u003e New `payload_attestation_message`"
       },
       "raw_text": "[REJECT] The payload attestation's block passes validation",
@@ -13044,7 +13016,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 878,
+        "line": 902,
         "anchor": "Gloas -- Networking \u003e The gossip domain: gossipsub \u003e Topics and messages \u003e Global topics \u003e New `payload_attestation_message`"
       },
       "raw_text": "[IGNORE] The payload attestation's block is at the assigned slot",
@@ -13073,7 +13045,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 884,
+        "line": 908,
         "anchor": "Gloas -- Networking \u003e The gossip domain: gossipsub \u003e Topics and messages \u003e Global topics \u003e New `payload_attestation_message`"
       },
       "raw_text": "[REJECT] The validator index is valid",
@@ -13102,7 +13074,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 888,
+        "line": 912,
         "anchor": "Gloas -- Networking \u003e The gossip domain: gossipsub \u003e Topics and messages \u003e Global topics \u003e New `payload_attestation_message`"
       },
       "raw_text": "[REJECT] The validator is a member of the payload timeliness committee",
@@ -13131,7 +13103,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 892,
+        "line": 916,
         "anchor": "Gloas -- Networking \u003e The gossip domain: gossipsub \u003e Topics and messages \u003e Global topics \u003e New `payload_attestation_message`"
       },
       "raw_text": "[REJECT] The signature is valid",
@@ -13160,7 +13132,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 920,
+        "line": 944,
         "anchor": "Gloas -- Networking \u003e The gossip domain: gossipsub \u003e Topics and messages \u003e Global topics \u003e New `execution_payload_bid`"
       },
       "raw_text": "[IGNORE] This is the first bid for this slot, parent, and builder",
@@ -13189,7 +13161,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 925,
+        "line": 949,
         "anchor": "Gloas -- Networking \u003e The gossip domain: gossipsub \u003e Topics and messages \u003e Global topics \u003e New `execution_payload_bid`"
       },
       "raw_text": "[IGNORE] This is the highest value bid seen for the slot and parent",
@@ -13218,7 +13190,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 931,
+        "line": 955,
         "anchor": "Gloas -- Networking \u003e The gossip domain: gossipsub \u003e Topics and messages \u003e Global topics \u003e New `execution_payload_bid`"
       },
       "raw_text": "[IGNORE] The bid's slot is the current slot or the next slot",
@@ -13247,7 +13219,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 935,
+        "line": 959,
         "anchor": "Gloas -- Networking \u003e The gossip domain: gossipsub \u003e Topics and messages \u003e Global topics \u003e New `execution_payload_bid`"
       },
       "raw_text": "[REJECT] The bid's execution payment is zero",
@@ -13276,7 +13248,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 939,
+        "line": 963,
         "anchor": "Gloas -- Networking \u003e The gossip domain: gossipsub \u003e Topics and messages \u003e Global topics \u003e New `execution_payload_bid`"
       },
       "raw_text": "[REJECT] The bid's block hash is not equal to its parent block hash",
@@ -13305,7 +13277,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 943,
+        "line": 967,
         "anchor": "Gloas -- Networking \u003e The gossip domain: gossipsub \u003e Topics and messages \u003e Global topics \u003e New `execution_payload_bid`"
       },
       "raw_text": "[REJECT] The bid's blob KZG commitment count is within the per-epoch limit",
@@ -13334,7 +13306,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 949,
+        "line": 973,
         "anchor": "Gloas -- Networking \u003e The gossip domain: gossipsub \u003e Topics and messages \u003e Global topics \u003e New `execution_payload_bid`"
       },
       "raw_text": "[IGNORE] The bid's parent block root is a known beacon block (MAY be queued until parent is retrieved)",
@@ -13363,7 +13335,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 954,
+        "line": 978,
         "anchor": "Gloas -- Networking \u003e The gossip domain: gossipsub \u003e Topics and messages \u003e Global topics \u003e New `execution_payload_bid`"
       },
       "raw_text": "[REJECT] The bid is for a higher slot than its parent block",
@@ -13392,7 +13364,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 958,
+        "line": 982,
         "anchor": "Gloas -- Networking \u003e The gossip domain: gossipsub \u003e Topics and messages \u003e Global topics \u003e New `execution_payload_bid`"
       },
       "raw_text": "[IGNORE] The bid's parent block has been imported (MAY be queued until parent is imported)",
@@ -13421,7 +13393,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 965,
+        "line": 989,
         "anchor": "Gloas -- Networking \u003e The gossip domain: gossipsub \u003e Topics and messages \u003e Global topics \u003e New `execution_payload_bid`"
       },
       "raw_text": "[IGNORE] The bid's slot is within the parent's proposer lookahead",
@@ -13450,7 +13422,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 969,
+        "line": 993,
         "anchor": "Gloas -- Networking \u003e The gossip domain: gossipsub \u003e Topics and messages \u003e Global topics \u003e New `execution_payload_bid`"
       },
       "raw_text": "[IGNORE] The matching proposer preferences have been seen",
@@ -13479,7 +13451,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 977,
+        "line": 1001,
         "anchor": "Gloas -- Networking \u003e The gossip domain: gossipsub \u003e Topics and messages \u003e Global topics \u003e New `execution_payload_bid`"
       },
       "raw_text": "[IGNORE] The bid's fee recipient matches the proposer's preference",
@@ -13508,7 +13480,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 981,
+        "line": 1005,
         "anchor": "Gloas -- Networking \u003e The gossip domain: gossipsub \u003e Topics and messages \u003e Global topics \u003e New `execution_payload_bid`"
       },
       "raw_text": "[IGNORE] The bid's parent block hash is the hash of a known execution payload",
@@ -13537,7 +13509,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 985,
+        "line": 1009,
         "anchor": "Gloas -- Networking \u003e The gossip domain: gossipsub \u003e Topics and messages \u003e Global topics \u003e New `execution_payload_bid`"
       },
       "raw_text": "[IGNORE] The bid's gas limit is compatible with the proposer's target gas limit",
@@ -13566,7 +13538,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 992,
+        "line": 1016,
         "anchor": "Gloas -- Networking \u003e The gossip domain: gossipsub \u003e Topics and messages \u003e Global topics \u003e New `execution_payload_bid`"
       },
       "raw_text": "[IGNORE] The bid is compatible with the current head branch",
@@ -13595,7 +13567,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 996,
+        "line": 1020,
         "anchor": "Gloas -- Networking \u003e The gossip domain: gossipsub \u003e Topics and messages \u003e Global topics \u003e New `execution_payload_bid`"
       },
       "raw_text": "[REJECT] The bid's previous randao is correct",
@@ -13624,7 +13596,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 1003,
+        "line": 1027,
         "anchor": "Gloas -- Networking \u003e The gossip domain: gossipsub \u003e Topics and messages \u003e Global topics \u003e New `execution_payload_bid`"
       },
       "raw_text": "[REJECT] The builder index is valid",
@@ -13653,7 +13625,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 1009,
+        "line": 1033,
         "anchor": "Gloas -- Networking \u003e The gossip domain: gossipsub \u003e Topics and messages \u003e Global topics \u003e New `execution_payload_bid`"
       },
       "raw_text": "[REJECT] The builder is a payload builder",
@@ -13682,7 +13654,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 1013,
+        "line": 1037,
         "anchor": "Gloas -- Networking \u003e The gossip domain: gossipsub \u003e Topics and messages \u003e Global topics \u003e New `execution_payload_bid`"
       },
       "raw_text": "[REJECT] The builder is active",
@@ -13711,7 +13683,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 1017,
+        "line": 1041,
         "anchor": "Gloas -- Networking \u003e The gossip domain: gossipsub \u003e Topics and messages \u003e Global topics \u003e New `execution_payload_bid`"
       },
       "raw_text": "[IGNORE] The builder can cover the bid",
@@ -13740,7 +13712,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 1021,
+        "line": 1045,
         "anchor": "Gloas -- Networking \u003e The gossip domain: gossipsub \u003e Topics and messages \u003e Global topics \u003e New `execution_payload_bid`"
       },
       "raw_text": "[IGNORE] The parent's payload does not try to exit the builder",
@@ -13769,7 +13741,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 1029,
+        "line": 1053,
         "anchor": "Gloas -- Networking \u003e The gossip domain: gossipsub \u003e Topics and messages \u003e Global topics \u003e New `execution_payload_bid`"
       },
       "raw_text": "[REJECT] The bid signature is valid",
@@ -13798,7 +13770,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 1067,
+        "line": 1091,
         "anchor": "Gloas -- Networking \u003e The gossip domain: gossipsub \u003e Topics and messages \u003e Global topics \u003e New `proposer_preferences`"
       },
       "raw_text": "[IGNORE] These are the first valid preferences seen for this dependent root and slot",
@@ -13827,7 +13799,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 1072,
+        "line": 1096,
         "anchor": "Gloas -- Networking \u003e The gossip domain: gossipsub \u003e Topics and messages \u003e Global topics \u003e New `proposer_preferences`"
       },
       "raw_text": "[IGNORE] The proposal epoch is after the Gloas upgrade",
@@ -13856,7 +13828,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 1077,
+        "line": 1101,
         "anchor": "Gloas -- Networking \u003e The gossip domain: gossipsub \u003e Topics and messages \u003e Global topics \u003e New `proposer_preferences`"
       },
       "raw_text": "[IGNORE] The proposal slot has not started yet",
@@ -13885,7 +13857,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 1081,
+        "line": 1105,
         "anchor": "Gloas -- Networking \u003e The gossip domain: gossipsub \u003e Topics and messages \u003e Global topics \u003e New `proposer_preferences`"
       },
       "raw_text": "[IGNORE] The proposer for the proposal slot is known",
@@ -13914,7 +13886,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 1086,
+        "line": 1110,
         "anchor": "Gloas -- Networking \u003e The gossip domain: gossipsub \u003e Topics and messages \u003e Global topics \u003e New `proposer_preferences`"
       },
       "raw_text": "[IGNORE] The dependent block has been seen (via gossip or non-gossip sources) (MAY be queued until block is retrieved)",
@@ -13943,7 +13915,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 1091,
+        "line": 1115,
         "anchor": "Gloas -- Networking \u003e The gossip domain: gossipsub \u003e Topics and messages \u003e Global topics \u003e New `proposer_preferences`"
       },
       "raw_text": "[IGNORE] The dependent block passes validation",
@@ -13972,7 +13944,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 1095,
+        "line": 1119,
         "anchor": "Gloas -- Networking \u003e The gossip domain: gossipsub \u003e Topics and messages \u003e Global topics \u003e New `proposer_preferences`"
       },
       "raw_text": "[REJECT] The dependent block's slot is not after the shuffling dependent slot",
@@ -14001,7 +13973,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 1100,
+        "line": 1124,
         "anchor": "Gloas -- Networking \u003e The gossip domain: gossipsub \u003e Topics and messages \u003e Global topics \u003e New `proposer_preferences`"
       },
       "raw_text": "[IGNORE] The dependent block is a possible dependent block for the proposer lookahead",
@@ -14030,7 +14002,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 1104,
+        "line": 1128,
         "anchor": "Gloas -- Networking \u003e The gossip domain: gossipsub \u003e Topics and messages \u003e Global topics \u003e New `proposer_preferences`"
       },
       "raw_text": "[REJECT] The validator is the proposer for the given slot in the proposer lookahead",
@@ -14059,7 +14031,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 1112,
+        "line": 1136,
         "anchor": "Gloas -- Networking \u003e The gossip domain: gossipsub \u003e Topics and messages \u003e Global topics \u003e New `proposer_preferences`"
       },
       "raw_text": "[REJECT] The signature is valid",
@@ -14088,7 +14060,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 1158,
+        "line": 1182,
         "anchor": "Gloas -- Networking \u003e The gossip domain: gossipsub \u003e Topics and messages \u003e Attestation subnets \u003e Modified `beacon_attestation_{subnet_id}`"
       },
       "raw_text": "[REJECT] The attestation's data index is 0 or 1",
@@ -14117,7 +14089,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 1217,
+        "line": 1241,
         "anchor": "Gloas -- Networking \u003e The gossip domain: gossipsub \u003e Topics and messages \u003e Attestation subnets \u003e Modified `beacon_attestation_{subnet_id}`"
       },
       "raw_text": "[IGNORE] The current finalized checkpoint is an ancestor of the block",
@@ -14146,7 +14118,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 1255,
+        "line": 1279,
         "anchor": "Gloas -- Networking \u003e The gossip domain: gossipsub \u003e Topics and messages \u003e Blob subnets \u003e Modified `data_column_sidecar_{subnet_id}`"
       },
       "raw_text": "[IGNORE] This is the first sidecar seen for this block root and column index",
@@ -14175,7 +14147,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 1269,
+        "line": 1293,
         "anchor": "Gloas -- Networking \u003e The gossip domain: gossipsub \u003e Topics and messages \u003e Blob subnets \u003e Modified `data_column_sidecar_{subnet_id}`"
       },
       "raw_text": "[IGNORE] A block for the sidecar has been seen (via gossip or non-gossip sources) (MAY be queued until block is retrieved) (SHOULD queue at least one sidecar per peer per subnet)",
@@ -14204,7 +14176,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 1275,
+        "line": 1299,
         "anchor": "Gloas -- Networking \u003e The gossip domain: gossipsub \u003e Topics and messages \u003e Blob subnets \u003e Modified `data_column_sidecar_{subnet_id}`"
       },
       "raw_text": "[REJECT] The block for the sidecar passes validation",
@@ -14233,7 +14205,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 1281,
+        "line": 1305,
         "anchor": "Gloas -- Networking \u003e The gossip domain: gossipsub \u003e Topics and messages \u003e Blob subnets \u003e Modified `data_column_sidecar_{subnet_id}`"
       },
       "raw_text": "[REJECT] The sidecar's slot matches the slot of the block",
@@ -14262,7 +14234,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 1287,
+        "line": 1311,
         "anchor": "Gloas -- Networking \u003e The gossip domain: gossipsub \u003e Topics and messages \u003e Blob subnets \u003e Modified `data_column_sidecar_{subnet_id}`"
       },
       "raw_text": "[REJECT] The sidecar passes structural validation",
@@ -14291,7 +14263,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 1291,
+        "line": 1315,
         "anchor": "Gloas -- Networking \u003e The gossip domain: gossipsub \u003e Topics and messages \u003e Blob subnets \u003e Modified `data_column_sidecar_{subnet_id}`"
       },
       "raw_text": "[REJECT] The sidecar's column data passes KZG verification",
@@ -14320,7 +14292,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 423,
+        "line": 447,
         "anchor": "Gloas -- Networking \u003e Helpers \u003e New `verify_block_body_operation_limits`"
       },
       "raw_text": "Note: These checks MAY be performed when deserializing BeaconBlockBody.",
@@ -14347,7 +14319,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 462,
+        "line": 486,
         "anchor": "Gloas -- Networking \u003e Helpers \u003e New `verify_execution_requests_limits`"
       },
       "raw_text": "Note: These checks MAY be performed when deserializing ExecutionRequests.",
@@ -14374,7 +14346,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 630,
+        "line": 654,
         "anchor": "Gloas -- Networking \u003e The gossip domain: gossipsub \u003e Topics and messages \u003e Global topics \u003e Modified `beacon_aggregate_and_proof`"
       },
       "raw_text": "Same-slot aggregates MUST attest with index == 0",
@@ -14398,7 +14370,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 1038,
+        "line": 1062,
         "anchor": "Gloas -- Networking \u003e The gossip domain: gossipsub \u003e Topics and messages \u003e Global topics \u003e New `execution_payload_bid`"
       },
       "raw_text": "Note: Implementations SHOULD include DoS prevention measures to mitigate spam from malicious builders submitting numerous bids with minimal value increments",
@@ -14422,7 +14394,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 1050,
+        "line": 1074,
         "anchor": "Gloas -- Networking \u003e The gossip domain: gossipsub \u003e Topics and messages \u003e Global topics \u003e New `proposer_preferences`"
       },
       "raw_text": "Note: Nodes SHOULD subscribe to this topic at least one epoch before the fork activation",
@@ -14446,7 +14418,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 1050,
+        "line": 1074,
         "anchor": "Gloas -- Networking \u003e The gossip domain: gossipsub \u003e Topics and messages \u003e Global topics \u003e New `proposer_preferences`"
       },
       "raw_text": "Proposers SHOULD broadcast their preferences in the epoch before the fork.",
@@ -14470,7 +14442,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 1127,
+        "line": 1151,
         "anchor": "Gloas -- Networking \u003e The gossip domain: gossipsub \u003e Topics and messages \u003e Attestation subnets \u003e Modified `beacon_attestation_{subnet_id}`"
       },
       "raw_text": "Same-slot attestations MUST attest with index == 0",
@@ -14494,7 +14466,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 1239,
+        "line": 1263,
         "anchor": "Gloas -- Networking \u003e The gossip domain: gossipsub \u003e Topics and messages \u003e Blob subnets \u003e Modified `data_column_sidecar_{subnet_id}`"
       },
       "raw_text": "Note: If the sidecar fails deferred validation, its forwarding peers MUST be downscored retroactively",
@@ -14521,7 +14493,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 1239,
+        "line": 1263,
         "anchor": "Gloas -- Networking \u003e The gossip domain: gossipsub \u003e Topics and messages \u003e Blob subnets \u003e Modified `data_column_sidecar_{subnet_id}`"
       },
       "raw_text": "If validation succeeds, the client MUST re-broadcast the sidecar.",
@@ -14544,11 +14516,57 @@
       "fork_introduced": "gloas"
     },
     {
+      "id": "PROSE-MUST-b9d8a0e4",
+      "source": {
+        "fork": "gloas",
+        "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
+        "line": 1393,
+        "anchor": "Gloas -- Networking \u003e The Req/Resp domain \u003e Messages \u003e ExecutionPayloadEnvelopesByRange v1"
+      },
+      "raw_text": "Clients MUST respond with execution payload envelopes from their view of the current fork choice -- that is, envelopes of payloads that are part of the single chain defined by the current head",
+      "subject": {
+        "actor": "client",
+        "explicit": true
+      },
+      "modal": "MUST",
+      "predicate": {
+        "action": "respond",
+        "object": "with execution payload envelopes from their view of the current fork choice -- that is, envelopes of payloads that are part of the single chain defined by the current head"
+      },
+      "normalized_expr": "client.respond(with execution payload envelopes from their view of the current fork choice -- t)",
+      "extractor": "prose",
+      "confidence": "medium",
+      "fork_introduced": "gloas"
+    },
+    {
+      "id": "PROSE-MUST_NOT-3b155ff3",
+      "source": {
+        "fork": "gloas",
+        "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
+        "line": 1393,
+        "anchor": "Gloas -- Networking \u003e The Req/Resp domain \u003e Messages \u003e ExecutionPayloadEnvelopesByRange v1"
+      },
+      "raw_text": "Clients MUST_NOT include envelopes for blocks whose ForkChoiceNode in that chain has payload_status equal to PAYLOAD_STATUS_EMPTY",
+      "subject": {
+        "actor": "client",
+        "explicit": true
+      },
+      "modal": "MUST_NOT",
+      "predicate": {
+        "action": "include",
+        "object": "envelopes for blocks whose ForkChoiceNode in that chain has payload_status equal to PAYLOAD_STATUS_EMPTY"
+      },
+      "normalized_expr": "client.include(envelopes for blocks whose ForkChoiceNode in that chain has payload_status equal)",
+      "extractor": "prose",
+      "confidence": "medium",
+      "fork_introduced": "gloas"
+    },
+    {
       "id": "PROSE-MUST-c554346a",
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 1416,
+        "line": 1451,
         "anchor": "Gloas -- Networking \u003e The Req/Resp domain \u003e Messages \u003e ExecutionPayloadEnvelopesByRoot v1"
       },
       "raw_text": "Each successful response_chunk MUST contain a single SignedExecutionPayloadEnvelope payload.",
@@ -14571,7 +14589,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 1419,
+        "line": 1454,
         "anchor": "Gloas -- Networking \u003e The Req/Resp domain \u003e Messages \u003e ExecutionPayloadEnvelopesByRoot v1"
       },
       "raw_text": "Clients MUST support requesting payload envelopes on the epoch range [max(GLOAS_FORK_EPOCH, current_epoch - compute_min_epochs_for_block_requests()), current_epoch]",
@@ -14594,7 +14612,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 1419,
+        "line": 1454,
         "anchor": "Gloas -- Networking \u003e The Req/Resp domain \u003e Messages \u003e ExecutionPayloadEnvelopesByRoot v1"
       },
       "raw_text": "If any root in the request content references a block earlier than this range, peers MAY respond with error code 3: ResourceUnavailable or not include the payload envelope in the response.",
@@ -14620,7 +14638,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 1425,
+        "line": 1460,
         "anchor": "Gloas -- Networking \u003e The Req/Resp domain \u003e Messages \u003e ExecutionPayloadEnvelopesByRoot v1"
       },
       "raw_text": "Clients MUST respond with at least one payload envelope, if they have it",
@@ -14646,7 +14664,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/p2p-interface.md",
-        "line": 1425,
+        "line": 1460,
         "anchor": "Gloas -- Networking \u003e The Req/Resp domain \u003e Messages \u003e ExecutionPayloadEnvelopesByRoot v1"
       },
       "raw_text": "Clients MAY limit the number of payload envelopes in the response.",
@@ -14669,7 +14687,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/partial-columns/p2p-interface.md",
-        "line": 123,
+        "line": 137,
         "anchor": "Gloas Partial Columns -- Networking \u003e The gossip domain: gossipsub \u003e Blob subnets \u003e Modified `data_column_sidecar_{subnet_id}` (partial messages)"
       },
       "raw_text": "[REJECT] The message contains at least one cell",
@@ -14698,7 +14716,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/partial-columns/p2p-interface.md",
-        "line": 136,
+        "line": 150,
         "anchor": "Gloas Partial Columns -- Networking \u003e The gossip domain: gossipsub \u003e Blob subnets \u003e Modified `data_column_sidecar_{subnet_id}` (partial messages)"
       },
       "raw_text": "[IGNORE] The group ID's block has been seen (via gossip or non-gossip sources) (MAY be queued until block is retrieved) (SHOULD queue at least one sidecar per peer per subnet)",
@@ -14727,7 +14745,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/partial-columns/p2p-interface.md",
-        "line": 143,
+        "line": 157,
         "anchor": "Gloas Partial Columns -- Networking \u003e The gossip domain: gossipsub \u003e Blob subnets \u003e Modified `data_column_sidecar_{subnet_id}` (partial messages)"
       },
       "raw_text": "[REJECT] The group ID's block passes validation",
@@ -14756,7 +14774,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/partial-columns/p2p-interface.md",
-        "line": 150,
+        "line": 164,
         "anchor": "Gloas Partial Columns -- Networking \u003e The gossip domain: gossipsub \u003e Blob subnets \u003e Modified `data_column_sidecar_{subnet_id}` (partial messages)"
       },
       "raw_text": "[REJECT] The group ID's slot matches the slot of the block",
@@ -14785,7 +14803,7 @@
       "source": {
         "fork": "gloas",
         "file": "/tmp/opencode/consensus-specs/specs/gloas/partial-columns/p2p-interface.md",
-        "line": 157,
+        "line": 171,
         "anchor": "Gloas Partial Columns -- Networking \u003e The gossip domain: gossipsub \u003e Blob subnets \u003e Modified `data_column_sidecar_{subnet_id}` (partial messages)"
       },
       "raw_text": "[REJECT] The cells present bitmap length equals the number of bid commitments",
@@ -16836,7 +16854,7 @@
     },
     {
       "kind": "conditional",
-      "from": "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-c33e885a",
+      "from": "SYNC_COMMITTEE_CONTRIBUTION_AND_PROOF-REJECT-7a39f62f",
       "guard": "aggregator_pubkey not in subcommittee_pubkeys"
     },
     {
@@ -18603,6 +18621,14 @@
       "rel": "modifies",
       "confidence": "medium",
       "score": "0.89"
+    },
+    {
+      "kind": "supersedes",
+      "from": "PROSE-MUST-b9d8a0e4",
+      "to": "rule:PROSE-MUST-a43e7b78",
+      "rel": "modifies",
+      "confidence": "medium",
+      "score": "0.68"
     },
     {
       "kind": "supersedes",
