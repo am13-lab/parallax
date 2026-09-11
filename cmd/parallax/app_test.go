@@ -141,3 +141,14 @@ func TestRunRunSmoke(t *testing.T) {
 		t.Fatalf("junit missing: %v", err)
 	}
 }
+
+func TestConsensusSpecsURLPlainView(t *testing.T) {
+	u := consensusSpecsURL("consensus-specs/specs/fulu/p2p-interface.md", 835)
+	want := "https://github.com/ethereum/consensus-specs/blob/master/specs/fulu/p2p-interface.md?plain=1#L835"
+	if u != want {
+		t.Fatalf("got %q, want %q (GitHub renders .md by default and drops #L anchors; ?plain=1 forces the line-numbered source view)", u, want)
+	}
+	if !strings.Contains(u, "?plain=1#L") {
+		t.Fatal("markdown spec links must force the plain (line-numbered) view")
+	}
+}

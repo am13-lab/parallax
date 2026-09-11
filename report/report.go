@@ -9,10 +9,30 @@ import (
 	"fmt"
 	"path/filepath"
 	"sort"
+	"strings"
 	"time"
 
 	"parallax/runner"
 )
+
+// sortedKeys returns map keys in sorted order for deterministic output.
+func sortedKeys(m map[string]string) []string {
+	keys := make([]string, 0, len(m))
+	for k := range m {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+	return keys
+}
+
+// sortedClientResults renders client verdicts deterministically as k=v pairs.
+func sortedClientResults(m map[string]string) string {
+	parts := make([]string, 0, len(m))
+	for _, k := range sortedKeys(m) {
+		parts = append(parts, k+"="+m[k])
+	}
+	return strings.Join(parts, ", ")
+}
 
 // Finding groups divergences that share the same root cause.
 type Finding struct {
@@ -104,8 +124,17 @@ func WriteJUnit(rep *runner.Report) ([]byte, error) {
 				suite.Failures++
 				var msgs []string
 				for _, d := range r.Divergences {
-					msgs = append(msgs, fmt.Sprintf("[%s/%s] %s | results: %v",
-						d.Type, d.Severity, d.Description, d.ClientResults))
+					msg := fmt.Sprintf("[%s/%s] %s", d.Type, d.Severity, d.Description)
+					if d.Expected != "" {
+						msg += " | expected: " + d.Expected
+					}
+					msgs = append(msgs, msg+fmt.Sprintf(" | verdicts: %s", sortedClientResults(d.ClientResults)))
+					for _, name := range sortedKeys(d.ClientDetails) {
+						msgs = append(msgs, "  ↳ "+name+": "+d.ClientDetails[name])
+					}
+				}
+				if rep.Command != "" {
+					msgs = append(msgs, fmt.Sprintf("reproduce: %s -test '%s'", rep.Command, r.TestID))
 				}
 				tc.Failure = &junitFailure{
 					Message: fmt.Sprintf("%d divergence(s)", len(r.Divergences)),
