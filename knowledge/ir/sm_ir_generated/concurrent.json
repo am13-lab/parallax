@@ -30,6 +30,11 @@
       "to": "ConcOneStream",
       "label": "conc_open_ping_stream",
       "weight": 10,
+      "spec_refs": [
+        "PROSE-MAY-c3746d81",
+        "PROSE-MUST-faaebe5c",
+        "PROSE-MUST_NOT-305625f9"
+      ],
       "action": {
         "type": "ActOpenStream",
         "protocol": "/eth2/beacon_chain/req/ping/1/ssz_snappy",
@@ -50,6 +55,11 @@
       "to": "ConcOneStream",
       "label": "conc_open_bbr_stream",
       "weight": 8,
+      "spec_refs": [
+        "PROSE-MAY-c3746d81",
+        "PROSE-MUST-faaebe5c",
+        "PROSE-MUST_NOT-305625f9"
+      ],
       "action": {
         "type": "ActOpenStream",
         "protocol": "/eth2/beacon_chain/req/beacon_blocks_by_range/2/ssz_snappy",
@@ -73,6 +83,11 @@
       "to": "ConcOneStream",
       "label": "conc_open_metadata_stream",
       "weight": 8,
+      "spec_refs": [
+        "PROSE-MAY-c3746d81",
+        "PROSE-MUST-faaebe5c",
+        "PROSE-MUST_NOT-305625f9"
+      ],
       "action": {
         "type": "ActOpenStream",
         "protocol": "/eth2/beacon_chain/req/metadata/3/ssz_snappy",
@@ -84,6 +99,11 @@
       "to": "ConcMultiStream",
       "label": "conc_open_second_stream",
       "weight": 10,
+      "spec_refs": [
+        "PROSE-MAY-c3746d81",
+        "PROSE-MUST-faaebe5c",
+        "PROSE-MUST_NOT-305625f9"
+      ],
       "action": {
         "type": "ActOpenStream",
         "protocol": "/eth2/beacon_chain/req/ping/1/ssz_snappy",
@@ -105,6 +125,11 @@
       "label": "conc_open_additional_stream",
       "weight": 8,
       "condition_desc": "fewer than eight streams are currently open",
+      "spec_refs": [
+        "PROSE-MAY-c3746d81",
+        "PROSE-MUST-faaebe5c",
+        "PROSE-MUST_NOT-305625f9"
+      ],
       "action": {
         "type": "ActOpenStream",
         "protocol": "/eth2/beacon_chain/req/ping/1/ssz_snappy",
@@ -129,6 +154,11 @@
       "label": "conc_fill_to_limit",
       "weight": 6,
       "condition_desc": "at least three streams are currently open",
+      "spec_refs": [
+        "PROSE-MAY-c3746d81",
+        "PROSE-MUST-faaebe5c",
+        "PROSE-MUST_NOT-305625f9"
+      ],
       "action": {
         "type": "ActOpenStream",
         "protocol": "/eth2/beacon_chain/req/metadata/3/ssz_snappy",
@@ -185,6 +215,11 @@
       "to": "ConcMultiStream",
       "label": "conc_read_latest",
       "weight": 6,
+      "spec_refs": [
+        "PROSE-MAY-c3746d81",
+        "PROSE-MUST-faaebe5c",
+        "PROSE-MUST_NOT-305625f9"
+      ],
       "action": {
         "type": "ActReadResponse",
         "protocol": "/eth2/beacon_chain/req/ping/1/ssz_snappy",
@@ -196,6 +231,11 @@
       "to": "ConcIdle",
       "label": "conc_read_and_close",
       "weight": 8,
+      "spec_refs": [
+        "PROSE-MAY-c3746d81",
+        "PROSE-MUST-faaebe5c",
+        "PROSE-MUST_NOT-305625f9"
+      ],
       "action": {
         "type": "ActReadResponse",
         "protocol": "/eth2/beacon_chain/req/ping/1/ssz_snappy",
@@ -207,6 +247,11 @@
       "to": "ConcMultiStream",
       "label": "conc_read_at_limit",
       "weight": 6,
+      "spec_refs": [
+        "PROSE-MAY-c3746d81",
+        "PROSE-MUST-faaebe5c",
+        "PROSE-MUST_NOT-305625f9"
+      ],
       "action": {
         "type": "ActReadResponse",
         "protocol": "/eth2/beacon_chain/req/ping/1/ssz_snappy",
@@ -219,6 +264,11 @@
       "label": "conc_interleave_bbr",
       "weight": 5,
       "condition_desc": "fewer than ten streams are currently open",
+      "spec_refs": [
+        "PROSE-MAY-c3746d81",
+        "PROSE-MUST-faaebe5c",
+        "PROSE-MUST_NOT-305625f9"
+      ],
       "action": {
         "type": "ActOpenStream",
         "protocol": "/eth2/beacon_chain/req/beacon_blocks_by_range/2/ssz_snappy",
@@ -249,6 +299,11 @@
       "to": "ConcMultiStream",
       "label": "conc_normal_ping_while_open",
       "weight": 4,
+      "spec_refs": [
+        "PROSE-MAY-c3746d81",
+        "PROSE-MUST-faaebe5c",
+        "PROSE-MUST_NOT-305625f9"
+      ],
       "action": {
         "type": "ActSendReqResp",
         "protocol": "/eth2/beacon_chain/req/ping/1/ssz_snappy",
@@ -269,6 +324,11 @@
       "to": "ConcMultiStream",
       "label": "conc_check_connected",
       "weight": 2,
+      "spec_refs": [
+        "PROSE-MAY-c3746d81",
+        "PROSE-MUST-faaebe5c",
+        "PROSE-MUST_NOT-305625f9"
+      ],
       "action": {
         "type": "ActCheckConnected",
         "timeout_ms": 5000
@@ -279,6 +339,11 @@
       "to": "ConcAtLimit",
       "label": "conc_check_at_limit",
       "weight": 3,
+      "spec_refs": [
+        "PROSE-MAY-c3746d81",
+        "PROSE-MUST-faaebe5c",
+        "PROSE-MUST_NOT-305625f9"
+      ],
       "action": {
         "type": "ActCheckConnected",
         "timeout_ms": 5000
@@ -289,6 +354,11 @@
       "to": "ConcCompleted",
       "label": "conc_idle_to_completed",
       "weight": 5,
+      "spec_refs": [
+        "PROSE-MAY-c3746d81",
+        "PROSE-MUST-faaebe5c",
+        "PROSE-MUST_NOT-305625f9"
+      ],
       "action": {
         "type": "ActSleep",
         "timeout_ms": 100
@@ -299,6 +369,11 @@
       "to": "ConcCompleted",
       "label": "conc_multi_to_completed",
       "weight": 3,
+      "spec_refs": [
+        "PROSE-MAY-c3746d81",
+        "PROSE-MUST-faaebe5c",
+        "PROSE-MUST_NOT-305625f9"
+      ],
       "action": {
         "type": "ActSleep",
         "timeout_ms": 100
@@ -310,6 +385,11 @@
       "label": "conc_drain_to_idle",
       "weight": 4,
       "condition_desc": "exactly one stream is currently open",
+      "spec_refs": [
+        "PROSE-MAY-c3746d81",
+        "PROSE-MUST-faaebe5c",
+        "PROSE-MUST_NOT-305625f9"
+      ],
       "action": {
         "type": "ActReadResponse",
         "protocol": "/eth2/beacon_chain/req/ping/1/ssz_snappy",
@@ -328,6 +408,11 @@
       "to": "ConcIdle",
       "label": "conc_idle_delay",
       "weight": 3,
+      "spec_refs": [
+        "PROSE-MAY-c3746d81",
+        "PROSE-MUST-faaebe5c",
+        "PROSE-MUST_NOT-305625f9"
+      ],
       "action": {
         "type": "ActSleep",
         "timeout_ms": 500

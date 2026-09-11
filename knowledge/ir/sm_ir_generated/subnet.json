@@ -32,6 +32,18 @@
       "to": "SubENRProbe",
       "label": "sub_query_enr",
       "weight": 10,
+      "spec_refs": [
+        "BEACON_ATTESTATION-REJECT-02f714ed",
+        "BEACON_ATTESTATION_SUBNET_ID-MUST-454af71d",
+        "DATA_COLUMN_SIDECAR-REJECT-459b0d39",
+        "DATA_COLUMN_SIDECAR-REJECT-c094c7ea",
+        "PROSE-MAY-99c5c95f",
+        "PROSE-MUST-0648388b",
+        "PROSE-MUST-4bfaa766",
+        "PROSE-MUST-56ec7740",
+        "PROSE-MUST-9cd4be04",
+        "SYNC_COMMITTEE_MESSAGE-REJECT-c428cd4e"
+      ],
       "action": {
         "type": "ActQueryENR"
       }
@@ -41,6 +53,18 @@
       "to": "SubENRProbe",
       "label": "sub_status_handshake",
       "weight": 8,
+      "spec_refs": [
+        "BEACON_ATTESTATION-REJECT-02f714ed",
+        "BEACON_ATTESTATION_SUBNET_ID-MUST-454af71d",
+        "DATA_COLUMN_SIDECAR-REJECT-459b0d39",
+        "DATA_COLUMN_SIDECAR-REJECT-c094c7ea",
+        "PROSE-MAY-99c5c95f",
+        "PROSE-MUST-0648388b",
+        "PROSE-MUST-4bfaa766",
+        "PROSE-MUST-56ec7740",
+        "PROSE-MUST-9cd4be04",
+        "SYNC_COMMITTEE_MESSAGE-REJECT-c428cd4e"
+      ],
       "action": {
         "type": "ActSendStatus",
         "protocol": "/eth2/beacon_chain/req/status/2/ssz_snappy",
@@ -57,6 +81,18 @@
       "to": "SubENRProbe",
       "label": "sub_metadata_v3",
       "weight": 6,
+      "spec_refs": [
+        "BEACON_ATTESTATION-REJECT-02f714ed",
+        "BEACON_ATTESTATION_SUBNET_ID-MUST-454af71d",
+        "DATA_COLUMN_SIDECAR-REJECT-459b0d39",
+        "DATA_COLUMN_SIDECAR-REJECT-c094c7ea",
+        "PROSE-MAY-99c5c95f",
+        "PROSE-MUST-0648388b",
+        "PROSE-MUST-4bfaa766",
+        "PROSE-MUST-56ec7740",
+        "PROSE-MUST-9cd4be04",
+        "SYNC_COMMITTEE_MESSAGE-REJECT-c428cd4e"
+      ],
       "action": {
         "type": "ActSendReqResp",
         "protocol": "/eth2/beacon_chain/req/metadata/3/ssz_snappy",
@@ -69,6 +105,18 @@
       "label": "sub_resolve_subnets",
       "weight": 10,
       "condition_desc": "ENR snapshot is available",
+      "spec_refs": [
+        "BEACON_ATTESTATION-REJECT-02f714ed",
+        "BEACON_ATTESTATION_SUBNET_ID-MUST-454af71d",
+        "DATA_COLUMN_SIDECAR-REJECT-459b0d39",
+        "DATA_COLUMN_SIDECAR-REJECT-c094c7ea",
+        "PROSE-MAY-99c5c95f",
+        "PROSE-MUST-0648388b",
+        "PROSE-MUST-4bfaa766",
+        "PROSE-MUST-56ec7740",
+        "PROSE-MUST-9cd4be04",
+        "SYNC_COMMITTEE_MESSAGE-REJECT-c428cd4e"
+      ],
       "action": {
         "type": "ActResolveSubnets"
       },
@@ -88,6 +136,18 @@
       "to": "SubENRProbe",
       "label": "sub_probe_idle",
       "weight": 2,
+      "spec_refs": [
+        "BEACON_ATTESTATION-REJECT-02f714ed",
+        "BEACON_ATTESTATION_SUBNET_ID-MUST-454af71d",
+        "DATA_COLUMN_SIDECAR-REJECT-459b0d39",
+        "DATA_COLUMN_SIDECAR-REJECT-c094c7ea",
+        "PROSE-MAY-99c5c95f",
+        "PROSE-MUST-0648388b",
+        "PROSE-MUST-4bfaa766",
+        "PROSE-MUST-56ec7740",
+        "PROSE-MUST-9cd4be04",
+        "SYNC_COMMITTEE_MESSAGE-REJECT-c428cd4e"
+      ],
       "action": {
         "type": "ActSleep",
         "timeout_ms": 2000
@@ -111,6 +171,18 @@
       "to": "SubCustodyResolve",
       "label": "sub_verify_syncnets",
       "weight": 5,
+      "spec_refs": [
+        "BEACON_ATTESTATION-REJECT-02f714ed",
+        "BEACON_ATTESTATION_SUBNET_ID-MUST-454af71d",
+        "DATA_COLUMN_SIDECAR-REJECT-459b0d39",
+        "DATA_COLUMN_SIDECAR-REJECT-c094c7ea",
+        "PROSE-MAY-99c5c95f",
+        "PROSE-MUST-0648388b",
+        "PROSE-MUST-4bfaa766",
+        "PROSE-MUST-56ec7740",
+        "PROSE-MUST-9cd4be04",
+        "SYNC_COMMITTEE_MESSAGE-REJECT-c428cd4e"
+      ],
       "action": {
         "type": "ActVerifyENRBehavior",
         "protocol": "syncnets"
@@ -136,6 +208,18 @@
       "label": "sub_resolve_to_custody_inject",
       "weight": 8,
       "condition_desc": "at least one custody subnet resolved",
+      "spec_refs": [
+        "BEACON_ATTESTATION-REJECT-02f714ed",
+        "BEACON_ATTESTATION_SUBNET_ID-MUST-454af71d",
+        "DATA_COLUMN_SIDECAR-REJECT-459b0d39",
+        "DATA_COLUMN_SIDECAR-REJECT-c094c7ea",
+        "PROSE-MAY-99c5c95f",
+        "PROSE-MUST-0648388b",
+        "PROSE-MUST-4bfaa766",
+        "PROSE-MUST-56ec7740",
+        "PROSE-MUST-9cd4be04",
+        "SYNC_COMMITTEE_MESSAGE-REJECT-c428cd4e"
+      ],
       "action": {
         "type": "ActSleep",
         "timeout_ms": 100
@@ -161,6 +245,18 @@
       "label": "sub_resolve_to_noncustody_inject",
       "weight": 6,
       "condition_desc": "at least one non-custody subnet resolved",
+      "spec_refs": [
+        "BEACON_ATTESTATION-REJECT-02f714ed",
+        "BEACON_ATTESTATION_SUBNET_ID-MUST-454af71d",
+        "DATA_COLUMN_SIDECAR-REJECT-459b0d39",
+        "DATA_COLUMN_SIDECAR-REJECT-c094c7ea",
+        "PROSE-MAY-99c5c95f",
+        "PROSE-MUST-0648388b",
+        "PROSE-MUST-4bfaa766",
+        "PROSE-MUST-56ec7740",
+        "PROSE-MUST-9cd4be04",
+        "SYNC_COMMITTEE_MESSAGE-REJECT-c428cd4e"
+      ],
       "action": {
         "type": "ActSleep",
         "timeout_ms": 100
@@ -185,6 +281,18 @@
       "to": "SubCustodyInject",
       "label": "sub_inject_custody_data_column",
       "weight": 10,
+      "spec_refs": [
+        "BEACON_ATTESTATION-REJECT-02f714ed",
+        "BEACON_ATTESTATION_SUBNET_ID-MUST-454af71d",
+        "DATA_COLUMN_SIDECAR-REJECT-459b0d39",
+        "DATA_COLUMN_SIDECAR-REJECT-c094c7ea",
+        "PROSE-MAY-99c5c95f",
+        "PROSE-MUST-0648388b",
+        "PROSE-MUST-4bfaa766",
+        "PROSE-MUST-56ec7740",
+        "PROSE-MUST-9cd4be04",
+        "SYNC_COMMITTEE_MESSAGE-REJECT-c428cd4e"
+      ],
       "action": {
         "type": "ActInjectGossip",
         "payload": {
@@ -200,6 +308,18 @@
       "to": "SubCustodyInject",
       "label": "sub_inject_subscribed_attestation",
       "weight": 8,
+      "spec_refs": [
+        "BEACON_ATTESTATION-REJECT-02f714ed",
+        "BEACON_ATTESTATION_SUBNET_ID-MUST-454af71d",
+        "DATA_COLUMN_SIDECAR-REJECT-459b0d39",
+        "DATA_COLUMN_SIDECAR-REJECT-c094c7ea",
+        "PROSE-MAY-99c5c95f",
+        "PROSE-MUST-0648388b",
+        "PROSE-MUST-4bfaa766",
+        "PROSE-MUST-56ec7740",
+        "PROSE-MUST-9cd4be04",
+        "SYNC_COMMITTEE_MESSAGE-REJECT-c428cd4e"
+      ],
       "action": {
         "type": "ActInjectGossip",
         "payload": {
@@ -215,6 +335,18 @@
       "to": "SubCustodyInject",
       "label": "sub_inject_subscribed_sync",
       "weight": 6,
+      "spec_refs": [
+        "BEACON_ATTESTATION-REJECT-02f714ed",
+        "BEACON_ATTESTATION_SUBNET_ID-MUST-454af71d",
+        "DATA_COLUMN_SIDECAR-REJECT-459b0d39",
+        "DATA_COLUMN_SIDECAR-REJECT-c094c7ea",
+        "PROSE-MAY-99c5c95f",
+        "PROSE-MUST-0648388b",
+        "PROSE-MUST-4bfaa766",
+        "PROSE-MUST-56ec7740",
+        "PROSE-MUST-9cd4be04",
+        "SYNC_COMMITTEE_MESSAGE-REJECT-c428cd4e"
+      ],
       "action": {
         "type": "ActInjectGossip",
         "payload": {
@@ -230,6 +362,18 @@
       "to": "SubCustodyInject",
       "label": "sub_custody_check_connected",
       "weight": 8,
+      "spec_refs": [
+        "BEACON_ATTESTATION-REJECT-02f714ed",
+        "BEACON_ATTESTATION_SUBNET_ID-MUST-454af71d",
+        "DATA_COLUMN_SIDECAR-REJECT-459b0d39",
+        "DATA_COLUMN_SIDECAR-REJECT-c094c7ea",
+        "PROSE-MAY-99c5c95f",
+        "PROSE-MUST-0648388b",
+        "PROSE-MUST-4bfaa766",
+        "PROSE-MUST-56ec7740",
+        "PROSE-MUST-9cd4be04",
+        "SYNC_COMMITTEE_MESSAGE-REJECT-c428cd4e"
+      ],
       "action": {
         "type": "ActCheckConnected",
         "timeout_ms": 200
@@ -240,6 +384,18 @@
       "to": "SubCustodyInject",
       "label": "sub_custody_burst_3",
       "weight": 5,
+      "spec_refs": [
+        "BEACON_ATTESTATION-REJECT-02f714ed",
+        "BEACON_ATTESTATION_SUBNET_ID-MUST-454af71d",
+        "DATA_COLUMN_SIDECAR-REJECT-459b0d39",
+        "DATA_COLUMN_SIDECAR-REJECT-c094c7ea",
+        "PROSE-MAY-99c5c95f",
+        "PROSE-MUST-0648388b",
+        "PROSE-MUST-4bfaa766",
+        "PROSE-MUST-56ec7740",
+        "PROSE-MUST-9cd4be04",
+        "SYNC_COMMITTEE_MESSAGE-REJECT-c428cd4e"
+      ],
       "action": {
         "type": "ActInjectGossip",
         "payload": {
@@ -257,6 +413,18 @@
       "label": "sub_custody_to_noncustody",
       "weight": 8,
       "condition_desc": "at least two custody injections sent",
+      "spec_refs": [
+        "BEACON_ATTESTATION-REJECT-02f714ed",
+        "BEACON_ATTESTATION_SUBNET_ID-MUST-454af71d",
+        "DATA_COLUMN_SIDECAR-REJECT-459b0d39",
+        "DATA_COLUMN_SIDECAR-REJECT-c094c7ea",
+        "PROSE-MAY-99c5c95f",
+        "PROSE-MUST-0648388b",
+        "PROSE-MUST-4bfaa766",
+        "PROSE-MUST-56ec7740",
+        "PROSE-MUST-9cd4be04",
+        "SYNC_COMMITTEE_MESSAGE-REJECT-c428cd4e"
+      ],
       "action": {
         "type": "ActSleep",
         "timeout_ms": 100
@@ -282,6 +450,18 @@
       "label": "sub_custody_to_boundary",
       "weight": 4,
       "condition_desc": "at least one custody injection sent",
+      "spec_refs": [
+        "BEACON_ATTESTATION-REJECT-02f714ed",
+        "BEACON_ATTESTATION_SUBNET_ID-MUST-454af71d",
+        "DATA_COLUMN_SIDECAR-REJECT-459b0d39",
+        "DATA_COLUMN_SIDECAR-REJECT-c094c7ea",
+        "PROSE-MAY-99c5c95f",
+        "PROSE-MUST-0648388b",
+        "PROSE-MUST-4bfaa766",
+        "PROSE-MUST-56ec7740",
+        "PROSE-MUST-9cd4be04",
+        "SYNC_COMMITTEE_MESSAGE-REJECT-c428cd4e"
+      ],
       "action": {
         "type": "ActSleep",
         "timeout_ms": 100
@@ -306,6 +486,18 @@
       "to": "SubDisconnected",
       "label": "sub_custody_detected_disconnect",
       "weight": 3,
+      "spec_refs": [
+        "BEACON_ATTESTATION-REJECT-02f714ed",
+        "BEACON_ATTESTATION_SUBNET_ID-MUST-454af71d",
+        "DATA_COLUMN_SIDECAR-REJECT-459b0d39",
+        "DATA_COLUMN_SIDECAR-REJECT-c094c7ea",
+        "PROSE-MAY-99c5c95f",
+        "PROSE-MUST-0648388b",
+        "PROSE-MUST-4bfaa766",
+        "PROSE-MUST-56ec7740",
+        "PROSE-MUST-9cd4be04",
+        "SYNC_COMMITTEE_MESSAGE-REJECT-c428cd4e"
+      ],
       "action": {
         "type": "ActCheckConnected",
         "timeout_ms": 500
@@ -316,6 +508,18 @@
       "to": "SubNonCustodyInject",
       "label": "sub_inject_noncustody_data_column",
       "weight": 10,
+      "spec_refs": [
+        "BEACON_ATTESTATION-REJECT-02f714ed",
+        "BEACON_ATTESTATION_SUBNET_ID-MUST-454af71d",
+        "DATA_COLUMN_SIDECAR-REJECT-459b0d39",
+        "DATA_COLUMN_SIDECAR-REJECT-c094c7ea",
+        "PROSE-MAY-99c5c95f",
+        "PROSE-MUST-0648388b",
+        "PROSE-MUST-4bfaa766",
+        "PROSE-MUST-56ec7740",
+        "PROSE-MUST-9cd4be04",
+        "SYNC_COMMITTEE_MESSAGE-REJECT-c428cd4e"
+      ],
       "action": {
         "type": "ActInjectGossip",
         "payload": {
@@ -331,6 +535,18 @@
       "to": "SubNonCustodyInject",
       "label": "sub_inject_unsubscribed_attestation",
       "weight": 8,
+      "spec_refs": [
+        "BEACON_ATTESTATION-REJECT-02f714ed",
+        "BEACON_ATTESTATION_SUBNET_ID-MUST-454af71d",
+        "DATA_COLUMN_SIDECAR-REJECT-459b0d39",
+        "DATA_COLUMN_SIDECAR-REJECT-c094c7ea",
+        "PROSE-MAY-99c5c95f",
+        "PROSE-MUST-0648388b",
+        "PROSE-MUST-4bfaa766",
+        "PROSE-MUST-56ec7740",
+        "PROSE-MUST-9cd4be04",
+        "SYNC_COMMITTEE_MESSAGE-REJECT-c428cd4e"
+      ],
       "action": {
         "type": "ActInjectGossip",
         "payload": {
@@ -346,6 +562,18 @@
       "to": "SubNonCustodyInject",
       "label": "sub_inject_unsubscribed_sync",
       "weight": 6,
+      "spec_refs": [
+        "BEACON_ATTESTATION-REJECT-02f714ed",
+        "BEACON_ATTESTATION_SUBNET_ID-MUST-454af71d",
+        "DATA_COLUMN_SIDECAR-REJECT-459b0d39",
+        "DATA_COLUMN_SIDECAR-REJECT-c094c7ea",
+        "PROSE-MAY-99c5c95f",
+        "PROSE-MUST-0648388b",
+        "PROSE-MUST-4bfaa766",
+        "PROSE-MUST-56ec7740",
+        "PROSE-MUST-9cd4be04",
+        "SYNC_COMMITTEE_MESSAGE-REJECT-c428cd4e"
+      ],
       "action": {
         "type": "ActInjectGossip",
         "payload": {
@@ -361,6 +589,18 @@
       "to": "SubNonCustodyInject",
       "label": "sub_noncustody_check_connected",
       "weight": 8,
+      "spec_refs": [
+        "BEACON_ATTESTATION-REJECT-02f714ed",
+        "BEACON_ATTESTATION_SUBNET_ID-MUST-454af71d",
+        "DATA_COLUMN_SIDECAR-REJECT-459b0d39",
+        "DATA_COLUMN_SIDECAR-REJECT-c094c7ea",
+        "PROSE-MAY-99c5c95f",
+        "PROSE-MUST-0648388b",
+        "PROSE-MUST-4bfaa766",
+        "PROSE-MUST-56ec7740",
+        "PROSE-MUST-9cd4be04",
+        "SYNC_COMMITTEE_MESSAGE-REJECT-c428cd4e"
+      ],
       "action": {
         "type": "ActCheckConnected",
         "timeout_ms": 200
@@ -371,6 +611,18 @@
       "to": "SubNonCustodyInject",
       "label": "sub_noncustody_burst_5",
       "weight": 5,
+      "spec_refs": [
+        "BEACON_ATTESTATION-REJECT-02f714ed",
+        "BEACON_ATTESTATION_SUBNET_ID-MUST-454af71d",
+        "DATA_COLUMN_SIDECAR-REJECT-459b0d39",
+        "DATA_COLUMN_SIDECAR-REJECT-c094c7ea",
+        "PROSE-MAY-99c5c95f",
+        "PROSE-MUST-0648388b",
+        "PROSE-MUST-4bfaa766",
+        "PROSE-MUST-56ec7740",
+        "PROSE-MUST-9cd4be04",
+        "SYNC_COMMITTEE_MESSAGE-REJECT-c428cd4e"
+      ],
       "action": {
         "type": "ActInjectGossip",
         "payload": {
@@ -388,6 +640,18 @@
       "label": "sub_noncustody_to_boundary",
       "weight": 6,
       "condition_desc": "at least two non-custody injections sent",
+      "spec_refs": [
+        "BEACON_ATTESTATION-REJECT-02f714ed",
+        "BEACON_ATTESTATION_SUBNET_ID-MUST-454af71d",
+        "DATA_COLUMN_SIDECAR-REJECT-459b0d39",
+        "DATA_COLUMN_SIDECAR-REJECT-c094c7ea",
+        "PROSE-MAY-99c5c95f",
+        "PROSE-MUST-0648388b",
+        "PROSE-MUST-4bfaa766",
+        "PROSE-MUST-56ec7740",
+        "PROSE-MUST-9cd4be04",
+        "SYNC_COMMITTEE_MESSAGE-REJECT-c428cd4e"
+      ],
       "action": {
         "type": "ActSleep",
         "timeout_ms": 100
@@ -412,6 +676,18 @@
       "to": "SubDisconnected",
       "label": "sub_noncustody_detected_disconnect",
       "weight": 3,
+      "spec_refs": [
+        "BEACON_ATTESTATION-REJECT-02f714ed",
+        "BEACON_ATTESTATION_SUBNET_ID-MUST-454af71d",
+        "DATA_COLUMN_SIDECAR-REJECT-459b0d39",
+        "DATA_COLUMN_SIDECAR-REJECT-c094c7ea",
+        "PROSE-MAY-99c5c95f",
+        "PROSE-MUST-0648388b",
+        "PROSE-MUST-4bfaa766",
+        "PROSE-MUST-56ec7740",
+        "PROSE-MUST-9cd4be04",
+        "SYNC_COMMITTEE_MESSAGE-REJECT-c428cd4e"
+      ],
       "action": {
         "type": "ActCheckConnected",
         "timeout_ms": 500
@@ -510,6 +786,18 @@
       "to": "SubBoundaryInject",
       "label": "sub_inject_cross_type",
       "weight": 6,
+      "spec_refs": [
+        "BEACON_ATTESTATION-REJECT-02f714ed",
+        "BEACON_ATTESTATION_SUBNET_ID-MUST-454af71d",
+        "DATA_COLUMN_SIDECAR-REJECT-459b0d39",
+        "DATA_COLUMN_SIDECAR-REJECT-c094c7ea",
+        "PROSE-MAY-99c5c95f",
+        "PROSE-MUST-0648388b",
+        "PROSE-MUST-4bfaa766",
+        "PROSE-MUST-56ec7740",
+        "PROSE-MUST-9cd4be04",
+        "SYNC_COMMITTEE_MESSAGE-REJECT-c428cd4e"
+      ],
       "action": {
         "type": "ActInjectGossip",
         "payload": {
@@ -525,6 +813,18 @@
       "to": "SubBoundaryInject",
       "label": "sub_boundary_check_connected",
       "weight": 7,
+      "spec_refs": [
+        "BEACON_ATTESTATION-REJECT-02f714ed",
+        "BEACON_ATTESTATION_SUBNET_ID-MUST-454af71d",
+        "DATA_COLUMN_SIDECAR-REJECT-459b0d39",
+        "DATA_COLUMN_SIDECAR-REJECT-c094c7ea",
+        "PROSE-MAY-99c5c95f",
+        "PROSE-MUST-0648388b",
+        "PROSE-MUST-4bfaa766",
+        "PROSE-MUST-56ec7740",
+        "PROSE-MUST-9cd4be04",
+        "SYNC_COMMITTEE_MESSAGE-REJECT-c428cd4e"
+      ],
       "action": {
         "type": "ActCheckConnected",
         "timeout_ms": 500
@@ -535,6 +835,18 @@
       "to": "SubDisconnected",
       "label": "sub_boundary_detected_disconnect",
       "weight": 4,
+      "spec_refs": [
+        "BEACON_ATTESTATION-REJECT-02f714ed",
+        "BEACON_ATTESTATION_SUBNET_ID-MUST-454af71d",
+        "DATA_COLUMN_SIDECAR-REJECT-459b0d39",
+        "DATA_COLUMN_SIDECAR-REJECT-c094c7ea",
+        "PROSE-MAY-99c5c95f",
+        "PROSE-MUST-0648388b",
+        "PROSE-MUST-4bfaa766",
+        "PROSE-MUST-56ec7740",
+        "PROSE-MUST-9cd4be04",
+        "SYNC_COMMITTEE_MESSAGE-REJECT-c428cd4e"
+      ],
       "action": {
         "type": "ActCheckConnected",
         "timeout_ms": 1000
@@ -545,6 +857,18 @@
       "to": "SubENRProbe",
       "label": "sub_reconnect_full",
       "weight": 10,
+      "spec_refs": [
+        "BEACON_ATTESTATION-REJECT-02f714ed",
+        "BEACON_ATTESTATION_SUBNET_ID-MUST-454af71d",
+        "DATA_COLUMN_SIDECAR-REJECT-459b0d39",
+        "DATA_COLUMN_SIDECAR-REJECT-c094c7ea",
+        "PROSE-MAY-99c5c95f",
+        "PROSE-MUST-0648388b",
+        "PROSE-MUST-4bfaa766",
+        "PROSE-MUST-56ec7740",
+        "PROSE-MUST-9cd4be04",
+        "SYNC_COMMITTEE_MESSAGE-REJECT-c428cd4e"
+      ],
       "action": {
         "type": "ActReconnect",
         "timeout_ms": 15000
@@ -555,6 +879,18 @@
       "to": "SubCompleted",
       "label": "sub_end_after_disconnect",
       "weight": 5,
+      "spec_refs": [
+        "BEACON_ATTESTATION-REJECT-02f714ed",
+        "BEACON_ATTESTATION_SUBNET_ID-MUST-454af71d",
+        "DATA_COLUMN_SIDECAR-REJECT-459b0d39",
+        "DATA_COLUMN_SIDECAR-REJECT-c094c7ea",
+        "PROSE-MAY-99c5c95f",
+        "PROSE-MUST-0648388b",
+        "PROSE-MUST-4bfaa766",
+        "PROSE-MUST-56ec7740",
+        "PROSE-MUST-9cd4be04",
+        "SYNC_COMMITTEE_MESSAGE-REJECT-c428cd4e"
+      ],
       "action": {
         "type": "ActSleep",
         "timeout_ms": 100
@@ -565,6 +901,18 @@
       "to": "SubENRProbe",
       "label": "sub_wait_reconnect",
       "weight": 3,
+      "spec_refs": [
+        "BEACON_ATTESTATION-REJECT-02f714ed",
+        "BEACON_ATTESTATION_SUBNET_ID-MUST-454af71d",
+        "DATA_COLUMN_SIDECAR-REJECT-459b0d39",
+        "DATA_COLUMN_SIDECAR-REJECT-c094c7ea",
+        "PROSE-MAY-99c5c95f",
+        "PROSE-MUST-0648388b",
+        "PROSE-MUST-4bfaa766",
+        "PROSE-MUST-56ec7740",
+        "PROSE-MUST-9cd4be04",
+        "SYNC_COMMITTEE_MESSAGE-REJECT-c428cd4e"
+      ],
       "action": {
         "type": "ActSleep",
         "timeout_ms": 5000

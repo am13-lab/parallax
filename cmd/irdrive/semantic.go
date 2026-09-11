@@ -146,6 +146,10 @@ func deriveSemantic(path string, d *derivation, edgeIdx map[string][]astEdge, le
 			}
 		}
 
+		// Probes copied from the template carry no spec rule references;
+		// backfill them with the machine's rule set now that the bound
+		// transitions are in place.
+		inheritMachineRuleSet(m.Transitions)
 		out.Machines = append(out.Machines, m)
 		out.Files[m.Name] = mt.File
 		out.Report.ByMachine[m.Name] = semanticMachineReport{
@@ -432,6 +436,13 @@ func semanticTransitionFromPlan(mt semanticMachineTemplate, b semanticBindingTem
 	} else {
 		tr.SpecRefs = append([]string(nil), tr.SpecRefs...)
 	}
+	// Probes without a rule binding inherit the machine's full rule set:
+	// they exercise the *composition* of the rules this machine covers, so
+	// the report anchors them to that rule group instead of showing no
+	// spec match at all.
+	if len(tr.SpecRefs) == 0 || (len(tr.SpecRefs) == 1 && tr.SpecRefs[0] == "") {
+		tr.SpecRefs = machineRuleSet(mt)
+	}
 	tr.Tags = append(append([]string(nil), tr.Tags...), "semantic:"+mt.Name, "binding:"+b.ID)
 	tr.Tags = append(tr.Tags, b.Tags...)
 	if overrideFrom != "" {
@@ -444,6 +455,47 @@ func semanticTransitionFromPlan(mt semanticMachineTemplate, b semanticBindingTem
 		tr.Oracle = b.Oracle
 	}
 	return tr
+}
+
+// inheritMachineRuleSet backfills transitions that carry no spec rule
+// references with the machine's full rule set (sorted, deduplicated):
+// probe-style transitions exercise the composition of the rules the
+// machine covers, so the report anchors them to that rule group.
+func inheritMachineRuleSet(transitions []irTransition) {
+	var rules []string
+	seen := map[string]bool{}
+	for _, tr := range transitions {
+		for _, r := range tr.SpecRefs {
+			if r != "" && !seen[r] {
+				seen[r] = true
+				rules = append(rules, r)
+			}
+		}
+	}
+	sort.Strings(rules)
+	for i := range transitions {
+		n := len(transitions[i].SpecRefs)
+		empty := n == 0 || (n == 1 && transitions[i].SpecRefs[0] == "")
+		if empty {
+			transitions[i].SpecRefs = append([]string(nil), rules...)
+		}
+	}
+}
+
+// machineRuleSet collects the deduplicated, sorted rule references of a
+// semantic machine's base transitions.
+func machineRuleSet(mt semanticMachineTemplate) []string {
+	seen, out := map[string]bool{}, []string{}
+	for _, tr := range mt.Transitions {
+		for _, r := range tr.SpecRefs {
+			if r != "" && !seen[r] {
+				seen[r] = true
+				out = append(out, r)
+			}
+		}
+	}
+	sort.Strings(out)
+	return out
 }
 
 func semanticLabel(b semanticBindingTemplate, p executionPlan) string {
