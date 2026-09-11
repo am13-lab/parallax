@@ -136,8 +136,6 @@ go run ./cmd/smgen -generate-sequences knowledge/ir/sequence_tests_generated.jso
 typed method definitions and refreshes protocol availability from the spec.
 
 ### 5. Utilities
-||||||| 17d8d80
-## Commands
 
 ```bash
 # show the case registry

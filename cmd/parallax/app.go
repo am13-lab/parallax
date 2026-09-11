@@ -9,6 +9,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"syscall"
 	"time"
@@ -19,6 +20,7 @@ import (
 	"parallax/env/hiveenv"
 	"parallax/env/kurtosisenv"
 	"parallax/env/staticenv"
+	"parallax/knowledge"
 	"parallax/report"
 	"parallax/runner"
 )
@@ -378,6 +380,9 @@ func writeOutputs(outputDir string, rep *runner.Report) error {
 	if err := os.WriteFile(outputDir+"/junit.xml", junit, 0o644); err != nil {
 		return err
 	}
+	if err := report.ArchiveRun(rep); err != nil {
+		fmt.Fprintf(os.Stderr, "warn: archive run: %v\n", err)
+	}
 	return nil
 }
 
@@ -392,11 +397,90 @@ func printSummary(w io.Writer, rep *runner.Report) {
 	}
 }
 
+// loadRuleTexts resolves every spec rule id referenced by the report or the
+// embedded history runs to its catalog text. Unknown ids (e.g. family tags
+// like "reqresp:sequence-semantics") are absent and render as plain ids.
+func loadRuleInfo(rep *runner.Report, runs []report.RunPayload) (map[string]string, map[string]string) {
+	ids := map[string]bool{}
+	collect := func(list []string) {
+		for _, id := range list {
+			ids[id] = true
+		}
+	}
+	for _, r := range rep.Results {
+		collect(r.SpecRuleIDs)
+		for _, d := range r.Divergences {
+			collect(d.SpecRuleIDs)
+		}
+	}
+	for _, run := range runs {
+		var hist runner.Report
+		if len(run.Report) == 0 || json.Unmarshal(run.Report, &hist) != nil {
+			continue
+		}
+		for _, r := range hist.Results {
+			collect(r.SpecRuleIDs)
+			for _, d := range r.Divergences {
+				collect(d.SpecRuleIDs)
+			}
+		}
+	}
+	if len(ids) == 0 {
+		return nil, nil
+	}
+	kb, err := knowledge.Load("knowledge")
+	if err != nil {
+		return nil, nil
+	}
+	raw, rawErr := kb.RawRules()
+	out := map[string]string{}
+	links := map[string]string{}
+	for id := range ids {
+		if rawErr == nil {
+			if rr, ok := raw[id]; ok {
+				txt := rr.RawText
+				src := rr.Source.Fork
+				if rr.Source.File != "" {
+					src += " · " + filepath.Base(rr.Source.File) + ":" + fmt.Sprint(rr.Source.Line)
+				}
+				if txt != "" {
+					txt += "\n"
+				}
+				txt += "source: " + src
+				out[id] = txt
+				if u := consensusSpecsURL(rr.Source.File, rr.Source.Line); u != "" {
+					links[id] = u
+				}
+				continue
+			}
+		}
+		for _, e := range kb.SpecRules() {
+			if e.ID == id {
+				out[id] = e.Text
+				break
+			}
+		}
+	}
+	return out, links
+}
+
+// consensusSpecsURL maps a checked-out consensus-specs file path back to its
+// GitHub source location, so reports can link the original spec text.
+func consensusSpecsURL(file string, line int) string {
+	i := strings.Index(file, "consensus-specs/")
+	if i < 0 {
+		return ""
+	}
+	return "https://github.com/ethereum/consensus-specs/blob/master/" +
+		file[i+len("consensus-specs/"):] + "?plain=1#L" + strconv.Itoa(line)
+}
+
 // AnalyzeConfig carries the `analyze` subcommand options.
 type AnalyzeConfig struct {
 	ReportPath    string
 	AllowlistPath string
 	Legacy        bool
+	HTML          bool
 	JUnitOut      string
 }
 
@@ -445,6 +529,27 @@ func runAnalyze(cfg AnalyzeConfig, stdout io.Writer) error {
 			return err
 		}
 		fmt.Fprintf(stdout, "junit report: %s\n", cfg.JUnitOut)
+	}
+
+	if cfg.HTML {
+		historyDir, err := report.HistoryDir()
+		if err != nil {
+			historyDir = ""
+		}
+		runs, err := report.CollectRuns(&rep, findings, historyDir, 20)
+		if err != nil {
+			return fmt.Errorf("collect history: %w", err)
+		}
+		ruleTexts, ruleLinks := loadRuleInfo(&rep, runs)
+		htmlData, err := report.WriteHTMLRuns(runs, 0, ruleTexts, ruleLinks)
+		if err != nil {
+			return fmt.Errorf("render html: %w", err)
+		}
+		htmlPath := strings.TrimSuffix(cfg.ReportPath, ".json") + ".html"
+		if err := os.WriteFile(htmlPath, htmlData, 0o644); err != nil {
+			return err
+		}
+		fmt.Fprintf(stdout, "html report: %s (%d runs)\n", htmlPath, len(runs))
 	}
 
 	if cfg.JUnitOut != "" {

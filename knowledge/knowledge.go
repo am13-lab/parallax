@@ -133,6 +133,45 @@ func (k *KB) Resolve(id string) (Entry, bool) {
 	return Entry{}, false
 }
 
+// RawRule is the pre-formalization record of one spec rule: the original
+// prose and where in the consensus specs it came from.
+type RawRule struct {
+	ID      string `json:"id"`
+	RawText string `json:"raw_text"`
+	Source  struct {
+		Fork   string `json:"fork"`
+		File   string `json:"file"`
+		Line   int    `json:"line"`
+		Anchor string `json:"anchor"`
+	} `json:"source"`
+}
+
+// RawRules loads rule_ast.json and indexes the original spec prose by rule
+// id. The AST groups rules by extractor, so every list in the document is
+// flattened.
+func (k *KB) RawRules() (map[string]RawRule, error) {
+	path := filepath.Join(k.specDir, "rule_ast.json")
+	raw, err := os.ReadFile(path)
+	if err != nil {
+		return nil, err
+	}
+	var doc map[string]json.RawMessage
+	if err := json.Unmarshal(raw, &doc); err != nil {
+		return nil, err
+	}
+	out := map[string]RawRule{}
+	for _, list := range doc {
+		var rules []RawRule
+		if err := json.Unmarshal(list, &rules); err != nil {
+			continue
+		}
+		for _, r := range rules {
+			out[r.ID] = r
+		}
+	}
+	return out, nil
+}
+
 // SpecRules returns every cataloged spec rule.
 func (k *KB) SpecRules() []SpecEntry {
 	out := make([]SpecEntry, 0, len(k.spec))
