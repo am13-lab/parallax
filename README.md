@@ -21,6 +21,65 @@ worked recipe for adding more tests. Summary:
 - every layer is tested without a live devnet through an in-process fake
   beacon node (testnode) and fake backend servers
 
+## Running tests
+
+Two live backends share the same case set, differential engine, and report
+formats. Pick one per run with `-env`:
+
+| | `-env hive` | `-env kurtosis` |
+|---|---|---|
+| Orchestration | docker direct (env/hiveenv) | ethereum-package (starlark) |
+| Provisioning files | generated into `<out>/gen/`, auditable | managed by ethereum-package |
+| Dependencies | docker CLI only | kurtosis engine + package cache |
+| Best for | fast iteration, supply-chain-visible runs | full devnet service shape |
+
+Both paths auto-clean leftovers of the same enclave name before starting.
+
+**Clients**: hive selects and launches them with
+`-hive-clients "lighthouse,teku,prysm,nimbus,lodestar,grandine"` (any
+subset). kurtosis launches whatever `participants` the args file lists
+(see `configs/net-*.yaml`); `-clients` then filters who participates in
+the comparison.
+
+**Test tiers** (`-suite`, default `quick`):
+
+| tier | cases | what | 6-client duration |
+|---|---|---|---|
+| `quick` | 36 | representative cases per family and input class | ~4 min |
+| `standard` | 215 | hand-written families, IR-generated excluded | ~40 min |
+| `full` | 628 | everything including IR-generated | ~2 h |
+
+```bash
+# quick tier against six clients on the hive path (about 4 minutes)
+go run ./cmd/parallax run -env hive -enclave hivesmoke \
+    -hive-clients "lighthouse,teku,prysm,nimbus,lodestar,grandine" \
+    -out results/hive-quick
+
+# standard tier via ethereum-package
+go run ./cmd/parallax run -env kurtosis -enclave parallax \
+    -args-file configs/net-geth6.yaml -suite standard \
+    -out results/kurtosis-standard
+
+# full tier adds the IR-generated cases; heavy families run last
+go run ./cmd/parallax run -env hive -enclave hivesmoke \
+    -hive-clients "lighthouse,teku,prysm,nimbus,lodestar,grandine" \
+    -suite full -out results/hive-full
+```
+
+The hive path needs its provisioning generator built once:
+
+```bash
+(cd hive-sim && go build -o ../dist/hivegen ./cmd/hivegen)
+```
+
+Provisioning older than an hour is regenerated automatically (beacon
+clients reject aged-out genesis states). Analyze a finished batch with:
+
+```bash
+go run ./cmd/parallax analyze --report results/hive-quick/report.json \
+    --allowlist knowledge/known_divergences.json --junit-out results/hive-quick/junit.xml
+```
+
 ## Commands
 
 Regenerate the spec-derived test cases end to end (knowledge artifacts, IR
