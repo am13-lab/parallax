@@ -17,3 +17,9 @@
 /irdrive
 /smgen
 /specgen
+
+# local build artifacts
+parallax
+simulation
+specchain
+hive-sim/hivegen
