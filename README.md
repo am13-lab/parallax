@@ -93,19 +93,7 @@ go run ./cmd/parallax run -regen \
     -out results/quick
 ```
 
-`make` wraps everything: spec-case regeneration when absent, build, and a
-live tier run on the hive path.
-
-```bash
-make quick       # 36-case sanity tier (about 4 min with 6 clients)
-make standard    # 215 hand-written cases
-make full        # all 628 cases including IR-generated (about 1.5-2 h)
-make regenerate  # force spec -> knowledge -> cases regeneration
-```
-
-Overrides: `SPECS_DIR` (consensus-specs checkout), `ENCLAVE`,
-`HIVE_CLIENTS`, `PARALLAX_ENV=kurtosis` plus `ARGS_FILE` to switch
-backend, e.g. `make standard PARALLAX_ENV=kurtosis ARGS_FILE=configs/net-geth6.yaml`.
+Tier is chosen with `-suite` (`quick` default | `standard` | `full`).
 
 ## Commands
 
