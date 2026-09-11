@@ -15,15 +15,31 @@ playbook: the verdict model, how the seed cases were constructed, and a
 worked recipe for adding more tests. Summary:
 
 - one core engine: wire codecs, libp2p probe, beacon API client, client
-  adapter, sequential runner, report writers (JSON plus JUnit)
+  adapter, differential runner, report writers (JSON plus JUnit)
 - three interchangeable environments: static endpoint list, kurtosis
-  (ethereum-package), and an ethereum/hive simulator
+  (ethereum-package), and a direct-docker hive provider
 - every layer is tested without a live devnet through an in-process fake
   beacon node (testnode) and fake backend servers
 
-## Running tests
+## Usage
 
-Two live backends share the same case set, differential engine, and report
+### 1. One-shot full pipeline
+
+Regenerates the spec-derived cases from a consensus-specs checkout,
+rebuilds the binary, and hands over to the run. Requires the source tree
+and the go toolchain:
+
+```bash
+go run ./cmd/parallax run -regen \
+    -specs-dir /path/to/consensus-specs/specs \
+    -env hive -enclave hivesmoke \
+    -hive-clients "lighthouse,teku,prysm,nimbus,lodestar,grandine" \
+    -out results/quick
+```
+
+### 2. Run differential tests
+
+Two live backends share the case set, differential engine, and report
 formats. Pick one per run with `-env`:
 
 | | `-env hive` | `-env kurtosis` |
@@ -47,10 +63,10 @@ the comparison.
 |---|---|---|---|
 | `quick` | 36 | representative cases per family and input class | ~4 min |
 | `standard` | 215 | hand-written families, IR-generated excluded | ~40 min |
-| `full` | 628 | everything including IR-generated | ~2 h |
+| `full` | 606+ | everything including IR-generated, heavy families last | ~1.5 h |
 
 ```bash
-# quick tier against six clients on the hive path (about 4 minutes)
+# quick tier against six clients on the hive path
 go run ./cmd/parallax run -env hive -enclave hivesmoke \
     -hive-clients "lighthouse,teku,prysm,nimbus,lodestar,grandine" \
     -out results/hive-quick
@@ -60,48 +76,27 @@ go run ./cmd/parallax run -env kurtosis -enclave parallax \
     -args-file configs/net-geth6.yaml -suite standard \
     -out results/kurtosis-standard
 
-# full tier adds the IR-generated cases; heavy families run last
-go run ./cmd/parallax run -env hive -enclave hivesmoke \
-    -hive-clients "lighthouse,teku,prysm,nimbus,lodestar,grandine" \
-    -suite full -out results/hive-full
+# static: attach to already-running nodes (previous tool's clients.yaml)
+go run ./cmd/parallax run --env static --config clients.yaml \
+    --category reqresp --seed 42 --out results/
 ```
 
-The hive path needs its provisioning generator built once:
-
-```bash
-(cd hive-sim && go build -o ../dist/hivegen ./cmd/hivegen)
-```
-
-Provisioning older than an hour is regenerated automatically (beacon
-clients reject aged-out genesis states). Analyze a finished batch with:
+### 3. Analyze a report
 
 ```bash
 go run ./cmd/parallax analyze --report results/hive-quick/report.json \
-    --allowlist knowledge/known_divergences.json --junit-out results/hive-quick/junit.xml
+    --allowlist knowledge/known_divergences.json \
+    --junit-out results/hive-quick/junit.xml --legacy
 ```
 
-## One-shot runs
+Outputs: `report.json` (canonical v1 schema), `junit.xml` (CI
+integration), and the previous tool's report shape with `--legacy` for
+existing triage scripts.
 
-CLI one-shot (regenerates spec cases, rebuilds, then runs — requires the
-source tree and the go toolchain):
+### 4. Spec-to-cases generation
 
-```bash
-go run ./cmd/parallax run -regen \
-    -specs-dir /path/to/consensus-specs/specs \
-    -env hive -enclave hivesmoke \
-    -hive-clients "lighthouse,teku,prysm,nimbus,lodestar,grandine" \
-    -out results/quick
-```
-
-Tier is chosen with `-suite` (`quick` default | `standard` | `full`).
-
-## Commands
-
-Regenerate the spec-derived test cases end to end (knowledge artifacts, IR
-plans, and runner.Spec cases) from a consensus-specs checkout:
-
-`specchain` drives the pipeline either one-shot or staged — each stage
-leaves inspectable artifacts (`knowledge/`, generated case files):
+`specchain` drives the pipeline one-shot or staged — each stage leaves
+inspectable artifacts (`knowledge/`, generated case files):
 
 ```bash
 # one-shot: every stage in order
@@ -116,7 +111,7 @@ go run ./cmd/specchain cases
 go run ./cmd/specchain status
 ```
 
-Each stage can also run on its own for partial regeneration:
+Each stage is also a standalone command for partial regeneration:
 
 ```bash
 # knowledge artifacts only
@@ -136,31 +131,13 @@ go run ./cmd/smgen -generate-sequences knowledge/ir/sequence_tests_generated.jso
 `knowledge/spec/protocol_model.json`. The protocol model keeps its existing
 typed method definitions and refreshes protocol availability from the spec.
 
+### 5. Utilities
+
 ```bash
 # show the case registry
 go run ./cmd/parallax list
 
-# attach to running nodes (previous tool's clients.yaml format)
-go run ./cmd/parallax run --env static --config clients.yaml \
-    --category reqresp --seed 42 --out results/
-
-# provision a devnet via ethereum-package, then test it
-go run ./cmd/parallax run --env kurtosis --enclave p2p-test \
-    --args-file configs/net.yaml
-
-# analyze a saved report, apply the known-divergence allowlist,
-# and emit the previous tool's report shape for existing triage scripts
-go run ./cmd/parallax analyze --report results/report.json \
-    --allowlist known_divergences.json --legacy
-```
-
-Outputs: `results/report.json` (canonical v1 schema) and
-`results/junit.xml` (CI integration).
-
-No devnet available? Run the full seed set against scripted fake nodes to
-see the pipeline produce real artifacts:
-
-```bash
+# no devnet? run the seed set against scripted fake nodes
 go run ./cmd/simulation --out results/demo
 ```
 
