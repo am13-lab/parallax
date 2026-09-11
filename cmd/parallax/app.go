@@ -180,15 +180,31 @@ func splitComma(s string) []string {
 	return out
 }
 
-// hiveGenFilesPresent reports whether the hivegen output dir already
-// carries a complete provisioning set.
-func hiveGenFilesPresent(dir string) bool {
+// hiveGenFresh reports whether the hivegen output dir carries a complete
+// provisioning set whose genesis is recent enough for CL clients to boot:
+// lighthouse rejects genesis states outside the weak subjectivity period,
+// which for a small validator set is a matter of hours.
+func hiveGenFresh(dir string) bool {
 	for _, f := range []string{"genesis.json", "genesis.ssz", "config.yaml"} {
 		if _, err := os.Stat(filepath.Join(dir, f)); err != nil {
 			return false
 		}
 	}
-	return true
+	data, err := os.ReadFile(filepath.Join(dir, "genesis.json"))
+	if err != nil {
+		return false
+	}
+	var g struct {
+		Timestamp string `json:"timestamp"`
+	}
+	if json.Unmarshal(data, &g) != nil {
+		return false
+	}
+	var ts int64
+	if _, err := fmt.Sscanf(g.Timestamp, "0x%x", &ts); err != nil {
+		_, _ = fmt.Sscanf(g.Timestamp, "%d", &ts)
+	}
+	return ts > 0 && time.Since(time.Unix(ts, 0)) < time.Hour
 }
 
 func setupEnv(ctx context.Context, cfg RunConfig) (env.Environment, []env.Endpoint, error) {
@@ -225,7 +241,7 @@ func setupEnv(ctx context.Context, cfg RunConfig) (env.Environment, []env.Endpoi
 			// output dir so they are archived with the report.
 			genDir = filepath.Join(cfg.OutputDir, "gen")
 		}
-		if !hiveGenFilesPresent(genDir) {
+		if !hiveGenFresh(genDir) {
 			bin := cfg.HivegenBin
 			if bin == "" {
 				bin = "dist/hivegen"
