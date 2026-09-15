@@ -38,6 +38,17 @@ func TestParseRunArgsDefaults(t *testing.T) {
 	if cfg.Env != "static" || cfg.Seed != 42 || cfg.Preset != "mainnet" {
 		t.Fatalf("defaults: %+v", cfg)
 	}
+	// Simplified-run defaults: hive is one flag away from a full run.
+	if cfg.Enclave != "parallax" {
+		t.Fatalf("enclave default: %q", cfg.Enclave)
+	}
+	if cfg.SpecsDir != "" {
+		t.Fatalf("specs-dir default must be empty (auto-resolved), got %q", cfg.SpecsDir)
+	}
+	wantClients := "lighthouse,teku,prysm,nimbus,lodestar,grandine"
+	if cfg.HiveClientList != wantClients {
+		t.Fatalf("hive-clients default: %q", cfg.HiveClientList)
+	}
 
 	fs = flag.NewFlagSet("run", flag.ContinueOnError)
 	cfg = RunConfig{}

@@ -55,7 +55,7 @@ commands:
                      -attach                    kurtosis: attach, skip provisioning
                      -hive-clients A,B,...      hive: CL client types (all six)
                      -suite quick|standard|full test tier (quick)
-                     -regen                     regenerate spec cases, rebuild, run
+                     -regen                     regenerate spec cases, rebuild, run (also auto when stale)
                      -test ID1,ID2              exact case IDs
                      -category CAT1,CAT2        case categories
                      -seed N                    shuffle seed (42)
