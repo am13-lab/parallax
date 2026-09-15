@@ -1,15 +1,15 @@
 participants:
-  - el_type: geth
+  - el_type: erigon
     cl_type: lighthouse
-  - el_type: geth
+  - el_type: erigon
     cl_type: prysm
-  - el_type: geth
+  - el_type: erigon
     cl_type: teku
-  - el_type: geth
+  - el_type: erigon
     cl_type: nimbus
-  - el_type: geth
+  - el_type: erigon
     cl_type: lodestar
-  - el_type: geth
+  - el_type: erigon
     cl_type: grandine
   # Erigon embeds its own CL (Caplin): one participant = erigon EL + caplin CL.
   - el_type: erigon
