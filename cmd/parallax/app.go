@@ -131,11 +131,12 @@ func casesStale(root string) bool {
 			genNewest = info.ModTime()
 		}
 	}
-	// Compare at second granularity: a fresh git checkout gives every
-	// file near-identical mtimes, and nanosecond jitter between the
-	// knowledge/ and cases/ trees would flag a pristine clone as stale
-	// forever.
-	return genNewest.Truncate(time.Second).Before(newest(filepath.Join("knowledge", "spec")).Truncate(time.Second))
+	// Tolerance window: a fresh git checkout gives every file
+	// near-identical mtimes, and sub-second jitter between the
+	// knowledge/ and cases/ trees must not flag a pristine clone as
+	// stale. Real regeneration always moves knowledge/ by more than
+	// this margin.
+	return newest(filepath.Join("knowledge", "spec")).Sub(genNewest) > time.Second
 }
 
 // regenAndExec runs the spec pipeline, rebuilds the binary and hands the
