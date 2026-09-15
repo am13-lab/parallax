@@ -221,3 +221,19 @@ func TestSetupFailsFastOnMissingImages(t *testing.T) {
 		t.Fatalf("missing images must fail fast with the build hint: %v", err)
 	}
 }
+
+// TestHiveImageRepo pins the registry-distribution naming: with ImageRepo
+// set, every image resolves under that repo (others then get it via
+// docker run's automatic pull); without it, the local build names are
+// kept unchanged.
+func TestHiveImageRepo(t *testing.T) {
+	if got := hiveImage("", "hive/clients/go-ethereum"); got != "hive/clients/go-ethereum" {
+		t.Fatalf("empty repo must keep local name: %q", got)
+	}
+	if got := hiveImage("", "hive/clients/lighthouse-bn:local"); got != "hive/clients/lighthouse-bn:local" {
+		t.Fatalf("empty repo must keep local name: %q", got)
+	}
+	if got := hiveImage("ghcr.io/am13-lab/hive-clients", "hive/clients/lighthouse-bn:local"); got != "ghcr.io/am13-lab/hive-clients/lighthouse-bn:local" {
+		t.Fatalf("repo prefix: %q", got)
+	}
+}

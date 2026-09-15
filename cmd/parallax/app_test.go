@@ -49,6 +49,9 @@ func TestParseRunArgsDefaults(t *testing.T) {
 	if cfg.HiveClientList != wantClients {
 		t.Fatalf("hive-clients default: %q", cfg.HiveClientList)
 	}
+	if cfg.HiveImageRepo != "docker.io/am13lab" {
+		t.Fatalf("hive-image-repo default: %q", cfg.HiveImageRepo)
+	}
 
 	fs = flag.NewFlagSet("run", flag.ContinueOnError)
 	cfg = RunConfig{}

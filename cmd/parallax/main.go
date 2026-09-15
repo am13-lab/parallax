@@ -54,6 +54,7 @@ commands:
                      -args-file FILE            kurtosis: ethereum-package args
                      -attach                    kurtosis: attach, skip provisioning
                      -hive-clients A,B,...      hive: CL client types (all six)
+                     -hive-image-repo REPO      hive: image repo (docker.io/am13lab; 'local' = locally built)
                      -suite quick|standard|full test tier (quick)
                      -regen                     regenerate spec cases, rebuild, run (also auto when stale)
                      -test ID1,ID2              exact case IDs

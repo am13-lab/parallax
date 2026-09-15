@@ -32,10 +32,13 @@ gitignored, so build it once:
 mkdir -p dist && (cd hive-sim && go build -o ../dist/hivegen ./cmd/hivegen)
 ```
 
-It also needs the `hive/clients/*` docker images, which cannot be pulled:
-build them from the ethpandaops hive fork once (several GB) with
-`scripts/build-hive-images.sh`, and make sure docker points at the same
-daemon where they were built.
+The `hive/clients/*` docker images are pulled automatically from Docker
+Hub (`docker.io/am13lab`) — no manual build needed.
+
+Maintainers publishing or refreshing those images: build locally with
+`scripts/build-hive-images.sh`, then push with
+`scripts/push-hive-images.sh` (requires `docker login`). To test against
+locally built images instead of the hub, pass `-hive-image-repo local`.
 
 ## Usage
 

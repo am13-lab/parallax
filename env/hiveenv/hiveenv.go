@@ -31,6 +31,10 @@ type Config struct {
 	// ClientTypes lists the CL clients to launch. Every entry must have a
 	// definition in clientDefs.
 	ClientTypes []string
+	// ImageRepo is the docker registry namespace images resolve under
+	// (e.g. docker.io/am13lab). Empty means the local build names
+	// (hive/clients/...), which must already exist in the daemon.
+	ImageRepo string
 }
 
 // clientDef is one CL client's launch profile: image (built from the hive
@@ -80,6 +84,17 @@ var vcDefs = map[string]vcDef{
 	// the six-client hive run of 2026-09-11 (full standard tier, all 215
 	// cases executed with grandine participating).
 	"grandine": {image: "hive/clients/lighthouse-vc:local", apiPort: "4000", script: "/lighthouse_vc.sh"},
+}
+
+// hiveImage resolves a local build name against an optional registry
+// repository: with ImageRepo set (e.g. ghcr.io/org/hive-clients) images
+// come from there — docker run pulls them automatically — while an empty
+// repo keeps the local build names.
+func hiveImage(repo, local string) string {
+	if repo == "" {
+		return local
+	}
+	return repo + "/" + strings.TrimPrefix(local, "hive/clients/")
 }
 
 // EL image and ports: the geth hive client, with authrpc on 8551 (the
@@ -198,17 +213,17 @@ func (p *Provider) Setup(ctx context.Context, cfg any) (env.Environment, error) 
 	if runner == nil {
 		runner = dockerCLI{}
 	}
+	repo := hcfg.ImageRepo
 
-	// Pre-flight: every image below must already exist in the local
-	// docker daemon. They cannot be pulled — they are built from the
-	// ethpandaops hive fork (scripts/build-hive-images.sh) — so a missing
-	// image must abort here with the build hint instead of surfacing as a
-	// confusing registry pull error mid-orchestration. Also remember that
-	// docker has to point at the daemon where the images were built
-	// (DOCKER_HOST / docker context).
-	required := []string{elImage}
+	// Image resolution + pre-flight. With ImageRepo empty the images are
+	// local builds and must already exist — they cannot be pulled — so a
+	// missing one aborts here with the build hint. With ImageRepo set the
+	// names live under that repository and missing ones are pulled on the
+	// spot (docker run would pull them anyway; doing it up front gives
+	// visible progress and clearer errors).
+	required := []string{hiveImage(repo, elImage)}
 	for _, ct := range hcfg.ClientTypes {
-		required = append(required, clientDefs[ct].image, vcDefs[ct].image)
+		required = append(required, hiveImage(repo, clientDefs[ct].image), hiveImage(repo, vcDefs[ct].image))
 	}
 	var missing []string
 	seen := map[string]bool{}
@@ -221,12 +236,19 @@ func (p *Provider) Setup(ctx context.Context, cfg any) (env.Environment, error) 
 			missing = append(missing, img)
 		}
 	}
-	if len(missing) > 0 {
+	if len(missing) > 0 && repo == "" {
 		return nil, fmt.Errorf(
 			"missing local docker images: %s\n"+
 				"they cannot be pulled — build them with scripts/build-hive-images.sh,\n"+
-				"and make sure docker points at the daemon where they were built (DOCKER_HOST / docker context)",
+				"or set -hive-image-repo to a repository that carries them\n"+
+				"(and make sure docker points at the daemon holding the images: DOCKER_HOST / docker context)",
 			strings.Join(missing, ", "))
+	}
+	for _, img := range missing {
+		fmt.Fprintf(os.Stdout, "==> pulling %s\n", img)
+		if out, err := runner.Run("pull", img); err != nil {
+			return nil, fmt.Errorf("pull %s: %s", img, out)
+		}
 	}
 
 	// Sweep leftovers from previous runs sharing this enclave name: stale
@@ -288,7 +310,7 @@ func (p *Provider) Setup(ctx context.Context, cfg any) (env.Environment, error) 
 		"-e", "HIVE_FORK_GRAY_GLACIER=0",
 		"-e", "HIVE_MERGE_BLOCK_ID=0",
 		"--entrypoint", "sh",
-		elImage,
+		hiveImage(repo, elImage),
 		"-c", "cp /genesis.json.src /genesis.json && exec /geth.sh",
 	); err != nil {
 		return nil, fmt.Errorf("start geth: %s", out)
@@ -327,7 +349,7 @@ func (p *Provider) Setup(ctx context.Context, cfg any) (env.Environment, error) 
 			"-e", "HIVE_ETH2_BN_API_PORT="+def.apiPort,
 			"-e", "HIVE_ETH2_P2P_TCP_PORT="+def.p2pPort,
 			"-e", "HIVE_ETH2_P2P_UDP_PORT="+def.p2pPort,
-			def.image,
+			hiveImage(repo, def.image),
 		); err != nil {
 			return nil, fmt.Errorf("start %s: %s", ct, out)
 		}
@@ -362,7 +384,7 @@ func (p *Provider) Setup(ctx context.Context, cfg any) (env.Environment, error) 
 		if !ok {
 			return nil, fmt.Errorf("no vc profile for %q", ct)
 		}
-		vc := vdef.image
+		vc := hiveImage(repo, vdef.image)
 		vcName := fmt.Sprintf("%s-vc-%d-%s", hcfg.Enclave, i+1, ct)
 		_, _ = runner.Run("rm", "-f", vcName)
 		if out, err := runner.Run("run", "-d", "--name", vcName,

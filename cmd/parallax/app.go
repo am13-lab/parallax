@@ -49,6 +49,7 @@ type RunConfig struct {
 	HiveClientList string
 	HiveClients    []string
 	HivegenBin     string
+	HiveImageRepo  string
 
 	// selection
 	Suite             string
@@ -389,6 +390,11 @@ func setupEnv(ctx context.Context, cfg RunConfig) (env.Environment, []env.Endpoi
 		return envr, envr.Endpoints(), nil
 	case "hive":
 		genDir := cfg.HiveGenDir
+		imageRepo := cfg.HiveImageRepo
+		if imageRepo == "local" {
+			// locally built hive/clients images in this daemon
+			imageRepo = ""
+		}
 		if genDir == "" {
 			// Default: keep the provisioning files inside the batch
 			// output dir so they are archived with the report.
@@ -429,6 +435,7 @@ func setupEnv(ctx context.Context, cfg RunConfig) (env.Environment, []env.Endpoi
 			Enclave:     cfg.Enclave,
 			GenDir:      genDir,
 			ClientTypes: cfg.HiveClients,
+			ImageRepo:   imageRepo,
 		})
 		if err != nil {
 			return nil, nil, err
@@ -699,6 +706,7 @@ func parseRunArgs(fs *flag.FlagSet, cfg *RunConfig, args []string) error {
 	fs.StringVar(&cfg.HiveGenDir, "hive-gen", "", "hive env: hivegen output dir (default <out>/gen, generated on demand)")
 	fs.StringVar(&cfg.HivegenBin, "hivegen-bin", "dist/hivegen", "hive env: path to the hivegen binary for on-demand provisioning")
 	fs.StringVar(&cfg.HiveClientList, "hive-clients", "lighthouse,teku,prysm,nimbus,lodestar,grandine", "hive env: comma-separated CL client types")
+	fs.StringVar(&cfg.HiveImageRepo, "hive-image-repo", "docker.io/am13lab", "hive env: registry repo for hive/clients images ('local' = locally built ones)")
 	fs.StringVar(&cfg.OutputDir, "out", "results", "output directory")
 	if err := fs.Parse(args); err != nil {
 		return err
