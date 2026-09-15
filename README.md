@@ -25,6 +25,13 @@ Prerequisites: Go 1.25+. For live devnets: Docker (OrbStack or
 Docker Desktop) and the kurtosis CLI
 (`brew install kurtosis-tech/tap/kurtosis-cli`).
 
+The `-env hive` path additionally needs the hivegen binary — `dist/` is
+gitignored, so build it once:
+
+```bash
+mkdir -p dist && (cd hive-sim && go build -o ../dist/hivegen ./cmd/hivegen)
+```
+
 ## Usage
 
 ### 1. One-shot full pipeline
