@@ -211,7 +211,12 @@ func (p *Provider) Setup(ctx context.Context, cfg any) (env.Environment, error) 
 		required = append(required, clientDefs[ct].image, vcDefs[ct].image)
 	}
 	var missing []string
+	seen := map[string]bool{}
 	for _, img := range required {
+		if seen[img] {
+			continue
+		}
+		seen[img] = true
 		if _, err := runner.Run("image", "inspect", img); err != nil {
 			missing = append(missing, img)
 		}
