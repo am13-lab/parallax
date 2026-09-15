@@ -76,8 +76,9 @@ var vcDefs = map[string]vcDef{
 	// Upstream hive has no clients/grandine-vc (only grandine-bn), and
 	// grandine.sh wires no validators into the BN — it cannot self-propose.
 	// The lighthouse VC drives any BN through the standard validator API,
-	// so grandine is paired with it deliberately; verify this pairing in
-	// the hive live-validation run.
+	// so grandine is paired with it deliberately. The pairing ran live in
+	// the six-client hive run of 2026-09-11 (full standard tier, all 215
+	// cases executed with grandine participating).
 	"grandine": {image: "hive/clients/lighthouse-vc:local", apiPort: "4000", script: "/lighthouse_vc.sh"},
 }
 

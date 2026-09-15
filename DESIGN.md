@@ -434,9 +434,10 @@ ClientTypes}`; `Provider.Setup` (env/hiveenv/hiveenv.go):
   `/ip4/127.0.0.1/tcp/<hostPort>/p2p/<peerID>` with the Beacon API URL.
   grandine has no upstream hive VC definition (`clients/grandine-vc` does
   not exist) and its BN definition wires no validators, so it is paired
-  with the lighthouse VC through the standard validator API; the pairing
-  is pinned by a unit test and still needs the hive live-validation run
-  to confirm.
+  with the lighthouse VC through the standard validator API. The whole
+  path is live-proven: 13 archived runs on 2026-09-10/11, including two
+  full six-client standard runs (215 cases each, grandine participating
+  via the lighthouse VC); the pairing is also pinned by a unit test.
 - Every docker call goes through one `cmdRunner` interface — the only
   exec.Command exit in the env tree — so tests inject a fake runner and
   never need docker.
