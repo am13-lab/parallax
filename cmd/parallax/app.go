@@ -398,19 +398,15 @@ func setupEnv(ctx context.Context, cfg RunConfig) (env.Environment, []env.Endpoi
 				bin = "dist/hivegen"
 			}
 			if _, err := os.Stat(bin); err != nil {
-				// dist/ is gitignored; on a fresh clone the binary is
-				// missing, so build it from the hive-sim module on the
-				// spot instead of failing the run.
+				// dist/ is gitignored; on a fresh clone the binary and
+				// even the dist directory are missing, so build it from
+				// the hive-sim module on the spot instead of failing.
 				fmt.Fprintf(os.Stdout, "==> %s missing; building hivegen from hive-sim\n", bin)
-				target := bin
-				if !filepath.IsAbs(target) {
-					target = filepath.Join("..", target)
-				}
-				b := exec.Command("go", "build", "-o", target, "./cmd/hivegen")
-				b.Dir = "hive-sim"
+				_ = os.MkdirAll(filepath.Dir(bin), 0o755)
+				b := exec.Command("go", "build", "-C", "hive-sim", "-o", bin, "./cmd/hivegen")
 				b.Stdout = os.Stdout
 				if out, err := b.CombinedOutput(); err != nil {
-					return nil, nil, fmt.Errorf("build hivegen (cd hive-sim && go build -o ../%s ./cmd/hivegen): %s", bin, out)
+					return nil, nil, fmt.Errorf("build hivegen (go build -C hive-sim -o %s ./cmd/hivegen): %s", bin, out)
 				}
 			}
 			cmd := exec.Command(bin, "-out", genDir, "-genesis-delay", "90s")
