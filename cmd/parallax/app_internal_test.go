@@ -137,3 +137,30 @@ func TestCasesStale(t *testing.T) {
 		t.Fatal("knowledge newer than generated files must be stale")
 	}
 }
+
+// TestCasesStaleIgnoresCheckoutJitter pins the fresh-clone fix: git writes
+// every checked-out file with near-identical mtimes, so sub-second jitter
+// between knowledge/ and cases/ must not read as staleness.
+func TestCasesStaleIgnoresCheckoutJitter(t *testing.T) {
+	root := t.TempDir()
+	mk := func(rel string, mod time.Time) {
+		p := filepath.Join(root, rel)
+		if err := os.MkdirAll(filepath.Dir(p), 0o755); err != nil {
+			t.Fatal(err)
+		}
+		if err := os.WriteFile(p, []byte("x"), 0o644); err != nil {
+			t.Fatal(err)
+		}
+		if err := os.Chtimes(p, mod, mod); err != nil {
+			t.Fatal(err)
+		}
+	}
+	now := time.Now()
+	mk("knowledge/spec/rule_ast.json", now.Add(800*time.Millisecond))
+	mk("cases/spec_ir_generated.go", now)
+	mk("cases/spec_ir_stateless_generated.go", now)
+	mk("cases/spec_ir_sequences_generated.go", now)
+	if casesStale(root) {
+		t.Fatal("sub-second checkout jitter must not be stale")
+	}
+}

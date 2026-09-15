@@ -131,7 +131,11 @@ func casesStale(root string) bool {
 			genNewest = info.ModTime()
 		}
 	}
-	return genNewest.Before(newest(filepath.Join("knowledge", "spec")))
+	// Compare at second granularity: a fresh git checkout gives every
+	// file near-identical mtimes, and nanosecond jitter between the
+	// knowledge/ and cases/ trees would flag a pristine clone as stale
+	// forever.
+	return genNewest.Truncate(time.Second).Before(newest(filepath.Join("knowledge", "spec")).Truncate(time.Second))
 }
 
 // regenAndExec runs the spec pipeline, rebuilds the binary and hands the
@@ -391,6 +395,22 @@ func setupEnv(ctx context.Context, cfg RunConfig) (env.Environment, []env.Endpoi
 			bin := cfg.HivegenBin
 			if bin == "" {
 				bin = "dist/hivegen"
+			}
+			if _, err := os.Stat(bin); err != nil {
+				// dist/ is gitignored; on a fresh clone the binary is
+				// missing, so build it from the hive-sim module on the
+				// spot instead of failing the run.
+				fmt.Fprintf(os.Stdout, "==> %s missing; building hivegen from hive-sim\n", bin)
+				target := bin
+				if !filepath.IsAbs(target) {
+					target = filepath.Join("..", target)
+				}
+				b := exec.Command("go", "build", "-o", target, "./cmd/hivegen")
+				b.Dir = "hive-sim"
+				b.Stdout = os.Stdout
+				if out, err := b.CombinedOutput(); err != nil {
+					return nil, nil, fmt.Errorf("build hivegen (cd hive-sim && go build -o ../%s ./cmd/hivegen): %s", bin, out)
+				}
 			}
 			cmd := exec.Command(bin, "-out", genDir, "-genesis-delay", "90s")
 			cmd.Stdout = os.Stdout
