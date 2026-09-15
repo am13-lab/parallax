@@ -39,8 +39,8 @@ func steps(specs string) []step {
 // status subcommand).
 var stageArts = map[string][]string{
 	"spec":  {"knowledge/spec/rule_ast.json", "knowledge/spec/spec_rules_generated.json", "knowledge/spec/protocol_model.json"},
-	"ir":    {"knowledge/ir/ir_coverage_gaps.json", "knowledge/ir/stateless_tests_generated.json"},
-	"cases": {"cases/spec_ir_generated.go", "cases/spec_ir_stateless_generated.go", "cases/spec_ir_sequences_generated.go"},
+	"ir":    {"knowledge/ir/ir_coverage_gaps.json", "knowledge/ir/stateless_tests_generated.json", "knowledge/ir/sequence_tests_generated.json", "knowledge/ir/sm_ir_generated"},
+	"cases": {"cases/spec_ir_generated.go", "cases/spec_ir_machines_generated.go", "cases/spec_ir_stateless_generated.go", "cases/spec_ir_sequences_generated.go"},
 }
 
 func runStep(s step) error {

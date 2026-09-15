@@ -29,17 +29,19 @@ Docker Desktop) and the kurtosis CLI
 
 ### 1. One-shot full pipeline
 
-Regenerates the spec-derived cases from a consensus-specs checkout,
-rebuilds the binary, and hands over to the run. Requires the source tree
-and the go toolchain:
+Generated cases auto-regenerate when stale: the run detects staleness,
+finds the consensus-specs checkout (`$PARALLAX_SPECS`,
+`./consensus-specs/specs`, or a sibling `../consensus-specs/specs`),
+regenerates, rebuilds the binary and hands over. The common command is
+just:
 
 ```bash
-go run ./cmd/parallax run -regen \
-    -specs-dir /path/to/consensus-specs/specs \
-    -env hive -enclave hivesmoke \
-    -hive-clients "lighthouse,teku,prysm,nimbus,lodestar,grandine" \
-    -out results/quick
+go run ./cmd/parallax run -env hive -out results/quick
 ```
+
+`-regen` forces regeneration, `-specs-dir` overrides the checkout, and
+`-enclave` / `-hive-clients` carry defaults (parallax / all six CL
+clients). Requires the source tree and the go toolchain.
 
 ### 2. Run differential tests
 
@@ -65,9 +67,9 @@ the comparison.
 
 | tier | cases | what | 6-client duration |
 |---|---|---|---|
-| `quick` | 36 | representative cases per family and input class | ~4 min |
+| `quick` | 35 | representative cases per family and input class | ~4 min |
 | `standard` | 215 | hand-written families, IR-generated excluded | ~40 min |
-| `full` | 606+ | everything including IR-generated, heavy families last | ~1.5 h |
+| `full` | 628 | everything including IR-generated, heavy families last | ~1.5 h |
 
 ```bash
 # quick tier against six clients on the hive path
@@ -142,7 +144,7 @@ typed method definitions and refreshes protocol availability from the spec.
 go run ./cmd/parallax list
 
 # no devnet? run the seed set against scripted fake nodes
-go run ./cmd/simulation --out results/demo
+go run ./cmd/sandbox --out results/demo
 ```
 
 ## Development

@@ -311,7 +311,7 @@ func TestBanRecovery(t *testing.T) {
 	}
 	rep := runner.Run(context.Background(), specs, cs, fe0(), runner.ChainConfig{},
 		runner.Options{TestIDs: []string{"t.poison", "t.after", "t.heal", "t.recovered"},
-			BanThreshold: 1, RecoveryCooldown: 0})
+			BanThreshold: 1, RecoveryCooldown: time.Microsecond})
 
 	byID := map[string]runner.TestResult{}
 	for _, r := range rep.Results {
@@ -327,6 +327,48 @@ func TestBanRecovery(t *testing.T) {
 	mu.Unlock()
 	if n != 2 {
 		t.Fatalf("reinstated client must participate, saw %d clients", n)
+	}
+}
+
+// TestBanRecoveryZeroDisables pins the other half of the §5.4 contract:
+// with RecoveryCooldown == 0 a banned client is never re-probed and stays
+// excluded for the rest of the run.
+func TestBanRecoveryZeroDisables(t *testing.T) {
+	a := newFakeClient("a")
+	poison := &atomic.Bool{}
+	a.poison = poison
+	b := newFakeClient("b")
+	cs := []runner.Client{a, b}
+
+	specs := []runner.Spec{
+		spec("t.poison", func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
+			poison.Store(true)
+			return nil
+		}),
+		{ID: "t.heal", Category: "reqresp", Metadata: runner.Metadata{MinClients: 1},
+			Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
+				poison.Store(false)
+				return nil
+			}},
+		spec("t.recovered", nil),
+	}
+	rep := runner.Run(context.Background(), specs, cs, fe0(), runner.ChainConfig{},
+		runner.Options{TestIDs: []string{"t.poison", "t.heal", "t.recovered"},
+			BanThreshold: 1, RecoveryCooldown: 0})
+
+	// With recovery disabled, "a" stays banned: only "b" remains usable,
+	// below the default MinClients floor, so t.recovered must skip and
+	// record the exclusion.
+	byID := map[string]runner.TestResult{}
+	for _, r := range rep.Results {
+		byID[r.TestID] = r
+	}
+	r := byID["t.recovered"]
+	if r.Status != runner.StatusSkipped {
+		t.Fatalf("cooldown 0 must disable recovery: t.recovered must skip with one usable client: %+v", r)
+	}
+	if len(r.ExcludedClients) != 1 || r.ExcludedClients[0] != "a" {
+		t.Fatalf("excluded clients must record the banned client: %v", r.ExcludedClients)
 	}
 }
 

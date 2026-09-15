@@ -319,3 +319,34 @@ func TestSendOnlyAndSlowly(t *testing.T) {
 		t.Fatalf("send slowly: %v", err)
 	}
 }
+
+// TestHealthCatchesDeadP2P pins the live-run lesson (prysm served /health
+// 200 for a whole standard run while every status handshake failed):
+// Health must verify the libp2p plane, not just the Beacon API.
+func TestHealthCatchesDeadP2P(t *testing.T) {
+	n := startDefaultNode(t)
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	defer cancel()
+
+	c, err := client.New(ctx, &client.Config{
+		Name:       "n",
+		ClientType: "fake",
+		Multiaddr:  n.Multiaddr(),
+		BeaconAPI:  n.BeaconURL(),
+	})
+	if err != nil {
+		t.Fatalf("client.New: %v", err)
+	}
+	t.Cleanup(func() { c.Close() })
+
+	if err := c.Health(ctx); err != nil {
+		t.Fatalf("healthy node must pass Health: %v", err)
+	}
+
+	n.BreakLibp2p()
+	time.Sleep(500 * time.Millisecond) // let the swarm drop the dead conn
+
+	if err := c.Health(ctx); err == nil {
+		t.Fatal("dead libp2p must fail Health even with a green Beacon API")
+	}
+}

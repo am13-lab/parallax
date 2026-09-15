@@ -48,15 +48,19 @@ func usage() {
 commands:
   list               print the test case registry
   run [flags]        run cases against an environment
-                     -env static|kurtosis     environment backend (static)
-                     -config clients.yaml     static: endpoint list
-                     -enclave NAME            kurtosis: enclave
-                     -args-file FILE          kurtosis: ethereum-package args
-                     -attach                  kurtosis: attach, skip provisioning
-                     -test ID1,ID2            exact case IDs
-                     -category CAT1,CAT2      case categories
-                     -seed N                  shuffle seed (42)
-                     -out DIR                 output directory (results)
+                     -env static|kurtosis|hive  environment backend (static)
+                     -config clients.yaml       static: endpoint list
+                     -enclave NAME              kurtosis/hive: enclave name
+                     -args-file FILE            kurtosis: ethereum-package args
+                     -attach                    kurtosis: attach, skip provisioning
+                     -hive-clients A,B,...      hive: CL client types (all six)
+                     -suite quick|standard|full test tier (quick)
+                     -regen                     regenerate spec cases, rebuild, run (also auto when stale)
+                     -test ID1,ID2              exact case IDs
+                     -category CAT1,CAT2        case categories
+                     -seed N                    shuffle seed (42)
+                     -recovery-cooldown D       banned-client probe interval (2m, 0 disables)
+                     -out DIR                   output directory (results)
   analyze [flags]    analyze a saved report
                      -report FILE             report.json to process
                      -allowlist FILE          known divergences JSON

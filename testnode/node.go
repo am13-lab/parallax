@@ -193,6 +193,13 @@ func (n *Node) EnableProtocol(proto string, script *Script) {
 	})
 }
 
+// BreakLibp2p closes the libp2p host while keeping the Beacon API HTTP
+// server up. Test helper for liveness-check behavior: a client whose only
+// health signal is HTTP must notice the dead p2p plane anyway.
+func (n *Node) BreakLibp2p() {
+	n.host.Close()
+}
+
 // Multiaddr returns the node's libp2p dial address.
 func (n *Node) Multiaddr() string {
 	addrs := n.host.Addrs()

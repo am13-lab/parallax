@@ -11,7 +11,7 @@ func main() {
 	out := flag.String("out", "results/demo", "output directory for report.json and junit.xml")
 	flag.Parse()
 
-	rep, err := runSimulation(SimConfig{Out: *out, Stdout: os.Stdout})
+	rep, err := runSandbox(SandboxConfig{Out: *out, Stdout: os.Stdout})
 	if err != nil {
 		fmt.Fprintln(os.Stderr, "error:", err)
 		os.Exit(1)

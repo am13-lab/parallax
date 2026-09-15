@@ -425,9 +425,10 @@ func irPayload(a *irTransition, ictx *irContext) []byte {
 	return payload
 }
 
-// irTimeScale 缩放 walker 内部的等待/超时（默认 1.0）。设置
-// PARALLAX_TIME_SCALE（如 0.2）可整体缩短响应等待，用于快速验证轮；
-// 客户端正常响应时 verdict 不变，仅未响应等待上限缩短。
+// irTimeScale scales the walker's internal waits/timeouts (default 1.0).
+// Set PARALLAX_TIME_SCALE (e.g. 0.2) to shorten response waits overall for
+// quick verification rounds; verdicts are unchanged as long as clients
+// respond in time, only the no-response wait ceiling shrinks.
 var irTimeScale = func() float64 {
 	if v := os.Getenv("PARALLAX_TIME_SCALE"); v != "" {
 		if f, err := strconv.ParseFloat(v, 64); err == nil && f > 0 {

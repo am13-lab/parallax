@@ -33,10 +33,9 @@ type RunConfig struct {
 	Enclave    string
 	ArgsFile   string
 	Attach     bool
-	// Clients 逗号分隔的客户端名子串过滤（空 = 全部）。
+	// Clients is a comma-separated filter on client name substrings
+	// (empty = all).
 	Clients string
-	// scheduling
-	Parallel int // concurrent specs per wave (1 = serial)
 
 	// one-shot regeneration: run the spec pipeline, rebuild this binary,
 	// then exec the fresh binary for the actual run
@@ -60,18 +59,107 @@ type RunConfig struct {
 	IncludeHeavy      bool
 
 	// scheduling
-	Seed           int64
-	InterTestDelay time.Duration
-	MaxDuration    time.Duration
-	BanThreshold   int
-	RotateEvery    int
-	PerTestTimeout time.Duration
-	Preset         string
+	Seed             int64
+	InterTestDelay   time.Duration
+	MaxDuration      time.Duration
+	BanThreshold     int
+	RecoveryCooldown time.Duration
+	RotateEvery      int
+	PerTestTimeout   time.Duration
+	Preset           string
 
 	// output
 	OutputDir string
 	Progress  func(runner.TestResult)
 	Stdout    io.Writer
+}
+
+// resolveSpecsDir locates the consensus-specs checkout: an explicit
+// -specs-dir wins, then $PARALLAX_SPECS, then ./consensus-specs/specs, then
+// the sibling ../consensus-specs/specs. Empty when nothing exists.
+func resolveSpecsDir(explicit string) string {
+	if explicit != "" {
+		return explicit
+	}
+	if v := os.Getenv("PARALLAX_SPECS"); v != "" && dirOK(v) {
+		return v
+	}
+	for _, c := range []string{
+		filepath.Join("consensus-specs", "specs"),
+		filepath.Join("..", "consensus-specs", "specs"),
+	} {
+		if dirOK(c) {
+			return c
+		}
+	}
+	return ""
+}
+
+func dirOK(dir string) bool {
+	info, err := os.Stat(dir)
+	return err == nil && info.IsDir()
+}
+
+// casesStale reports whether the generated case files are missing or older
+// than the newest knowledge/spec artifact, i.e. whether the spec pipeline
+// should run before the case registry is trusted.
+func casesStale(root string) bool {
+	newest := func(rel string) time.Time {
+		var out time.Time
+		entries, err := os.ReadDir(filepath.Join(root, rel))
+		if err != nil {
+			return out
+		}
+		for _, e := range entries {
+			if info, err := e.Info(); err == nil && info.ModTime().After(out) {
+				out = info.ModTime()
+			}
+		}
+		return out
+	}
+	var genNewest time.Time
+	for _, g := range []string{
+		"spec_ir_generated.go",
+		"spec_ir_stateless_generated.go",
+		"spec_ir_sequences_generated.go",
+	} {
+		info, err := os.Stat(filepath.Join(root, "cases", g))
+		if err != nil {
+			return true // missing generated file: definitely stale
+		}
+		if info.ModTime().After(genNewest) {
+			genNewest = info.ModTime()
+		}
+	}
+	return genNewest.Before(newest(filepath.Join("knowledge", "spec")))
+}
+
+// regenAndExec runs the spec pipeline, rebuilds the binary and hands the
+// run over to the fresh build via exec.
+func regenAndExec(cfg RunConfig, specs string) error {
+	fmt.Fprintln(cfg.Stdout, "==> regenerating spec-derived cases")
+	chain := exec.Command("go", "run", "./cmd/specchain", "all", "-specs", specs)
+	chain.Stdout = cfg.Stdout
+	chain.Stderr = os.Stderr
+	if err := chain.Run(); err != nil {
+		return fmt.Errorf("specchain: %w", err)
+	}
+	fmt.Fprintln(cfg.Stdout, "==> rebuilding binary")
+	build := exec.Command("go", "build", "-o", "dist/parallax-final", "./cmd/parallax")
+	build.Stdout = cfg.Stdout
+	build.Stderr = os.Stderr
+	if err := build.Run(); err != nil {
+		return fmt.Errorf("rebuild: %w", err)
+	}
+	args := make([]string, 0, len(os.Args))
+	for _, a := range os.Args {
+		if a == "-regen" || a == "-regen=true" {
+			continue
+		}
+		args = append(args, a)
+	}
+	fmt.Fprintln(cfg.Stdout, "==> handing over to fresh binary")
+	return syscall.Exec("dist/parallax-final", args, os.Environ())
 }
 
 // runRun executes the `run` subcommand.
@@ -80,36 +168,20 @@ func runRun(ctx context.Context, cfg RunConfig) error {
 		cfg.Stdout = os.Stdout
 	}
 	if cfg.Regen {
-		// One-shot bootstrap: regenerate the spec-derived case sources,
-		// rebuild this binary, and hand over to the fresh build. Requires
-		// running from the source tree with the go toolchain available.
-		fmt.Fprintln(cfg.Stdout, "==> regenerating spec-derived cases")
-		specs := cfg.SpecsDir
+		// Forced one-shot bootstrap. Requires running from the source tree
+		// with the go toolchain available.
+		specs := resolveSpecsDir(cfg.SpecsDir)
 		if specs == "" {
-			specs = filepath.Join("consensus-specs", "specs")
+			return fmt.Errorf("-regen needs a consensus-specs checkout (set -specs-dir or $PARALLAX_SPECS)")
 		}
-		chain := exec.Command("go", "run", "./cmd/specchain", "all", "-specs", specs)
-		chain.Stdout = cfg.Stdout
-		chain.Stderr = os.Stderr
-		if err := chain.Run(); err != nil {
-			return fmt.Errorf("specchain: %w", err)
+		return regenAndExec(cfg, specs)
+	}
+	if casesStale(".") {
+		if specs := resolveSpecsDir(cfg.SpecsDir); specs != "" {
+			fmt.Fprintf(cfg.Stdout, "==> generated cases are stale; auto-regenerating from %s\n", specs)
+			return regenAndExec(cfg, specs)
 		}
-		fmt.Fprintln(cfg.Stdout, "==> rebuilding binary")
-		build := exec.Command("go", "build", "-o", "dist/parallax-final", "./cmd/parallax")
-		build.Stdout = cfg.Stdout
-		build.Stderr = os.Stderr
-		if err := build.Run(); err != nil {
-			return fmt.Errorf("rebuild: %w", err)
-		}
-		args := make([]string, 0, len(os.Args))
-		for _, a := range os.Args {
-			if a == "-regen" || a == "-regen=true" {
-				continue
-			}
-			args = append(args, a)
-		}
-		fmt.Fprintln(cfg.Stdout, "==> handing over to fresh binary")
-		return syscall.Exec("dist/parallax-final", args, os.Environ())
+		fmt.Fprintln(cfg.Stdout, "==> generated cases are stale but no consensus-specs checkout found; continuing with the committed cases (set PARALLAX_SPECS to enable auto-regen)")
 	}
 	envr, endpoints, err := setupEnv(ctx, cfg)
 	if err != nil {
@@ -152,16 +224,17 @@ func runRun(ctx context.Context, cfg RunConfig) error {
 		specs = excludeSpecPrefixes(specs, cfg.ExcludePrefixes)
 	}
 	rep := runner.Run(ctx, specs, clients, envr, chain, runner.Options{
-		Seed:           cfg.Seed,
-		TestIDs:        cfg.TestIDs,
-		Categories:     cfg.Categories,
-		IncludeHeavy:   cfg.IncludeHeavy,
-		InterTestDelay: cfg.InterTestDelay,
-		MaxDuration:    cfg.MaxDuration,
-		BanThreshold:   cfg.BanThreshold,
-		RotateEvery:    cfg.RotateEvery,
-		PerTestTimeout: cfg.PerTestTimeout,
-		Progress:       cfg.Progress,
+		Seed:             cfg.Seed,
+		TestIDs:          cfg.TestIDs,
+		Categories:       cfg.Categories,
+		IncludeHeavy:     cfg.IncludeHeavy,
+		InterTestDelay:   cfg.InterTestDelay,
+		MaxDuration:      cfg.MaxDuration,
+		BanThreshold:     cfg.BanThreshold,
+		RecoveryCooldown: cfg.RecoveryCooldown,
+		RotateEvery:      cfg.RotateEvery,
+		PerTestTimeout:   cfg.PerTestTimeout,
+		Progress:         cfg.Progress,
 	})
 
 	rep.Command = strings.Join(os.Args, " ")
@@ -337,7 +410,7 @@ func setupEnv(ctx context.Context, cfg RunConfig) (env.Environment, []env.Endpoi
 		}
 		return envr, envr.Endpoints(), nil
 	default:
-		return nil, nil, fmt.Errorf("unknown env %q (want static or kurtosis)", cfg.Env)
+		return nil, nil, fmt.Errorf("unknown env %q (want static, kurtosis or hive)", cfg.Env)
 	}
 }
 
@@ -552,17 +625,6 @@ func runAnalyze(cfg AnalyzeConfig, stdout io.Writer) error {
 		fmt.Fprintf(stdout, "html report: %s (%d runs)\n", htmlPath, len(runs))
 	}
 
-	if cfg.JUnitOut != "" {
-		junit, err := report.WriteJUnit(&rep)
-		if err != nil {
-			return fmt.Errorf("render junit: %w", err)
-		}
-		if err := os.WriteFile(cfg.JUnitOut, junit, 0o644); err != nil {
-			return err
-		}
-		fmt.Fprintf(stdout, "junit report: %s\n", cfg.JUnitOut)
-	}
-
 	if cfg.Legacy {
 		legacy, err := report.LegacyShape(&rep)
 		if err != nil {
@@ -588,15 +650,15 @@ func runList(stdout io.Writer) error {
 // ---- flag parsing ----
 
 func parseRunArgs(fs *flag.FlagSet, cfg *RunConfig, args []string) error {
-	fs.StringVar(&cfg.Env, "env", "static", "environment backend: static | kurtosis")
+	fs.StringVar(&cfg.Env, "env", "static", "environment backend: static | kurtosis | hive")
 	fs.StringVar(&cfg.ConfigPath, "config", "clients.yaml", "static: path to clients.yaml")
-	fs.StringVar(&cfg.Enclave, "enclave", "", "kurtosis: enclave name")
+	fs.StringVar(&cfg.Enclave, "enclave", "parallax", "kurtosis/hive: enclave name")
 	fs.StringVar(&cfg.ArgsFile, "args-file", "", "kurtosis: ethereum-package args file")
 	fs.BoolVar(&cfg.Attach, "attach", false, "kurtosis: attach to existing enclave instead of provisioning")
 	fs.StringVar(&cfg.TestIDList, "test", "", "comma-separated exact test IDs (bypasses run-class filter)")
 	fs.StringVar(&cfg.CategoryList, "category", "", "comma-separated categories")
 	fs.BoolVar(&cfg.Regen, "regen", false, "regenerate spec cases, rebuild, then run (source tree + go toolchain required)")
-	fs.StringVar(&cfg.SpecsDir, "specs-dir", filepath.Join("consensus-specs", "specs"), "consensus-specs root for -regen")
+	fs.StringVar(&cfg.SpecsDir, "specs-dir", "", "consensus-specs root for -regen (default: $PARALLAX_SPECS, ./ or ../ consensus-specs/specs)")
 	fs.StringVar(&cfg.Suite, "suite", "quick", "test tier: quick | standard | full (default quick)")
 	fs.StringVar(&cfg.ExcludePrefixList, "exclude-prefix", "", "comma-separated test-ID prefixes to exclude (e.g. \"ir.,ir_\")")
 	fs.BoolVar(&cfg.IncludeHeavy, "include-heavy", false, "include heavy tests")
@@ -604,14 +666,14 @@ func parseRunArgs(fs *flag.FlagSet, cfg *RunConfig, args []string) error {
 	fs.DurationVar(&cfg.InterTestDelay, "delay", time.Second, "delay between tests")
 	fs.DurationVar(&cfg.MaxDuration, "max-duration", 0, "stop after this duration")
 	fs.IntVar(&cfg.BanThreshold, "ban-threshold", 3, "consecutive health failures before exclusion")
+	fs.DurationVar(&cfg.RecoveryCooldown, "recovery-cooldown", 2*time.Minute, "min interval between recovery probes of banned clients (0 disables recovery)")
 	fs.IntVar(&cfg.RotateEvery, "rotate-every", 10, "rotate probe identities every N tests (0 disables)")
 	fs.DurationVar(&cfg.PerTestTimeout, "test-timeout", 2*time.Minute, "per-test timeout")
 	fs.StringVar(&cfg.Preset, "preset", "mainnet", "chain preset label")
 	fs.StringVar(&cfg.Clients, "clients", "", "comma-separated client name substrings to include (empty = all)")
 	fs.StringVar(&cfg.HiveGenDir, "hive-gen", "", "hive env: hivegen output dir (default <out>/gen, generated on demand)")
 	fs.StringVar(&cfg.HivegenBin, "hivegen-bin", "dist/hivegen", "hive env: path to the hivegen binary for on-demand provisioning")
-	fs.StringVar(&cfg.HiveClientList, "hive-clients", "lighthouse", "hive env: comma-separated CL client types")
-	fs.IntVar(&cfg.Parallel, "parallel", 4, "concurrent specs per wave (1 = serial)")
+	fs.StringVar(&cfg.HiveClientList, "hive-clients", "lighthouse,teku,prysm,nimbus,lodestar,grandine", "hive env: comma-separated CL client types")
 	fs.StringVar(&cfg.OutputDir, "out", "results", "output directory")
 	if err := fs.Parse(args); err != nil {
 		return err
