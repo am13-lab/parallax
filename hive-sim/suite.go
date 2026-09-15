@@ -11,6 +11,7 @@ import (
 	"github.com/ethereum/hive/hivesim"
 
 	"parallax/client"
+	"parallax/cases"
 	"parallax/enr"
 	"parallax/env"
 	"parallax/runner"
@@ -80,7 +81,13 @@ func BuildSuite(cfg Config) hivesim.Suite {
 // waits for their beacon APIs, runs the category's specs, and reports
 // divergences as a hive test failure.
 func runCategory(t *hivesim.T, cfg Config, category string) {
-	specs := cfg.SpecsFor(category)
+	specsFor := cfg.SpecsFor
+	if specsFor == nil {
+		// Production default: pull from the cases registry, matching the
+		// contract's "production paths use the cases registry" (§11).
+		specsFor = cases.ByCategory
+	}
+	specs := specsFor(category)
 	if len(specs) == 0 {
 		t.Logf("no specs for category %s, skipping", category)
 		return

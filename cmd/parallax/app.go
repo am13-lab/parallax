@@ -35,8 +35,6 @@ type RunConfig struct {
 	Attach     bool
 	// Clients 逗号分隔的客户端名子串过滤（空 = 全部）。
 	Clients string
-	// scheduling
-	Parallel int // concurrent specs per wave (1 = serial)
 
 	// one-shot regeneration: run the spec pipeline, rebuild this binary,
 	// then exec the fresh binary for the actual run
@@ -60,13 +58,14 @@ type RunConfig struct {
 	IncludeHeavy      bool
 
 	// scheduling
-	Seed           int64
-	InterTestDelay time.Duration
-	MaxDuration    time.Duration
-	BanThreshold   int
-	RotateEvery    int
-	PerTestTimeout time.Duration
-	Preset         string
+	Seed             int64
+	InterTestDelay   time.Duration
+	MaxDuration      time.Duration
+	BanThreshold     int
+	RecoveryCooldown time.Duration
+	RotateEvery      int
+	PerTestTimeout   time.Duration
+	Preset           string
 
 	// output
 	OutputDir string
@@ -152,16 +151,17 @@ func runRun(ctx context.Context, cfg RunConfig) error {
 		specs = excludeSpecPrefixes(specs, cfg.ExcludePrefixes)
 	}
 	rep := runner.Run(ctx, specs, clients, envr, chain, runner.Options{
-		Seed:           cfg.Seed,
-		TestIDs:        cfg.TestIDs,
-		Categories:     cfg.Categories,
-		IncludeHeavy:   cfg.IncludeHeavy,
-		InterTestDelay: cfg.InterTestDelay,
-		MaxDuration:    cfg.MaxDuration,
-		BanThreshold:   cfg.BanThreshold,
-		RotateEvery:    cfg.RotateEvery,
-		PerTestTimeout: cfg.PerTestTimeout,
-		Progress:       cfg.Progress,
+		Seed:             cfg.Seed,
+		TestIDs:          cfg.TestIDs,
+		Categories:       cfg.Categories,
+		IncludeHeavy:     cfg.IncludeHeavy,
+		InterTestDelay:   cfg.InterTestDelay,
+		MaxDuration:      cfg.MaxDuration,
+		BanThreshold:     cfg.BanThreshold,
+		RecoveryCooldown: cfg.RecoveryCooldown,
+		RotateEvery:      cfg.RotateEvery,
+		PerTestTimeout:   cfg.PerTestTimeout,
+		Progress:         cfg.Progress,
 	})
 
 	rep.Command = strings.Join(os.Args, " ")
@@ -337,7 +337,7 @@ func setupEnv(ctx context.Context, cfg RunConfig) (env.Environment, []env.Endpoi
 		}
 		return envr, envr.Endpoints(), nil
 	default:
-		return nil, nil, fmt.Errorf("unknown env %q (want static or kurtosis)", cfg.Env)
+		return nil, nil, fmt.Errorf("unknown env %q (want static, kurtosis or hive)", cfg.Env)
 	}
 }
 
@@ -588,7 +588,7 @@ func runList(stdout io.Writer) error {
 // ---- flag parsing ----
 
 func parseRunArgs(fs *flag.FlagSet, cfg *RunConfig, args []string) error {
-	fs.StringVar(&cfg.Env, "env", "static", "environment backend: static | kurtosis")
+	fs.StringVar(&cfg.Env, "env", "static", "environment backend: static | kurtosis | hive")
 	fs.StringVar(&cfg.ConfigPath, "config", "clients.yaml", "static: path to clients.yaml")
 	fs.StringVar(&cfg.Enclave, "enclave", "", "kurtosis: enclave name")
 	fs.StringVar(&cfg.ArgsFile, "args-file", "", "kurtosis: ethereum-package args file")
@@ -604,6 +604,7 @@ func parseRunArgs(fs *flag.FlagSet, cfg *RunConfig, args []string) error {
 	fs.DurationVar(&cfg.InterTestDelay, "delay", time.Second, "delay between tests")
 	fs.DurationVar(&cfg.MaxDuration, "max-duration", 0, "stop after this duration")
 	fs.IntVar(&cfg.BanThreshold, "ban-threshold", 3, "consecutive health failures before exclusion")
+	fs.DurationVar(&cfg.RecoveryCooldown, "recovery-cooldown", 2*time.Minute, "min interval between recovery probes of banned clients (0 disables recovery)")
 	fs.IntVar(&cfg.RotateEvery, "rotate-every", 10, "rotate probe identities every N tests (0 disables)")
 	fs.DurationVar(&cfg.PerTestTimeout, "test-timeout", 2*time.Minute, "per-test timeout")
 	fs.StringVar(&cfg.Preset, "preset", "mainnet", "chain preset label")
@@ -611,7 +612,6 @@ func parseRunArgs(fs *flag.FlagSet, cfg *RunConfig, args []string) error {
 	fs.StringVar(&cfg.HiveGenDir, "hive-gen", "", "hive env: hivegen output dir (default <out>/gen, generated on demand)")
 	fs.StringVar(&cfg.HivegenBin, "hivegen-bin", "dist/hivegen", "hive env: path to the hivegen binary for on-demand provisioning")
 	fs.StringVar(&cfg.HiveClientList, "hive-clients", "lighthouse", "hive env: comma-separated CL client types")
-	fs.IntVar(&cfg.Parallel, "parallel", 4, "concurrent specs per wave (1 = serial)")
 	fs.StringVar(&cfg.OutputDir, "out", "results", "output directory")
 	if err := fs.Parse(args); err != nil {
 		return err

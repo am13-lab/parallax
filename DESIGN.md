@@ -22,7 +22,8 @@ introduced.
 2. One core testing engine, three interchangeable front-ends:
    - static: attach to already-running beacon nodes from a YAML endpoint list.
    - kurtosis: provision a devnet via ethpandaops/ethereum-package, then test.
-   - hive: run as an ethereum/hive simulator.
+   - hive: provision a devnet with docker directly (hivegen + env/hiveenv),
+     or run as an ethereum/hive simulator via the hive-sim module.
 3. Stable by construction: every layer testable without a live devnet, through
    an in-process fake beacon node and fake backend servers.
 4. Consumable output: versioned JSON report plus JUnit XML for CI.
@@ -61,30 +62,42 @@ introduced.
 
 ```
 cmd/parallax      CLI: list, run, analyze subcommands (stdlib flag only)
+cmd/specchain     staged orchestrator: spec → ir → cases generation pipeline
+cmd/specgen       consensus-specs markdown → knowledge/spec rule AST JSONs
+cmd/irdrive       knowledge JSONs → SM-IR plans (knowledge/ir)
+cmd/smgen         SM-IR plans → generated runner.Spec case files
+cmd/sandbox       full seed set against scripted fake nodes; no devnet
 wire              pure functions: varint, snappy framing, SSZ-snappy req/resp
                   build/parse, malformed payload builders, crc32c, fork digest
-probe             libp2p probe host: connect (with/without Status handshake),
-                  identity rotation, req/resp send, status responder, gossip
-                  publish, gossip observe
+enr               ENR/RLP decoding: eth2, attnets, syncnets, CGC fields
+ethmsg            signed consensus-message factory: valid and
+                  single-rule-invalid gossip payloads (BLS, KZG, SSZ)
+probe             libp2p probe host: connect, identity rotation, req/resp
+                  send (incl. raw-stream variants), status responder,
+                  gossip publish and target-only observation
 beacon            beacon API client: node identity, head/fork state, health,
                   metrics snapshot
 client            Client implementation gluing probe + beacon + proxies
-runner            Spec model, scheduling, preflight, ban handling, divergence
-                  collection, report assembly, chain config
-report            report schema v1, JSON writer, JUnit writer, findings dedup,
-                  allowlist suppression, legacy-shape adapter
+runner            Spec model, sequential scheduling, preflight, ban/recovery,
+                  divergence collection, report schema, chain config
+report            JSON/JUnit/HTML writers, findings dedup, allowlist
+                  suppression, legacy-shape adapter, run history archive
+knowledge         spec-rule catalog loader + external audit/advisory anchors
 env               Endpoint, Environment, Provider interfaces
 env/staticenv     attach-only backend from YAML (previous config format)
 env/kurtosisenv   kurtosis Go API backend: provision via ethereum-package,
                   service/port enumeration, log retrieval
-cases             explicit test suites (no init registration)
-cases/reqresp     seed req/resp cases
-cases/gossip      seed gossip cases
-cases/discovery   seed discovery cases
-cases/transport   seed transport cases
+env/hiveenv       docker direct backend: consumes hivegen provisioning files,
+                  launches geth + CL beacon nodes + validator clients, and
+                  discovers endpoints via docker inspect + beacon identity
+cases             explicit test registry, one flat package, 628 specs
+                  (no init registration)
 testnode          in-process fake beacon node (libp2p host + HTTP beacon API),
                   the corner stone of the test suite
-hive-sim          separate Go module: ethereum/hive simulator adapter
+internal/testutil test-only ENR/RLP builders
+e2e               full-engine smoke test (two testnodes + staticenv)
+hive-sim          separate Go module: ethereum/hive simulator adapter plus
+                  cmd/hivegen, the provisioning file generator
 ```
 
 Dependency rule: nothing below (wire, probe, beacon, env) imports anything
@@ -139,11 +152,12 @@ package runner
 
 type Spec struct {
     ID       string // stable, dotted, e.g. "reqresp.ping.empty_body"
-    Category string // "reqresp", "gossip", "discovery", "transport"
+    Category string // "reqresp", "gossip", "discovery", "transport", ...
+    What     string // human-readable description, surfaced in reports
     Metadata Metadata
     // Preflight proves the test is meaningful on the current environment
     // before it consumes a scheduling slot. Nil means always runnable.
-    Preflight func(ctx context.Context, cs []Client) PreflightResult
+    Preflight func(ctx context.Context, chain ChainConfig, cs []Client) PreflightResult
     Run       func(ctx context.Context, te TestEnv) []Divergence
 }
 
@@ -161,6 +175,7 @@ type TestEnv struct {
     Clients []Client // all usable clients, at least Metadata.MinClients
     Env     env.Environment
     Chain   ChainConfig
+    Meta    Metadata // the running spec's metadata, for stamping divergences
     RNG     *rand.Rand
     Log     *slog.Logger
 }
@@ -177,6 +192,7 @@ type ChainConfig struct {
     GenesisValidatorsRoot [32]byte
     GossipMaxSize        uint64
     MaxChunkSize         uint64
+    CustodyRequirement   uint64 // Fulu PeerDAS sampling target
 }
 ```
 
@@ -211,13 +227,30 @@ type Client interface {
     // response (all chunks) within the timeout.
     ReqResp(ctx context.Context, protocol string, body []byte, timeout time.Duration) (*ReqRespResult, error)
 
+    // OpenStream exposes a raw stream handle for IR-driven cases.
+    OpenStream(ctx context.Context, protocol string) (IRStream, error)
+    // SendOnly opens a stream, writes the body and returns without
+    // reading the response (exhaustion-style cases).
+    SendOnly(ctx context.Context, protocol string, body []byte) error
+    // SendSlowly drips the body byte by byte (slowloris-style cases).
+    SendSlowly(ctx context.Context, protocol string, body []byte, perByte, timeout time.Duration) ([]byte, error)
+
+    // PrepareGossipTopic joins and subscribes the topic ahead of the
+    // actual publish so mesh warmup is paid outside the timed section.
+    PrepareGossipTopic(ctx context.Context, topic string) error
+
+    // Metadata fetches /eth/v1/node/metadata (custody group count etc.).
+    Metadata(ctx context.Context) (*NodeMetadata, error)
+
     // PublishGossip publishes data on a gossip topic.
     PublishGossip(ctx context.Context, topic string, data []byte) error
 
-    // ObserveGossip subscribes via a second target-facing libp2p host and
-    // waits for the published message to re-propagate, returning the local
-    // acceptance verdict (accept/reject/ignore/timeout).
-    ObserveGossip(ctx context.Context, topic string, wait time.Duration) (GossipVerdict, error)
+    // ObserveGossip watches the topic via a target-only observer host,
+    // publishes data on it, and waits for the target to re-propagate the
+    // message (the proof of local acceptance), returning the verdict
+    // (accept / reject / unknown). Publish and observe form one atomic
+    // operation so a case cannot observe without injecting.
+    ObserveGossip(ctx context.Context, topic string, data []byte, wait time.Duration) (GossipVerdict, error)
 
     // Connect (re-)establishes the libp2p connection in the given mode.
     Connect(ctx context.Context, mode ConnectMode) error
@@ -230,6 +263,8 @@ type Client interface {
     // root, active fork, fork digest, finalized checkpoint. Cases use it for
     // request bodies and context bytes. ErrNoBeaconAPI when unavailable.
     State(ctx context.Context) (*NodeState, error)
+    // Health is a cheap liveness probe feeding ban/recovery.
+    Health(ctx context.Context) error
     Snapshot(ctx context.Context) (*ResourceSnapshot, error)
     Close() error
 }
@@ -271,7 +306,9 @@ is excluded from comparison for subsequent tests (recorded per result as
 ExcludedClients, mirroring the previous DivergenceReport field). After
 RecoveryCooldown the runner re-probes and reinstates on success.
 
-Report schema v1 (report/schema.go):
+Report schema v1, defined in the runner package (runner/run.go — the runner
+is the only producer); the report package consumes it and owns
+serialization only (JSON, JUnit, HTML, legacy shape):
 
 ```go
 type Report struct {
@@ -280,16 +317,21 @@ type Report struct {
     Seed int64
     Environment map[string]string      // provider, preset, config path
     Endpoints   []EndpointFingerprint  // name, image, version, client type
+    Chain       ChainConfig            // not serialized
+    ChainPreset string                 // serialized chain context
+    Command     string                 // os.Args of the run, for reproduction
     Results []TestResult
     Summary Summary
 }
 type TestResult struct {
     TestID, Category string
+    What    string // human-readable description, carried from Spec.What
+    SpecRuleIDs []string // spec rule anchors; falls back to Metadata.SpecRules
     Status  Status // pass | divergent | skipped | error
     SkipReason string // set when Status == skipped (preflight, min clients)
     ExcludedClients []string
     Divergences []Divergence
-    Elapsed time.Duration
+    Elapsed string // duration string; ElapsedDuration (json:"-") holds the parsed form
 }
 ```
 
@@ -325,8 +367,10 @@ clients:
     proxy_addrs: []            # optional
 ```
 
-Setup validates that multiaddrs parse and pings BeaconAPI endpoints when
-present. Logs returns ErrLogsUnsupported. Teardown is a no-op. This preserves
+Setup validates that multiaddrs parse. BeaconAPI URLs are carried through
+unchecked; reachability is the client layer's concern (client.New probes
+state opportunistically and degrades to libp2p-only operation). Logs
+returns ErrLogsUnsupported. Teardown is a no-op. This preserves
 every existing genconfig artifact and PoC workflow. Note the stated
 limitation: with an empty BeaconAPI the client cannot supply chain state, so
 fork-digest-dependent cases preflight-skip; this is reported, never guessed.
@@ -358,17 +402,42 @@ A separate module at ./hive-sim that imports the core. V1 scope, stated
 honestly: the simulator module delivers suite construction and result
 mapping, tested against a fake hive API server (httptest) that implements the
 subset of the simulation API hivesim uses (suites, tests, node start, test
-end). The heavy lift of a production-ready simulator is genesis and bootnode
-provisioning in hive's HIVE_* conventions for six CL clients plus reachable
-container networking, and it depends on hive carrying CL client definitions
-(ethpandaops fork). That work is explicitly out of v1 and documented as its
-own plan; the fake-API tests pin the interaction patterns so the later
-provisioning work slots into a tested harness.
+end). Genesis and bootnode provisioning, originally scoped out of v1 here,
+has since landed as the docker direct backend (§6.4) outside the hive
+simulator; the simulator itself still ships fake-API-tested suite
+construction only. The fake-API tests pin the interaction patterns; the
+suite is built from the cases registry grouped by category (one hive test
+case per Parallax category, `p2p-<category>`), runs runner.Run per client
+type, and maps divergent → hive failure with per-divergence detail, pass →
+pass, and the full JSON report in the test details.
 
-Mapping within scope: one hive test case per Parallax category; inside it the
-simulator starts one node per configured CL client type, waits for health,
-runs runner.Run, and maps divergent → hive failure with per-divergence
-detail, pass → pass, and the full JSON report in the test details.
+### 6.4 hiveenv (docker direct)
+
+A docker-direct Provider that turns hivegen provisioning files into a
+running devnet without the hive framework. `Config{Enclave, GenDir,
+ClientTypes}`; `Provider.Setup` (env/hiveenv/hiveenv.go):
+
+- hivegen (hive-sim/cmd/hivegen) generates `<out>/gen`: a Deneb
+  `genesis.json` (EL) + `genesis.ssz` (beacon state), validator
+  keystores/secrets, and a merged `config.yaml` with per-client
+  compatibility fixes. The CLI regenerates when the genesis is older than
+  one hour (lighthouse rejects genesis states outside the weak subjectivity
+  period).
+- Setup validates that `genesis.json`, `genesis.ssz` and `config.yaml`
+  exist, sweeps leftover containers named `<enclave>-*` (stale proposers
+  would poison the new chain), creates the `<enclave>-net` network, starts
+  one geth container (fork times fed through HIVE_* env because the mapper
+  drops the genesis config block), then per client type one beacon node
+  container (hive client images, API port 4000, p2p port 9000, reading
+  `/hive/input`) plus its validator client. Readiness is polled via the
+  beacon identity endpoint; endpoints resolve to
+  `/ip4/127.0.0.1/tcp/<hostPort>/p2p/<peerID>` with the Beacon API URL.
+- Every docker call goes through one `cmdRunner` interface — the only
+  exec.Command exit in the env tree — so tests inject a fake runner and
+  never need docker.
+- Teardown removes the started containers and the network; the Setup-time
+  sweep makes reruns idempotent, matching §11: teardown is always an
+  explicit decision, never automatic during a run.
 
 ## 7. Test strategy (TDD)
 
@@ -424,7 +493,7 @@ blocks_by_root trailing bytes and length bomb) were skipped, not double
 ported. Batch 3 ported the transporttest family (corrupted frames, stalled
 handshakes, identify abuse; 9 cases, heavy class where inputs degrade
 target state), the exhaustion family (4 heavy cases via SendSlowly and
-SendOnly), 15 gossip cases (malformed payloads, subnet OOB topics,
+SendOnly), 17 gossip cases (malformed payloads, subnet OOB topics,
 attestation staleness, replay, unknown topic, plus a config-class
 post-Fulu topic split and a heavy invalid flood), the Gloas execution
 payload boundary family (6 config cases, preflighted on the fork), data
@@ -434,8 +503,11 @@ peer-score introspection, and proxy colocation. Batch 4 ported the
 generative subsystems as deterministic generators: a cryptomsg sweep
 (81 cases: malformation x protocol x size plus varint claims), 30 seeded
 statemachine sequences over a request-step alphabet, and 8 single-client
-semantic conformance checks. The registry holds 237 cases (215 standard,
-15 heavy, 7 config); the simulation runs the standard selection.
+semantic conformance checks. The hand-written registry holds 237 cases
+(215 standard, 15 heavy, 7 config). The IR generators add 391 more
+(235 machine, 117 stateless, 6 sequence, 33 seed-walk), so cases.All()
+totals 628. The sandbox runs a fixed selection; -suite standard excludes
+the IR families, -suite full runs everything.
 
 reqresp (port and harden from the previous repo):
 - reqresp.status.valid: valid Status request returns success chunk.
@@ -534,6 +606,30 @@ claimed as done.
 - run never tears the environment down automatically: on failures the
   enclave or endpoints stay alive for inspection, and teardown is always an
   explicit decision.
+- env/hiveenv and hivegen (the docker direct backend, §6.4) were added after
+  v3; the §6.3 "out of v1" scoping referred to provisioning inside the hive
+  simulator, and the direct docker path superseded it. This revision
+  promotes the backend into the contract.
+- An experimental wave scheduler (Options.Parallel with a CLI -parallel
+  flag) existed briefly and was removed on 2026-09-14; the runner is
+  strictly sequential again, matching §5.4. Every historical report was
+  produced serially — the flag was parsed but never wired into
+  runner.Options.
+- ObserveGossip: §5.3 originally specified a passive observe-only form
+  (no data parameter). The implementation landed on 2026-08-28 with the
+  integrated publish-and-observe form from the first commit, all gossip
+  cases were built on it, and the v3 deviation pass missed recording it.
+  §5.3 now documents the as-built signature.
+- RecoveryCooldown: the §5.4 "0 disables" semantics were never implemented
+  — the first scheduler commit shipped `cooldown > 0` guards, i.e. 0 meant
+  "retry every wave", and no CLI flag exposed the knob. Aligned on
+  2026-09-14: 0 now disables recovery as documented, and a
+  `-recovery-cooldown` flag (default 2m) exposes the throttle. Runs before
+  this date used the retry-immediately semantics; comparisons across the
+  boundary should note it.
+- 2026-09-15: §4 layout, §5 interfaces, §6.1 staticenv wording and §8 case
+  counts were refreshed to the as-built state after a full design-drift
+  review (6 substantive + 10 minor drifts, all resolved).
 
 ## 12. Open risks
 

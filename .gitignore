@@ -19,7 +19,7 @@
 /specgen
 
 # local build artifacts
-parallax
-simulation
-specchain
+/parallax
+/simulation
+/specchain
 hive-sim/hivegen

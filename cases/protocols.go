@@ -12,12 +12,12 @@ import (
 // gossipWait is the gossip re-propagation confirmation window: how long we
 // wait for the target to forward a message before concluding it did not.
 // 1500ms matches p2p-testing's statemachine executor window. The
-// simulation overrides it (in-memory test nodes relay within
+// sandbox overrides it (in-memory test nodes relay within
 // milliseconds), see SetGossipWait.
 var gossipWait = 1500 * time.Millisecond
 
 // SetGossipWait overrides the propagation window. For in-memory node
-// environments (simulation, tests) only.
+// environments (sandbox, tests) only.
 func SetGossipWait(d time.Duration) { gossipWait = d }
 
 // gossipSpecs returns the gossip seed cases.

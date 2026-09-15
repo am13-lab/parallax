@@ -65,9 +65,9 @@ the comparison.
 
 | tier | cases | what | 6-client duration |
 |---|---|---|---|
-| `quick` | 36 | representative cases per family and input class | ~4 min |
+| `quick` | 35 | representative cases per family and input class | ~4 min |
 | `standard` | 215 | hand-written families, IR-generated excluded | ~40 min |
-| `full` | 606+ | everything including IR-generated, heavy families last | ~1.5 h |
+| `full` | 628 | everything including IR-generated, heavy families last | ~1.5 h |
 
 ```bash
 # quick tier against six clients on the hive path
@@ -142,7 +142,7 @@ typed method definitions and refreshes protocol availability from the spec.
 go run ./cmd/parallax list
 
 # no devnet? run the seed set against scripted fake nodes
-go run ./cmd/simulation --out results/demo
+go run ./cmd/sandbox --out results/demo
 ```
 
 ## Development

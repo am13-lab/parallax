@@ -55,10 +55,12 @@ func generatedCryptomsgSpecs() []runner.Spec {
 			for _, sz := range sizes {
 				proto, mt, size := p, m.mt, sz.n
 				id := fmt.Sprintf("cryptomsg.%s.%s.%s", proto.name, m.label, sz.label)
-				specs = append(specs, exchangeSpec(id, proto.id,
+				s := exchangeSpec(id, proto.id,
 					func(te runner.TestEnv) []byte {
 						return wire.BuildMalformedSSZSnappy(proto.valid(size), mt, te.RNG)
-					}, nil))
+					}, nil)
+				s.Category = "cryptomsg"
+				specs = append(specs, s)
 			}
 		}
 	}
@@ -69,10 +71,12 @@ func generatedCryptomsgSpecs() []runner.Spec {
 		for _, c := range claims {
 			claim := c
 			id := fmt.Sprintf("cryptomsg.varint.%s.%d", protoShort(p.name), claim)
-			specs = append(specs, exchangeSpec(id, p.id,
+			s := exchangeSpec(id, p.id,
 				func(te runner.TestEnv) []byte {
 					return wire.BuildVarintLengthMismatch(wire.Uint64ToSSZ(1), claim)
-				}, nil))
+				}, nil)
+			s.Category = "cryptomsg"
+			specs = append(specs, s)
 		}
 	}
 	return specs

@@ -14,6 +14,7 @@ import (
 
 	"github.com/ethereum/hive/hivesim"
 
+	"parallax/cases"
 	"parallax/env"
 	"parallax/runner"
 )
@@ -206,6 +207,49 @@ func TestHiveSuiteRun(t *testing.T) {
 	}
 	if len(fake.failures) != 0 {
 		t.Fatalf("convergent fake specs must pass: %v", fake.failures)
+	}
+}
+
+func TestHiveSuiteDefaultSpecsSource(t *testing.T) {
+	beacon := fakeBeacon(t)
+	fake := newFakeHive(beacon.URL)
+	simServer := httptest.NewServer(fake)
+	t.Cleanup(simServer.Close)
+
+	if got := cases.ByCategory("reqresp"); len(got) == 0 {
+		t.Fatal("precondition: cases registry has no reqresp specs")
+	}
+
+	portOf := func(srv *httptest.Server) int {
+		_, port, _ := net.SplitHostPort(strings.TrimPrefix(srv.URL, "http://"))
+		var p int
+		fmt.Sscanf(port, "%d", &p)
+		return p
+	}
+
+	cfg := Config{
+		ClientTypes: []string{"prysm", "lighthouse"},
+		Categories:  []string{"reqresp"},
+		ClientFactory: func(ctx context.Context, ep env.Endpoint) (runner.Client, error) {
+			return &fakeRunnerClient{name: ep.Name}, nil
+		},
+		HTTPPort: func(string) int { return portOf(beacon) },
+		P2PPort:  9000,
+		Chain:    runner.ChainConfig{},
+		WaitReady: 5 * time.Second,
+		// SpecsFor deliberately nil: production must fall back to the
+		// cases registry instead of panicking.
+	}
+
+	sim := hivesim.NewAt(simServer.URL)
+	if err := hivesim.RunSuite(sim, BuildSuite(cfg)); err != nil {
+		t.Fatalf("run suite: %v", err)
+	}
+	if fake.nodes != 2 {
+		t.Fatalf("node starts: %d", fake.nodes)
+	}
+	if len(fake.failures) != 0 {
+		t.Fatalf("registry specs against identical fakes must pass: %v", fake.failures)
 	}
 }
 

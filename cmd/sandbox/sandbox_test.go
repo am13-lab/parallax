@@ -8,15 +8,15 @@ import (
 	"parallax/runner"
 )
 
-func TestRunSimulationProducesDivergences(t *testing.T) {
+func TestRunSandboxProducesDivergences(t *testing.T) {
 	dir := t.TempDir()
-	rep, err := runSimulation(SimConfig{Out: dir})
+	rep, err := runSandbox(SandboxConfig{Out: dir})
 	if err != nil {
-		t.Fatalf("simulation: %v", err)
+		t.Fatalf("sandbox: %v", err)
 	}
 
 	if rep.Summary.Total != 320 {
-		t.Fatalf("simulation selection size: %d", rep.Summary.Total)
+		t.Fatalf("sandbox selection size: %d", rep.Summary.Total)
 	}
 	// The deviant node rejects all pings (the script cannot branch on the
 	// body), so both ping cases diverge; plus unknown protocol, gossip

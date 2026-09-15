@@ -1,4 +1,4 @@
-// Command simulation runs the full seed case set against scripted fake
+// Command sandbox runs the full seed case set against scripted fake
 // consensus nodes and writes real report artifacts. It exercises the exact
 // production pipeline (env -> clients -> runner -> report) without a
 // devnet, and doubles as a demonstration of the divergence detection.
@@ -20,8 +20,8 @@ import (
 	"parallax/testnode"
 )
 
-// SimConfig configures the simulation.
-type SimConfig struct {
+// SandboxConfig configures the sandbox run.
+type SandboxConfig struct {
 	Out    string
 	Stdout writer
 }
@@ -41,14 +41,14 @@ const (
 	gossipTopic  = "/eth2/deadbeef/beacon_block/ssz_snappy"
 )
 
-// runSimulation starts three fake nodes with scripted behaviors, runs the
+// runSandbox starts three fake nodes with scripted behaviors, runs the
 // full seed set through the production pipeline, and writes artifacts.
 //
 // Scripting: node A (prysm-a) is fully conformant; node B (lighthouse-b)
 // matches A; node C (teku-c) deviates on four properties: it resets
 // empty-body pings, serves an unknown protocol, rejects gossip, and
 // advertises a different fork digest in its ENR.
-func runSimulation(cfg SimConfig) (*runner.Report, error) {
+func runSandbox(cfg SandboxConfig) (*runner.Report, error) {
 	okRead := &testnode.Script{Behavior: testnode.Success, Chunks: [][]byte{{0x01}}, ReadRequest: true}
 	okNoRead := &testnode.Script{Behavior: testnode.Success}
 	resetRead := &testnode.Script{Behavior: testnode.Reset, ReadRequest: true}
@@ -139,13 +139,13 @@ func runSimulation(cfg SimConfig) (*runner.Report, error) {
 	}
 
 	chain := runner.ChainConfig{Preset: "mainnet", ForkDigest: [4]byte{0xde, 0xad, 0xbe, 0xef}, CustodyRequirement: 4}
-	// The simulation runs the hand-written families, the 30 statemachine
+	// The sandbox runs the hand-written families, the 30 statemachine
 	// representative sequences, and the fast deterministic IR families
 	// (req/resp, discovery, concurrency probes). The remaining IR cases —
 	// gossip validation, walker plans, crypto-msg sweeps, peer scoring,
 	// resource exhaustion — are devnet-run territory: slower,
 	// timing-sensitive, or deliberately degrading.
-	specs := simSelection(cases.All())
+	specs := sandboxSelection(cases.All())
 	rep := runner.Run(ctx, specs, clients, envr, chain, runner.Options{
 		Seed:           42,
 		PerTestTimeout: 2 * time.Minute,
@@ -176,9 +176,9 @@ func runSimulation(cfg SimConfig) (*runner.Report, error) {
 	return rep, nil
 }
 
-// simIRAllowlist is the subset of IR-generated families the in-memory
-// simulation exercises.
-var simIRAllowlist = []string{
+// sandboxIRAllowlist is the subset of IR-generated families the in-memory
+// sandbox exercises.
+var sandboxIRAllowlist = []string{
 	"ir.ReqResp.",
 	"ir.Discovery.",
 	"ir.Concurrent.",
@@ -186,16 +186,16 @@ var simIRAllowlist = []string{
 	"ir_stateless.discovery.",
 }
 
-// simSelection keeps the hand-written families, the statemachine
+// sandboxSelection keeps the hand-written families, the statemachine
 // representative sequences, and the allowlisted fast IR families.
-func simSelection(all []runner.Spec) []runner.Spec {
+func sandboxSelection(all []runner.Spec) []runner.Spec {
 	out := make([]runner.Spec, 0, len(all))
 	for _, s := range all {
 		if !strings.HasPrefix(s.ID, "ir.") && !strings.HasPrefix(s.ID, "ir_") {
 			out = append(out, s)
 			continue
 		}
-		for _, p := range simIRAllowlist {
+		for _, p := range sandboxIRAllowlist {
 			if strings.HasPrefix(s.ID, p) {
 				out = append(out, s)
 				break

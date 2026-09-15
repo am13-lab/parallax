@@ -215,11 +215,11 @@ go run ./cmd/parallax list                 # case registry
 go run ./cmd/parallax run --env static --config clients.yaml
 go run ./cmd/parallax analyze --report results/report.json --allowlist known.json
 
-# simulation: full seed set against scripted fake nodes, real artifacts
-go run ./cmd/simulation --out results/demo
+# sandbox: full seed set against scripted fake nodes, real artifacts
+go run ./cmd/sandbox --out results/demo
 ```
 
-The simulation command is the fastest way to see the pipeline produce a
+The sandbox command is the fastest way to see the pipeline produce a
 report and junit.xml without any devnet.
 
 ## 9. Where tests come from (discovery sources)
