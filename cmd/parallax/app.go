@@ -33,7 +33,8 @@ type RunConfig struct {
 	Enclave    string
 	ArgsFile   string
 	Attach     bool
-	// Clients 逗号分隔的客户端名子串过滤（空 = 全部）。
+	// Clients is a comma-separated filter on client name substrings
+	// (empty = all).
 	Clients string
 
 	// one-shot regeneration: run the spec pipeline, rebuild this binary,

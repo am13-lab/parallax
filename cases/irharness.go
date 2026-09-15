@@ -195,7 +195,8 @@ func joinForks(fs []string) string {
 // irProbeAll runs probe concurrently across every client and returns the
 // name->verdict map. Per-client probes are independent, so wall-clock cost
 // is the slowest client rather than the sum of all clients.
-func irProbeAll(te runner.TestEnv, probe func(runner.Client) string) map[string]string {	var wg sync.WaitGroup
+func irProbeAll(te runner.TestEnv, probe func(runner.Client) string) map[string]string {
+	var wg sync.WaitGroup
 	var mu sync.Mutex
 	out := make(map[string]string, len(te.Clients))
 	for _, c := range te.Clients {

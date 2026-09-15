@@ -62,7 +62,8 @@ var portedCaseBuilders = map[string]bool{
 	"buildSubBoundaryOutOfRange": true, "buildSubBoundaryDeprecated": true,
 	"buildSubBoundaryCrossType": true,
 
-	// live 系列需要 Beacon API（运行时职责/时钟窗口）；无法构建时返回 nil。
+	// The live series needs a Beacon API (a runtime responsibility / clock
+	// window); builders that cannot be constructed return nil.
 	"buildLiveValidBeaconAggregateAndProof": true,
 	"buildLiveValidSyncCommitteeMessage":    true,
 	"buildLiveValidBlobSidecar":             true,
