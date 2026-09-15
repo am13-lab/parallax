@@ -73,8 +73,11 @@ var vcDefs = map[string]vcDef{
 	"prysm":    {image: "hive/clients/prysm-vc:local", apiPort: "4000", script: "/prysm_vc.sh"},
 	"nimbus":   {image: "hive/clients/nimbus-vc:local", apiPort: "4000", script: "/nimbus_vc.sh"},
 	"lodestar": {image: "hive/clients/lodestar-vc:local", apiPort: "4000", script: "/lodestar_vc.sh"},
-	// grandine ships without a hive VC definition; its beacon node has
-	// integrated validator duties, so no VC is launched for it.
+	// Upstream hive has no clients/grandine-vc (only grandine-bn), and
+	// grandine.sh wires no validators into the BN — it cannot self-propose.
+	// The lighthouse VC drives any BN through the standard validator API,
+	// so grandine is paired with it deliberately; verify this pairing in
+	// the hive live-validation run.
 	"grandine": {image: "hive/clients/lighthouse-vc:local", apiPort: "4000", script: "/lighthouse_vc.sh"},
 }
 

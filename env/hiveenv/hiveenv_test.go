@@ -64,8 +64,8 @@ func genDir(t *testing.T) string {
 	t.Helper()
 	dir := t.TempDir()
 	files := map[string]string{
-		"genesis.ssz": "x",
-		"config.yaml": "x",
+		"genesis.ssz":  "x",
+		"config.yaml":  "x",
 		"genesis.json": `{"timestamp":"0x6aa2785b","config":{"chainId":7}}`,
 	}
 	for f, body := range files {
@@ -81,7 +81,7 @@ func TestSetupSmokeSequence(t *testing.T) {
 	fake := &fakeRunner{}
 	p := &Provider{
 		Runner: fake,
-		Probe: func(url string) bool { return true },
+		Probe:  func(url string) bool { return true },
 		Identity: func(base string) (string, error) {
 			// point identity at the test server regardless of mapped port
 			pid, _, err := fetchIdentity(srv.URL)
@@ -181,5 +181,25 @@ func TestSetupUnknownClientFails(t *testing.T) {
 		ClientTypes: []string{"nosuchclient"},
 	}); err == nil || !strings.Contains(err.Error(), "no hive client profile") {
 		t.Fatalf("unknown client must fail with profile hint: %v", err)
+	}
+}
+
+// TestGrandineVCPairing pins the drift-review resolution: upstream hive has
+// no clients/grandine-vc and its grandine-bn wires no validators, so the
+// grandine BN is deliberately paired with the lighthouse VC (standard
+// validator API). Every client profile must keep a VC profile too — a
+// missing entry would silently stall the chain at slot 0.
+func TestGrandineVCPairing(t *testing.T) {
+	vdef, ok := vcDefs["grandine"]
+	if !ok {
+		t.Fatal("grandine must have a VC profile: its hive BN wires no validators")
+	}
+	if vdef.image != "hive/clients/lighthouse-vc:local" || vdef.script != "/lighthouse_vc.sh" {
+		t.Fatalf("grandine VC pairing changed: %+v", vdef)
+	}
+	for ct := range clientDefs {
+		if _, ok := vcDefs[ct]; !ok {
+			t.Fatalf("client %q has no VC profile: the chain would never propose", ct)
+		}
 	}
 }
