@@ -625,17 +625,6 @@ func runAnalyze(cfg AnalyzeConfig, stdout io.Writer) error {
 		fmt.Fprintf(stdout, "html report: %s (%d runs)\n", htmlPath, len(runs))
 	}
 
-	if cfg.JUnitOut != "" {
-		junit, err := report.WriteJUnit(&rep)
-		if err != nil {
-			return fmt.Errorf("render junit: %w", err)
-		}
-		if err := os.WriteFile(cfg.JUnitOut, junit, 0o644); err != nil {
-			return err
-		}
-		fmt.Fprintf(stdout, "junit report: %s\n", cfg.JUnitOut)
-	}
-
 	if cfg.Legacy {
 		legacy, err := report.LegacyShape(&rep)
 		if err != nil {
