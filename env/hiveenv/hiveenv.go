@@ -199,6 +199,31 @@ func (p *Provider) Setup(ctx context.Context, cfg any) (env.Environment, error) 
 		runner = dockerCLI{}
 	}
 
+	// Pre-flight: every image below must already exist in the local
+	// docker daemon. They cannot be pulled — they are built from the
+	// ethpandaops hive fork (scripts/build-hive-images.sh) — so a missing
+	// image must abort here with the build hint instead of surfacing as a
+	// confusing registry pull error mid-orchestration. Also remember that
+	// docker has to point at the daemon where the images were built
+	// (DOCKER_HOST / docker context).
+	required := []string{elImage}
+	for _, ct := range hcfg.ClientTypes {
+		required = append(required, clientDefs[ct].image, vcDefs[ct].image)
+	}
+	var missing []string
+	for _, img := range required {
+		if _, err := runner.Run("image", "inspect", img); err != nil {
+			missing = append(missing, img)
+		}
+	}
+	if len(missing) > 0 {
+		return nil, fmt.Errorf(
+			"missing local docker images: %s\n"+
+				"they cannot be pulled — build them with scripts/build-hive-images.sh,\n"+
+				"and make sure docker points at the daemon where they were built (DOCKER_HOST / docker context)",
+			strings.Join(missing, ", "))
+	}
+
 	// Sweep leftovers from previous runs sharing this enclave name: stale
 	// containers keep proposing on an old chain and poison the new one.
 	if out, err := runner.Run("ps", "-aq", "--filter", "name=^/"+hcfg.Enclave+"-"); err == nil && strings.TrimSpace(out) != "" {

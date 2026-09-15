@@ -203,3 +203,21 @@ func TestGrandineVCPairing(t *testing.T) {
 		}
 	}
 }
+
+// TestSetupFailsFastOnMissingImages: the hive client images cannot be
+// pulled from any registry — they are built from the ethpandaops fork. A
+// missing image must abort Setup up front with the build hint (and a
+// reminder that docker must point at the daemon holding the images),
+// instead of a confusing pull error mid-orchestration.
+func TestSetupFailsFastOnMissingImages(t *testing.T) {
+	fake := &fakeRunner{failOn: []string{"image inspect"}}
+	p := &Provider{Runner: fake}
+	_, err := p.Setup(context.Background(), Config{
+		Enclave:     "x",
+		GenDir:      genDir(t),
+		ClientTypes: []string{"lighthouse"},
+	})
+	if err == nil || !strings.Contains(err.Error(), "scripts/build-hive-images.sh") {
+		t.Fatalf("missing images must fail fast with the build hint: %v", err)
+	}
+}
