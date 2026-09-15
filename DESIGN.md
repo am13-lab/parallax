@@ -635,6 +635,11 @@ claimed as done.
   through the Go API and a full -suite standard run (215 cases, 0 errors)
   completed against it. Note: kurtosis requires a Docker endpoint whose
   socket it can mount — colima's VirtioFS does not work; OrbStack does.
+- 2026-09-15, live-run lesson: that standard run also showed a client
+  serving /eth/v1/node/health 200 all run while its libp2p never came up
+  (83 poisoned findings, ban never triggered). Client.Health now verifies
+  both planes — Beacon API and the libp2p connection — so postHealth and
+  the ban state machine see p2p-dead clients as dead.
 
 ## 12. Open risks
 

@@ -459,11 +459,16 @@ func (c *Client) reconnect(ctx context.Context) error {
 	return nil
 }
 
-// Health checks liveness via the Beacon API, falling back to the libp2p
-// connection when no API is configured.
+// Health verifies liveness on both planes: the Beacon API (when
+// configured) and the libp2p connection. The live standard run showed why
+// both matter: prysm served /eth/v1/node/health 200 for a whole run while
+// every status handshake failed — HTTP-only liveness kept a p2p-dead
+// client in the comparison and poisoned 83 findings.
 func (c *Client) Health(ctx context.Context) error {
 	if c.beaconAPI != "" {
-		return beacon.New(c.beaconAPI).Health(ctx)
+		if err := beacon.New(c.beaconAPI).Health(ctx); err != nil {
+			return fmt.Errorf("beacon api: %w", err)
+		}
 	}
 	return c.probe.EnsureConnected(ctx)
 }
