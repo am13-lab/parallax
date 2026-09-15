@@ -1,6 +1,8 @@
 package main
 
 import (
+	"bytes"
+
 	"context"
 	"encoding/json"
 	"flag"
@@ -402,11 +404,17 @@ func setupEnv(ctx context.Context, cfg RunConfig) (env.Environment, []env.Endpoi
 				// even the dist directory are missing, so build it from
 				// the hive-sim module on the spot instead of failing.
 				fmt.Fprintf(os.Stdout, "==> %s missing; building hivegen from hive-sim\n", bin)
-				_ = os.MkdirAll(filepath.Dir(bin), 0o755)
-				b := exec.Command("go", "build", "-C", "hive-sim", "-o", bin, "./cmd/hivegen")
-				b.Stdout = os.Stdout
-				if out, err := b.CombinedOutput(); err != nil {
-					return nil, nil, fmt.Errorf("build hivegen (go build -C hive-sim -o %s ./cmd/hivegen): %s", bin, out)
+				absBin, aerr := filepath.Abs(bin)
+				if aerr != nil {
+					return nil, nil, aerr
+				}
+				_ = os.MkdirAll(filepath.Dir(absBin), 0o755)
+				b := exec.Command("go", "build", "-C", "hive-sim", "-o", absBin, "./cmd/hivegen")
+				var buf bytes.Buffer
+				b.Stdout = &buf
+				b.Stderr = &buf
+				if err := b.Run(); err != nil {
+					return nil, nil, fmt.Errorf("build hivegen (go build -C hive-sim -o %s ./cmd/hivegen): %v: %s", absBin, err, buf.String())
 				}
 			}
 			cmd := exec.Command(bin, "-out", genDir, "-genesis-delay", "90s")
