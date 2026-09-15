@@ -630,6 +630,11 @@ claimed as done.
 - 2026-09-15: §4 layout, §5 interfaces, §6.1 staticenv wording and §8 case
   counts were refreshed to the as-built state after a full design-drift
   review (6 substantive + 10 minor drifts, all resolved).
+- 2026-09-15: the kurtosis provision path (§9 Phase 2) is live-verified: a
+  real ethereum-package devnet (six CL participants on geth) was provisioned
+  through the Go API and a full -suite standard run (215 cases, 0 errors)
+  completed against it. Note: kurtosis requires a Docker endpoint whose
+  socket it can mount — colima's VirtioFS does not work; OrbStack does.
 
 ## 12. Open risks
 
