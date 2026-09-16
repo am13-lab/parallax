@@ -158,7 +158,7 @@ func (c *Client) statusHandshakeOnce(ctx context.Context) bool {
 	failed := false
 	for _, proto := range []string{"/eth2/beacon_chain/req/status/1/ssz_snappy", "/eth2/beacon_chain/req/status/2/ssz_snappy"} {
 		body := c.statusV1
-		if strings.HasSuffix(proto, "/2/") {
+		if strings.Contains(proto, "/status/2/") {
 			body = c.statusV2
 		}
 		if _, _, err := c.probe.SendAndReceive(ctx, proto, wire.BuildSSZSnappy(body), 5*time.Second); err != nil {
