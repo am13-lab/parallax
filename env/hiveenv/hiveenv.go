@@ -45,12 +45,12 @@ type clientDef struct {
 // clientDefs covers the clients verified under this path; extend after
 // building the corresponding hive client image.
 var clientDefs = map[string]clientDef{
-	"lighthouse": {image: "hive/clients/lighthouse-bn:local", apiPort: "4000", p2pPort: "9000"},
-	"teku":       {image: "hive/clients/teku-bn:local", apiPort: "4000", p2pPort: "9000"},
-	"prysm":      {image: "hive/clients/prysm-bn:local", apiPort: "4000", p2pPort: "9000"},
-	"nimbus":     {image: "hive/clients/nimbus-bn:local", apiPort: "4000", p2pPort: "9000"},
-	"lodestar":   {image: "hive/clients/lodestar-bn:local", apiPort: "4000", p2pPort: "9000"},
-	"grandine":   {image: "hive/clients/grandine-bn:local", apiPort: "4000", p2pPort: "9000"},
+	"lighthouse": {image: "am13lab/hive-lighthouse-bn:local", apiPort: "4000", p2pPort: "9000"},
+	"teku":       {image: "am13lab/hive-teku-bn:local", apiPort: "4000", p2pPort: "9000"},
+	"prysm":      {image: "am13lab/hive-prysm-bn:local", apiPort: "4000", p2pPort: "9000"},
+	"nimbus":     {image: "am13lab/hive-nimbus-bn:local", apiPort: "4000", p2pPort: "9000"},
+	"lodestar":   {image: "am13lab/hive-lodestar-bn:local", apiPort: "4000", p2pPort: "9000"},
+	"grandine":   {image: "am13lab/hive-grandine-bn:local", apiPort: "4000", p2pPort: "9000"},
 }
 
 // vcDef is the validator-client launch profile paired with each BN.
@@ -65,17 +65,17 @@ type vcDef struct {
 
 var vcDefs = map[string]vcDef{
 	"lighthouse": {
-		image:   "hive/clients/lighthouse-vc:local",
+		image:   "am13lab/hive-lighthouse-vc:local",
 		apiPort: "4000",
 		script:  "/lighthouse_vc.sh",
 	},
-	"teku":     {image: "hive/clients/teku-vc:local", apiPort: "4000", script: "/teku_vc.sh"},
-	"prysm":    {image: "hive/clients/prysm-vc:local", apiPort: "4000", script: "/prysm_vc.sh"},
-	"nimbus":   {image: "hive/clients/nimbus-vc:local", apiPort: "4000", script: "/nimbus_vc.sh"},
-	"lodestar": {image: "hive/clients/lodestar-vc:local", apiPort: "4000", script: "/lodestar_vc.sh"},
+	"teku":     {image: "am13lab/hive-teku-vc:local", apiPort: "4000", script: "/teku_vc.sh"},
+	"prysm":    {image: "am13lab/hive-prysm-vc:local", apiPort: "4000", script: "/prysm_vc.sh"},
+	"nimbus":   {image: "am13lab/hive-nimbus-vc:local", apiPort: "4000", script: "/nimbus_vc.sh"},
+	"lodestar": {image: "am13lab/hive-lodestar-vc:local", apiPort: "4000", script: "/lodestar_vc.sh"},
 	// grandine ships without a hive VC definition; its beacon node has
 	// integrated validator duties, so no VC is launched for it.
-	"grandine": {image: "hive/clients/lighthouse-vc:local", apiPort: "4000", script: "/lighthouse_vc.sh"},
+	"grandine": {image: "am13lab/hive-lighthouse-vc:local", apiPort: "4000", script: "/lighthouse_vc.sh"},
 }
 
 // EL image and ports: the geth hive client, with authrpc on 8551 (the
@@ -85,7 +85,7 @@ var vcDefs = map[string]vcDef{
 const depositContractAddr = "0x4242424242424242424242424242424242424242"
 
 const (
-	elImage    = "hive/clients/go-ethereum"
+	elImage    = "am13lab/hive-go-ethereum"
 	elHTTPPort = "8545"
 	elAuthPort = "8551"
 	elP2PPort  = "30303"
