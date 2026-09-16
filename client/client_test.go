@@ -335,6 +335,54 @@ func TestSendOnlyAndSlowly(t *testing.T) {
 	}
 }
 
+// TestSendOnlyStreamReclaimed pins the SendOnly stream lifecycle: after the
+// reclaim TTL the stream must be fully torn down, so long runs stop leaking
+// streams on the muxed connection.
+func TestSendOnlyStreamReclaimed(t *testing.T) {
+	n := startNode(t, &testnode.Config{Protocols: map[string]*testnode.Script{
+		pingProto: {Behavior: testnode.Hang, ReadRequest: true},
+	}})
+	client.SetSendOnlyStreamTTL(100 * time.Millisecond)
+	t.Cleanup(func() { client.SetSendOnlyStreamTTL(15 * time.Second) })
+
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	defer cancel()
+
+	c, err := client.New(ctx, &client.Config{
+		Name:       "n",
+		ClientType: "fake",
+		Multiaddr:  n.Multiaddr(),
+		BeaconAPI:  n.BeaconURL(),
+		Mode:       client.ModeNoStatus,
+	})
+	if err != nil {
+		t.Fatalf("client.New: %v", err)
+	}
+	t.Cleanup(func() { c.Close() })
+
+	if err := c.SendOnly(ctx, pingProto, wire.BuildSSZSnappy([]byte{0x01})); err != nil {
+		t.Fatalf("send only: %v", err)
+	}
+	deadline := time.Now().Add(2 * time.Second)
+	for len(n.Requests(pingProto)) == 0 && time.Now().Before(deadline) {
+		time.Sleep(20 * time.Millisecond)
+	}
+	if len(n.Requests(pingProto)) == 0 {
+		t.Fatal("SendOnly request must reach the node")
+	}
+	if got := c.OpenStreams(pingProto); got != 1 {
+		t.Fatalf("stream must be open before the TTL expires, open: %d", got)
+	}
+
+	deadline = time.Now().Add(3 * time.Second)
+	for c.OpenStreams(pingProto) > 0 && time.Now().Before(deadline) {
+		time.Sleep(20 * time.Millisecond)
+	}
+	if got := c.OpenStreams(pingProto); got != 0 {
+		t.Fatalf("SendOnly stream must be reclaimed after the TTL, still open: %d", got)
+	}
+}
+
 // TestHealthCatchesDeadP2P pins the live-run lesson (prysm served /health
 // 200 for a whole standard run while every status handshake failed):
 // Health must verify the libp2p plane, not just the Beacon API.
