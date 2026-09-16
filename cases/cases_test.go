@@ -275,6 +275,11 @@ func TestDiscoveryForkDigest(t *testing.T) {
 		if len(divs) != 1 || divs[0].Type != runner.DivConsensusValue {
 			t.Fatalf("digest mismatch must diverge: %+v", divs)
 		}
+		// On the common 1-vs-1 tie exactly one client must be attributed:
+		// an empty outlier set leaves the divergence unallowlistable.
+		if len(divs[0].OutlierClients) != 1 || divs[0].OutlierClients[0] != "A" {
+			t.Fatalf("tie must attribute exactly one outlier (A, sorted-second value): %+v", divs[0].OutlierClients)
+		}
 	})
 }
 

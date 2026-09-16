@@ -189,6 +189,20 @@ func (c *Client) Type() string { return c.clientType }
 // OwnPeerID returns the probe's current peer ID.
 func (c *Client) OwnPeerID() string { return c.probe.OwnPeerID() }
 
+// OpenStreams reports how many streams the client currently holds open for
+// the protocol, to watch for SendOnly leaks over long runs.
+func (c *Client) OpenStreams(protocol string) int {
+	count := 0
+	for _, conn := range c.probe.Host().Network().Conns() {
+		for _, s := range conn.GetStreams() {
+			if string(s.Protocol()) == protocol {
+				count++
+			}
+		}
+	}
+	return count
+}
+
 // ReqResp sends one request and reads the full response.
 func (c *Client) ReqResp(ctx context.Context, protocol string, body []byte, timeout time.Duration) (*runner.ReqRespResult, error) {
 	if err := c.probe.EnsureConnected(ctx); err != nil {
@@ -260,10 +274,24 @@ func isStreamReset(msg string) bool {
 	return strings.Contains(msg, "reset")
 }
 
+// sendOnlyStreamTTL bounds how long a SendOnly stream stays open before the
+// client reclaims it. The delay must exceed the peer's own req/resp timeouts
+// (spec: 5s TTFB, 10s response) so the peer has already concluded the
+// exchange on its own when the teardown arrives and the stimulus — a stream
+// written but never read — is unchanged.
+var sendOnlyStreamTTL = 15 * time.Second
+
+// SetSendOnlyStreamTTL overrides the SendOnly stream reclaim delay.
+func SetSendOnlyStreamTTL(d time.Duration) { sendOnlyStreamTTL = d }
+
 // SendOnly opens a stream, writes the body, and does not read.
 func (c *Client) SendOnly(ctx context.Context, protocol string, body []byte) error {
-	_, err := c.probe.SendOnly(ctx, protocol, body)
-	return err
+	stream, err := c.probe.SendOnly(ctx, protocol, body)
+	if err != nil {
+		return err
+	}
+	time.AfterFunc(sendOnlyStreamTTL, func() { stream.Reset() })
+	return nil
 }
 
 // irStream adapts a raw libp2p stream to runner.IRStream.

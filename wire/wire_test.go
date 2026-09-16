@@ -199,6 +199,20 @@ func TestParseResponseChunksErrorChunkBadVarint(t *testing.T) {
 	}
 }
 
+func TestParseResponseChunksErrorChunkTruncatedMessage(t *testing.T) {
+	// The varint announces 3 message bytes but only 2 follow; the bounds
+	// check must account for the varint width itself instead of slicing
+	// past the end of the buffer.
+	buf := []byte{0x02, 0x03, 0xAA, 0xBB}
+	chunks := ParseReqRespResponse(buf)
+	if len(chunks) != 1 || !chunks[0].Malformed {
+		t.Fatalf("truncated error message must be malformed, got %+v", chunks)
+	}
+	if !bytes.Equal(chunks[0].Payload, buf[1:]) {
+		t.Fatalf("raw remainder expected, got %x", chunks[0].Payload)
+	}
+}
+
 func TestParseResponseChunksV1NoContext(t *testing.T) {
 	p := []byte{0x01, 0x02}
 	var buf bytes.Buffer
