@@ -42,7 +42,7 @@ func parseReqRespChunks(data []byte, hasContext bool) []ResponseChunk {
 		// chunk boundaries after an error are not recoverable.
 		if chunk.ResultCode != 0x00 {
 			msgLen, n := binary.Uvarint(data[offset:])
-			if n > 0 && uint64(len(data)-offset) >= msgLen {
+			if n > 0 && uint64(len(data)-offset-n) >= msgLen {
 				chunk.Payload = data[offset+n : offset+n+int(msgLen)]
 			} else {
 				chunk.Malformed = true
