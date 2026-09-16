@@ -43,6 +43,14 @@ go run ./cmd/parallax run -env hive -out results/quick
 `-enclave` / `-hive-clients` carry defaults (parallax / all six CL
 clients). Requires the source tree and the go toolchain.
 
+The hive backend additionally needs the `hivegen` helper binary (the
+`dist/` directory is gitignored). Build it once per checkout:
+
+```bash
+mkdir -p dist
+(cd hive-sim && go build -o ../dist/hivegen ./cmd/hivegen)
+```
+
 ### 2. Run differential tests
 
 Two live backends share the case set, differential engine, and report

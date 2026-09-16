@@ -2,6 +2,7 @@ package hiveenv
 
 import (
 	"context"
+	"errors"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -53,7 +54,7 @@ func identityServer(t *testing.T, peerID string) *httptest.Server {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/eth/v1/node/identity", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		_, _ = w.Write([]byte(`{"data":{"peer_id":"` + peerID + `","enr":""}}`))
+		_, _ = w.Write([]byte(`{"data":{"peer_id":"` + peerID + `","enr":"enr:-N24QOgknPUC-test"}}`))
 	})
 	srv := httptest.NewServer(mux)
 	t.Cleanup(srv.Close)
@@ -87,6 +88,10 @@ func TestSetupSmokeSequence(t *testing.T) {
 			pid, _, err := fetchIdentity(srv.URL)
 			return pid, err
 		},
+		ENR: func(base string) (string, error) {
+			_, enr, err := fetchIdentity(srv.URL)
+			return enr, err
+		},
 	}
 	e, err := p.Setup(context.Background(), Config{
 		Enclave:     "smoke",
@@ -101,7 +106,7 @@ func TestSetupSmokeSequence(t *testing.T) {
 	if !fake.has("ps -aq --filter name=^/smoke-") {
 		t.Fatal("missing leftover-container sweep")
 	}
-	if !fake.has("network create smoke-net") {
+	if !fake.has("network create --subnet=") || !fake.has("smoke-net") {
 		t.Fatal("missing network create")
 	}
 	if !fake.has("run -d --name smoke-geth") {
@@ -181,5 +186,34 @@ func TestSetupUnknownClientFails(t *testing.T) {
 		ClientTypes: []string{"nosuchclient"},
 	}); err == nil || !strings.Contains(err.Error(), "no hive client profile") {
 		t.Fatalf("unknown client must fail with profile hint: %v", err)
+	}
+}
+
+// flakyPortRunner fails the first N `docker port` queries, simulating the
+// OrbStack window where dynamic bindings register after `run -d` returns.
+type flakyPortRunner struct {
+	fakeRunner
+	failLeft int
+}
+
+func (f *flakyPortRunner) Run(args ...string) (string, error) {
+	if strings.HasPrefix(strings.Join(args, " "), "port ") && f.failLeft > 0 {
+		f.failLeft--
+		return "Error: No public port '4000' published", errors.New("no public port")
+	}
+	return f.fakeRunner.Run(args...)
+}
+
+func TestHostPortRetriesAsyncBinding(t *testing.T) {
+	r := &flakyPortRunner{fakeRunner: fakeRunner{out: map[string]string{}}, failLeft: 3}
+	p, err := hostPort(r, "some-container", "4000")
+	if err != nil {
+		t.Fatalf("hostPort must retry until the binding registers: %v", err)
+	}
+	if p != "39999" {
+		t.Fatalf("unexpected port %q", p)
+	}
+	if r.failLeft != 0 {
+		t.Fatalf("retry must consume the transient failures, %d left", r.failLeft)
 	}
 }
