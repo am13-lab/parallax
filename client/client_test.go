@@ -91,6 +91,21 @@ func TestNewPerformsStatusHandshake(t *testing.T) {
 	}
 }
 
+// The /status/2/ protocol must carry the 92-byte V2 envelope, not the
+// 84-byte V1 body.
+func TestStatusV2HandshakeSendsV2Body(t *testing.T) {
+	n := startDefaultNode(t)
+	newClientAt(t, n.Multiaddr(), n.BeaconURL(), nil)
+
+	got := n.Requests(statusV2Spec)
+	if len(got) != 1 {
+		t.Fatalf("status v2 handshake request not recorded: %d", len(got))
+	}
+	if len(got[0]) != 92 {
+		t.Fatalf("v2 handshake body must be the 92-byte V2 envelope, got %d bytes", len(got[0]))
+	}
+}
+
 func TestNewNoStatusMode(t *testing.T) {
 	n := startDefaultNode(t)
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
