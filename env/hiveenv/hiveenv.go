@@ -73,8 +73,9 @@ var vcDefs = map[string]vcDef{
 	"prysm":    {image: "am13lab/hive-prysm-vc:local", apiPort: "4000", script: "/prysm_vc.sh"},
 	"nimbus":   {image: "am13lab/hive-nimbus-vc:local", apiPort: "4000", script: "/nimbus_vc.sh"},
 	"lodestar": {image: "am13lab/hive-lodestar-vc:local", apiPort: "4000", script: "/lodestar_vc.sh"},
-	// grandine ships without a hive VC definition; its beacon node has
-	// integrated validator duties, so no VC is launched for it.
+	// grandine ships without a hive VC definition and its BN script does
+	// not integrate validator duties, so the lighthouse VC drives it via
+	// the standard Beacon API (verified pairing).
 	"grandine": {image: "am13lab/hive-lighthouse-vc:local", apiPort: "4000", script: "/lighthouse_vc.sh"},
 }
 
@@ -143,6 +144,9 @@ type Provider struct {
 	// Identity fetches the node's peer ID from its beacon API. Nil selects
 	// the default HTTP fetcher.
 	Identity func(base string) (string, error)
+	// ENR extracts the node's ENR for bootnode wiring. Nil selects
+	// fetchIdentity; tests inject a stub to stay offline.
+	ENR func(base string) (string, error)
 	// Probe reports whether an HTTP endpoint answers. Nil selects a real
 	// GET; tests inject a stub to stay offline.
 	Probe func(url string) bool
@@ -209,11 +213,39 @@ func (p *Provider) Setup(ctx context.Context, cfg any) (env.Environment, error) 
 			return pid, err
 		}
 	}
+	enrOf := func(base string) (string, error) {
+		if p.ENR != nil {
+			return p.ENR(base)
+		}
+		_, enr, err := fetchIdentity(base)
+		return enr, err
+	}
+	// enrRequired fetches the ENR with retries: bootnode wiring is
+	// load-bearing for chain progression, and the host->container path
+	// flaps under VPN route churn, so a single failure must not silently
+	// isolate every subsequent client.
+	enrRequired := func(base string) (string, error) {
+		deadline := time.Now().Add(30 * time.Second)
+		for {
+			enr, err := enrOf(base)
+			if err == nil && enr != "" {
+				return enr, nil
+			}
+			if !time.Now().Before(deadline) {
+				return "", fmt.Errorf("enr not reachable: %w", err)
+			}
+			time.Sleep(500 * time.Millisecond)
+		}
+	}
 	e := &Environment{runner: runner, enclave: hcfg.Enclave, identity: identity}
 
-	// Network: create if missing (idempotent for restarts).
-	if out, err := runner.Run("network", "create", hcfg.Enclave+"-net"); err != nil &&
-		!strings.Contains(out, "already exists") {
+	// Network: create if missing (idempotent for restarts). The subnet is
+	// pinned to an uncommon 10.254.x range: the default 192.168.x pools get
+	// intermittently hijacked by VPN tunnel routes (e.g. Zscaler), which
+	// blackholes host->container traffic and stalls bootstrapping.
+	subnet := fmt.Sprintf("10.254.%d.0/24", int(hashEnclave(hcfg.Enclave)%200))
+	if out, err := runner.Run("network", "create", "--subnet="+subnet, hcfg.Enclave+"-net"); err != nil &&
+		!strings.Contains(out, "already exists") && !strings.Contains(out, "overlaps") {
 		return nil, fmt.Errorf("create network: %s", out)
 	}
 
@@ -263,7 +295,7 @@ func (p *Provider) Setup(ctx context.Context, cfg any) (env.Environment, error) 
 	if err != nil {
 		return nil, err
 	}
-	if err := waitProbe(ctx, p, elURL, 60*time.Second); err != nil {
+	if err := waitProbe(ctx, p, elURL, 2*time.Minute); err != nil {
 		return nil, fmt.Errorf("geth rpc not ready: %w", err)
 	}
 	gethIP, err := containerIP(runner, hcfg.Enclave+"-net", gethName)
@@ -272,12 +304,16 @@ func (p *Provider) Setup(ctx context.Context, cfg any) (env.Environment, error) 
 	}
 
 	// CL clients: each mounts /hive/input and pairs with the EL over the
-	// container network (hardcoded shared jwtsecret convention).
+	// container network (hardcoded shared jwtsecret convention). Every
+	// ready BN is advertised to the next one via HIVE_ETH2_BOOTNODE_ENRS;
+	// without it the BNs never discover each other, stay at 0 peers, and
+	// the chain never progresses.
+	var bootnodes []string
 	for i, ct := range hcfg.ClientTypes {
 		def := clientDefs[ct]
 		name := fmt.Sprintf("%s-cl-%d-%s", hcfg.Enclave, i+1, ct)
 		_, _ = runner.Run("rm", "-f", name)
-		if out, err := runner.Run("run", "-d", "--name", name,
+		runArgs := []string{"run", "-d", "--name", name,
 			"--network", hcfg.Enclave+"-net",
 			"-p", def.apiPort,
 			"-p", def.p2pPort,
@@ -293,21 +329,30 @@ func (p *Provider) Setup(ctx context.Context, cfg any) (env.Environment, error) 
 			"-e", "HIVE_ETH2_BN_API_PORT="+def.apiPort,
 			"-e", "HIVE_ETH2_P2P_TCP_PORT="+def.p2pPort,
 			"-e", "HIVE_ETH2_P2P_UDP_PORT="+def.p2pPort,
-			def.image,
-		); err != nil {
+		}
+		if len(bootnodes) > 0 {
+			runArgs = append(runArgs, "-e", "HIVE_ETH2_BOOTNODE_ENRS="+strings.Join(bootnodes, ","))
+		}
+		runArgs = append(runArgs, def.image)
+		if out, err := runner.Run(runArgs...); err != nil {
 			return nil, fmt.Errorf("start %s: %s", ct, out)
 		}
 		apiBase, err := hostPortURL(runner, name, def.apiPort)
 		if err != nil {
 			return nil, err
 		}
-		if err := waitReady(ctx, apiBase, 90*time.Second, identity); err != nil {
+		if err := waitReady(ctx, apiBase, 3*time.Minute, identity); err != nil {
 			return nil, fmt.Errorf("client %s: %w", ct, err)
 		}
 		peerID, err := identity(apiBase)
 		if err != nil {
 			return nil, err
 		}
+		enr, enrErr := enrRequired(apiBase)
+		if enrErr != nil {
+			return nil, fmt.Errorf("client %s: %w", ct, enrErr)
+		}
+		bootnodes = append(bootnodes, enr)
 		p2pHost, err := hostPort(runner, name, def.p2pPort)
 		if err != nil {
 			return nil, err
@@ -404,6 +449,16 @@ func lookupFile(dir, name string) (string, error) {
 // engine API rejects requests whose Host header is a domain name
 // (authrpc.vhosts defaults to localhost, IP literals are exempt), so the
 // CL clients must dial geth by IP.
+// hashEnclave maps an enclave name to a stable small int for subnet picks.
+func hashEnclave(s string) uint32 {
+	h := uint32(2166136261)
+	for i := 0; i < len(s); i++ {
+		h ^= uint32(s[i])
+		h *= 16777619
+	}
+	return h
+}
+
 func containerIP(runner cmdRunner, network, container string) (string, error) {
 	out, err := runner.Run("inspect", "-f",
 		"{{(index .NetworkSettings.Networks \""+network+"\").IPAddress}}", container)
@@ -415,17 +470,25 @@ func containerIP(runner cmdRunner, network, container string) (string, error) {
 }
 
 // hostPort returns the host-side port docker mapped for containerPort.
+// hostPort resolves the published host port for containerPort. Dynamic
+// bindings register asynchronously after `docker run -d` returns (observed
+// on OrbStack), so a missing mapping is retried briefly before giving up.
 func hostPort(runner cmdRunner, container, containerPort string) (string, error) {
-	out, err := runner.Run("port", container, containerPort)
-	if err != nil {
-		return "", fmt.Errorf("port %s %s: %s", container, containerPort, out)
+	const attempts, delay = 40, 250 * time.Millisecond
+	var out string
+	var err error
+	for i := 0; i < attempts; i++ {
+		out, err = runner.Run("port", container, containerPort)
+		if err == nil {
+			line := strings.TrimSpace(strings.Split(out, "\n")[0])
+			fields := strings.Split(line, ":")
+			if len(fields) >= 2 {
+				return fields[len(fields)-1], nil
+			}
+		}
+		time.Sleep(delay)
 	}
-	line := strings.TrimSpace(strings.Split(out, "\n")[0])
-	fields := strings.Split(line, ":")
-	if len(fields) < 2 {
-		return "", fmt.Errorf("unexpected docker port output: %q", out)
-	}
-	return fields[len(fields)-1], nil
+	return "", fmt.Errorf("port %s %s: %s", container, containerPort, out)
 }
 
 func hostPortURL(runner cmdRunner, container, containerPort string) (string, error) {
@@ -480,22 +543,23 @@ func waitReady(ctx context.Context, base string, wait time.Duration, identity fu
 	return fmt.Errorf("identity not ready within %v", wait)
 }
 
-func fetchIdentity(base string) (peerID string, forkDigest [4]byte, err error) {
+func fetchIdentity(base string) (peerID string, enr string, err error) {
 	resp, err := http.Get(strings.TrimRight(base, "/") + "/eth/v1/node/identity")
 	if err != nil {
-		return "", forkDigest, err
+		return "", "", err
 	}
 	defer resp.Body.Close()
 	var body struct {
 		Data struct {
 			PeerID string `json:"peer_id"`
+			ENR    string `json:"enr"`
 		} `json:"data"`
 	}
 	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
-		return "", forkDigest, err
+		return "", "", err
 	}
 	if body.Data.PeerID == "" {
-		return "", forkDigest, fmt.Errorf("empty peer id")
+		return "", "", fmt.Errorf("empty peer id")
 	}
-	return body.Data.PeerID, forkDigest, nil
+	return body.Data.PeerID, body.Data.ENR, nil
 }
