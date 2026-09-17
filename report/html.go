@@ -1273,6 +1273,43 @@ function renderKeyPanel() {
   const status = el("span", "count", "");
   actions.append(gen, imp, file, status);
   box.append(actions);
+  const SERVED = location.protocol.startsWith("http");
+  const save = SERVED ? el("button", "tab", "Save to auth.json") : null;
+  const runT = SERVED ? el("button", "tab", "Run triage now") : null;
+  if (save) {
+    save.addEventListener("click", async () => {
+      const providers = {};
+      TRIAGE_PROVIDERS.forEach(p => {
+        const v = (inputs[p.id].value || "").trim();
+        if (v && !v.includes("...")) providers[p.id] = { api_key: v };
+      });
+      if (!Object.keys(providers).length) { status.textContent = "no new key entered"; return; }
+      try {
+        const res = await fetch("/api/auth", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ providers }) });
+        const body = await res.json();
+        status.textContent = res.ok ? "saved to disk: " + body.saved + " (default: " + body.default + ")" : "save failed: " + (body.error || res.status);
+      } catch (e) { status.textContent = "save failed: " + e.message; }
+    });
+    actions.append(save);
+  }
+  if (runT) {
+    runT.addEventListener("click", async () => {
+      status.textContent = "running triage...";
+      try {
+        const res = await fetch("/api/triage", { method: "POST" });
+        const body = await res.json();
+        if (!res.ok) { status.textContent = "triage failed: " + (body.error || res.status); return; }
+        triage = body;
+        triageById = {};
+        (triage.results || []).forEach(r => { triageById[r.finding_id] = r; });
+        renderSummary();
+        renderFindings();
+        status.textContent = "triage updated";
+      } catch (e) { status.textContent = "triage failed: " + e.message; }
+    });
+    actions.append(runT);
+  }
+  if (!SERVED) status.textContent = "opened as a local file: keys cannot be saved from here. Use 'parallax serve -report <report.json>' to enable saving.";
   gen.addEventListener("click", () => {
     const providers = {};
     let any = false;
