@@ -2,6 +2,7 @@ package runner
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"log/slog"
 	"math/rand"
@@ -72,6 +73,10 @@ type Report struct {
 	Command       string                `json:"command,omitempty"`
 	Results       []TestResult          `json:"results"`
 	Summary       Summary               `json:"summary"`
+	// Triage is the optional LLM triage section (marshalled
+	// triage.TriageInfo). Opaque here so the runner does not depend on
+	// the triage package; produced post-run when API keys are configured.
+	Triage json.RawMessage `json:"triage,omitempty"`
 }
 
 // Options configures a run.

@@ -20,9 +20,16 @@ import (
 	"parallax/env/hiveenv"
 	"parallax/env/kurtosisenv"
 	"parallax/env/staticenv"
+	"parallax/internal/triage"
 	"parallax/knowledge"
 	"parallax/report"
 	"parallax/runner"
+)
+
+// RunConfig carries the `run` subcommand options.
+const (
+	defaultAuthPath      = "auth.json"
+	maxEvidenceForTriage = 5
 )
 
 // RunConfig carries the `run` subcommand options.
@@ -238,6 +245,11 @@ func runRun(ctx context.Context, cfg RunConfig) error {
 	})
 
 	rep.Command = strings.Join(os.Args, " ")
+
+	// LLM triage: runs only when credentials are available (env vars or
+	// auth.json). Without keys the report is written exactly as before.
+	applyTriage(rep, cfg.Stdout)
+
 	if err := writeOutputs(cfg.OutputDir, rep); err != nil {
 		return err
 	}
@@ -433,6 +445,62 @@ func deriveChain(ctx context.Context, clients []runner.Client, preset string) ru
 		return chain
 	}
 	return chain
+}
+
+// applyTriage runs LLM triage over the report findings when API credentials
+// are configured (env vars or ./auth.json). Suppressed findings are skipped:
+// the allowlist already settled them. Without credentials this is a no-op
+// and the report carries no triage section.
+func applyTriage(rep *runner.Report, stdout io.Writer) {
+	auth, err := triage.LoadAuth(defaultAuthPath)
+	if err != nil {
+		fmt.Fprintf(stdout, "triage: auth config error: %v (skipping)\n", err)
+		return
+	}
+	if auth == nil {
+		fmt.Fprintf(stdout, "triage: no api key configured (env vars or %s) — skipping\n", defaultAuthPath)
+		return
+	}
+	provider := auth.Default
+	findings := report.BuildFindings(rep, false)
+	inputs := make([]triage.Input, 0, len(findings))
+	for _, f := range findings {
+		if f.Suppressed {
+			continue
+		}
+		in := triage.Input{
+			ID:             f.ID,
+			RootCause:      f.RootCause,
+			Type:           string(f.Type),
+			Severity:       string(f.Severity),
+			OutlierClients: f.OutlierClients,
+		}
+		for _, ev := range f.Evidence {
+			in.TestIDs = append(in.TestIDs, ev.TestID)
+			in.Details = append(in.Details, ev.Description)
+			if len(in.Details) >= maxEvidenceForTriage {
+				break
+			}
+		}
+		inputs = append(inputs, in)
+	}
+	if len(inputs) == 0 {
+		fmt.Fprintf(stdout, "triage: no unsuppressed findings — skipping\n")
+		return
+	}
+	fmt.Fprintf(stdout, "triage: provider=%s model=%s findings=%d\n",
+		provider, auth.Providers[provider].Model, len(inputs))
+	results := triage.Triage(context.Background(), auth, provider, inputs)
+	info := triage.Info(provider, auth.Providers[provider].Model, results)
+	blob, err := json.Marshal(info)
+	if err != nil {
+		fmt.Fprintf(stdout, "triage: marshal: %v (skipping)\n", err)
+		return
+	}
+	rep.Triage = blob
+	fmt.Fprintf(stdout, "triage: real_issues=%d filterable=%d needs_human=%d unavailable=%d\n",
+		info.Summary.RealIssues, info.Summary.Filterable,
+		info.Summary.NeedsHuman, info.Summary.Unavailable)
 }
 
 func writeOutputs(outputDir string, rep *runner.Report) error {
