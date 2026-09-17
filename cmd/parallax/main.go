@@ -29,6 +29,8 @@ func main() {
 		err = cmdRun(ctx, os.Args[2:])
 	case "analyze":
 		err = cmdAnalyze(os.Args[2:])
+	case "serve":
+		err = cmdServe(os.Args[2:])
 	case "-h", "--help", "help":
 		usage()
 	default:
@@ -66,6 +68,10 @@ commands:
                      -allowlist FILE          known divergences JSON
                      -legacy                  also emit legacy-shape JSON
                      -html                    also emit a standalone HTML report
+  serve [flags]      serve a report locally with the triage key panel
+                     -report FILE             report.json to serve (required)
+                     -auth auth.json          triage credential store path
+                     -addr 127.0.0.1:8080     listen address (local only)
                      -junit-out FILE          also emit JUnit XML to this path
 `)
 }

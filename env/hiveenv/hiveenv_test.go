@@ -65,8 +65,8 @@ func genDir(t *testing.T) string {
 	t.Helper()
 	dir := t.TempDir()
 	files := map[string]string{
-		"genesis.ssz": "x",
-		"config.yaml": "x",
+		"genesis.ssz":  "x",
+		"config.yaml":  "x",
 		"genesis.json": `{"timestamp":"0x6aa2785b","config":{"chainId":7}}`,
 	}
 	for f, body := range files {
@@ -82,7 +82,7 @@ func TestSetupSmokeSequence(t *testing.T) {
 	fake := &fakeRunner{}
 	p := &Provider{
 		Runner: fake,
-		Probe: func(url string) bool { return true },
+		Probe:  func(url string) bool { return true },
 		Identity: func(base string) (string, error) {
 			// point identity at the test server regardless of mapped port
 			pid, _, err := fetchIdentity(srv.URL)
