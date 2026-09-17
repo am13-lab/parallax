@@ -96,7 +96,7 @@ func newServeMux(cfg ServeConfig) (*http.ServeMux, error) {
 				if len(k) > 10 {
 					shown = k[:6] + "..." + k[len(k)-4:]
 				}
-				provs[name] = map[string]string{"api_key": shown, "model": pa.Model}
+				provs[name] = map[string]string{"api_key": shown, "model": pa.Model, "endpoint": pa.Endpoint}
 			}
 		}
 		writeJSON(w, masked)
@@ -105,8 +105,9 @@ func newServeMux(cfg ServeConfig) (*http.ServeMux, error) {
 		var body struct {
 			Default   string `json:"default"`
 			Providers map[string]struct {
-				APIKey string `json:"api_key"`
-				Model  string `json:"model"`
+				APIKey   string `json:"api_key"`
+				Model    string `json:"model"`
+				Endpoint string `json:"endpoint"`
 			} `json:"providers"`
 		}
 		if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
@@ -114,26 +115,43 @@ func newServeMux(cfg ServeConfig) (*http.ServeMux, error) {
 			return
 		}
 		// Merge into the persisted auth so saving one provider does not
-		// wipe previously saved ones.
+		// wipe previously saved ones. A provider entry with an empty key
+		// still updates model/endpoint — the model picker saves that way —
+		// and never clobbers the stored key.
 		auth, _ := triage.LoadAuth(cfg.AuthPath)
 		if auth == nil {
 			auth = &triage.Auth{Providers: map[string]triage.ProviderAuth{}}
 		}
+		updated := 0
 		for name, pa := range body.Providers {
-			if strings.TrimSpace(pa.APIKey) == "" {
-				continue
+			cur := auth.Providers[name]
+			changed := false
+			if v := strings.TrimSpace(pa.APIKey); v != "" {
+				cur.APIKey = v
+				changed = true
 			}
-			auth.Providers[name] = triage.ProviderAuth{APIKey: pa.APIKey, Model: pa.Model}
+			if v := strings.TrimSpace(pa.Model); v != "" && v != cur.Model {
+				cur.Model = v
+				changed = true
+			}
+			if v := strings.TrimSpace(pa.Endpoint); v != "" && v != cur.Endpoint {
+				cur.Endpoint = v
+				changed = true
+			}
+			if changed {
+				auth.Providers[name] = cur
+				updated++
+			}
 		}
-		if len(auth.Providers) == 0 {
-			http.Error(w, "no api key in body", http.StatusBadRequest)
+		if updated == 0 {
+			http.Error(w, "nothing to save: provide an api key, model or endpoint", http.StatusBadRequest)
 			return
 		}
 		if body.Default != "" {
 			auth.Default = body.Default
 		}
 		if auth.Default == "" {
-			for _, order := range []string{triage.GLM, triage.DeepSeek, triage.OpenAI, triage.Claude, triage.Gemini} {
+			for _, order := range []string{triage.OpenAI, triage.Claude, triage.Gemini} {
 				if auth.Providers[order].APIKey != "" {
 					auth.Default = order
 					break
@@ -145,6 +163,29 @@ func newServeMux(cfg ServeConfig) (*http.ServeMux, error) {
 			return
 		}
 		writeJSON(w, map[string]any{"saved": cfg.AuthPath, "default": auth.Default})
+	})
+	mux.HandleFunc("GET /api/models", func(w http.ResponseWriter, r *http.Request) {
+		provider := r.URL.Query().Get("provider")
+		if provider == "" {
+			http.Error(w, "provider query parameter is required", http.StatusBadRequest)
+			return
+		}
+		auth, err := triage.LoadAuth(cfg.AuthPath)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		pa, ok := auth.Providers[provider]
+		if !ok || pa.APIKey == "" {
+			http.Error(w, fmt.Sprintf("provider %q has no api key configured; save one first", provider), http.StatusBadRequest)
+			return
+		}
+		models, err := triage.ListModels(r.Context(), provider, pa)
+		if err != nil {
+			writeJSON(w, map[string]any{"error": err.Error()})
+			return
+		}
+		writeJSON(w, map[string]any{"provider": provider, "models": models})
 	})
 	mux.HandleFunc("POST /api/triage", func(w http.ResponseWriter, r *http.Request) {
 		auth, err := triage.LoadAuth(cfg.AuthPath)

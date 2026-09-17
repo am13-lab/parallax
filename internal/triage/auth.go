@@ -13,47 +13,52 @@ import (
 	"strings"
 )
 
-// Provider names for the five supported model vendors.
+// Provider names for the supported model vendors.
 const (
-	OpenAI   = "openai"
-	Claude   = "claude"
-	Gemini   = "gemini"
-	DeepSeek = "deepseek"
-	GLM      = "glm"
+	OpenAI = "openai"
+	Claude = "claude"
+	Gemini = "gemini"
 )
 
 // EnvVars maps provider name -> conventional API key environment variable.
 var EnvVars = map[string]string{
-	OpenAI:   "OPENAI_API_KEY",
-	Claude:   "ANTHROPIC_API_KEY",
-	Gemini:   "GEMINI_API_KEY",
-	DeepSeek: "DEEPSEEK_API_KEY",
-	GLM:      "GLM_API_KEY",
+	OpenAI: "OPENAI_API_KEY",
+	Claude: "ANTHROPIC_API_KEY",
+	Gemini: "GEMINI_API_KEY",
 }
 
 // DefaultModels is the fallback model per provider when auth.json does not
 // pin one.
 var DefaultModels = map[string]string{
-	OpenAI:   "gpt-4o-mini",
-	Claude:   "claude-sonnet-4-5",
-	Gemini:   "gemini-2.0-flash",
-	DeepSeek: "deepseek-chat",
-	GLM:      "glm-4.6",
+	OpenAI: "gpt-4o-mini",
+	Claude: "claude-sonnet-4-5",
+	Gemini: "gemini-2.0-flash",
 }
 
 // baseURLs for OpenAI-compatible endpoints (Claude uses the native
 // Messages API and has its own client path).
 const (
-	openAIBase   = "https://api.openai.com/v1"
-	geminiBase   = "https://generativelanguage.googleapis.com/v1beta/openai"
-	deepSeekBase = "https://api.deepseek.com/v1"
-	glmBase      = "https://open.bigmodel.cn/api/paas/v4"
+	openAIBase    = "https://api.openai.com/v1"
+	geminiBase    = "https://generativelanguage.googleapis.com/v1beta/openai"
+	anthropicBase = "https://api.anthropic.com/v1"
 )
 
-// ProviderAuth is one provider's resolved credential set.
+// ProviderAuth is one provider's resolved credential set. Endpoint is an
+// optional base-URL override for relay/proxy services; empty selects the
+// provider's well-known endpoint.
 type ProviderAuth struct {
-	APIKey string `json:"api_key"`
-	Model  string `json:"model,omitempty"`
+	APIKey   string `json:"api_key"`
+	Model    string `json:"model,omitempty"`
+	Endpoint string `json:"endpoint,omitempty"`
+}
+
+// effectiveBase returns the endpoint to call: the credential's explicit
+// override (relay services) when set, the well-known default otherwise.
+func effectiveBase(pa ProviderAuth, def string) string {
+	if b := strings.TrimSpace(pa.Endpoint); b != "" {
+		return strings.TrimRight(b, "/")
+	}
+	return def
 }
 
 // Auth is the persisted credential file (auth.json). Keys may also come
@@ -74,10 +79,14 @@ func LoadAuth(authPath string) (*Auth, error) {
 			return nil, fmt.Errorf("parse %s: %w", authPath, err)
 		}
 	}
+	// A key saved to the file is the user's latest intent and wins over
+	// the environment; env vars only fill providers the file is missing.
 	for name, env := range EnvVars {
 		if v := strings.TrimSpace(os.Getenv(env)); v != "" {
 			pa := auth.Providers[name]
-			pa.APIKey = v
+			if pa.APIKey == "" {
+				pa.APIKey = v
+			}
 			if pa.Model == "" {
 				pa.Model = DefaultModels[name]
 			}
@@ -94,7 +103,7 @@ func LoadAuth(authPath string) (*Auth, error) {
 		return nil, nil
 	}
 	if auth.Default == "" || auth.Providers[auth.Default].APIKey == "" {
-		auth.Default = firstWithKey(auth.Providers, []string{GLM, DeepSeek, OpenAI, Claude, Gemini})
+		auth.Default = firstWithKey(auth.Providers, []string{OpenAI, Claude, Gemini})
 	}
 	if auth.Default == "" {
 		return nil, nil

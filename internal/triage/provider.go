@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"sort"
 	"strings"
 	"time"
 )
@@ -24,7 +25,7 @@ type chatMessage struct {
 }
 
 // chatRequest is the OpenAI-compatible request body; it also works for
-// Gemini's OpenAI-compat endpoint, DeepSeek and GLM.
+// Gemini's OpenAI-compat endpoint.
 type chatRequest struct {
 	Model     string        `json:"model"`
 	Messages  []chatMessage `json:"messages"`
@@ -72,14 +73,9 @@ func complete(ctx context.Context, auth *Auth, provider string, prompt string) (
 	if provider == Claude {
 		return anthropicComplete(ctx, pa, prompt)
 	}
-	base := openAIBase
-	switch provider {
-	case Gemini:
-		base = geminiBase
-	case DeepSeek:
-		base = deepSeekBase
-	case GLM:
-		base = glmBase
+	base := effectiveBase(pa, openAIBase)
+	if provider == Gemini {
+		base = effectiveBase(pa, geminiBase)
 	}
 	body, _ := json.Marshal(chatRequest{
 		Model:     pa.Model,
@@ -111,7 +107,7 @@ func anthropicComplete(ctx context.Context, pa ProviderAuth, prompt string) (str
 		if attempt > 0 {
 			time.Sleep(2 * time.Second)
 		}
-		text, err := postJSON(ctx, "https://api.anthropic.com/v1/messages", pa.APIKey, body, true)
+		text, err := postJSON(ctx, effectiveBase(pa, anthropicBase)+"/messages", pa.APIKey, body, true)
 		if err == nil {
 			return text, nil
 		}
@@ -128,6 +124,12 @@ func postJSON(ctx context.Context, url, apiKey string, body []byte, anthropic bo
 		return "", err
 	}
 	req.Header.Set("Content-Type", "application/json")
+	// Some relay/proxy gateways reject requests without an explicit Accept
+	// header (they serve an HTML page instead of JSON).
+	req.Header.Set("Accept", "application/json")
+	// Identify the client: some relay gateways reject the default Go
+	// user agent outright.
+	req.Header.Set("User-Agent", "parallax-triage/1.0")
 	req.Header.Set("Authorization", "Bearer "+apiKey)
 	if anthropic {
 		req.Header.Set("x-api-key", apiKey)
@@ -144,7 +146,7 @@ func postJSON(ctx context.Context, url, apiKey string, body []byte, anthropic bo
 		return "", err
 	}
 	if resp.StatusCode != http.StatusOK {
-		return "", fmt.Errorf("http %d: %s", resp.StatusCode, truncate(string(raw), 300))
+		return "", httpStatusError(resp.StatusCode, raw)
 	}
 	if anthropic {
 		var ar anthropicResponse
@@ -177,4 +179,89 @@ func truncate(s string, n int) string {
 		return s
 	}
 	return strings.TrimSpace(s[:n]) + "…"
+}
+
+// httpStatusError converts a non-200 response into an error. Authentication
+// failures get a single sanitized English hint: upstream bodies can be
+// localized and must not leak into per-finding error strings.
+func httpStatusError(status int, raw []byte) error {
+	if status == http.StatusUnauthorized || status == http.StatusForbidden {
+		return fmt.Errorf("authentication failed (HTTP %d): the API key is missing, invalid or expired", status)
+	}
+	return fmt.Errorf("http %d: %s", status, truncate(string(raw), 300))
+}
+
+// getJSON performs an authenticated GET and returns the raw body. On a
+// non-200 response the error carries the sanitized hint and the status
+// code is returned separately so callers can specialize the message.
+func getJSON(ctx context.Context, url, apiKey string, anthropic bool) ([]byte, int, error) {
+	ctx, cancel := context.WithTimeout(ctx, httpTimeout)
+	defer cancel()
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
+	if err != nil {
+		return nil, 0, err
+	}
+	req.Header.Set("Accept", "application/json")
+	// Identify the client: some relay gateways reject the default Go
+	// user agent outright.
+	req.Header.Set("User-Agent", "parallax-triage/1.0")
+	req.Header.Set("Authorization", "Bearer "+apiKey)
+	if anthropic {
+		req.Header.Set("x-api-key", apiKey)
+		req.Header.Set("anthropic-version", "2023-06-01")
+		req.Header.Del("Authorization")
+	}
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return nil, 0, err
+	}
+	defer resp.Body.Close()
+	raw, err := io.ReadAll(io.LimitReader(resp.Body, 1<<20))
+	if err != nil {
+		return nil, resp.StatusCode, err
+	}
+	if resp.StatusCode != http.StatusOK {
+		return nil, resp.StatusCode, httpStatusError(resp.StatusCode, raw)
+	}
+	return raw, resp.StatusCode, nil
+}
+
+// ListModels returns the provider's model ids sorted (OpenAI and Claude
+// only). Relay endpoints are honored via the credential's Endpoint; a
+// relay that does not implement the models path yields a clean hint.
+func ListModels(ctx context.Context, provider string, pa ProviderAuth) ([]string, error) {
+	var url string
+	anthropic := false
+	switch provider {
+	case OpenAI:
+		url = effectiveBase(pa, openAIBase) + "/models"
+	case Claude:
+		url = effectiveBase(pa, anthropicBase) + "/models"
+		anthropic = true
+	default:
+		return nil, fmt.Errorf("model listing not supported for %q", provider)
+	}
+	raw, status, err := getJSON(ctx, url, pa.APIKey, anthropic)
+	if err != nil {
+		if status == http.StatusNotFound || status == http.StatusMethodNotAllowed {
+			return nil, fmt.Errorf("%s: model listing not supported by this endpoint (HTTP %d) - enter the model name manually", provider, status)
+		}
+		return nil, fmt.Errorf("%s: %w", provider, err)
+	}
+	var parsed struct {
+		Data []struct {
+			ID string `json:"id"`
+		} `json:"data"`
+	}
+	if err := json.Unmarshal(raw, &parsed); err != nil {
+		return nil, fmt.Errorf("%s: decode models: %w", provider, err)
+	}
+	ids := make([]string, 0, len(parsed.Data))
+	for _, m := range parsed.Data {
+		if m.ID != "" {
+			ids = append(ids, m.ID)
+		}
+	}
+	sort.Strings(ids)
+	return ids, nil
 }
