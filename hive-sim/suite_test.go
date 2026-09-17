@@ -60,7 +60,8 @@ func (f *fakeRunnerClient) Snapshot(ctx context.Context) (*runner.ResourceSnapsh
 func (f *fakeRunnerClient) Close() error { return nil }
 
 // fakeHive implements the subset of the hive simulation API that hivesim
-// uses: suite/test creation and completion, client start, client listing.
+// uses: suite/test creation and completion, client start, client listing,
+// node stop.
 type fakeHive struct {
 	mu        sync.Mutex
 	nextID    int
@@ -68,6 +69,7 @@ type fakeHive struct {
 	tests     map[int]bool
 	ended     map[int]bool
 	nodes     int
+	stopped   []string // container ids removed via DELETE node
 	testNames map[int]string
 	failures  []string // test names ended with pass=false
 	beaconURL string   // fake client beacon API base
@@ -127,6 +129,12 @@ func (f *fakeHive) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		if !body.Pass {
 			f.failures = append(f.failures, f.testNames[id])
 		}
+		w.WriteHeader(http.StatusOK)
+
+	case strings.Contains(path, "/node/") && r.Method == http.MethodDelete:
+		// stop node: /testsuite/{suite}/test/{test}/node/{id}
+		parts := strings.Split(path, "/")
+		f.stopped = append(f.stopped, parts[len(parts)-1])
 		w.WriteHeader(http.StatusOK)
 
 	case strings.HasPrefix(path, "/testsuite/") && r.Method == http.MethodDelete:
@@ -210,6 +218,55 @@ func TestHiveSuiteRun(t *testing.T) {
 	}
 }
 
+func TestHiveSuiteStopsContainers(t *testing.T) {
+	beacon := fakeBeacon(t)
+	fake := newFakeHive(beacon.URL)
+	simServer := httptest.NewServer(fake)
+	t.Cleanup(simServer.Close)
+
+	cfg := Config{
+		ClientTypes: []string{"prysm", "lighthouse"},
+		Categories:  []string{"reqresp"},
+		ClientFactory: func(ctx context.Context, ep env.Endpoint) (runner.Client, error) {
+			return &fakeRunnerClient{name: ep.Name}, nil
+		},
+		HTTPPort: func(string) int {
+			_, port, _ := net.SplitHostPort(strings.TrimPrefix(beacon.URL, "http://"))
+			var p int
+			fmt.Sscanf(port, "%d", &p)
+			return p
+		},
+		P2PPort: 9000,
+		SpecsFor: func(category string) []runner.Spec {
+			return []runner.Spec{{
+				ID:       category + ".fake",
+				Category: category,
+				Run: func(ctx context.Context, te runner.TestEnv) []runner.Divergence {
+					return nil
+				},
+			}}
+		},
+		Chain:     runner.ChainConfig{},
+		WaitReady: 5 * time.Second,
+	}
+
+	sim := hivesim.NewAt(simServer.URL)
+	if err := hivesim.RunSuite(sim, BuildSuite(cfg)); err != nil {
+		t.Fatalf("run suite: %v", err)
+	}
+
+	// Every container started for a test must be stopped once the test
+	// finishes; leftover containers keep running in the background otherwise.
+	if len(fake.stopped) != 2 {
+		t.Fatalf("both started containers must be stopped after the test, got %v", fake.stopped)
+	}
+	for _, c := range fake.stopped {
+		if !strings.HasPrefix(c, "container-") {
+			t.Fatalf("unexpected stopped container %q", c)
+		}
+	}
+}
+
 func TestHiveSuiteDefaultSpecsSource(t *testing.T) {
 	beacon := fakeBeacon(t)
 	fake := newFakeHive(beacon.URL)
@@ -233,9 +290,9 @@ func TestHiveSuiteDefaultSpecsSource(t *testing.T) {
 		ClientFactory: func(ctx context.Context, ep env.Endpoint) (runner.Client, error) {
 			return &fakeRunnerClient{name: ep.Name}, nil
 		},
-		HTTPPort: func(string) int { return portOf(beacon) },
-		P2PPort:  9000,
-		Chain:    runner.ChainConfig{},
+		HTTPPort:  func(string) int { return portOf(beacon) },
+		P2PPort:   9000,
+		Chain:     runner.ChainConfig{},
 		WaitReady: 5 * time.Second,
 		// SpecsFor deliberately nil: production must fall back to the
 		// cases registry instead of panicking.

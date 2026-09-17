@@ -187,6 +187,9 @@ func runRun(ctx context.Context, cfg RunConfig) error {
 	if err != nil {
 		return err
 	}
+	// A finished run releases what it provisioned (containers, volumes);
+	// attached environments are not owned by the run and survive it.
+	defer teardownEnv(envr, cfg)
 	endpoints = filterEndpoints(endpoints, cfg.Clients)
 
 	var clients []runner.Client
@@ -411,6 +414,28 @@ func setupEnv(ctx context.Context, cfg RunConfig) (env.Environment, []env.Endpoi
 		return envr, envr.Endpoints(), nil
 	default:
 		return nil, nil, fmt.Errorf("unknown env %q (want static, kurtosis or hive)", cfg.Env)
+	}
+}
+
+// teardownEnv releases the environment after a run. Attached environments
+// are not owned by the run: destroying them would take down infra the
+// user provisioned separately, so only provisioned envs are released.
+// Teardown runs on its own timeout-bounded context: when the run was
+// interrupted (Ctrl-C, deadline) the run context is already cancelled and
+// providers would refuse to release the environment. Teardown failures
+// are reported on stdout; they must not mask the run's own result.
+func teardownEnv(envr env.Environment, cfg RunConfig) {
+	if cfg.Env == "kurtosis" && cfg.Attach {
+		return
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+	if err := envr.Teardown(ctx); err != nil {
+		w := cfg.Stdout
+		if w == nil {
+			w = os.Stdout
+		}
+		fmt.Fprintf(w, "teardown %s env: %v\n", cfg.Env, err)
 	}
 }
 
