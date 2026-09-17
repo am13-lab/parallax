@@ -323,21 +323,21 @@ func (p *Provider) Setup(ctx context.Context, cfg any) (env.Environment, error) 
 		name := fmt.Sprintf("%s-cl-%d-%s", hcfg.Enclave, i+1, ct)
 		_, _ = runner.Run("rm", "-fv", name)
 		runArgs := []string{"run", "-d", "--name", name,
-			"--network", hcfg.Enclave+"-net",
+			"--network", hcfg.Enclave + "-net",
 			"-p", def.apiPort,
 			"-p", def.p2pPort,
-			"-p", def.p2pPort+"/udp",
+			"-p", def.p2pPort + "/udp",
 			// read-write: prysm's entrypoint runs sed -i on the config,
 			// which renames the file inside the mount
-			"-v", hcfg.GenDir+":/hive/input",
+			"-v", hcfg.GenDir + ":/hive/input",
 			"-e", "HIVE_ETH2_MERGE_ENABLED=1",
-			"-e", "HIVE_ETH2_ETH1_ENGINE_RPC_ADDRS=http://"+gethIP+":"+elAuthPort,
-			"-e", "HIVE_ETH2_CONFIG_DEPOSIT_CONTRACT_ADDRESS="+depositContractAddr,
+			"-e", "HIVE_ETH2_ETH1_ENGINE_RPC_ADDRS=http://" + gethIP + ":" + elAuthPort,
+			"-e", "HIVE_ETH2_CONFIG_DEPOSIT_CONTRACT_ADDRESS=" + depositContractAddr,
 			"-e", "HIVE_ETH2_DEPOSIT_DEPLOY_BLOCK_NUMBER=0",
-			"-e", "HIVE_ETH2_BEACON_NODE_INDEX="+fmt.Sprint(i),
-			"-e", "HIVE_ETH2_BN_API_PORT="+def.apiPort,
-			"-e", "HIVE_ETH2_P2P_TCP_PORT="+def.p2pPort,
-			"-e", "HIVE_ETH2_P2P_UDP_PORT="+def.p2pPort,
+			"-e", "HIVE_ETH2_BEACON_NODE_INDEX=" + fmt.Sprint(i),
+			"-e", "HIVE_ETH2_BN_API_PORT=" + def.apiPort,
+			"-e", "HIVE_ETH2_P2P_TCP_PORT=" + def.p2pPort,
+			"-e", "HIVE_ETH2_P2P_UDP_PORT=" + def.p2pPort,
 		}
 		if len(bootnodes) > 0 {
 			runArgs = append(runArgs, "-e", "HIVE_ETH2_BOOTNODE_ENRS="+strings.Join(bootnodes, ","))

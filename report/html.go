@@ -26,6 +26,7 @@ type RunPayload struct {
 	Meta     RunMeta         `json:"meta"`
 	Report   json.RawMessage `json:"report"`
 	Findings json.RawMessage `json:"findings"`
+	Triage   json.RawMessage `json:"triage,omitempty"`
 }
 
 // WriteHTML renders the report and its findings as one self-contained HTML
@@ -110,6 +111,7 @@ func runPayload(rep *runner.Report, findings []Finding) (RunPayload, error) {
 		Meta:     metaOf(rep),
 		Report:   repJSON,
 		Findings: findJSON,
+		Triage:   rep.Triage,
 	}, nil
 }
 
@@ -322,6 +324,7 @@ const runs = raw.runs && raw.runs.length ? raw.runs : [{ meta: {}, report: raw.r
 let currentRun = (typeof raw.current === "number" && raw.current >= 0 && raw.current < runs.length) ? raw.current : 0;
 let currentTab = "summary";
 let rep = {}, findings = [], results = [], clientNames = [], knownIds = new Set(), runCmd = "";
+let triage = null, triageById = {};
 
 function el(tag, cls, text) {
   const e = document.createElement(tag);
@@ -338,6 +341,9 @@ function applyRun(i) {
   const run = runs[currentRun] || {};
   rep = run.report || {};
   findings = run.findings || [];
+  triage = run.triage || null;
+  triageById = {};
+  (triage && triage.results || []).forEach(r => { triageById[r.finding_id] = r; });
   results = rep.results || [];
   currentClient = "";
   document.getElementById("q-find").value = "";
@@ -465,6 +471,8 @@ function clientCard(n) {
 function renderSummary() {
   const out = document.getElementById("view-summary");
   out.textContent = "";
+  out.append(renderTriageBlock());
+  out.append(renderKeyPanel());
   const cards = el("div", "ccards");
   clientNames.forEach(n => cards.append(clientCard(n)));
   out.append(cards);
@@ -1177,6 +1185,8 @@ function findingCard(f) {
   head.append(chip("sev-" + f.severity, f.severity || "?"), chip(null, f.type || "?"));
   if (f.evidence_count) head.append(chip(null, "evidence ×" + f.evidence_count));
   if (f.suppressed) head.append(chip("sup", "suppressed"));
+  const t = triageById[f.id];
+  if (t && !t.unavailable) head.append(chip(t.filterable ? "lg g" : (t.verdict === "NEEDS_HUMAN" ? "sup" : "lg r"), "triage: " + (t.verdict || "?") + " " + Math.round((t.confidence || 0) * 100) + "%"));
   c.append(head);
   c.append(el("div", "cause", f.root_cause || ""));
   const outs = f.outlier_clients || [];
@@ -1186,6 +1196,11 @@ function findingCard(f) {
     c.append(o);
   }
   if (f.suppress_reason) c.append(el("div", "reason", f.suppress_reason));
+  if (t && t.reason) {
+    const tr = el("div", "reason", "LLM triage (" + (triage.provider || "") + "/" + (triage.model || "") + "): " + t.reason);
+    if (t.spec_anchor) tr.textContent += " — spec: " + t.spec_anchor;
+    c.append(tr);
+  }
   const det = el("div", "detail");
   (f.evidence || []).forEach(d => det.append(divergenceCard(d, currentClient)));
   if (!(f.evidence || []).length) det.append(el("div", "ev", "no evidence divergences recorded"));
@@ -1194,6 +1209,168 @@ function findingCard(f) {
   c.addEventListener("click", () => det.classList.toggle("open"));
   return c;
 }
+const TRIAGE_PROVIDERS = [
+  { id: "openai",   label: "OpenAI",   env: "OPENAI_API_KEY",   hint: "OpenAI API key (sk-...): calls GPT models to triage this report's differential findings (real issue vs filterable noise). Used locally on the next run after configuration." },
+  { id: "claude",   label: "Claude",   env: "ANTHROPIC_API_KEY", hint: "Anthropic API key (sk-ant-...): calls Claude models for the same triage analysis." },
+  { id: "gemini",   label: "Gemini",   env: "GEMINI_API_KEY",   hint: "Google Gemini API key: calls Gemini models for the same triage analysis." },
+  { id: "deepseek", label: "DeepSeek", env: "DEEPSEEK_API_KEY", hint: "DeepSeek API key: calls DeepSeek models for the same triage analysis." },
+  { id: "glm",      label: "GLM",      env: "GLM_API_KEY",      hint: "Zhipu GLM API key: calls GLM models for the same triage analysis." }
+];
+
+function renderTriageBlock() {
+  const box = el("div", "card");
+  box.append(el("div", "cause", "LLM Triage Summary"));
+  if (!triage || !triage.results || !triage.results.length) {
+    box.append(el("div", "empty", "No triage analysis was generated for this run: no API key detected (env vars or auth.json). Configure any key under Settings below and it will be produced automatically on the next run."));
+    return box;
+  }
+  const s = triage.summary || {};
+  const line = el("div", "count", "provider: " + (triage.provider || "?") + " / model: " + (triage.model || "?") +
+    " - real issues " + (s.real_issues || 0) + " / filterable " + (s.filterable || 0) +
+    " / needs human " + (s.needs_human || 0) + " / unavailable " + (s.unavailable || 0) +
+    " (of " + (s.total || 0) + ")");
+  box.append(line);
+  const det = el("div", "detail open");
+  (triage.results || []).forEach(r => {
+    const row = el("div", "ev");
+    const badge = r.unavailable ? "unavailable" : (r.filterable ? "\u{1F7E2} filterable" : (r.verdict === "NEEDS_HUMAN" ? "\u{1F7E1} needs human" : "\u{1F534} real issue"));
+    row.append(chip(r.filterable ? "lg g" : (r.verdict === "NEEDS_HUMAN" ? "sup" : "lg r"), badge + " " + (r.verdict || "") + " " + Math.round((r.confidence || 0) * 100) + "%"));
+    row.append(el("b", null, r.finding_id || ""));
+    if (r.reason) row.append(el("span", null, " - " + r.reason + (r.spec_anchor ? " (spec: " + r.spec_anchor + ")" : "")));
+    if (r.error) row.append(el("span", null, " - error: " + r.error));
+    det.append(row);
+  });
+  box.append(det);
+  box.append(el("div", "count", "Triage verdicts are suggestions only; nothing is auto-suppressed. Maintain configs/known_divergences.json manually once confirmed."));
+  return box;
+}
+
+function renderKeyPanel() {
+  const box = el("details", "card");
+  const sum = el("summary");
+  sum.append(el("span", "cause", "Settings - LLM Triage API Keys"));
+  box.append(sum);
+  const intro = el("div", "count", "With any key configured (env var or auth.json saved here), the next parallax run attaches an LLM triage analysis to the report. Without a key, triage is skipped. Keys are stored locally in auth.json (0600) and never leave the machine except to call the provider API.");
+  const body = el("div");
+  box.append(intro, body);
+  const inputs = {};
+  let serverAuth = null;
+  const status = el("span", "count", "");
+  const sel = el("select");
+  TRIAGE_PROVIDERS.forEach(p => sel.append(new Option(p.label, p.id)));
+  const fieldWrap = el("div");
+  const renderField = () => {
+    const p = TRIAGE_PROVIDERS.find(x => x.id === sel.value);
+    fieldWrap.textContent = "";
+    const row = el("div", "ev");
+    row.append(el("b", null, p.label + " (" + p.env + ")"));
+    const inp = el("input");
+    inp.type = "password";
+    inp.placeholder = "paste " + p.label + " API key";
+    inp.style.width = "40%";
+    inp.autocomplete = "off";
+    inp.value = inputs[p.id] || "";
+    inp.addEventListener("input", () => { inputs[p.id] = inp.value; });
+    row.append(inp);
+    const saved = serverAuth && serverAuth.providers && serverAuth.providers[p.id];
+    if (saved && saved.api_key) row.append(el("div", "reason", "saved: " + saved.api_key + " (model: " + (saved.model || "provider default") + ") - paste a new key and Save to replace it; Run triage uses this provider."));
+    else row.append(el("div", "reason", p.hint));
+    fieldWrap.append(row);
+  };
+  sel.addEventListener("change", renderField);
+  const prow = el("div", "ev");
+  prow.append(el("b", null, "provider: "));
+  prow.append(sel);
+  body.append(prow, fieldWrap);
+  renderField();
+  const actions = el("div", "bar");
+  const save = el("button", "tab", "Save");
+  const runT = el("button", "tab", "Run triage now");
+  const gen = el("button", "tab", "Generate auth.json");
+  const imp = el("button", "tab", "Import auth.json");
+  const file = el("input");
+  file.type = "file";
+  file.accept = ".json,application/json";
+  file.style.display = "none";
+  const SERVED = location.protocol.startsWith("http");
+  if (SERVED) {
+    save.addEventListener("click", async () => {
+      const v = (inputs[sel.value] || "").trim();
+      if (!v || v.includes("...")) { status.textContent = "paste a key for " + sel.value + " first"; return; }
+      try {
+        const res = await fetch("/api/auth", { method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ default: sel.value, providers: { [sel.value]: { api_key: v } } }) });
+        const body2 = await res.json();
+        if (res.ok) { status.textContent = "saved to disk: " + body2.saved + " (default: " + body2.default + ")"; refreshAuth(); }
+        else status.textContent = "save failed: " + (body2.error || res.status);
+      } catch (e) { status.textContent = "save failed: " + e.message; }
+    });
+    runT.addEventListener("click", async () => {
+      status.textContent = "running triage...";
+      try {
+        const res = await fetch("/api/triage", { method: "POST" });
+        const body2 = await res.json();
+        if (!res.ok) { status.textContent = "triage failed: " + (body2.error || res.status); return; }
+        triage = body2;
+        triageById = {};
+        (triage.results || []).forEach(r => { triageById[r.finding_id] = r; });
+        renderSummary();
+        renderFindings();
+        status.textContent = "triage updated";
+      } catch (e) { status.textContent = "triage failed: " + e.message; }
+    });
+    actions.append(save, runT);
+    const refreshAuth = () => fetch("/api/auth").then(r => r.json()).then(cfg => {
+      serverAuth = cfg;
+      renderField();
+      const names = Object.keys(cfg.providers || {});
+      if (names.length) status.textContent = "configured: " + names.join(", ") + (cfg.default ? " (default: " + cfg.default + ")" : "");
+    }).catch(() => {});
+    refreshAuth();
+  } else {
+    status.textContent = "opened as a local file: saving is disabled. Use 'parallax serve -report <report.json>' to enable it, or Generate + save manually.";
+  }
+  actions.append(gen, imp, file, status);
+  body.append(actions);
+  gen.addEventListener("click", () => {
+    const p = TRIAGE_PROVIDERS.find(x => x.id === sel.value);
+    const v = (inputs[p.id] || "").trim();
+    if (!v) { status.textContent = "paste a key for " + p.label + " first"; return; }
+    const payload = JSON.stringify({ default: p.id, providers: { [p.id]: { api_key: v } } }, null, 2);
+    status.textContent = "generated - save the text below as auth.json in the repo root (0600, do not commit)";
+    const ta = el("textarea");
+    ta.value = payload;
+    ta.style.width = "100%";
+    ta.style.height = "8em";
+    body.append(ta);
+    try { ta.select(); document.execCommand("copy"); status.textContent += " (copied to clipboard)"; } catch (e) {}
+  });
+  imp.addEventListener("click", () => file.click());
+  file.addEventListener("change", () => {
+    const f = file.files && file.files[0];
+    if (!f) return;
+    const rd = new FileReader();
+    rd.onload = () => {
+      try {
+        const cfg = JSON.parse(rd.result);
+        const provs = cfg.providers || {};
+        TRIAGE_PROVIDERS.forEach(p => {
+          const k = (provs[p.id] || {}).api_key || "";
+          inputs[p.id] = k;
+        });
+        renderField();
+        status.textContent = "auth.json imported: default provider = " + (cfg.default || "?") + " (values masked below)";
+        TRIAGE_PROVIDERS.forEach(p => {
+          if (inputs[p.id]) inputs[p.id] = inputs[p.id].slice(0, 6) + "..." + inputs[p.id].slice(-4);
+        });
+        renderField();
+      } catch (e) { status.textContent = "failed to parse auth.json: " + e.message; }
+    };
+    rd.readAsText(f);
+  });
+  return box;
+}
+
 function groupRows(rows, keyOf) {
   const g = new Map();
   rows.forEach(r => {

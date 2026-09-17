@@ -198,3 +198,17 @@ func TestRunPayloadMetaFields(t *testing.T) {
 		t.Fatalf("clients = %q", p.Meta.Clients)
 	}
 }
+
+func TestWriteHTMLEmbedsTriage(t *testing.T) {
+	rep := htmlTestReport()
+	rep.Triage = []byte(`{"provider":"glm","model":"glm-4.6","generated_at":"2026-01-01T00:00:00Z","summary":{"total":1,"real_issues":1},"results":[{"finding_id":"F-1","verdict":"REAL_ISSUE","confidence":0.9,"filterable":false,"reason":"violates MUST"}]}`)
+	out, err := WriteHTML(rep, nil, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, want := range []string{"LLM Triage Summary", "REAL_ISSUE", "violates MUST", "Generate auth.json"} {
+		if !strings.Contains(string(out), want) {
+			t.Fatalf("html missing %q", want)
+		}
+	}
+}
