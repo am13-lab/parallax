@@ -102,7 +102,12 @@ func cmdServe(args []string) error {
 			http.Error(w, "bad body: "+err.Error(), http.StatusBadRequest)
 			return
 		}
-		auth := &triage.Auth{Default: body.Default, Providers: map[string]triage.ProviderAuth{}}
+		// Merge into the persisted auth so saving one provider does not
+		// wipe previously saved ones.
+		auth, _ := triage.LoadAuth(cfg.AuthPath)
+		if auth == nil {
+			auth = &triage.Auth{Providers: map[string]triage.ProviderAuth{}}
+		}
 		for name, pa := range body.Providers {
 			if strings.TrimSpace(pa.APIKey) == "" {
 				continue
@@ -112,6 +117,9 @@ func cmdServe(args []string) error {
 		if len(auth.Providers) == 0 {
 			http.Error(w, "no api key in body", http.StatusBadRequest)
 			return
+		}
+		if body.Default != "" {
+			auth.Default = body.Default
 		}
 		if auth.Default == "" {
 			for _, order := range []string{triage.GLM, triage.DeepSeek, triage.OpenAI, triage.Claude, triage.Gemini} {
