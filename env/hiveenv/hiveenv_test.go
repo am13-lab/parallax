@@ -141,6 +141,11 @@ func TestSetupSmokeSequence(t *testing.T) {
 	if !fake.has("HIVE_ETH2_ETH1_ENGINE_RPC_ADDRS=http://10.5.0.9:8551") {
 		t.Fatal("lighthouse must dial the engine by container IP (authrpc rejects domain Host headers)")
 	}
+	// setup sweeps stale containers before relaunching; the sweep must
+	// remove their volumes too, or reruns accumulate orphan volumes.
+	if !fake.has("rm -fv smoke-geth") || !fake.has("rm -fv smoke-cl-1-lighthouse") || !fake.has("rm -fv smoke-vc-1-lighthouse") {
+		t.Fatal("setup must sweep stale containers together with their volumes")
+	}
 
 	eps := e.Endpoints()
 	if len(eps) != 1 {
@@ -153,14 +158,29 @@ func TestSetupSmokeSequence(t *testing.T) {
 		t.Fatalf("multiaddr missing peer id: %s", eps[0].Multiaddr)
 	}
 
-	// teardown removes both containers and the network
+	// teardown removes all started containers (EL, BN and VC) plus their
+	// associated volumes, and the network; assertions only look at calls
+	// issued during teardown, since setup also rm -f's stale names
+	// before launching.
+	marked := len(fake.calls)
 	if err := e.Teardown(context.Background()); err != nil {
 		t.Fatal(err)
 	}
-	if !fake.has("rm -f smoke-geth") || !fake.has("rm -f smoke-cl-1-lighthouse") {
+	tail := func(substr string) bool {
+		for _, c := range fake.calls[marked:] {
+			if strings.Contains(strings.Join(c, " "), substr) {
+				return true
+			}
+		}
+		return false
+	}
+	if !tail("rm -fv smoke-geth") || !tail("rm -fv smoke-cl-1-lighthouse") {
 		t.Fatal("teardown must remove containers")
 	}
-	if !fake.has("network rm smoke-net") {
+	if !tail("rm -fv smoke-vc-1-lighthouse") {
+		t.Fatal("teardown must remove the validator client container")
+	}
+	if !tail("network rm smoke-net") {
 		t.Fatal("teardown must remove the network")
 	}
 }
