@@ -32,13 +32,24 @@ func cmdServe(args []string) error {
 	if cfg.ReportPath == "" {
 		return fmt.Errorf("-report is required")
 	}
+	mux, err := newServeMux(cfg)
+	if err != nil {
+		return err
+	}
+	fmt.Fprintf(os.Stdout, "serving %s on http://%s (local only)\n", cfg.ReportPath, cfg.Addr)
+	return http.ListenAndServe(cfg.Addr, mux)
+}
+
+// newServeMux builds the serve endpoints: the report page, auth
+// persistence and the triage runner.
+func newServeMux(cfg ServeConfig) (*http.ServeMux, error) {
 	data, err := os.ReadFile(cfg.ReportPath)
 	if err != nil {
-		return fmt.Errorf("read report: %w", err)
+		return nil, fmt.Errorf("read report: %w", err)
 	}
 	var rep runner.Report
 	if err := json.Unmarshal(data, &rep); err != nil {
-		return fmt.Errorf("parse report: %w", err)
+		return nil, fmt.Errorf("parse report: %w", err)
 	}
 	findings := report.BuildFindings(&rep, false)
 
@@ -142,9 +153,11 @@ func cmdServe(args []string) error {
 			return
 		}
 		if auth == nil {
-			http.Error(w, "no api key configured: set env vars or save auth first", http.StatusBadRequest)
+			// No provider configured anywhere: no triage, no error.
+			writeJSON(w, triage.Info("", "", nil))
 			return
 		}
+		provider := auth.Default
 		inputs := make([]triage.Input, 0, len(findings))
 		for _, f := range findings {
 			if f.Suppressed {
@@ -166,7 +179,6 @@ func cmdServe(args []string) error {
 			}
 			inputs = append(inputs, in)
 		}
-		provider := auth.Default
 		results := triage.Triage(r.Context(), auth, provider, inputs)
 		info := triage.Info(provider, auth.Providers[provider].Model, results)
 		blob, err := json.Marshal(info)
@@ -180,8 +192,7 @@ func cmdServe(args []string) error {
 		}
 		writeJSON(w, info)
 	})
-	fmt.Fprintf(os.Stdout, "serving %s on http://%s (local only)\n", cfg.ReportPath, cfg.Addr)
-	return http.ListenAndServe(cfg.Addr, mux)
+	return mux, nil
 }
 
 // persistReportTriage merges the triage section into the saved report.json

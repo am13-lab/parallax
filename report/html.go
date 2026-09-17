@@ -1254,6 +1254,7 @@ function renderKeyPanel() {
   const body = el("div");
   box.append(intro, body);
   const inputs = {};
+  let serverAuth = null;
   const status = el("span", "count", "");
   const sel = el("select");
   TRIAGE_PROVIDERS.forEach(p => sel.append(new Option(p.label, p.id)));
@@ -1271,7 +1272,9 @@ function renderKeyPanel() {
     inp.value = inputs[p.id] || "";
     inp.addEventListener("input", () => { inputs[p.id] = inp.value; });
     row.append(inp);
-    row.append(el("div", "reason", p.hint));
+    const saved = serverAuth && serverAuth.providers && serverAuth.providers[p.id];
+    if (saved && saved.api_key) row.append(el("div", "reason", "saved: " + saved.api_key + " (model: " + (saved.model || "provider default") + ") - paste a new key and Save to replace it; Run triage uses this provider."));
+    else row.append(el("div", "reason", p.hint));
     fieldWrap.append(row);
   };
   sel.addEventListener("change", renderField);
@@ -1298,7 +1301,8 @@ function renderKeyPanel() {
         const res = await fetch("/api/auth", { method: "POST", headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ default: sel.value, providers: { [sel.value]: { api_key: v } } }) });
         const body2 = await res.json();
-        status.textContent = res.ok ? "saved to disk: " + body2.saved + " (default: " + body2.default + ")" : "save failed: " + (body2.error || res.status);
+        if (res.ok) { status.textContent = "saved to disk: " + body2.saved + " (default: " + body2.default + ")"; refreshAuth(); }
+        else status.textContent = "save failed: " + (body2.error || res.status);
       } catch (e) { status.textContent = "save failed: " + e.message; }
     });
     runT.addEventListener("click", async () => {
@@ -1316,10 +1320,13 @@ function renderKeyPanel() {
       } catch (e) { status.textContent = "triage failed: " + e.message; }
     });
     actions.append(save, runT);
-    fetch("/api/auth").then(r => r.json()).then(cfg => {
+    const refreshAuth = () => fetch("/api/auth").then(r => r.json()).then(cfg => {
+      serverAuth = cfg;
+      renderField();
       const names = Object.keys(cfg.providers || {});
       if (names.length) status.textContent = "configured: " + names.join(", ") + (cfg.default ? " (default: " + cfg.default + ")" : "");
     }).catch(() => {});
+    refreshAuth();
   } else {
     status.textContent = "opened as a local file: saving is disabled. Use 'parallax serve -report <report.json>' to enable it, or Generate + save manually.";
   }
