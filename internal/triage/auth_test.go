@@ -7,7 +7,9 @@ import (
 )
 
 func TestLoadAuthEnvFallback(t *testing.T) {
-	t.Setenv("GLM_API_KEY", "env-glm-key")
+	t.Setenv("OPENAI_API_KEY", "")
+	t.Setenv("ANTHROPIC_API_KEY", "")
+	t.Setenv("GEMINI_API_KEY", "env-gemini-key")
 	auth, err := LoadAuth(filepath.Join(t.TempDir(), "auth.json"))
 	if err != nil {
 		t.Fatal(err)
@@ -15,11 +17,11 @@ func TestLoadAuthEnvFallback(t *testing.T) {
 	if auth == nil {
 		t.Fatal("auth must resolve when an env key is set")
 	}
-	if auth.Default != GLM || auth.Providers[GLM].APIKey != "env-glm-key" {
+	if auth.Default != Gemini || auth.Providers[Gemini].APIKey != "env-gemini-key" {
 		t.Fatalf("unexpected auth: %+v", auth)
 	}
-	if auth.Providers[GLM].Model != DefaultModels[GLM] {
-		t.Fatalf("model must default, got %q", auth.Providers[GLM].Model)
+	if auth.Providers[Gemini].Model != DefaultModels[Gemini] {
+		t.Fatalf("model must default, got %q", auth.Providers[Gemini].Model)
 	}
 }
 
@@ -36,11 +38,13 @@ func TestLoadAuthNone(t *testing.T) {
 	}
 }
 
-func TestLoadAuthEnvOverridesFile(t *testing.T) {
-	t.Setenv("OPENAI_API_KEY", "env-openai")
+func TestLoadAuthFileKeyWinsOverEnv(t *testing.T) {
+	// A key saved from the UI is the user's latest intent: it must win
+	// over a stale env var on the same machine.
+	t.Setenv("OPENAI_API_KEY", "stale-env-key")
 	dir := t.TempDir()
 	path := filepath.Join(dir, "auth.json")
-	body := `{"default":"glm","providers":{"openai":{"api_key":"file-openai"},"glm":{"api_key":"file-glm","model":"glm-4.6"}}}`
+	body := `{"default":"claude","providers":{"openai":{"api_key":"file-openai"},"claude":{"api_key":"file-claude","model":"claude-sonnet-4-5"}}}`
 	if err := os.WriteFile(path, []byte(body), 0o600); err != nil {
 		t.Fatal(err)
 	}
@@ -48,15 +52,23 @@ func TestLoadAuthEnvOverridesFile(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if auth.Default != "glm" {
-		t.Fatalf("default = %q, want glm", auth.Default)
+	if auth.Default != "claude" {
+		t.Fatalf("default = %q, want claude", auth.Default)
 	}
-	// env wins over the persisted file (12-factor convention).
-	if auth.Providers[OpenAI].APIKey != "env-openai" {
-		t.Fatalf("env key must win over file, got %q", auth.Providers[OpenAI].APIKey)
+	if auth.Providers[OpenAI].APIKey != "file-openai" {
+		t.Fatalf("file key must win over env, got %q", auth.Providers[OpenAI].APIKey)
 	}
-	if auth.Providers[GLM].APIKey != "file-glm" {
-		t.Fatalf("file-only key must survive, got %q", auth.Providers[GLM].APIKey)
+	if auth.Providers[Claude].APIKey != "file-claude" {
+		t.Fatalf("file-only key must survive, got %q", auth.Providers[Claude].APIKey)
+	}
+	// env still fills in providers the file knows nothing about.
+	t.Setenv("GEMINI_API_KEY", "env-gemini")
+	auth2, err := LoadAuth(filepath.Join(t.TempDir(), "auth2.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if auth2.Providers[Gemini].APIKey != "env-gemini" {
+		t.Fatalf("env must fill providers missing from the file, got %+v", auth2.Providers)
 	}
 }
 

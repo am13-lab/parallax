@@ -128,7 +128,25 @@ var htmlTmpl = template.Must(template.New("page").Parse(`<!doctype html>
 body{margin:0;background:var(--bg);color:var(--fg);font:14px/1.55 -apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
 .wrap{max-width:1280px;margin:0 auto;padding:0 24px}
 .topbar{position:sticky;top:0;z-index:30;background:rgba(13,17,23,.92);backdrop-filter:blur(6px);border-bottom:1px solid var(--line)}
-.topbar-in{display:flex;align-items:center;gap:18px;height:52px}
+.topbar-in{display:flex;align-items:center;gap:18px;height:52px;position:relative}
+.settings-pop{position:absolute;top:56px;right:0;z-index:100;width:min(560px,calc(100vw - 48px));max-height:calc(100vh - 80px);overflow:auto;padding:14px 16px;border:1px solid var(--line);border-radius:10px;background:var(--panel);box-shadow:0 10px 30px rgba(0,0,0,.5)}
+.settings-pop input,.settings-pop select{background:var(--panel2);color:var(--fg);border:1px solid var(--line);border-radius:8px;padding:6px 10px;font-size:13px;outline:none}
+.settings-pop input{width:100%;max-width:420px}
+.settings-pop input:focus,.settings-pop select:focus{border-color:var(--blue)}
+.settings-pop select{cursor:pointer}
+.settings-pop .reason{color:var(--dim);font-size:12px;margin-top:4px}
+.form-grid{display:grid;grid-template-columns:88px 1fr;gap:10px 12px;align-items:center;margin-top:10px}
+.form-grid .flabel{text-align:right;color:var(--dim);font-size:12px}
+.form-grid .mwrap{display:flex;gap:8px}
+.form-grid .mwrap input{flex:1;max-width:none}
+.form-grid .saved-hint{color:var(--dim);font-size:12px;line-height:1.5}
+.chip.tri-g{color:var(--green);border-color:var(--green)}
+.chip.tri-r{color:var(--red);border-color:var(--red)}
+.chip.tri-h{color:var(--orange);border-color:var(--orange)}
+.btnrow{display:flex;gap:8px;margin-top:14px;align-items:center;flex-wrap:wrap}
+.btn{padding:6px 12px;border:1px solid var(--line);border-radius:8px;background:var(--panel2);color:var(--fg);cursor:pointer;font-size:13px}
+.btn:hover{border-color:var(--blue)}
+.btn.primary{background:var(--blue);border-color:var(--blue);color:#0d1117;font-weight:600}
 .brand{font-weight:700;font-size:15px;letter-spacing:.02em}
 .tabs{display:flex;gap:14px;margin-left:auto}
 .tab{padding:5px 2px;border:none;background:none;color:var(--dim);cursor:pointer;font-size:13px;border-bottom:2px solid transparent}
@@ -263,6 +281,7 @@ tr.mrow td.mtest{display:grid;grid-template-columns:12px 10px minmax(0,1fr) auto
 .mstat .tid{grid-column:3;grid-row:1;min-width:0;word-break:break-all}
 .mstat .mrules{grid-column:3/-1;color:var(--dim);font-size:11px;margin-top:2px;display:flex;gap:8px;flex-wrap:wrap}
 tr.mrow td.mtest .chip{grid-column:4;grid-row:1;margin-top:1px}
+tr.mrow td.mtest .chip.tri-g,tr.mrow td.mtest .chip.tri-r,tr.mrow td.mtest .chip.tri-h{grid-column:5;grid-row:1}
 .rulechip[data-reason]{position:relative;cursor:help}
 .rulechip.linkable{cursor:pointer;text-decoration:underline;text-underline-offset:3px}
 .rulechip[data-reason]:hover::after{content:attr(data-reason);position:absolute;left:0;top:calc(100% + 6px);z-index:60;max-width:560px;width:max-content;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--panel2);color:var(--fg);font-size:12px;line-height:1.5;white-space:pre-wrap;word-break:break-word;text-align:left;box-shadow:0 6px 20px rgba(0,0,0,.45)}
@@ -277,6 +296,8 @@ tr.mrow td.mtest .chip{grid-column:4;grid-row:1;margin-top:1px}
       <button class="tab" id="tab-findings">Findings</button>
       <button class="tab sub" id="tab-history">History</button>
     </nav>
+    <button class="tab" id="btn-settings" title="LLM triage keys">⚙ Settings</button>
+    <div id="settings-pop" class="settings-pop" style="display:none"></div>
   </div>
 </div>
 <div class="wrap">
@@ -324,7 +345,7 @@ const runs = raw.runs && raw.runs.length ? raw.runs : [{ meta: {}, report: raw.r
 let currentRun = (typeof raw.current === "number" && raw.current >= 0 && raw.current < runs.length) ? raw.current : 0;
 let currentTab = "summary";
 let rep = {}, findings = [], results = [], clientNames = [], knownIds = new Set(), runCmd = "";
-let triage = null, triageById = {};
+let triage = null, triageById = {}, triageByTest = {};
 
 function el(tag, cls, text) {
   const e = document.createElement(tag);
@@ -343,7 +364,17 @@ function applyRun(i) {
   findings = run.findings || [];
   triage = run.triage || null;
   triageById = {};
+  triageByTest = {};
   (triage && triage.results || []).forEach(r => { triageById[r.finding_id] = r; });
+  // findings bridge finding_id -> test ids: each finding's evidence lists
+  // the tests that produced it, so a test row can show its verdict inline.
+  (findings || []).forEach(f => {
+    const t = triageById[f.id];
+    if (!t) return;
+    (f.evidence || []).forEach(ev => {
+      if (ev && ev.test_id) triageByTest[ev.test_id] = t;
+    });
+  });
   results = rep.results || [];
   currentClient = "";
   document.getElementById("q-find").value = "";
@@ -471,8 +502,8 @@ function clientCard(n) {
 function renderSummary() {
   const out = document.getElementById("view-summary");
   out.textContent = "";
-  out.append(renderTriageBlock());
-  out.append(renderKeyPanel());
+  const triageCard = renderTriageBlock();
+  if (triageCard) out.append(triageCard);
   const cards = el("div", "ccards");
   clientNames.forEach(n => cards.append(clientCard(n)));
   out.append(cards);
@@ -874,6 +905,17 @@ function matrixRow(r) {
   }
   td.append(stat);
   if (known) td.append(chip("st-skipped", "known"));
+  const tt = triageByTest[r.test_id];
+  if (tt && !tt.unavailable) {
+    const cls = tt.filterable ? "tri-g" : (tt.verdict === "NEEDS_HUMAN" ? "tri-h" : "tri-r");
+    const pct = Math.round((tt.confidence || 0) * 100);
+    const label = tt.filterable ? "filterable" : (tt.verdict === "NEEDS_HUMAN" ? "needs human" : (tt.verdict || "real issue"));
+    const tc = chip(cls, "AI: " + pct + "%");
+    // same hover mechanism as the spec chips: data-reason + CSS popover
+    tc.classList.add("rulechip");
+    tc.setAttribute("data-reason", label + " " + pct + "% (" + (triage.provider || "?") + ")" + (tt.reason ? "\n" + tt.reason : ""));
+    td.append(tc);
+  }
   const divs = r.divergences || [];
   if (r.status === "divergent" && !known) {
     const sev = (function () {
@@ -920,9 +962,24 @@ function renderSumTests() {
   [...groups.keys()].sort().forEach(cat2 => {
     const rows = groups.get(cat2);
     const divN = rows.filter(r => r.status === "divergent").length;
+    const tri = { f: 0, r: 0, h: 0 };
+    rows.forEach(r => {
+      const tt = triageByTest[r.test_id];
+      if (tt && !tt.unavailable) {
+        if (tt.filterable) tri.f++;
+        else if (tt.verdict === "NEEDS_HUMAN") tri.h++;
+        else tri.r++;
+      }
+    });
     const det = el("details", "group");
     const sum = el("summary");
     sum.append(el("span", "tid", cat2), el("span", "cnt", "(" + rows.length + " tests · " + divN + " divergent)"));
+    if (tri.f + tri.r + tri.h > 0) {
+      sum.append(el("span", "cnt", " · 🤖 LLM triage:"));
+      if (tri.f) sum.append(el("span", "lg g", "🟢 filterable " + tri.f));
+      if (tri.r) sum.append(el("span", "lg r", "🔴 real " + tri.r));
+      if (tri.h) sum.append(el("span", "sup", "🟡 needs human " + tri.h));
+    }
     det.append(sum);
     const t = el("table", "matrix matrix-sum");
     const thead = el("thead");
@@ -1186,7 +1243,12 @@ function findingCard(f) {
   if (f.evidence_count) head.append(chip(null, "evidence ×" + f.evidence_count));
   if (f.suppressed) head.append(chip("sup", "suppressed"));
   const t = triageById[f.id];
-  if (t && !t.unavailable) head.append(chip(t.filterable ? "lg g" : (t.verdict === "NEEDS_HUMAN" ? "sup" : "lg r"), "triage: " + (t.verdict || "?") + " " + Math.round((t.confidence || 0) * 100) + "%"));
+  if (t && !t.unavailable) {
+    const tc = chip(t.filterable ? "lg g" : (t.verdict === "NEEDS_HUMAN" ? "sup" : "lg r"), "triage: " + (t.verdict || "?") + " " + Math.round((t.confidence || 0) * 100) + "%");
+    tc.classList.add("rulechip");
+    tc.setAttribute("data-reason", (t.reason || t.verdict || "") + (t.spec_anchor ? " (spec: " + t.spec_anchor + ")" : ""));
+    head.append(tc);
+  }
   c.append(head);
   c.append(el("div", "cause", f.root_cause || ""));
   const outs = f.outlier_clients || [];
@@ -1212,82 +1274,122 @@ function findingCard(f) {
 const TRIAGE_PROVIDERS = [
   { id: "openai",   label: "OpenAI",   env: "OPENAI_API_KEY",   hint: "OpenAI API key (sk-...): calls GPT models to triage this report's differential findings (real issue vs filterable noise). Used locally on the next run after configuration." },
   { id: "claude",   label: "Claude",   env: "ANTHROPIC_API_KEY", hint: "Anthropic API key (sk-ant-...): calls Claude models for the same triage analysis." },
-  { id: "gemini",   label: "Gemini",   env: "GEMINI_API_KEY",   hint: "Google Gemini API key: calls Gemini models for the same triage analysis." },
-  { id: "deepseek", label: "DeepSeek", env: "DEEPSEEK_API_KEY", hint: "DeepSeek API key: calls DeepSeek models for the same triage analysis." },
-  { id: "glm",      label: "GLM",      env: "GLM_API_KEY",      hint: "Zhipu GLM API key: calls GLM models for the same triage analysis." }
+  { id: "gemini",   label: "Gemini",   env: "GEMINI_API_KEY",   hint: "Google Gemini API key: calls Gemini models for the same triage analysis." }
 ];
 
 function renderTriageBlock() {
+  const s = (triage && triage.summary) || {};
+  const total = s.total || 0;
+  // Show the card only when triage actually produced verdicts. A run that
+  // did not happen (no key) or failed outright (invalid key) would only
+  // advertise an error — render nothing instead; keys live in ⚙ Settings.
+  if (!triage || !triage.results || !triage.results.length || total === 0) return null;
+  if ((s.unavailable || 0) === total) return null;
   const box = el("div", "card");
   box.append(el("div", "cause", "LLM Triage Summary"));
-  if (!triage || !triage.results || !triage.results.length) {
-    box.append(el("div", "empty", "No triage analysis was generated for this run: no API key detected (env vars or auth.json). Configure any key under Settings below and it will be produced automatically on the next run."));
-    return box;
-  }
-  const s = triage.summary || {};
   const line = el("div", "count", "provider: " + (triage.provider || "?") + " / model: " + (triage.model || "?") +
     " - real issues " + (s.real_issues || 0) + " / filterable " + (s.filterable || 0) +
     " / needs human " + (s.needs_human || 0) + " / unavailable " + (s.unavailable || 0) +
     " (of " + (s.total || 0) + ")");
   box.append(line);
-  const det = el("div", "detail open");
-  (triage.results || []).forEach(r => {
-    const row = el("div", "ev");
-    const badge = r.unavailable ? "unavailable" : (r.filterable ? "\u{1F7E2} filterable" : (r.verdict === "NEEDS_HUMAN" ? "\u{1F7E1} needs human" : "\u{1F534} real issue"));
-    row.append(chip(r.filterable ? "lg g" : (r.verdict === "NEEDS_HUMAN" ? "sup" : "lg r"), badge + " " + (r.verdict || "") + " " + Math.round((r.confidence || 0) * 100) + "%"));
-    row.append(el("b", null, r.finding_id || ""));
-    if (r.reason) row.append(el("span", null, " - " + r.reason + (r.spec_anchor ? " (spec: " + r.spec_anchor + ")" : "")));
-    if (r.error) row.append(el("span", null, " - error: " + r.error));
-    det.append(row);
-  });
-  box.append(det);
-  box.append(el("div", "count", "Triage verdicts are suggestions only; nothing is auto-suppressed. Maintain configs/known_divergences.json manually once confirmed."));
+  box.append(el("div", "count", "Per-finding verdicts are shown inline in the category groups below. Triage verdicts are suggestions only; nothing is auto-suppressed."));
   return box;
 }
 
 function renderKeyPanel() {
-  const box = el("details", "card");
-  const sum = el("summary");
-  sum.append(el("span", "cause", "Settings - LLM Triage API Keys"));
-  box.append(sum);
-  const intro = el("div", "count", "With any key configured (env var or auth.json saved here), the next parallax run attaches an LLM triage analysis to the report. Without a key, triage is skipped. Keys are stored locally in auth.json (0600) and never leave the machine except to call the provider API.");
-  const body = el("div");
-  box.append(intro, body);
-  const inputs = {};
+  const box = el("div");
+  box.append(el("div", "cause", "LLM Triage API Keys"));
+  box.append(el("div", "count", "Triage runs locally against the default provider (the last one configured). Keys stay in auth.json (0600); endpoint is an optional relay base URL."));
+  const inputs = {}, modelIn = {}, endpointIn = {};
   let serverAuth = null;
   const status = el("span", "count", "");
+  const grid = el("div", "form-grid");
+  const flabel = t => el("div", "flabel", t);
   const sel = el("select");
   TRIAGE_PROVIDERS.forEach(p => sel.append(new Option(p.label, p.id)));
-  const fieldWrap = el("div");
-  const renderField = () => {
-    const p = TRIAGE_PROVIDERS.find(x => x.id === sel.value);
-    fieldWrap.textContent = "";
-    const row = el("div", "ev");
-    row.append(el("b", null, p.label + " (" + p.env + ")"));
-    const inp = el("input");
-    inp.type = "password";
-    inp.placeholder = "paste " + p.label + " API key";
-    inp.style.width = "40%";
-    inp.autocomplete = "off";
-    inp.value = inputs[p.id] || "";
-    inp.addEventListener("input", () => { inputs[p.id] = inp.value; });
-    row.append(inp);
+  const currentProvider = () => TRIAGE_PROVIDERS.find(x => x.id === sel.value);
+
+  grid.append(flabel("provider"));
+  grid.append(sel);
+
+  grid.append(flabel("api key"));
+  const inp = el("input");
+  inp.type = "password";
+  inp.autocomplete = "off";
+  inp.addEventListener("input", () => { inputs[sel.value] = inp.value; });
+  grid.append(inp);
+
+  grid.append(flabel("endpoint"));
+  const einp = el("input");
+  einp.type = "text";
+  einp.placeholder = "optional relay URL, e.g. https://relay.example.com/v1";
+  einp.autocomplete = "off";
+  einp.addEventListener("input", () => { endpointIn[sel.value] = einp.value; });
+  grid.append(einp);
+
+  grid.append(flabel("model"));
+  const mwrap = el("div", "mwrap");
+  const minp = el("input");
+  minp.placeholder = "provider default";
+  minp.setAttribute("list", "dl-models");
+  minp.autocomplete = "off";
+  minp.addEventListener("input", () => { modelIn[sel.value] = minp.value; });
+  const dl = el("datalist");
+  dl.id = "dl-models";
+  const loadM = el("button", "btn", "Load models");
+    loadM.addEventListener("click", async () => {
+      const p = currentProvider();
+      status.textContent = "loading models for " + p.label + "...";
+      try {
+        const res = await fetch("/api/models?provider=" + p.id);
+        const text = await res.text();
+        let d;
+        try { d = JSON.parse(text); } catch (e) {
+          status.textContent = "load failed: HTTP " + res.status;
+          return;
+        }
+        if (!res.ok || d.error) { status.textContent = "load failed: " + (d.error || "HTTP " + res.status); return; }
+        dl.textContent = "";
+        (d.models || []).forEach(m => dl.append(new Option(m, m)));
+        status.textContent = (d.models || []).length + " models loaded for " + p.label + " - pick one and Save";
+      } catch (err) { status.textContent = "load failed: " + err.message; }
+    });
+  mwrap.append(minp, dl, loadM);
+  grid.append(mwrap);
+
+  const hint = el("div", "saved-hint");
+  hint.style.gridColumn = "1 / -1";
+  grid.append(hint);
+
+  // syncField refreshes placeholder + saved hint for the selected provider.
+  const syncField = () => {
+    const p = currentProvider();
     const saved = serverAuth && serverAuth.providers && serverAuth.providers[p.id];
-    if (saved && saved.api_key) row.append(el("div", "reason", "saved: " + saved.api_key + " (model: " + (saved.model || "provider default") + ") - paste a new key and Save to replace it; Run triage uses this provider."));
-    else row.append(el("div", "reason", p.hint));
-    fieldWrap.append(row);
+    inp.placeholder = "paste " + p.label + " API key";
+    if (saved && saved.api_key) {
+      hint.textContent = "saved: " + saved.api_key + (saved.model ? " · " + saved.model : "") + (saved.endpoint ? " · " + saved.endpoint : "") + " - paste a new key and Save to replace it";
+    } else {
+      hint.textContent = p.hint;
+    }
   };
-  sel.addEventListener("change", renderField);
-  const prow = el("div", "ev");
-  prow.append(el("b", null, "provider: "));
-  prow.append(sel);
-  body.append(prow, fieldWrap);
-  renderField();
-  const actions = el("div", "bar");
-  const save = el("button", "tab", "Save");
-  const runT = el("button", "tab", "Run triage now");
-  const gen = el("button", "tab", "Generate auth.json");
-  const imp = el("button", "tab", "Import auth.json");
+  const loadValues = () => {
+    const p = sel.value;
+    const saved = serverAuth && serverAuth.providers && serverAuth.providers[p];
+    // key: show the stored masked value; saving a masked string is
+    // rejected, so the stored key can only be replaced by a fresh paste.
+    inp.value = inputs[p] || (saved && saved.api_key) || "";
+    einp.value = endpointIn[p] || (saved && saved.endpoint) || "";
+    minp.value = modelIn[p] || (saved && saved.model) || "";
+    syncField();
+  };
+  sel.addEventListener("change", loadValues);
+  box.append(grid);
+  syncField();
+  const btnrow = el("div", "btnrow");
+  const save = el("button", "btn primary", "Save");
+  const runT = el("button", "btn", "Run triage now");
+  const gen = el("button", "btn", "Generate auth.json");
+  const imp = el("button", "btn", "Import auth.json");
   const file = el("input");
   file.type = "file";
   file.accept = ".json,application/json";
@@ -1295,15 +1397,27 @@ function renderKeyPanel() {
   const SERVED = location.protocol.startsWith("http");
   if (SERVED) {
     save.addEventListener("click", async () => {
-      const v = (inputs[sel.value] || "").trim();
-      if (!v || v.includes("...")) { status.textContent = "paste a key for " + sel.value + " first"; return; }
+      const p = sel.value;
+      const raw = (inputs[p] || "").trim();
+      const masked = raw.includes("...");
+      const v = masked ? "" : raw;
+      const m = (modelIn[p] || "").trim();
+      const e = (endpointIn[p] || "").trim();
+      if (!v && !m && !e) {
+        status.textContent = masked ? "key unchanged - paste a fresh key to replace it" : "nothing to save for " + p;
+        return;
+      }
+      const entry = {};
+      if (v) entry.api_key = v;
+      if (m) entry.model = m;
+      if (e) entry.endpoint = e;
       try {
         const res = await fetch("/api/auth", { method: "POST", headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ default: sel.value, providers: { [sel.value]: { api_key: v } } }) });
+          body: JSON.stringify({ default: p, providers: { [p]: entry } }) });
         const body2 = await res.json();
         if (res.ok) { status.textContent = "saved to disk: " + body2.saved + " (default: " + body2.default + ")"; refreshAuth(); }
         else status.textContent = "save failed: " + (body2.error || res.status);
-      } catch (e) { status.textContent = "save failed: " + e.message; }
+      } catch (err) { status.textContent = "save failed: " + err.message; }
     });
     runT.addEventListener("click", async () => {
       status.textContent = "running triage...";
@@ -1313,16 +1427,24 @@ function renderKeyPanel() {
         if (!res.ok) { status.textContent = "triage failed: " + (body2.error || res.status); return; }
         triage = body2;
         triageById = {};
+        triageByTest = {};
         (triage.results || []).forEach(r => { triageById[r.finding_id] = r; });
+        (findings || []).forEach(f => {
+          const t2 = triageById[f.id];
+          if (!t2) return;
+          (f.evidence || []).forEach(ev => {
+            if (ev && ev.test_id) triageByTest[ev.test_id] = t2;
+          });
+        });
         renderSummary();
         renderFindings();
         status.textContent = "triage updated";
       } catch (e) { status.textContent = "triage failed: " + e.message; }
     });
-    actions.append(save, runT);
+    btnrow.append(save, runT);
     const refreshAuth = () => fetch("/api/auth").then(r => r.json()).then(cfg => {
       serverAuth = cfg;
-      renderField();
+      syncField();
       const names = Object.keys(cfg.providers || {});
       if (names.length) status.textContent = "configured: " + names.join(", ") + (cfg.default ? " (default: " + cfg.default + ")" : "");
     }).catch(() => {});
@@ -1330,8 +1452,8 @@ function renderKeyPanel() {
   } else {
     status.textContent = "opened as a local file: saving is disabled. Use 'parallax serve -report <report.json>' to enable it, or Generate + save manually.";
   }
-  actions.append(gen, imp, file, status);
-  body.append(actions);
+  btnrow.append(gen, imp, file);
+  box.append(grid, btnrow, status);
   gen.addEventListener("click", () => {
     const p = TRIAGE_PROVIDERS.find(x => x.id === sel.value);
     const v = (inputs[p.id] || "").trim();
@@ -1342,7 +1464,7 @@ function renderKeyPanel() {
     ta.value = payload;
     ta.style.width = "100%";
     ta.style.height = "8em";
-    body.append(ta);
+    box.append(ta);
     try { ta.select(); document.execCommand("copy"); status.textContent += " (copied to clipboard)"; } catch (e) {}
   });
   imp.addEventListener("click", () => file.click());
@@ -1358,12 +1480,12 @@ function renderKeyPanel() {
           const k = (provs[p.id] || {}).api_key || "";
           inputs[p.id] = k;
         });
-        renderField();
+        loadValues(); syncField();
         status.textContent = "auth.json imported: default provider = " + (cfg.default || "?") + " (values masked below)";
         TRIAGE_PROVIDERS.forEach(p => {
           if (inputs[p.id]) inputs[p.id] = inputs[p.id].slice(0, 6) + "..." + inputs[p.id].slice(-4);
         });
-        renderField();
+        loadValues(); syncField();
       } catch (e) { status.textContent = "failed to parse auth.json: " + e.message; }
     };
     rd.readAsText(f);
@@ -1435,6 +1557,20 @@ function tab(name) {
 document.getElementById("tab-summary").addEventListener("click", () => tab("summary"));
 document.getElementById("tab-findings").addEventListener("click", () => tab("findings"));
 document.getElementById("tab-history").addEventListener("click", () => tab("history"));
+
+// Settings lives in a top-right popover, opened from the topbar button.
+document.getElementById("settings-pop").append(renderKeyPanel());
+document.getElementById("btn-settings").addEventListener("click", (ev) => {
+  ev.stopPropagation();
+  const pop = document.getElementById("settings-pop");
+  pop.style.display = pop.style.display === "none" ? "" : "none";
+});
+document.addEventListener("click", (ev) => {
+  const pop = document.getElementById("settings-pop");
+  if (pop.style.display !== "none" && !pop.contains(ev.target)) {
+    pop.style.display = "none";
+  }
+});
 
 // ---- history tab: pick one of the embedded runs, or load a json from disk ----
 function renderHistory() {
