@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -10,8 +11,8 @@ import (
 
 	"github.com/ethereum/hive/hivesim"
 
-	"parallax/client"
 	"parallax/cases"
+	"parallax/client"
 	"parallax/enr"
 	"parallax/env"
 	"parallax/runner"
@@ -94,8 +95,15 @@ func runCategory(t *hivesim.T, cfg Config, category string) {
 	}
 
 	var eps []env.Endpoint
+	henv := &hiveEnv{sim: t.Sim, suiteID: t.SuiteID, testID: t.TestID}
+	defer func() {
+		if err := henv.Teardown(context.Background()); err != nil {
+			t.Logf("teardown: %v", err)
+		}
+	}()
 	for _, ct := range cfg.ClientTypes {
 		c := t.StartClient(ct)
+		henv.containers = append(henv.containers, c.Container)
 		ep := env.Endpoint{
 			Name:       ct,
 			ClientType: ct,
@@ -142,7 +150,7 @@ func runCategory(t *hivesim.T, cfg Config, category string) {
 		clients = append(clients, c)
 	}
 
-	rep := runner.Run(ctx, specs, clients, &hiveEnv{endpoints: eps}, cfg.Chain, runner.Options{
+	rep := runner.Run(ctx, specs, clients, henv, cfg.Chain, runner.Options{
 		Seed:           time.Now().UnixNano(),
 		PerTestTimeout: 2 * time.Minute,
 		Progress: func(r runner.TestResult) {
@@ -204,8 +212,15 @@ func fetchIdentity(base string) (peerID string, digest [4]byte, err error) {
 	return body.Data.PeerID, digest, nil
 }
 
-// hiveEnv adapts the started clients into the runner's Environment.
-type hiveEnv struct{ endpoints []env.Endpoint }
+// hiveEnv adapts the started clients into the runner's Environment and
+// tracks the containers it started so Teardown can stop them again.
+type hiveEnv struct {
+	endpoints  []env.Endpoint
+	sim        *hivesim.Simulation
+	suiteID    hivesim.SuiteID
+	testID     hivesim.TestID
+	containers []string
+}
 
 func (h *hiveEnv) Endpoints() []env.Endpoint { return h.endpoints }
 
@@ -217,4 +232,20 @@ func (h *hiveEnv) Info() map[string]string {
 	return map[string]string{"provider": "hive"}
 }
 
-func (h *hiveEnv) Teardown(ctx context.Context) error { return nil }
+// Teardown stops every container started for this test. Stopping is
+// best-effort and per container: one failure must not leak the rest.
+func (h *hiveEnv) Teardown(ctx context.Context) error {
+	if h.sim == nil {
+		return nil
+	}
+	if err := ctx.Err(); err != nil {
+		return err
+	}
+	var errs []error
+	for _, c := range h.containers {
+		if err := h.sim.StopClient(h.suiteID, h.testID, c); err != nil {
+			errs = append(errs, fmt.Errorf("stop %s: %w", c, err))
+		}
+	}
+	return errors.Join(errs...)
+}

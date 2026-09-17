@@ -3,13 +3,16 @@ package main
 import (
 	"bytes"
 	"context"
+	"errors"
 	"flag"
+	"io"
 	"os"
 	"path/filepath"
 	"strings"
 	"testing"
 	"time"
 
+	"parallax/env"
 	"parallax/report"
 	"parallax/runner"
 	"parallax/testnode"
@@ -103,6 +106,82 @@ func TestAnalyzeWithAllowlistAndLegacy(t *testing.T) {
 
 // runRun smoke: static env against two live testnodes with a single
 // convergent case.
+// recordingEnv observes whether teardownEnv releases the environment.
+// ctxLive/ctxHasDeadline snapshot the ctx state at teardown time, since
+// the teardown-scoped ctx is cancelled when teardownEnv returns.
+type recordingEnv struct {
+	torndown       bool
+	err            error
+	ctxLive        bool
+	ctxHasDeadline bool
+}
+
+func (f *recordingEnv) Endpoints() []env.Endpoint { return nil }
+func (f *recordingEnv) Logs(ctx context.Context, ep env.Endpoint, since time.Time) (io.ReadCloser, error) {
+	return nil, env.ErrLogsUnsupported
+}
+func (f *recordingEnv) Info() map[string]string { return nil }
+func (f *recordingEnv) Teardown(ctx context.Context) error {
+	f.torndown = true
+	f.ctxLive = ctx.Err() == nil
+	_, f.ctxHasDeadline = ctx.Deadline()
+	return f.err
+}
+
+// A finished run must release provisioned environments (containers,
+// volumes). Attached environments are not owned by the run and survive it.
+func TestTeardownEnvAfterRun(t *testing.T) {
+	t.Run("provisioned env is torn down", func(t *testing.T) {
+		e := &recordingEnv{}
+		var buf bytes.Buffer
+		teardownEnv(e, RunConfig{Env: "kurtosis", Stdout: &buf})
+		if !e.torndown {
+			t.Fatal("provisioned env must be torn down after the run")
+		}
+	})
+	t.Run("attached env survives the run", func(t *testing.T) {
+		e := &recordingEnv{}
+		var buf bytes.Buffer
+		teardownEnv(e, RunConfig{Env: "kurtosis", Attach: true, Stdout: &buf})
+		if e.torndown {
+			t.Fatal("attached env must not be destroyed by the run")
+		}
+	})
+	t.Run("hive env is torn down", func(t *testing.T) {
+		e := &recordingEnv{}
+		var buf bytes.Buffer
+		teardownEnv(e, RunConfig{Env: "hive", Stdout: &buf})
+		if !e.torndown {
+			t.Fatal("hive env must be torn down after the run")
+		}
+	})
+	t.Run("teardown error is reported without aborting", func(t *testing.T) {
+		e := &recordingEnv{err: errors.New("boom")}
+		var buf bytes.Buffer
+		teardownEnv(e, RunConfig{Env: "hive", Stdout: &buf})
+		if !strings.Contains(buf.String(), "boom") {
+			t.Fatalf("teardown error must be reported, got: %s", buf.String())
+		}
+	})
+	t.Run("teardown survives a cancelled run context", func(t *testing.T) {
+		// An interrupted run (Ctrl-C, deadline) must still be able to
+		// release the environment: teardown must run on its own live,
+		// timeout-bounded context instead of the run's dead one.
+		e := &recordingEnv{}
+		var buf bytes.Buffer
+		teardownEnv(e, RunConfig{Env: "kurtosis", Stdout: &buf})
+		if !e.torndown {
+			t.Fatal("teardown must run even when the run ctx is cancelled")
+		}
+		if !e.ctxLive {
+			t.Fatal("teardown ctx must be live at teardown time")
+		}
+		if !e.ctxHasDeadline {
+			t.Fatal("teardown ctx must carry a timeout")
+		}
+	})
+}
+
 func TestRunRunSmoke(t *testing.T) {
 	ping := "/eth2/beacon_chain/req/ping/1/ssz_snappy"
 	mkNode := func(behavior testnode.Behavior) *testnode.Node {

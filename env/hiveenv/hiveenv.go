@@ -111,6 +111,7 @@ type Environment struct {
 	runner   cmdRunner
 	enclave  string
 	eps      []env.Endpoint
+	vcs      []string // validator client containers started by Setup
 	identity func(base string) (peerID string, err error)
 }
 
@@ -128,11 +129,18 @@ func (e *Environment) Info() map[string]string {
 	return map[string]string{"provider": "hive", "enclave": e.enclave}
 }
 
+// Teardown removes every container started by Setup together with its
+// associated volumes (the client images keep their data directories in
+// anonymous volumes) and the network. Removals are best-effort: one
+// failure must not leak the rest.
 func (e *Environment) Teardown(ctx context.Context) error {
-	for _, ep := range e.eps {
-		_, _ = e.runner.Run("rm", "-f", ep.Service)
+	for _, vc := range e.vcs {
+		_, _ = e.runner.Run("rm", "-fv", vc)
 	}
-	_, _ = e.runner.Run("rm", "-f", e.enclave+"-geth")
+	for _, ep := range e.eps {
+		_, _ = e.runner.Run("rm", "-fv", ep.Service)
+	}
+	_, _ = e.runner.Run("rm", "-fv", e.enclave+"-geth")
 	_, _ = e.runner.Run("network", "rm", e.enclave+"-net")
 	return nil
 }
@@ -201,9 +209,10 @@ func (p *Provider) Setup(ctx context.Context, cfg any) (env.Environment, error) 
 
 	// Sweep leftovers from previous runs sharing this enclave name: stale
 	// containers keep proposing on an old chain and poison the new one.
+	// Their volumes go with them (-v), or reruns accumulate orphans.
 	if out, err := runner.Run("ps", "-aq", "--filter", "name=^/"+hcfg.Enclave+"-"); err == nil && strings.TrimSpace(out) != "" {
 		for _, id := range strings.Fields(out) {
-			_, _ = runner.Run("rm", "-f", id)
+			_, _ = runner.Run("rm", "-fv", id)
 		}
 	}
 	identity := p.Identity
@@ -257,7 +266,7 @@ func (p *Provider) Setup(ctx context.Context, cfg any) (env.Environment, error) 
 	genJSON, _ := lookupFile(hcfg.GenDir, "genesis.json")
 	genMeta := readGenesisMeta(genJSON)
 	gethName := hcfg.Enclave + "-geth"
-	_, _ = runner.Run("rm", "-f", gethName)
+	_, _ = runner.Run("rm", "-fv", gethName)
 	if out, err := runner.Run("run", "-d", "--name", gethName,
 		"--network", hcfg.Enclave+"-net",
 		"-p", elHTTPPort,
@@ -312,7 +321,7 @@ func (p *Provider) Setup(ctx context.Context, cfg any) (env.Environment, error) 
 	for i, ct := range hcfg.ClientTypes {
 		def := clientDefs[ct]
 		name := fmt.Sprintf("%s-cl-%d-%s", hcfg.Enclave, i+1, ct)
-		_, _ = runner.Run("rm", "-f", name)
+		_, _ = runner.Run("rm", "-fv", name)
 		runArgs := []string{"run", "-d", "--name", name,
 			"--network", hcfg.Enclave+"-net",
 			"-p", def.apiPort,
@@ -375,7 +384,7 @@ func (p *Provider) Setup(ctx context.Context, cfg any) (env.Environment, error) 
 		}
 		vc := vdef.image
 		vcName := fmt.Sprintf("%s-vc-%d-%s", hcfg.Enclave, i+1, ct)
-		_, _ = runner.Run("rm", "-f", vcName)
+		_, _ = runner.Run("rm", "-fv", vcName)
 		if out, err := runner.Run("run", "-d", "--name", vcName,
 			"--network", hcfg.Enclave+"-net",
 			"-v", hcfg.GenDir+":/hive/input",
@@ -387,6 +396,7 @@ func (p *Provider) Setup(ctx context.Context, cfg any) (env.Environment, error) 
 		); err != nil {
 			return nil, fmt.Errorf("start vc %s: %s", ct, out)
 		}
+		e.vcs = append(e.vcs, vcName)
 	}
 
 	// Wait out the pre-genesis window: before genesis the beacon nodes
